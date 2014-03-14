@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++11 -g -DDEBUG -Wall -Wshadow -Wwrite-strings -Wextra -Wundef -Wswitch-default -Wformat-nonliteral -Wformat-extra-args -Wformat-security    CMakeFiles/swx.dir/src/main.cpp.o  -o swx  -L/usr/local/lib -rdynamic -ljewel -lsqloxx -ldl -lm -lz -Wl,-rpath,/usr/local/lib 
