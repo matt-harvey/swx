@@ -71,6 +71,9 @@ public:
 
 // member variables
 private:
+	
+	bool is_valid() const;
+
 	boost::posix_time::ptime m_beginning;
 	boost::optional<boost::posix_time::ptime> m_maybe_ending;
 

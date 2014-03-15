@@ -17,6 +17,7 @@ Interval::Interval(posix_time::ptime const& p_beginning):
 	m_beginning(p_beginning)
 {
 	JEWEL_ASSERT (!m_maybe_ending);
+	JEWEL_ASSERT (is_valid());
 }
 
 void
@@ -34,6 +35,7 @@ Interval::close(posix_time::ptime const& p_ending)
 		);
 	}
 	m_maybe_ending = p_ending;
+	JEWEL_ASSERT (is_valid());
 	return;
 }
 
@@ -47,6 +49,12 @@ optional<posix_time::ptime>
 Interval::maybe_ending() const
 {
 	return m_maybe_ending;
+}
+
+bool
+Interval::is_valid() const
+{
+	return !m_maybe_ending || (*m_maybe_ending > m_beginning);
 }
 
 bool
