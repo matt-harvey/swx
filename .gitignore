@@ -1,3 +1,7 @@
 scratch
 swx
 unversioned_notes
+Makefile
+CMakeCache.txt
+CMakeFiles/
+libswx_common.a
