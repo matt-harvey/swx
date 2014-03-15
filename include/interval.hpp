@@ -21,7 +21,14 @@ class Interval
 // special member functions
 public:
 
-	explicit Interval(boost::posix_time::ptime const& p_begin);
+	/**
+	 * @param p_begin Time at which the interval begins. Defaults
+	 * to NOW.
+	 */
+	explicit Interval
+	(	boost::posix_time::ptime const& p_begin =
+			boost::posix_time::second_clock::local_time()
+	);
 
 	Interval(Interval const& rhs) = default;
 	Interval(Interval&& rhs) = default;
@@ -33,7 +40,10 @@ public:
 public:
 	
 	/**
-	 * Close the interval at p_end.
+	 * Close the interval.
+	 *
+	 * @param p_end Time at which to close the interval.
+	 * Defaults to NOW.
 	 *
 	 * @throws IntervalException if already closed.
 	 */
@@ -42,7 +52,14 @@ public:
 			boost::posix_time::second_clock::local_time()
 	);
 
+	/**
+	 * @returns \e true iff the Interval is open.
+	 */
 	bool is_open() const;
+
+	/**
+	 * @returns \e true iff the Interval is closed.
+	 */
 	bool is_closed() const;
 
 // member variables
