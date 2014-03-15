@@ -11,6 +11,8 @@ namespace swx
 {
 
 JEWEL_DERIVED_EXCEPTION(IntervalException, jewel::Exception);
+JEWEL_DERIVED_EXCEPTION(IntervalAlreadyClosedException, IntervalException);
+JEWEL_DERIVED_EXCEPTION(InvalidIntervalException, IntervalException);
 
 /**
  * Represent an interval of time. It may be open (still running) or
@@ -22,11 +24,11 @@ class Interval
 public:
 
 	/**
-	 * @param p_begin Time at which the interval begins. Defaults
+	 * @param p_beginning Time at which the interval begins. Defaults
 	 * to NOW.
 	 */
 	explicit Interval
-	(	boost::posix_time::ptime const& p_begin =
+	(	boost::posix_time::ptime const& p_beginning =
 			boost::posix_time::second_clock::local_time()
 	);
 
@@ -45,30 +47,49 @@ public:
 	 * @param p_end Time at which to close the interval.
 	 * Defaults to NOW.
 	 *
-	 * @throws IntervalException if already closed.
+	 * @throws IntervalAlreadyClosedException if already closed.
+	 *
+	 * @throws InvalidIntervalException if p_end is earlier
+	 * than beginning();
 	 */
 	void close
-	(	boost::posix_time::ptime const& p_end =
+	(	boost::posix_time::ptime const& p_ending =
 			boost::posix_time::second_clock::local_time()
 	);
 
 	/**
-	 * @returns \e true iff the Interval is open.
+	 * @returns the starting time of the Interval.
 	 */
-	bool is_open() const;
+	boost::posix_time::ptime beginning() const;
 
 	/**
-	 * @returns \e true iff the Interval is closed.
+	 * @returns a possibly-null boost::optional which contains
+	 * the ending time of the Interval, if it is closed, or else
+	 * is invalid if it is open.
 	 */
-	bool is_closed() const;
+	boost::optional<boost::posix_time::ptime> maybe_ending() const;
 
 // member variables
 private:
-	boost::posix_time::ptime m_begin;
-	boost::optional<boost::posix_time::ptime> m_end;
+	boost::posix_time::ptime m_beginning;
+	boost::optional<boost::posix_time::ptime> m_maybe_ending;
 
 
 };  // class Interval
+
+
+// NON-MEMBER FUNCTIONS
+
+/**
+ * @returns \e true iff the Interval is open.
+ */
+bool is_open(Interval const& p_interval);
+
+/**
+ * @returns \e true iff the Interval is closed.
+ */
+bool is_closed(Interval const& p_interval);
+
 
 }  // namespace swx
 
