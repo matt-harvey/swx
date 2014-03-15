@@ -60,17 +60,6 @@ endif ()
 
 # Find dependencies
 
-find_package (
-	Boost 1.53.0
-	COMPONENTS
-		date_time
-		filesystem
-		locale
-		system
-	REQUIRED
-)
-# find_library (SQLOXX_LIBRARY sqloxx REQUIRED)
-find_library (JEWEL_LIBRARY jewel REQUIRED)
 # find_library (UNIT_TEST_LIBRARY UnitTest++ REQUIRED)
 if (WIN32)
 	set (
@@ -90,29 +79,16 @@ elseif (UNIX)
 		dl
 	)
 endif ()
-#if (SQLOXX_LIBRARY-NOTFOUND)
-#	message ("Could not find Sqloxx library.")
-#endif ()
-if (JEWEL_LIBRARY-NOTFOUND)
-	message ("Could not find Jewel library.")
-endif ()
 #if (UNIT_TEST_LIBRARY-NOTFOUND)
 #	message ("Could not find UnitTest++ - cannot build tests.")
 #endif ()
 
 include_directories(
 	include
-	${JEWEL_INCLUDES}
-	# ${SQLOXX_INCLUDES}
-	${Boost_INCLUDE_DIRS}
-	# ${UNIT_TEST_INCLUDES}
 )
 
 set(
 	libraries
-	${JEWEL_LIBRARY}
-	# ${SQLOXX_LIBRARY}
-	${Boost_LIBRARIES}
 	${extra_libraries}
 )
 
