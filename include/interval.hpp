@@ -32,12 +32,6 @@ public:
 			boost::posix_time::second_clock::local_time()
 	);
 
-	Interval(Interval const& rhs) = default;
-	Interval(Interval&& rhs) = default;
-	Interval& operator=(Interval const& rhs) = default;
-	Interval& operator=(Interval&& rhs) = default;
-	~Interval() = default;
-
 // ordinary member functions
 public:
 	

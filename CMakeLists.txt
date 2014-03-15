@@ -118,6 +118,7 @@ set(
 
 set(
 	common_sources
+	src/activity.cpp
 	src/interval.cpp
 )
 
