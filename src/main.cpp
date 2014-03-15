@@ -1,3 +1,5 @@
+// Copyright 2014 Matthew Harvey
+
 #include <iostream>
 
 using std::cout;
