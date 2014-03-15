@@ -25,10 +25,7 @@ class Activity
 {
 public:
 	
-	explicit Activity
-	(	std::string const& p_name,
-		std::string const& p_description = ""
-	);
+	explicit Activity(std::string const& p_name);
 	
 	/**
 	 * Add another stint of activity to the sequence of
@@ -48,7 +45,6 @@ private:
 	bool is_valid() const;
 
 	std::string m_name;
-	std::string m_description;
 	std::vector<Interval> m_stints;
 
 };  // class Activity

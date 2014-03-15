@@ -12,9 +12,7 @@ using std::string;
 namespace swx
 {
 
-Activity::Activity(string const& p_name, string const& p_description):
-	m_name(p_name),
-	m_description(p_description)
+Activity::Activity(string const& p_name): m_name(p_name)
 {
 	JEWEL_ASSERT (m_stints.empty());
 	JEWEL_ASSERT (is_valid());
