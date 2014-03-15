@@ -120,6 +120,7 @@ set(
 	common_sources
 	src/activity.cpp
 	src/interval.cpp
+	src/time_log.cpp
 )
 
 add_library(swx_common ${common_sources})
