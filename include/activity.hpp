@@ -18,8 +18,8 @@ namespace swx
  */
 class Activity
 {
+// special member functions
 public:
-	
 	explicit Activity(std::string const& p_name);
 	
 	/**
@@ -28,8 +28,8 @@ public:
 	 */
 	void push_stint(Interval const& p_stint);
 
+// member variables
 private:
-	
 	std::string m_name;
 	std::vector<Interval> m_stints;
 

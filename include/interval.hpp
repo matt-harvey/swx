@@ -28,6 +28,7 @@ public:
 		Seconds const& p_duration
 	);
 
+// member variables
 private:
 
 	TimePoint m_beginning;

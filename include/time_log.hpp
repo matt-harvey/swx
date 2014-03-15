@@ -13,6 +13,7 @@ namespace swx
 
 class TimeLog
 {
+// special member functions
 public:
 	TimeLog() = delete;
 	TimeLog(TimeLog const& rhs) = delete;
@@ -21,6 +22,7 @@ public:
 	TimeLog& operator=(TimeLog&& rhs) = delete;
 	~TimeLog() = default;
 
+// member variables
 private:
 	std::vector<Interval> m_intervals;
 
