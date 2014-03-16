@@ -13,6 +13,7 @@
 
 namespace chrono = std::chrono;
 
+using std::mktime;
 using std::localtime;
 using std::runtime_error;
 using std::strftime;
