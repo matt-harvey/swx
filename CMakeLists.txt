@@ -69,6 +69,7 @@ set(
 	common_sources
 	src/activity.cpp
 	src/interval.cpp
+	src/time_conversion.cpp
 	src/time_log.cpp
 )
 

@@ -5,6 +5,7 @@
 #include "time_log.hpp"
 #include "time_point.hpp"
 #include "activity.hpp"
+#include "time_conversion.hpp"
 #include <algorithm>
 #include <cassert>
 #include <chrono>
@@ -15,20 +16,14 @@
 #include <stdexcept>
 #include <string>
 
-#include <iostream>
-
 using std::getline;
-
-#ifndef __GNUC__
-	using std::get_time;
-#endif
-
 using std::ifstream;
 using std::mktime;
 using std::remove;
 using std::runtime_error;
 using std::string;
 using std::stringstream;
+using std::tm;
 
 // TODO Need better error reporting on parsing error.
 
@@ -39,9 +34,6 @@ namespace swx
 
 namespace
 {
-	string trim(string p_string);
-	TimePoint time_stamp_to_point(string const& p_time_stamp);
-
 	string trim(string p_string)
 	{
 		stringstream ss;
@@ -49,32 +41,6 @@ namespace
 		string ret;
 		ss >> p_string;
 		return p_string;
-	}
-
-	TimePoint time_stamp_to_point(string const& p_time_stamp)
-	{
-		tm tm;
-		char const format[] = "%Y-%m-%d %H:%M:%S";  // don't make this static - caused odd bug with strptime
-		bool parse_error = false;
-#		ifdef __GNUC__
-			if (strptime(p_time_stamp.c_str(), format, &tm) == nullptr)
-			{
-				parse_error = true;
-			}
-#		else
-			stringstream ss;
-			ss << p_time_stamp;
-			ss >> get_time(&tm, format);
-			if (!ss)
-			{
-				parse_error = true;
-			}
-#		endif
-		if (parse_error)
-		{
-			throw runtime_error("Could not parse timestamp.");
-		}
-		return chrono::system_clock::from_time_t(mktime(&tm));
 	}
 
 }  // end anonymous namespace
