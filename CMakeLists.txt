@@ -14,24 +14,6 @@ set (version_major 1)
 set (version_minor 0)
 set (version_patch 0)
 
-# Custom configuration options
-
-option (
-	ENABLE_LOGGING
-	"Enable logging (ON/OFF)?"
-	ON
-)
-option (
-	ENABLE_ASSERTION_LOGGING
-	"Enable logging of assertion failures (ON/OFF)?"
-	ON
-)
-option (
-	ENABLE_EXCEPTION_LOGGING
-	"Enable logging of thrown exceptions (ON/OFF)?"
-	ON
-)
-
 # Definitions to be passed to the compiler
 
 # NOTE Adding definitions via "add_definitions" can cause problems
@@ -45,15 +27,6 @@ add_definitions (
 	-DSWX_VERSION_MINOR=${version_minor}
 	-DSWX_VERSION_PATCH=${version_patch}
 )
-if (ENABLE_LOGGING)
-	add_definitions (-DJEWEL_ENABLE_LOGGING)
-endif ()
-if (ENABLE_ASSERTION_LOGGING)
-	add_definitions (-DJEWEL_ENABLE_ASSERTION_LOGGING)
-endif ()
-if (ENABLE_EXCEPTION_LOGGING)
-	add_definitions (-DJEWEL_ENABLE_EXCEPTION_LOGGING)
-endif ()
 if (CMAKE_COMPILER_IS_GNUCXX)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x")
 endif ()
@@ -97,6 +70,7 @@ set(
 	src/activity.cpp
 	src/interval.cpp
 	src/time_log.cpp
+	src/time_log_entry.cpp
 )
 
 add_library(swx_common ${common_sources})
