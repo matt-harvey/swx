@@ -26,7 +26,15 @@ add_definitions (
 	-DSWX_VERSION_MAJOR=${version_major}
 	-DSWX_VERSION_MINOR=${version_minor}
 	-DSWX_VERSION_PATCH=${version_patch}
+
+	# Controls format in which dates are stored in data file.
+	# If you change this, remember also to change SWX_FORMATTED_BUF_LEN
+	# accordingly.
 	-DSWX_FORMAT_STRING="%Y-%m-%d %H:%M:%S"
+
+	# Must be at least 1 greater than the length of the longest
+	# string that could result from formatting a date using
+	# SWX_FORMAT_STRING
 	-DSWX_FORMATTED_BUF_LEN=20
 )
 if (CMAKE_COMPILER_IS_GNUCXX)
