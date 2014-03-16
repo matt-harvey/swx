@@ -26,13 +26,14 @@ using std::tm;
 	using std::get_time;
 #endif
 
+#define SWX_FORMAT_STRING "%Y-%m-%d %H:%M:%S"
 namespace swx
 {
 
 TimePoint time_stamp_to_point(string const& p_time_stamp)
 {
 	// don't make this static - caused odd bug with strptime
-	char const format[] = "%Y-%m-%d %H:%M:%S";
+	char const format[] = SWX_FORMAT_STRING;
 
 	tm tm;
 	bool parse_error = false;
@@ -60,7 +61,7 @@ TimePoint time_stamp_to_point(string const& p_time_stamp)
 string time_point_to_stamp(TimePoint const& p_time_point)
 {
 	// don't make this static - caused odd bug with strptime
-	char const format[] = "%Y-%m-%d %H:%M:%S";  // TODO Code repetition!
+	char const format[] = SWX_FORMAT_STRING;
 	size_t const len = 4 + 1 + 2 + 1 + 2 + 1 + 2 + 1 + 2 + 1 + 2 + 1;
 	time_t const time_time_t = chrono::system_clock::to_time_t(p_time_point);
 	auto const time_tmp = localtime(&time_time_t);
