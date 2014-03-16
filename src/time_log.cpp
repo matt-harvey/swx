@@ -15,6 +15,8 @@
 #include <stdexcept>
 #include <string>
 
+#include <iostream>
+
 using std::getline;
 
 #ifndef __GNUC__
@@ -27,6 +29,8 @@ using std::remove;
 using std::runtime_error;
 using std::string;
 using std::stringstream;
+
+// TODO Need better error reporting on parsing error.
 
 namespace chrono = std::chrono;
 
@@ -50,17 +54,17 @@ namespace
 	TimePoint time_stamp_to_point(string const& p_time_stamp)
 	{
 		tm tm;
-		static string const format("%Y-%m-%d %H:%M:%S");
+		char const format[] = "%Y-%m-%d %H:%M:%S";  // don't make this static - caused odd bug with strptime
 		bool parse_error = false;
 #		ifdef __GNUC__
-			if (strptime(p_time_stamp.c_str(), format.c_str(), &tm) == nullptr)
+			if (strptime(p_time_stamp.c_str(), format, &tm) == nullptr)
 			{
 				parse_error = true;
 			}
 #		else
 			stringstream ss;
 			ss << p_time_stamp;
-			ss >> get_time(&tm, format.c_str());
+			ss >> get_time(&tm, format);
 			if (!ss)
 			{
 				parse_error = true;
@@ -124,7 +128,8 @@ TimeLog::register_entry(string const& p_entry_string)
 	string const activity_name = trim(string(it, p_entry_string.end()));
 	Entry entry;
 	entry.activity_id = register_activity(activity_name);
-	entry.time_point = time_stamp_to_point(time_stamp);
+	auto const time_point = time_stamp_to_point(time_stamp);
+	entry.time_point = time_point;
 	m_entries.push_back(entry);
 	if (m_entries.size() >= 2)
 	{
@@ -133,7 +138,6 @@ TimeLog::register_entry(string const& p_entry_string)
 		auto const& previous_entry = m_entries[m_entries.size() - 2];
 		auto const previous_activity_id = previous_entry.activity_id;
 		auto const previous_time_point = previous_entry.time_point;
-		auto const time_point = entry.time_point;
 		if (time_point < previous_time_point)
 		{
 			throw std::runtime_error("Time points out of order.");
