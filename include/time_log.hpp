@@ -5,7 +5,7 @@
 #ifndef GUARD_time_log_hpp_6591341885082117
 #define GUARD_time_log_hpp_6591341885082117
 
-#include "interval.hpp"
+#include "time_log_entry.hpp"
 #include <vector>
 
 namespace swx
@@ -24,7 +24,7 @@ public:
 
 // member variables
 private:
-	std::vector<Interval> m_intervals;
+	std::vector<TimeLogEntry> m_entries;
 
 };  // class TimeLog
 
