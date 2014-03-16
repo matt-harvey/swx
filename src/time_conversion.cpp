@@ -26,7 +26,6 @@ using std::tm;
 	using std::get_time;
 #endif
 
-#define SWX_FORMAT_STRING "%Y-%m-%d %H:%M:%S"
 namespace swx
 {
 
@@ -37,12 +36,12 @@ TimePoint time_stamp_to_point(string const& p_time_stamp)
 
 	tm tm;
 	bool parse_error = false;
-#		ifdef __GNUC__
+#	ifdef __GNUC__
 		if (strptime(p_time_stamp.c_str(), format, &tm) == nullptr)
 		{
 			parse_error = true;
 		}
-#		else
+#	else
 		stringstream ss;
 		ss << p_time_stamp;
 		ss >> get_time(&tm, format);
@@ -50,7 +49,7 @@ TimePoint time_stamp_to_point(string const& p_time_stamp)
 		{
 			parse_error = true;
 		}
-#		endif
+#	endif
 	if (parse_error)
 	{
 		throw runtime_error("Could not parse timestamp.");
@@ -62,11 +61,10 @@ string time_point_to_stamp(TimePoint const& p_time_point)
 {
 	// don't make this static - caused odd bug with strptime
 	char const format[] = SWX_FORMAT_STRING;
-	size_t const len = 4 + 1 + 2 + 1 + 2 + 1 + 2 + 1 + 2 + 1 + 2 + 1;
 	time_t const time_time_t = chrono::system_clock::to_time_t(p_time_point);
 	auto const time_tmp = localtime(&time_time_t);
-	char buf[len];
-	if (strftime(buf, len, format, time_tmp) == 0)
+	char buf[SWX_FORMATTED_BUF_LEN];
+	if (strftime(buf, SWX_FORMATTED_BUF_LEN, format, time_tmp) == 0)
 	{
 		throw runtime_error("Error formatting TimePoint.");
 	}
