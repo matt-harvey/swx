@@ -28,9 +28,12 @@ public:
 		Seconds const& p_duration
 	);
 
+// ordinary member functions
+public:
+	Seconds duration() const;
+
 // member variables
 private:
-
 	TimePoint m_beginning;
 	Seconds m_duration;
 

@@ -1,6 +1,7 @@
 // Copyright 2014 Matthew Harvey
 
 #include "interval.hpp"
+#include "seconds.hpp"
 #include "time_point.hpp"
 #include <cassert>
 
@@ -14,6 +15,12 @@ Interval::Interval
 	m_beginning(p_beginning),
 	m_duration(p_duration)
 {
+}
+
+Seconds
+Interval::duration() const
+{
+	return m_duration;
 }
 
 }  // namespace swx

@@ -6,6 +6,7 @@
 #define GUARD_activity_hpp_8376698409382579
 
 #include "interval.hpp"
+#include "seconds.hpp"
 #include <string>
 #include <vector>
 
@@ -32,6 +33,8 @@ public:
 	 * stints comprising work on this activity.
 	 */
 	void push_stint(Interval const& p_stint);
+
+	Seconds duration() const;
 
 // member variables
 private:
