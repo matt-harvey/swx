@@ -22,6 +22,11 @@ class Activity
 public:
 	explicit Activity(std::string const& p_name);
 	
+// ordinary member functions
+public:
+
+	std::string name() const;
+
 	/**
 	 * Add another stint of activity to the sequence of
 	 * stints comprising work on this activity.

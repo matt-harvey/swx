@@ -7,7 +7,7 @@
 
 #include "activity.hpp"
 #include "activity_id.hpp"
-#include "time_log_entry.hpp"
+#include "time_point.hpp"
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -17,8 +17,19 @@ namespace swx
 
 class TimeLog
 {
+// nested types and typedefs
+private:
+
+	struct Entry
+	{
+		ActivityId activity_id;
+		TimePoint time_point;
+	};
+
 // special member functions
 public:
+	explicit TimeLog(std::string const& p_filepath);
+
 	TimeLog() = delete;
 	TimeLog(TimeLog const& rhs) = delete;
 	TimeLog(TimeLog&& rhs) = delete;
@@ -26,9 +37,15 @@ public:
 	TimeLog& operator=(TimeLog&& rhs) = delete;
 	~TimeLog() = default;
 
+/// ordinary member functions
+private:
+	void load(std::string const& p_filepath);
+	ActivityId register_activity(std::string const& p_activity_name);
+	void register_entry(std::string const& p_entry_string);
+
 // member variables
 private:
-	std::vector<TimeLogEntry> m_entries;
+	std::vector<Entry> m_entries;
 	std::vector<Activity> m_activities;
 	std::unordered_map<std::string, ActivityId> m_activity_map;
 

@@ -70,7 +70,6 @@ set(
 	src/activity.cpp
 	src/interval.cpp
 	src/time_log.cpp
-	src/time_log_entry.cpp
 )
 
 add_library(swx_common ${common_sources})

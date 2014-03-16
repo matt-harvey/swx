@@ -18,6 +18,12 @@ Activity::Activity(string const& p_name): m_name(p_name)
 	assert (m_stints.empty());
 }
 
+string
+Activity::name() const
+{
+	return m_name;
+}
+
 void
 Activity::push_stint(Interval const& p_stint)
 {
