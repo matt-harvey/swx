@@ -5,18 +5,26 @@
 #ifndef GUARD_command_processor_hpp_08439188501070807
 #define GUARD_command_processor_hpp_08439188501070807
 
+#include <string>
+#include <vector>
+
 namespace swx
 {
 
 class CommandProcessor
 {
 public:
-	CommandProcessor() = default;
+	CommandProcessor();
 	CommandProcessor(CommandProcessor const& rhs) = delete;
 	CommandProcessor(CommandProcessor&& rhs) = delete;
 	CommandProcessor& operator=(CommandProcessor const& rhs) = delete;
 	CommandProcessor& operator=(CommandProcessor&& rhs) = delete;
-	~CommandProcessor() = default;
+	virtual ~CommandProcessor();
+
+	void process(std::vector<std::string> const& p_args);
+
+private:
+	virtual void do_process(std::vector<std::string> const& p_args) = 0;
 
 };  // class CommandProcessor
 
