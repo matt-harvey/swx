@@ -1,15 +1,36 @@
 // Copyright 2014 Matthew Harvey
 
+#include "command_router.hpp"
 #include "time_conversion.hpp"
 #include "time_point.hpp"
+#include <cassert>
 #include <iostream>
+#include <string>
+#include <vector>
 
+using std::cerr;
 using std::cout;
 using std::endl;
+using std::string;
+using std::vector;
+using swx::CommandRouter;
 
-int main()
+int main(int argc, char** argv)
 {
-	swx::TimePoint const tp = swx::time_stamp_to_point("2014-01-03 23:09:12");
-	cout << swx::time_point_to_stamp(tp) << endl;
+	if (argc < 2)
+	{
+		// TODO Make this better.
+		cerr << "Subcommand not provided." << endl;
+		return 1;
+	}
+	assert (argc >= 2);
+	vector<string> args;
+	for (int i = 1; i != argc; ++i)
+	{
+		string const arg(argv[i]);
+		args.push_back(arg);
+	}
+	CommandRouter router;
+	router.process_command(argv[1], args);
 	return 0;
 }

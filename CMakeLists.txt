@@ -84,6 +84,7 @@ set(
 	src/interval.cpp
 	src/time_conversion.cpp
 	src/time_log.cpp
+	src/version_command_processor.cpp
 )
 
 add_library(swx_common ${common_sources})

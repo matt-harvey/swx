@@ -9,7 +9,7 @@
 #include <memory>
 #include <ostream>
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <vector>
 
 namespace swx
@@ -20,10 +20,10 @@ class CommandRouter
 // nested types
 private:
 	typedef
-		std::unique_ptr<CommandProcessor>
+		std::shared_ptr<CommandProcessor>
 		CommandProcessorPtr;
 	typedef
-		std::unordered_map<std::string, CommandProcessorPtr>
+		std::map<std::string, CommandProcessorPtr>
 		CommandProcessorMap;
 
 // special member functions
@@ -40,15 +40,24 @@ private:
 
 	void populate_command_processor_map();
 
-	void process_command
+public:
+
+	int process_command
 	(	std::string const& p_command,
 		std::vector<std::string> const& p_args
 	) const;
 
-	void process_unrecognized_command(std::string const& p_command) const;
+private:
+
+	int process_unrecognized_command(std::string const& p_command) const;
 
 	std::ostream& ordinary_ostream() const;
 	std::ostream& error_ostream() const;
+
+	void create_command
+	(	std::string const& p_alias,
+		CommandProcessorPtr const& p_cpp
+	);
 
 // member variables
 private:

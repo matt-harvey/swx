@@ -24,7 +24,7 @@ CommandProcessor::~CommandProcessor()
 {
 }
 
-void
+int
 CommandProcessor::process
 (	vector<string> const& p_args,
 	ostream& p_ordinary_ostream,
@@ -35,15 +35,19 @@ CommandProcessor::process
 	if (error_messages.empty())
 	{
 		do_process(p_args, p_ordinary_ostream);
+		return 0;  // TODO Should be facility for processing errors here too.
 	}
-	else
+	for (auto const& message: error_messages)
 	{
-		for (auto const& message: error_messages)
-		{
-			p_error_ostream << message << endl;
-		}
+		p_error_ostream << message << endl;
 	}
-	return;
+	return error_messages.size();
+}
+
+string
+CommandProcessor::help_string(string const& p_command_invocation) const
+{
+	return do_provide_help_string(p_command_invocation);
 }
 
 }  // namespace swx

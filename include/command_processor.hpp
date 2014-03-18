@@ -15,7 +15,7 @@ namespace swx
 class CommandProcessor
 {
 // nested types and typedefs
-private:
+protected:
 	typedef std::vector<std::string> Arguments;
 	typedef std::vector<std::string> ErrorMessages;
 
@@ -30,21 +30,29 @@ public:
 
 // ordinary member functions
 public:
-	void process
+	int process
 	(	std::vector<std::string> const& p_args,
 		std::ostream& p_ordinary_ostream,
 		std::ostream& p_error_ostream
 	);
 
+	std::string help_string
+	(	std::string const& p_command_invocation
+	) const;
+
 // virtual functions
 private:
 
-	virtual void do_process
+	virtual int do_process
 	(	Arguments const& p_args,
 		std::ostream& p_ordinary_ostream
 	) = 0;
 
 	virtual ErrorMessages do_validate(Arguments const& p_args) = 0;
+	
+	virtual std::string do_provide_help_string
+	(	std::string const& p_command_invocation
+	) const = 0;
 
 };  // class CommandProcessor
 
