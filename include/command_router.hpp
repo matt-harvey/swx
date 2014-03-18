@@ -7,6 +7,7 @@
 
 #include "command_processor.hpp"
 #include <memory>
+#include <ostream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -45,6 +46,9 @@ private:
 	) const;
 
 	void process_unrecognized_command(std::string const& p_command) const;
+
+	std::ostream& ordinary_ostream() const;
+	std::ostream& error_ostream() const;
 
 // member variables
 private:

@@ -5,9 +5,15 @@
 #include "command_router.hpp"
 #include "command_processor.hpp"
 #include <cassert>
+#include <iostream>
+#include <ostream>
 #include <string>
 #include <vector>
 
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::ostream;
 using std::string;
 using std::vector;
 
@@ -45,7 +51,7 @@ CommandRouter::process_command
 	else
 	{
 		assert (it->second);
-		it->second->process(p_args);
+		it->second->process(p_args, ordinary_ostream(), error_ostream());
 	}
 	return;
 }
@@ -53,7 +59,20 @@ CommandRouter::process_command
 void
 CommandRouter::process_unrecognized_command(string const& p_command) const
 {
-	// TODO	
+	error_ostream() << "Unrecognized subcommand: " << p_command << endl;
+	return;
+}
+
+ostream&
+CommandRouter::ordinary_ostream() const
+{
+	return cout;	
+}
+
+ostream&
+CommandRouter::error_ostream() const
+{
+	return cerr;
 }
 
 }  // namespace swx
