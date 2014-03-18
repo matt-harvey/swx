@@ -80,6 +80,7 @@ set(
 	src/activity.cpp
 	src/command_processor.cpp
 	src/command_router.cpp
+	src/info.cpp
 	src/interval.cpp
 	src/time_conversion.cpp
 	src/time_log.cpp
