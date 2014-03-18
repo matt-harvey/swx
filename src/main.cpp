@@ -16,8 +16,8 @@ using std::vector;
 using swx::CommandRouter;
 
 // TODO Interaction between CommandRouter,
-// CommandProcessor and derived of the latter, is
-// too messy, especially in regards to error handling.
+// CommandProcessor and derived of the latter, seems
+// messy, especially in regards to error handling.
 
 int main(int argc, char** argv)
 {

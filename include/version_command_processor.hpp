@@ -25,7 +25,7 @@ public:
 
 // inherited virtual functions
 private:
-	virtual int do_process
+	virtual ErrorMessages do_process
 	(	Arguments const& p_args,
 		std::ostream& p_ordinary_ostream
 	) override;

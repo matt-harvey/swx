@@ -24,7 +24,7 @@ VersionCommandProcessor::~VersionCommandProcessor()
 {
 }
 
-int
+CommandProcessor::ErrorMessages
 VersionCommandProcessor::do_process
 (	Arguments const& p_args,
 	ostream& p_ordinary_ostream
@@ -35,7 +35,7 @@ VersionCommandProcessor::do_process
 	                   << " version "
 					   << Info::version()
 					   << endl;
-	return 0;
+	return ErrorMessages();
 }
 
 CommandProcessor::ErrorMessages

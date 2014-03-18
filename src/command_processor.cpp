@@ -31,17 +31,16 @@ CommandProcessor::process
 	ostream& p_error_ostream
 )
 {
-	auto const error_messages = do_validate(p_args);
+	ErrorMessages error_messages = do_validate(p_args);
 	if (error_messages.empty())
 	{
-		do_process(p_args, p_ordinary_ostream);
-		return 0;  // TODO Should be facility for processing errors here too.
+		error_messages = do_process(p_args, p_ordinary_ostream);
 	}
 	for (auto const& message: error_messages)
 	{
 		p_error_ostream << message << endl;
 	}
-	return error_messages.size();
+	return error_messages.size();  // TODO Clamp to INT_MAX?
 }
 
 string
