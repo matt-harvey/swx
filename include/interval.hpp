@@ -19,10 +19,6 @@ class Interval
 // special member functions
 public:
 
-	/**
-	 * @param p_beginning Time at which the interval begins. Defaults
-	 * to NOW.
-	 */
 	explicit Interval
 	(	TimePoint const& p_beginning,
 		Seconds const& p_duration

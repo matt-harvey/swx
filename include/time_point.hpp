@@ -15,6 +15,18 @@ namespace swx
  */
 typedef std::chrono::time_point<std::chrono::system_clock> TimePoint;
 
+/**
+ * Convenience function.
+ */
+TimePoint now();
+
+// INLINE FUNCTION IMPLEMENTATIONS
+inline
+TimePoint now()
+{
+	return std::chrono::system_clock::now();
+}
+
 }  // namespace swx
 
 #endif  // GUARD_time_point_hpp_285827964211734

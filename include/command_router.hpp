@@ -6,6 +6,7 @@
 #define GUARD_command_router_hpp_6901861572126794
 
 #include "command_processor.hpp"
+#include "time_log.hpp"
 #include <memory>
 #include <ostream>
 #include <string>
@@ -28,7 +29,7 @@ private:
 
 // special member functions
 public:
-	CommandRouter();
+	explicit CommandRouter(TimeLog& p_time_log);
 	CommandRouter(CommandRouter const& rhs) = delete;
 	CommandRouter(CommandRouter&& rhs) = delete;
 	CommandRouter& operator=(CommandRouter const& rhs) = delete;
@@ -61,6 +62,7 @@ private:
 
 // member variables
 private:
+	TimeLog& m_time_log;
 	CommandProcessorMap m_command_processor_map;
 
 };  // class CommandRouter

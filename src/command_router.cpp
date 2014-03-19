@@ -4,6 +4,8 @@
 
 #include "command_router.hpp"
 #include "command_processor.hpp"
+#include "switch_command_processor.hpp"
+#include "time_log.hpp"
 #include "version_command_processor.hpp"
 #include <cassert>
 #include <iostream>
@@ -21,7 +23,7 @@ using std::vector;
 namespace swx
 {
 
-CommandRouter::CommandRouter()
+CommandRouter::CommandRouter(TimeLog& p_time_log): m_time_log(p_time_log)
 {
 	populate_command_processor_map();	
 #	ifndef NDEBUG
@@ -38,6 +40,14 @@ CommandRouter::populate_command_processor_map()
 	CommandProcessorPtr version_processor(new VersionCommandProcessor);
 	create_command("version", version_processor);	
 	create_command("v", version_processor);	
+
+	CommandProcessorPtr switch_processor
+	(	new SwitchCommandProcessor(m_time_log)
+	);
+	create_command("switch", switch_processor);
+	create_command("s", switch_processor);
+		
+	return;
 }
 
 int

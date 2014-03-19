@@ -2,6 +2,7 @@
 
 #include "command_router.hpp"
 #include "time_conversion.hpp"
+#include "time_log.hpp"
 #include "time_point.hpp"
 #include <cassert>
 #include <iostream>
@@ -14,6 +15,7 @@ using std::endl;
 using std::string;
 using std::vector;
 using swx::CommandRouter;
+using swx::TimeLog;
 
 // TODO Interaction between CommandRouter,
 // CommandProcessor and derived of the latter, seems
@@ -29,12 +31,14 @@ int main(int argc, char** argv)
 	}
 	assert (argc >= 2);
 	vector<string> args;
-	for (int i = 1; i != argc; ++i)
+	for (int i = 2; i != argc; ++i)
 	{
 		string const arg(argv[i]);
 		args.push_back(arg);
 	}
-	CommandRouter router;
+	string const path_to_time_log("time_log.swx");  // TODO Change this.
+	TimeLog time_log(path_to_time_log);
+	CommandRouter router(time_log);
 	router.process_command(argv[1], args);
 	return 0;
 }
