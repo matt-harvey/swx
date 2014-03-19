@@ -13,7 +13,7 @@ namespace swx
 {
 
 /**
- * TODO Find a more unified way to generate the help messages for
+ * @todo Find a more unified way to generate the help messages for
  * each subclass (to ensure they're all in the same format).
  */
 class CommandProcessor
