@@ -66,6 +66,7 @@ TimeLog::append_entry
 	TimePoint const& p_time_point
 )
 {
+	// TODO Make this atomic?
 	mark_cache_as_stale();
 	ofstream outfile(m_filepath.c_str(), ios::app);
 	outfile << time_point_to_stamp(p_time_point)
