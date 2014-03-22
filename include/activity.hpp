@@ -34,6 +34,8 @@ public:
 	 */
 	void push_stint(Interval const& p_stint);
 
+	std::vector<Interval> const& stints() const;
+
 	Seconds duration() const;
 
 // member variables

@@ -76,15 +76,16 @@ TimeLog::append_entry
 	return;
 }
 
-TimeLog::Activities::const_iterator
-TimeLog::get_activity(string const& p_activity_name) const
+Activity*
+TimeLog::get_activity(string const& p_activity_name)
 {
+	load();
 	auto const it = m_activity_map.find(p_activity_name);
 	if (it == m_activity_map.end())
 	{
-		return m_activities.end();
+		return nullptr;
 	}
-	return m_activities.begin() + it->second;
+	return &(m_activities.at(it->second));
 }
 
 void

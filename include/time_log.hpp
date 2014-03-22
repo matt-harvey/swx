@@ -47,9 +47,10 @@ public:
 	(	Activity const& p_activity,
 		TimePoint const& p_time_point
 	);
-	Activities::const_iterator get_activity
+	// returns a non-owning ptr
+	Activity* get_activity
 	(	std::string const& p_activity_name
-	) const;
+	);
 private:
 	void clear_cache();
 	void mark_cache_as_stale();

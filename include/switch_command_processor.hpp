@@ -31,8 +31,6 @@ private:
 		std::ostream& p_ordinary_ostream
 	) override;
 
-	virtual ErrorMessages do_validate(Arguments const& p_args) override;
-
 	std::string do_provide_help_string
 	(	std::string const& p_command_invocation
 	) const override;

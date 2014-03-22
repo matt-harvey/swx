@@ -43,6 +43,13 @@ CommandProcessor::process
 	return error_messages.size();  // TODO Clamp to INT_MAX?
 }
 
+CommandProcessor::ErrorMessages
+CommandProcessor::do_validate(Arguments const& p_args)
+{
+	(void)p_args;  // ignore param.
+	return ErrorMessages();
+}
+
 string
 CommandProcessor::help_string(string const& p_command_invocation) const
 {

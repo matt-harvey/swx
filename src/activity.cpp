@@ -10,6 +10,7 @@
 #include <vector>
 
 using std::string;
+using std::vector;
 
 namespace swx
 {
@@ -30,6 +31,12 @@ Activity::push_stint(Interval const& p_stint)
 {
 	m_stints.push_back(p_stint);
 	return;
+}
+
+vector<Interval> const&
+Activity::stints() const
+{
+	return m_stints;
 }
 
 Seconds

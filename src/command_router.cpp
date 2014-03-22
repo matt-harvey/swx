@@ -3,6 +3,7 @@
  */
 
 #include "command_router.hpp"
+#include "activity_command_processor.hpp"
 #include "command_processor.hpp"
 #include "switch_command_processor.hpp"
 #include "time_log.hpp"
@@ -39,13 +40,16 @@ CommandRouter::populate_command_processor_map()
 {
 	CommandProcessorPtr version_processor(new VersionCommandProcessor);
 	create_command("version", version_processor);	
-	create_command("v", version_processor);	
 
 	CommandProcessorPtr switch_processor
 	(	new SwitchCommandProcessor(m_time_log)
 	);
 	create_command("switch", switch_processor);
-	create_command("s", switch_processor);
+
+	CommandProcessorPtr activity_processor
+	(	new ActivityCommandProcessor(m_time_log)
+	);
+	create_command("print", activity_processor);
 		
 	return;
 }

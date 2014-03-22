@@ -4,6 +4,7 @@
 
 #include "switch_command_processor.hpp"
 #include "command_processor.hpp"
+#include "squish.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
 #include <iostream>
@@ -34,27 +35,9 @@ SwitchCommandProcessor::do_process
 )
 {
 	(void)p_ordinary_ostream;  // ignore param.
-	ostringstream oss;
-	if (!p_args.empty())
-	{
-		auto it = p_args.begin();
-		oss << *it;
-		++it;
-		for ( ; it != p_args.end(); ++it)
-		{
-			oss << ' ' << *it;
-		}
-	}
 	TimePoint const time_point = now();
-	Activity const activity(oss.str());
+	Activity const activity(squish(p_args.begin(), p_args.end()));
 	m_time_log.append_entry(activity, time_point);
-	return ErrorMessages();
-}
-
-CommandProcessor::ErrorMessages
-SwitchCommandProcessor::do_validate(Arguments const& p_args)
-{
-	(void)p_args;  // ignore param.
 	return ErrorMessages();
 }
 
@@ -72,4 +55,5 @@ SwitchCommandProcessor::do_provide_help_string
 	oss << p_command_invocation << "\nStop the stopwatch.";
 	return oss.str();
 }
+
 }  // namespace swx

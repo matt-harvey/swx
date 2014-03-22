@@ -52,7 +52,7 @@ private:
 		std::ostream& p_ordinary_ostream
 	) = 0;
 
-	virtual ErrorMessages do_validate(Arguments const& p_args) = 0;
+	virtual ErrorMessages do_validate(Arguments const& p_args);
 	
 	virtual std::string do_provide_help_string
 	(	std::string const& p_command_invocation
