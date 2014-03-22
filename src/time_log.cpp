@@ -10,9 +10,11 @@
 #include <algorithm>
 #include <cassert>
 #include <chrono>
+#include <cstring>
 #include <ctime>
 #include <fstream>
 #include <iomanip>
+#include <iostream>  // TEMP for logging
 #include <ios>
 #include <iostream>
 #include <sstream>
@@ -22,6 +24,7 @@
 using std::endl;
 using std::getline;
 using std::ifstream;
+using std::isspace;
 using std::ios;
 using std::mktime;
 using std::ofstream;
@@ -40,13 +43,22 @@ namespace swx
 
 namespace
 {
-	string trim(string p_string)
+	string trim(string const& p_string)
 	{
-		stringstream ss;
-		ss << p_string;
-		string ret;
-		ss >> p_string;
-		return p_string;
+		auto it = p_string.begin();
+		for ( ; it != p_string.end() && isspace(*it); ++it)
+		{
+		}
+		string ret(it, p_string.end());
+		it = ret.end();
+		if (!ret.empty()) --it;
+		string::size_type num_to_pop = 0;
+		for ( ; it >= p_string.begin() && isspace(*it); --it, ++num_to_pop)
+		{
+		}
+		assert (num_to_pop <= ret.size());
+		ret.resize(ret.size() - num_to_pop);
+		return ret;
 	}
 
 }  // end anonymous namespace
