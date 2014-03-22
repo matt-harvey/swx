@@ -23,4 +23,16 @@ Interval::duration() const
 	return m_duration;
 }
 
+TimePoint
+Interval::beginning() const
+{
+	return m_beginning;
+}
+
+TimePoint
+Interval::ending() const
+{
+	return beginning() + duration();
+}
+
 }  // namespace swx

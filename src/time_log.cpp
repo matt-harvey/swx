@@ -76,6 +76,17 @@ TimeLog::append_entry
 	return;
 }
 
+TimeLog::Activities::const_iterator
+TimeLog::get_activity(string const& p_activity_name) const
+{
+	auto const it = m_activity_map.find(p_activity_name);
+	if (it == m_activity_map.end())
+	{
+		return m_activities.end();
+	}
+	return m_activities.begin() + it->second;
+}
+
 void
 TimeLog::clear_cache()
 {
@@ -92,10 +103,10 @@ TimeLog::mark_cache_as_stale()
 }
 
 void
-TimeLog::load(string const& p_filepath)
+TimeLog::load()
 {
 	clear_cache();
-	ifstream infile(p_filepath.c_str());
+	ifstream infile(m_filepath.c_str());
 	string line;
 	while (getline(infile, line))
 	{
@@ -106,7 +117,7 @@ TimeLog::load(string const& p_filepath)
 }
 
 ActivityId
-TimeLog::load_activity(string const& p_activity_name)
+TimeLog::register_activity(string const& p_activity_name)
 {
 	auto const it = m_activity_map.find(p_activity_name);
 	if (it == m_activity_map.end())
@@ -132,10 +143,9 @@ TimeLog::load_entry(string const& p_entry_string)
 	auto it = p_entry_string.begin() + time_format.size();
 	string const time_stamp(p_entry_string.begin(), it);
 	string const activity_name = trim(string(it, p_entry_string.end()));
-	Entry entry;
-	entry.activity_id = load_activity(activity_name);
+	auto const activity_id = register_activity(activity_name);
 	auto const time_point = time_stamp_to_point(time_stamp);
-	entry.time_point = time_point;
+	Entry entry(activity_id, time_point);
 	m_entries.push_back(entry);
 	if (m_entries.size() >= 2)
 	{
@@ -156,6 +166,12 @@ TimeLog::load_entry(string const& p_entry_string)
 		previous_activity.push_stint(interval);
 	}
 	return;
+}
+
+TimeLog::Entry::Entry(ActivityId p_activity_id, TimePoint const& p_time_point):
+	activity_id(p_activity_id),
+	time_point(p_time_point)
+{
 }
 
 }  // namespace swx

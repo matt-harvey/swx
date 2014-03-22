@@ -9,7 +9,7 @@
 #include "activity_id.hpp"
 #include "time_point.hpp"
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <vector>
 
 namespace swx
@@ -19,12 +19,16 @@ class TimeLog
 {
 // nested types and typedefs
 private:
-
 	struct Entry
 	{
+		Entry(ActivityId p_activity_id, TimePoint const& p_time_point);
 		ActivityId activity_id;
 		TimePoint time_point;
 	};
+public:
+	typedef std::vector<Activity> Activities;
+private:
+	typedef std::map<std::string, ActivityId> ActivityMap;
 
 // special member functions
 public:
@@ -43,11 +47,14 @@ public:
 	(	Activity const& p_activity,
 		TimePoint const& p_time_point
 	);
+	Activities::const_iterator get_activity
+	(	std::string const& p_activity_name
+	) const;
 private:
 	void clear_cache();
 	void mark_cache_as_stale();
-	void load(std::string const& p_filepath);
-	ActivityId load_activity(std::string const& p_activity_name);
+	void load();
+	ActivityId register_activity(std::string const& p_activity_name);
 	void load_entry(std::string const& p_entry_string);
 
 // member variables
@@ -55,8 +62,8 @@ private:
 	bool m_is_loaded;
 	std::string m_filepath;
 	std::vector<Entry> m_entries;
-	std::vector<Activity> m_activities;
-	std::unordered_map<std::string, ActivityId> m_activity_map;
+	Activities m_activities;
+	ActivityMap m_activity_map;
 
 };  // class TimeLog
 

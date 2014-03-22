@@ -27,6 +27,8 @@ public:
 // ordinary member functions
 public:
 	Seconds duration() const;
+	TimePoint beginning() const;
+	TimePoint ending() const;
 
 // member variables
 private:
