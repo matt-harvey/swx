@@ -37,6 +37,7 @@ add_definitions (
 	# SWX_FORMAT_STRING
 	-DSWX_FORMATTED_BUF_LEN=20
 )
+
 if (CMAKE_COMPILER_IS_GNUCXX)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x")
 endif ()
@@ -84,6 +85,7 @@ set(
 	src/day.cpp
 	src/info.cpp
 	src/interval.cpp
+	src/round.cpp
 	src/switch_command_processor.cpp
 	src/time_conversion.cpp
 	src/time_log.cpp
