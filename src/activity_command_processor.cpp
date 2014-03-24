@@ -4,7 +4,7 @@
 
 #include "activity_command_processor.hpp"
 #include "interval.hpp"
-#include "squish.hpp"
+#include "string_utilities.hpp"
 #include "time_log.hpp"
 #include <ostream>
 #include <string>

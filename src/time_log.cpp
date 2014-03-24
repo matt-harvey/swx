@@ -3,9 +3,10 @@
  */
 
 #include "time_log.hpp"
+#include "activity.hpp"
+#include "string_utilities.hpp"
 #include "time_conversion.hpp"
 #include "time_point.hpp"
-#include "activity.hpp"
 #include "time_conversion.hpp"
 #include <algorithm>
 #include <cassert>
@@ -40,28 +41,6 @@ namespace chrono = std::chrono;
 
 namespace swx
 {
-
-namespace
-{
-	string trim(string const& p_string)
-	{
-		auto it = p_string.begin();
-		for ( ; it != p_string.end() && isspace(*it); ++it)
-		{
-		}
-		string ret(it, p_string.end());
-		it = ret.end();
-		if (!ret.empty()) --it;
-		string::size_type num_to_pop = 0;
-		for ( ; it >= p_string.begin() && isspace(*it); --it, ++num_to_pop)
-		{
-		}
-		assert (num_to_pop <= ret.size());
-		ret.resize(ret.size() - num_to_pop);
-		return ret;
-	}
-
-}  // end anonymous namespace
 
 TimeLog::TimeLog(string const& p_filepath):
 	m_is_loaded(false),

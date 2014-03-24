@@ -4,7 +4,7 @@
 
 #include "switch_command_processor.hpp"
 #include "command_processor.hpp"
-#include "squish.hpp"
+#include "string_utilities.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
 #include <iostream>
