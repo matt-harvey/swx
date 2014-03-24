@@ -31,7 +31,7 @@ ActivityCommandProcessor::do_process
 {
 	ErrorMessages ret;
 	string const activity_name = squish(p_args.begin(), p_args.end());
-	auto const& activity_ptr = m_time_log.get_activity(activity_name);
+	auto const& activity_ptr = m_time_log.get_activity_by_name(activity_name);
 	if (activity_ptr == nullptr)
 	{
 		string msg = "There is no activity named \"" + activity_name + "\".";

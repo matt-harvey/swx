@@ -47,8 +47,15 @@ public:
 	(	Activity const& p_activity,
 		TimePoint const& p_time_point
 	);
-	// returns a non-owning ptr
-	Activity* get_activity
+
+	/**
+	 * @returns a non-owning pointer to the Activity named
+	 * \e p_activity_name, or nullptr if there is no such Activity
+	 * in the TimeLog.
+	 *
+	 * @todo This should probably be weak_ptr instead of a raw pointer.
+	 */
+	Activity* get_activity_by_name
 	(	std::string const& p_activity_name
 	);
 private:

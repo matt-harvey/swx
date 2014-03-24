@@ -89,7 +89,7 @@ TimeLog::append_entry
 }
 
 Activity*
-TimeLog::get_activity(string const& p_activity_name)
+TimeLog::get_activity_by_name(string const& p_activity_name)
 {
 	load();
 	auto const it = m_activity_map.find(p_activity_name);
