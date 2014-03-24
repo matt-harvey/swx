@@ -42,8 +42,10 @@ namespace
 
 Interval::Interval
 (	TimePoint const& p_beginning,
-	Seconds const& p_duration
+	Seconds const& p_duration,
+	bool p_is_live
 ):
+	m_is_live(p_is_live),
 	m_beginning(p_beginning),
 	m_duration(p_duration)
 {
@@ -65,6 +67,12 @@ TimePoint
 Interval::ending() const
 {
 	return beginning() + duration();
+}
+
+bool
+Interval::is_live() const
+{
+	return m_is_live;
 }
 
 ostream&

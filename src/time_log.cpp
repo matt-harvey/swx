@@ -67,16 +67,44 @@ TimeLog::append_entry
 	return;
 }
 
-Activity*
-TimeLog::get_activity_by_name(string const& p_activity_name)
+std::vector<Interval>
+TimeLog::get_intervals_by_activity_name(string const& p_activity_name)
 {
 	load();
+	std::vector<Interval> ret;
 	auto const it = m_activity_map.find(p_activity_name);
 	if (it == m_activity_map.end())
 	{
-		return nullptr;
+		return ret;
 	}
-	return &(m_activities.at(it->second));
+	auto const activity_id = it->second;
+	for (decltype(m_entries)::size_type i = 0; i != m_entries.size(); ++i)
+	{
+		auto const& entry = m_entries[i];
+		if (entry.activity_id == activity_id)
+		{
+			auto const time_point = entry.time_point;
+			TimePoint* next_time_point_ptr = nullptr;
+			bool is_live = false;
+			if ((i + 1) == m_entries.size())
+			{
+				*next_time_point_ptr = now();
+				is_live = true;
+			}
+			else
+			{
+				*next_time_point_ptr = m_entries[i + 1].time_point;
+			}
+			assert (next_time_point_ptr);
+			Interval const interval
+			(	time_point,
+				chrono::duration_cast<Seconds>(*next_time_point_ptr - time_point),
+				is_live
+			);
+			ret.push_back(std::move(interval));
+		}
+	}
+	return ret;
 }
 
 void
@@ -115,9 +143,8 @@ TimeLog::register_activity(string const& p_activity_name)
 	if (it == m_activity_map.end())
 	{
 		// TODO Make this atomic?
-		auto const ret = m_activities.size();
-		Activity const activity(p_activity_name);
-		m_activities.push_back(activity);
+		auto const ret = m_activity_names.size();
+		m_activity_names.push_back(activity_name);
 		m_activity_map[p_activity_name] = ret;
 		return ret;
 	}
@@ -139,24 +166,6 @@ TimeLog::load_entry(string const& p_entry_string)
 	auto const time_point = time_stamp_to_point(time_stamp);
 	Entry entry(activity_id, time_point);
 	m_entries.push_back(entry);
-	if (m_entries.size() >= 2)
-	{
-		// Then we have an Interval, which we need to push onto the
-		// appropriate Activity.
-		auto const& previous_entry = m_entries[m_entries.size() - 2];
-		auto const previous_activity_id = previous_entry.activity_id;
-		auto const previous_time_point = previous_entry.time_point;
-		if (time_point < previous_time_point)
-		{
-			throw std::runtime_error("Time points out of order.");
-		}
-		Interval interval
-		(	previous_time_point,
-			chrono::duration_cast<Seconds>(time_point - previous_time_point)
-		);
-		Activity& previous_activity = m_activities[previous_activity_id];
-		previous_activity.push_stint(interval);
-	}
 	return;
 }
 

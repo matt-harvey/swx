@@ -7,6 +7,7 @@
 
 #include "activity.hpp"
 #include "activity_id.hpp"
+#include "interval.hpp"
 #include "time_point.hpp"
 #include <string>
 #include <map>
@@ -26,7 +27,7 @@ private:
 		TimePoint time_point;
 	};
 public:
-	typedef std::vector<Activity> Activities;
+	typedef std::vector<std::string> ActivityNames;
 private:
 	typedef std::map<std::string, ActivityId> ActivityMap;
 
@@ -48,14 +49,7 @@ public:
 		TimePoint const& p_time_point
 	);
 
-	/**
-	 * @returns a non-owning pointer to the Activity named
-	 * \e p_activity_name, or nullptr if there is no such Activity
-	 * in the TimeLog.
-	 *
-	 * @todo This should probably be weak_ptr instead of a raw pointer.
-	 */
-	Activity* get_activity_by_name
+	std::vector<Interval> get_intervals_by_activity_name
 	(	std::string const& p_activity_name
 	);
 private:
@@ -70,7 +64,7 @@ private:
 	bool m_is_loaded;
 	std::string m_filepath;
 	std::vector<Entry> m_entries;
-	Activities m_activities;
+	ActivityNames m_activity_names;
 	ActivityMap m_activity_map;
 
 };  // class TimeLog
