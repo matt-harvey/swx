@@ -78,7 +78,6 @@ set(
 
 set(
 	common_sources
-	src/activity.cpp
 	src/activity_command_processor.cpp
 	src/command_processor.cpp
 	src/command_router.cpp

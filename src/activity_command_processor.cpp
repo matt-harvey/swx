@@ -8,7 +8,9 @@
 #include "time_log.hpp"
 #include <ostream>
 #include <string>
+#include <utility>
 
+using std::move;
 using std::string;
 
 namespace swx
@@ -29,17 +31,10 @@ ActivityCommandProcessor::do_process
 	std::ostream& p_ordinary_ostream
 )
 {
-	ErrorMessages ret;
 	string const activity_name = squish(p_args.begin(), p_args.end());
-	auto const& activity_ptr = m_time_log.get_activity_by_name(activity_name);
-	if (activity_ptr == nullptr)
-	{
-		string msg = "There is no activity named \"" + activity_name + "\".";
-		ret.push_back(msg);
-		return ret;
-	}
-	p_ordinary_ostream << activity_ptr->stints();
-	return ret;
+	p_ordinary_ostream <<
+		m_time_log.get_intervals_by_activity_name(move(activity_name));
+	return ErrorMessages();
 }
 
 string

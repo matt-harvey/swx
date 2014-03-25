@@ -3,7 +3,6 @@
  */
 
 #include "time_log.hpp"
-#include "activity.hpp"
 #include "string_utilities.hpp"
 #include "time_conversion.hpp"
 #include "time_point.hpp"
@@ -21,6 +20,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 using std::endl;
 using std::getline;
@@ -28,6 +28,7 @@ using std::ifstream;
 using std::isspace;
 using std::ios;
 using std::mktime;
+using std::move;
 using std::ofstream;
 using std::remove;
 using std::runtime_error;
@@ -47,13 +48,13 @@ TimeLog::TimeLog(string const& p_filepath):
 	m_filepath(p_filepath)
 {
 	assert (m_entries.empty());
-	assert (m_activities.empty());
+	assert (m_activity_names.empty());
 	assert (m_activity_map.empty());
 }
 
 void
 TimeLog::append_entry
-(	Activity const& p_activity,
+(	std::string const& p_activity_name,
 	TimePoint const& p_time_point
 )
 {
@@ -62,7 +63,7 @@ TimeLog::append_entry
 	ofstream outfile(m_filepath.c_str(), ios::app);
 	outfile << time_point_to_stamp(p_time_point)
 	        << ' '
-			<< p_activity.name()
+			<< p_activity_name
 			<< endl;
 	return;
 }
@@ -78,30 +79,19 @@ TimeLog::get_intervals_by_activity_name(string const& p_activity_name)
 		return ret;
 	}
 	auto const activity_id = it->second;
-	for (decltype(m_entries)::size_type i = 0; i != m_entries.size(); ++i)
+	auto const sz = m_entries.size();
+	for (decltype(m_entries)::size_type i = 0; i != sz; ++i)
 	{
-		auto const& entry = m_entries[i];
-		if (entry.activity_id == activity_id)
+		if (m_entries[i].activity_id == activity_id)
 		{
-			auto const time_point = entry.time_point;
-			TimePoint* next_time_point_ptr = nullptr;
-			bool is_live = false;
-			if ((i + 1) == m_entries.size())
-			{
-				*next_time_point_ptr = now();
-				is_live = true;
-			}
-			else
-			{
-				*next_time_point_ptr = m_entries[i + 1].time_point;
-			}
-			assert (next_time_point_ptr);
-			Interval const interval
-			(	time_point,
-				chrono::duration_cast<Seconds>(*next_time_point_ptr - time_point),
-				is_live
-			);
-			ret.push_back(std::move(interval));
+			// TODO Factor this into separate function.
+			auto const time_point = m_entries[i].time_point;
+			auto const j = i + 1;
+			auto const done = (j == m_entries.size());
+			auto const next_time_point = (done? now(): m_entries[j].time_point);
+			auto const raw_duration = next_time_point - time_point;
+			auto const seconds = chrono::duration_cast<Seconds>(raw_duration);
+			ret.push_back(Interval(time_point, seconds, done));
 		}
 	}
 	return ret;
@@ -111,7 +101,7 @@ void
 TimeLog::clear_cache()
 {
 	m_entries.clear();
-	m_activities.clear();
+	m_activity_names.clear();
 	m_activity_map.clear();
 	return;
 }
@@ -136,7 +126,7 @@ TimeLog::load()
 	return;
 }
 
-ActivityId
+TimeLog::ActivityId
 TimeLog::register_activity(string const& p_activity_name)
 {
 	auto const it = m_activity_map.find(p_activity_name);
@@ -144,7 +134,7 @@ TimeLog::register_activity(string const& p_activity_name)
 	{
 		// TODO Make this atomic?
 		auto const ret = m_activity_names.size();
-		m_activity_names.push_back(activity_name);
+		m_activity_names.push_back(p_activity_name);
 		m_activity_map[p_activity_name] = ret;
 		return ret;
 	}

@@ -5,8 +5,6 @@
 #ifndef GUARD_time_log_hpp_6591341885082117
 #define GUARD_time_log_hpp_6591341885082117
 
-#include "activity.hpp"
-#include "activity_id.hpp"
 #include "interval.hpp"
 #include "time_point.hpp"
 #include <string>
@@ -20,15 +18,14 @@ class TimeLog
 {
 // nested types and typedefs
 private:
+	typedef std::vector<std::string> ActivityNames;
+	typedef ActivityNames::size_type ActivityId;
 	struct Entry
 	{
 		Entry(ActivityId p_activity_id, TimePoint const& p_time_point);
 		ActivityId activity_id;
 		TimePoint time_point;
 	};
-public:
-	typedef std::vector<std::string> ActivityNames;
-private:
 	typedef std::map<std::string, ActivityId> ActivityMap;
 
 // special member functions
@@ -45,7 +42,7 @@ public:
 /// ordinary member functions
 public:
 	void append_entry
-	(	Activity const& p_activity,
+	(	std::string const& p_activity_name,
 		TimePoint const& p_time_point
 	);
 

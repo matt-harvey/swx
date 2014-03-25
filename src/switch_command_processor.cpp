@@ -11,7 +11,9 @@
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <utility>
 
+using std::move;
 using std::ostream;
 using std::ostringstream;
 using std::string;
@@ -36,8 +38,8 @@ SwitchCommandProcessor::do_process
 {
 	(void)p_ordinary_ostream;  // ignore param.
 	TimePoint const time_point = now();
-	Activity const activity(squish(p_args.begin(), p_args.end()));
-	m_time_log.append_entry(activity, time_point);
+	string const activity_name(squish(p_args.begin(), p_args.end()));
+	m_time_log.append_entry(move(activity_name), time_point);
 	return ErrorMessages();
 }
 
