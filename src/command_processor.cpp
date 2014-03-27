@@ -3,18 +3,31 @@
  */
 
 #include "command_processor.hpp"
+#include <iomanip>
 #include <iostream>
 #include <ostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
 using std::endl;
 using std::ostream;
+using std::ostringstream;
+using std::setw;
 using std::string;
 using std::vector;
 
 namespace swx
 {
+
+CommandProcessor::HelpLine::HelpLine
+(	string const& p_args_descriptor,
+	string const& p_usage_descriptor
+):
+	args_descriptor(p_args_descriptor),
+	usage_descriptor(p_usage_descriptor)
+{
+}
 
 CommandProcessor::CommandProcessor()
 {
@@ -40,7 +53,7 @@ CommandProcessor::process
 	{
 		p_error_ostream << message << endl;
 	}
-	return error_messages.size();  // TODO Clamp to INT_MAX?
+	return 1;
 }
 
 CommandProcessor::ErrorMessages
@@ -51,9 +64,37 @@ CommandProcessor::do_validate(Arguments const& p_args)
 }
 
 string
-CommandProcessor::help_string(string const& p_command_invocation) const
+CommandProcessor::usage_descriptor(string const& p_command_word) const
 {
-	return do_provide_help_string(p_command_invocation);
+	// TODO MEDIUM PRIORITY This should handle wrapping of the right-hand cell to
+	// a reasonable width if necessary.
+	auto const help_lines = do_get_help_lines();
+	typedef string::size_type ColWidth;
+	ColWidth command_word_length = p_command_word.length();
+	ColWidth left_col_width = command_word_length;
+	for (auto const& line: help_lines)
+	{
+		ColWidth const left_cell_width =
+			line.args_descriptor.length() + command_word_length;
+		left_col_width =
+		(	(left_cell_width > left_col_width)?
+			left_cell_width:
+			left_col_width
+		);
+	}
+	left_col_width += 3;
+	ostringstream oss;
+	auto const orig_flags = oss.flags();
+	for (auto const& line: help_lines)
+	{
+		oss << setw(left_col_width)
+		    << p_command_word
+		    << ' '
+		    << line.args_descriptor;
+		oss.flags(orig_flags);
+		oss << line.usage_descriptor;
+	}
+	return oss.str();
 }
 
 }  // namespace swx

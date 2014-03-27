@@ -9,6 +9,7 @@
 #include "time_log.hpp"
 #include <ostream>
 #include <string>
+#include <vector>
 
 namespace swx
 {
@@ -31,9 +32,7 @@ private:
 		std::ostream& p_ordinary_ostream
 	) override;
 
-	std::string do_provide_help_string
-	(	std::string const& p_command_invocation
-	) const override;
+	std::vector<HelpLine> do_get_help_lines() const override;
 
 // member variables
 private:

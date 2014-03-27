@@ -8,10 +8,12 @@
 #include <iostream>
 #include <ostream>
 #include <string>
+#include <vector>
 
 using std::endl;
 using std::ostream;
 using std::string;
+using std::vector;
 
 namespace swx
 {
@@ -45,12 +47,14 @@ VersionCommandProcessor::do_validate(Arguments const& p_args)
 	return ErrorMessages();
 }
 
-string
-VersionCommandProcessor::do_provide_help_string
-(	string const& p_command_invocation
-) const
+vector<CommandProcessor::HelpLine>
+VersionCommandProcessor::do_get_help_lines() const
 {
-	return p_command_invocation + "        Print version information and exit.";
+	HelpLine const basic_usage_help_line
+	(	"",
+		"Print version information and exit"
+	);
+	return vector<HelpLine>{basic_usage_help_line};
 }
 
 }  // namespace swx

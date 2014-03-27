@@ -9,9 +9,11 @@
 #include <ostream>
 #include <string>
 #include <utility>
+#include <vector>
 
 using std::move;
 using std::string;
+using std::vector;
 
 namespace swx
 {
@@ -37,12 +39,14 @@ PrintCommandProcessor::do_process
 	return ErrorMessages();
 }
 
-string
-PrintCommandProcessor::do_provide_help_string(string const& p_command_invocation) const
+vector<CommandProcessor::HelpLine>
+PrintCommandProcessor::do_get_help_lines() const
 {
-	// TODO Implement this.
-	(void)p_command_invocation;  // ignore param.
-	return "NOT IMPLEMENTED";
+	HelpLine const basic_usage_help_line
+	(	"ACTIVITY",
+		"Print a summary of time spent on activity named ACTIVITY"
+	);
+	return vector<HelpLine>{basic_usage_help_line};
 }
 
 }  // namespace swx

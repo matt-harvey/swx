@@ -32,9 +32,7 @@ private:
 
 	virtual ErrorMessages do_validate(Arguments const& p_args) override;
 
-	std::string do_provide_help_string
-	(	std::string const& p_command_invocation
-	) const override;
+	std::vector<HelpLine> do_get_help_lines() const override;
 
 };  // class VersionCommandProcessor
 

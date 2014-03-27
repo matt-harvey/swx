@@ -23,6 +23,19 @@ protected:
 	typedef std::vector<std::string> Arguments;
 	typedef std::vector<std::string> ErrorMessages;
 
+	struct HelpLine
+	{
+	public:
+		friend class CommandProcessor;
+		HelpLine
+		(	std::string const& p_args_descriptor,
+			std::string const& p_usage_descriptor
+		);
+	private:
+		std::string args_descriptor;
+		std::string usage_descriptor;
+	};
+
 // special member functions
 public:
 	CommandProcessor();
@@ -40,8 +53,8 @@ public:
 		std::ostream& p_error_ostream
 	);
 
-	std::string help_string
-	(	std::string const& p_command_invocation
+	std::string usage_descriptor
+	(	std::string const& p_command_word
 	) const;
 
 // virtual functions
@@ -54,9 +67,7 @@ private:
 
 	virtual ErrorMessages do_validate(Arguments const& p_args);
 	
-	virtual std::string do_provide_help_string
-	(	std::string const& p_command_invocation
-	) const = 0;
+	virtual std::vector<HelpLine> do_get_help_lines() const = 0;
 
 };  // class CommandProcessor
 

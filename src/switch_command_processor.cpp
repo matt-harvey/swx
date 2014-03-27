@@ -12,11 +12,13 @@
 #include <sstream>
 #include <string>
 #include <utility>
+#include <vector>
 
 using std::move;
 using std::ostream;
 using std::ostringstream;
 using std::string;
+using std::vector;
 
 namespace swx
 {
@@ -43,19 +45,19 @@ SwitchCommandProcessor::do_process
 	return ErrorMessages();
 }
 
-string
-SwitchCommandProcessor::do_provide_help_string
-(	string const& p_command_invocation
-) const
+vector<CommandProcessor::HelpLine>
+SwitchCommandProcessor::do_get_help_lines() const
 {
-	ostringstream oss;
-	oss << p_command_invocation
-	    << "\n ARGS     "
-		<< "If the stopwatch is already running, stop accruing time onto \n"
-		<< "the current activity, and start accruing time on the activity\n"
-		<< "named by ARGS.\n\n";
-	oss << p_command_invocation << "\nStop the stopwatch.";
-	return oss.str();
+	HelpLine const switching_line
+	(	"ACTIVITY",
+		"Start accruing time to ACTIVITY, and stop accruing time to the "
+			"current activity (if any)"
+	);
+	HelpLine const stopping_line
+	(	"",
+		"Stop accruing time to any activity"
+	);
+	return vector<HelpLine>{switching_line, stopping_line};
 }
 
 }  // namespace swx
