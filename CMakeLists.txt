@@ -78,7 +78,7 @@ set(
 
 set(
 	common_sources
-	src/activity_command_processor.cpp
+	src/print_command_processor.cpp
 	src/command_processor.cpp
 	src/command_router.cpp
 	src/day.cpp

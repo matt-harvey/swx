@@ -2,7 +2,7 @@
  * Copyright 2014 Matthew Harvey
  */
 
-#include "activity_command_processor.hpp"
+#include "print_command_processor.hpp"
 #include "interval.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
@@ -16,17 +16,17 @@ using std::string;
 namespace swx
 {
 
-ActivityCommandProcessor::ActivityCommandProcessor(TimeLog& p_time_log):
+PrintCommandProcessor::PrintCommandProcessor(TimeLog& p_time_log):
 	m_time_log(p_time_log)
 {
 }
 
-ActivityCommandProcessor::~ActivityCommandProcessor()
+PrintCommandProcessor::~PrintCommandProcessor()
 {
 }
 
 CommandProcessor::ErrorMessages
-ActivityCommandProcessor::do_process
+PrintCommandProcessor::do_process
 (	Arguments const& p_args,
 	std::ostream& p_ordinary_ostream
 )
@@ -38,7 +38,7 @@ ActivityCommandProcessor::do_process
 }
 
 string
-ActivityCommandProcessor::do_provide_help_string(string const& p_command_invocation) const
+PrintCommandProcessor::do_provide_help_string(string const& p_command_invocation) const
 {
 	// TODO Implement this.
 	(void)p_command_invocation;  // ignore param.
