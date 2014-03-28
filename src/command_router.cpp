@@ -11,6 +11,7 @@
 #include <cassert>
 #include <iostream>
 #include <ostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -18,6 +19,7 @@ using std::cerr;
 using std::cout;
 using std::endl;
 using std::ostream;
+using std::ostringstream;
 using std::string;
 using std::vector;
 
@@ -48,10 +50,10 @@ CommandRouter::populate_command_processor_map()
 	);
 	create_command(switch_processor);
 
-	CommandProcessorPtr activity_processor
+	CommandProcessorPtr print_processor
 	(	new PrintCommandProcessor("print", {"p"}, m_time_log)
 	);
-	create_command(activity_processor);
+	create_command(print_processor);
 		
 	return;
 }
@@ -97,11 +99,29 @@ CommandRouter::error_ostream() const
 void
 CommandRouter::create_command(CommandProcessorPtr const& p_cpp)
 {
-	m_command_processor_map[p_cpp->command_word()] = p_cpp;
+	register_command_word(p_cpp->command_word(), p_cpp);
 	for (auto const& alias: p_cpp->aliases())
 	{
-		m_command_processor_map[alias] = p_cpp;
+		register_command_word(alias, p_cpp);
 	}
+	return;
+}
+
+void
+CommandRouter::register_command_word
+(	string const& p_word,
+	CommandProcessorPtr const& p_cpp
+)
+{
+	if (m_command_processor_map.find(p_word) != m_command_processor_map.end())
+	{
+		ostringstream oss;
+		oss << "Command processor word \""
+		    << p_word
+			<< "\" has already been registered.";
+		throw std::runtime_error(oss.str());
+	}
+	m_command_processor_map[p_word] = p_cpp;
 	return;
 }
 

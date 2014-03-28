@@ -38,24 +38,23 @@ public:
 
 // ordinary member functions
 private:
-
 	void populate_command_processor_map();
 
 public:
-
 	int process_command
 	(	std::string const& p_command,
 		std::vector<std::string> const& p_args
 	) const;
 
 private:
-
 	int process_unrecognized_command(std::string const& p_command) const;
-
 	std::ostream& ordinary_ostream() const;
 	std::ostream& error_ostream() const;
-
 	void create_command(CommandProcessorPtr const& p_cpp);
+	void register_command_word
+	(	std::string const& p_word,
+		CommandProcessorPtr const& p_cpp
+	);
 
 // member variables
 private:
