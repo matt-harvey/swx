@@ -38,7 +38,10 @@ protected:
 
 // special member functions
 public:
-	CommandProcessor();
+	CommandProcessor
+	(	std::string const& p_command_word,
+		std::vector<std::string> const& p_aliases
+	);
 	CommandProcessor(CommandProcessor const& rhs) = delete;
 	CommandProcessor(CommandProcessor&& rhs) = delete;
 	CommandProcessor& operator=(CommandProcessor const& rhs) = delete;
@@ -53,9 +56,9 @@ public:
 		std::ostream& p_error_ostream
 	);
 
-	std::string usage_descriptor
-	(	std::string const& p_command_word
-	) const;
+	std::string usage_descriptor() const;
+	std::string const& command_word() const;
+	std::vector<std::string> const& aliases() const;
 
 // virtual functions
 private:
@@ -68,6 +71,11 @@ private:
 	virtual ErrorMessages do_validate(Arguments const& p_args);
 	
 	virtual std::vector<HelpLine> do_get_help_lines() const = 0;
+
+// member variables
+private:
+	std::string const m_command_word;
+	std::vector<std::string> const m_aliases;
 
 };  // class CommandProcessor
 

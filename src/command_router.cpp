@@ -38,18 +38,20 @@ CommandRouter::CommandRouter(TimeLog& p_time_log): m_time_log(p_time_log)
 void
 CommandRouter::populate_command_processor_map()
 {
-	CommandProcessorPtr version_processor(new VersionCommandProcessor);
-	create_command("version", version_processor);	
+	CommandProcessorPtr version_processor
+	(	new VersionCommandProcessor("version", {"v"})
+	);
+	create_command(version_processor);	
 
 	CommandProcessorPtr switch_processor
-	(	new SwitchCommandProcessor(m_time_log)
+	(	new SwitchCommandProcessor("switch", {"s"}, m_time_log)
 	);
-	create_command("switch", switch_processor);
+	create_command(switch_processor);
 
 	CommandProcessorPtr activity_processor
-	(	new PrintCommandProcessor(m_time_log)
+	(	new PrintCommandProcessor("print", {"p"}, m_time_log)
 	);
-	create_command("print", activity_processor);
+	create_command(activity_processor);
 		
 	return;
 }
@@ -93,12 +95,13 @@ CommandRouter::error_ostream() const
 }
 
 void
-CommandRouter::create_command
-(	string const& p_alias,
-	CommandProcessorPtr const& p_cpp
-)
+CommandRouter::create_command(CommandProcessorPtr const& p_cpp)
 {
-	m_command_processor_map[p_alias] = p_cpp;
+	m_command_processor_map[p_cpp->command_word()] = p_cpp;
+	for (auto const& alias: p_cpp->aliases())
+	{
+		m_command_processor_map[alias] = p_cpp;
+	}
 	return;
 }
 

@@ -18,7 +18,11 @@ class SwitchCommandProcessor: public CommandProcessor
 {
 // special member functions
 public:
-	explicit SwitchCommandProcessor(TimeLog& p_time_log);
+	explicit SwitchCommandProcessor
+	(	std::string const& p_command_word,
+		std::vector<std::string> const& p_aliases,
+		TimeLog& p_time_log
+	);
 	SwitchCommandProcessor(SwitchCommandProcessor const& rhs) = delete;
 	SwitchCommandProcessor(SwitchCommandProcessor&& rhs) = delete;
 	SwitchCommandProcessor& operator=(SwitchCommandProcessor const& rhs) = delete;

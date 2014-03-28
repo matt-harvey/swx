@@ -23,7 +23,12 @@ using std::vector;
 namespace swx
 {
 
-SwitchCommandProcessor::SwitchCommandProcessor(TimeLog& p_time_log):
+SwitchCommandProcessor::SwitchCommandProcessor
+(	string const& p_command_word,
+	vector<string> const& p_aliases,
+	TimeLog& p_time_log
+):
+	CommandProcessor(p_command_word, p_aliases),
 	m_time_log(p_time_log)
 {
 }

@@ -29,7 +29,12 @@ CommandProcessor::HelpLine::HelpLine
 {
 }
 
-CommandProcessor::CommandProcessor()
+CommandProcessor::CommandProcessor
+(	string const& p_command_word,
+	vector<string> const& p_aliases
+):
+	m_command_word(p_command_word),
+	m_aliases(p_aliases)
 {
 }
 
@@ -64,13 +69,13 @@ CommandProcessor::do_validate(Arguments const& p_args)
 }
 
 string
-CommandProcessor::usage_descriptor(string const& p_command_word) const
+CommandProcessor::usage_descriptor() const
 {
 	// TODO MEDIUM PRIORITY This should handle wrapping of the right-hand cell to
 	// a reasonable width if necessary.
 	auto const help_lines = do_get_help_lines();
 	typedef string::size_type ColWidth;
-	ColWidth command_word_length = p_command_word.length();
+	ColWidth command_word_length = m_command_word.length();
 	ColWidth left_col_width = command_word_length;
 	for (auto const& line: help_lines)
 	{
@@ -88,13 +93,36 @@ CommandProcessor::usage_descriptor(string const& p_command_word) const
 	for (auto const& line: help_lines)
 	{
 		oss << setw(left_col_width)
-		    << p_command_word
+		    << m_command_word
 		    << ' '
 		    << line.args_descriptor;
 		oss.flags(orig_flags);
-		oss << line.usage_descriptor;
+		oss << line.usage_descriptor
+		    << '\n';
+	}
+	if (!m_aliases.empty())
+	{
+		oss << "Aliased as: ";
+		auto it = m_aliases.begin();
+		oss << *it;
+		for (++it; it != m_aliases.end(); ++it)
+		{
+			oss << ", " << *it;	
+		}
 	}
 	return oss.str();
+}
+
+string const&
+CommandProcessor::command_word() const
+{
+	return m_command_word;
+}
+
+vector<string> const&
+CommandProcessor::aliases() const
+{
+	return m_aliases;
 }
 
 }  // namespace swx

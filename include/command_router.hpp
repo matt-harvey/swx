@@ -55,10 +55,7 @@ private:
 	std::ostream& ordinary_ostream() const;
 	std::ostream& error_ostream() const;
 
-	void create_command
-	(	std::string const& p_alias,
-		CommandProcessorPtr const& p_cpp
-	);
+	void create_command(CommandProcessorPtr const& p_cpp);
 
 // member variables
 private:

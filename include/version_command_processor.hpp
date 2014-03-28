@@ -16,7 +16,10 @@ class VersionCommandProcessor: public CommandProcessor
 {
 // special member functions
 public:
-	VersionCommandProcessor();
+	VersionCommandProcessor
+	(	std::string const& p_command_word,
+		std::vector<std::string> const& p_aliases
+	);
 	VersionCommandProcessor(VersionCommandProcessor const& rhs) = delete;
 	VersionCommandProcessor(VersionCommandProcessor&& rhs) = delete;
 	VersionCommandProcessor& operator=(VersionCommandProcessor const& rhs) = delete;

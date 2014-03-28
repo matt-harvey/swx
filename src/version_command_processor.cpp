@@ -18,7 +18,11 @@ using std::vector;
 namespace swx
 {
 
-VersionCommandProcessor::VersionCommandProcessor()
+VersionCommandProcessor::VersionCommandProcessor
+(	string const& p_command_word,
+	vector<string> const& p_aliases
+):
+	CommandProcessor(p_command_word, p_aliases)
 {
 }
 

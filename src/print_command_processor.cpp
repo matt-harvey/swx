@@ -3,6 +3,7 @@
  */
 
 #include "print_command_processor.hpp"
+#include "command_processor.hpp"
 #include "interval.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
@@ -18,7 +19,12 @@ using std::vector;
 namespace swx
 {
 
-PrintCommandProcessor::PrintCommandProcessor(TimeLog& p_time_log):
+PrintCommandProcessor::PrintCommandProcessor
+(	string const& p_command_word,
+	vector<string> const& p_aliases,
+	TimeLog& p_time_log
+):
+	CommandProcessor(p_command_word, p_aliases),
 	m_time_log(p_time_log)
 {
 }
