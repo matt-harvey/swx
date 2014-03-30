@@ -16,6 +16,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 using std::cerr;
@@ -23,6 +24,7 @@ using std::cout;
 using std::endl;
 using std::ostream;
 using std::ostringstream;
+using std::pair;
 using std::runtime_error;
 using std::set;
 using std::string;
@@ -100,26 +102,25 @@ CommandRouter::help_information(string const& p_command) const
 	return it->second->usage_descriptor();
 }
 
-string
+vector<pair<string, vector<string>>>
 CommandRouter::available_commands() const
 {
-	set<string> lines;
+	set<string> command_words;
+	vector<pair<string, vector<string>>> ret;
 	auto const b = m_command_processor_map.begin();
 	auto const e = m_command_processor_map.end();
 	for (auto it = b; it != e; ++it)
 	{
 		ostringstream oss;
 		CommandProcessor const& cp = *it->second;
-		oss << cp.command_word();
-		for (auto const& alias: cp.aliases())
+		string const word = cp.command_word();
+		if (command_words.find(word) == command_words.end())
 		{
-			oss << ", " << alias;
+			command_words.insert(word);
+			ret.push_back(make_pair(word, cp.aliases()));
 		}
-		lines.insert(oss.str());
 	}
-	ostringstream oss1;
-	for (auto const& line: lines) oss1 << line << '\n';
-	return oss1.str();
+	return ret;
 }
 
 int

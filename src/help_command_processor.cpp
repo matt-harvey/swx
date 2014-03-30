@@ -12,11 +12,13 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 using std::endl;
 using std::ostream;
 using std::ostringstream;
+using std::pair;
 using std::runtime_error;
 using std::string;
 using std::vector;
@@ -47,11 +49,26 @@ HelpCommandProcessor::do_process
 	ErrorMessages ret;
 	if (p_args.empty())
 	{
+		vector<pair<string, vector<string>>> subcommands =
+			m_command_router.available_commands();
+		ostringstream oss;
+		for (auto const& pair: subcommands)
+		{
+			oss << pair.first;
+			if (!pair.second.empty())
+			{
+				for (auto const& alias: pair.second)
+				{
+					oss << ", " << alias;
+				}
+			}
+			oss << '\n';
+		}
 		p_ordinary_ostream << "Usage: "
 		                   << Info::application_name() << ' '
 						   << "SUBCOMMAND [ARGS..]" << endl
 						   << "\nAvailable subcommmands are:\n\n"
-		                   << m_command_router.available_commands() << "\n"
+		                   << oss.str() << "\n"
 						   << "For more information on a particular subcommand,"
 						   << " enter '"
 						   << Info::application_name() << ' '

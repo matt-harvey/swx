@@ -11,6 +11,7 @@
 #include <ostream>
 #include <string>
 #include <map>
+#include <utility>
 #include <vector>
 
 namespace swx
@@ -54,10 +55,12 @@ public:
 	std::string help_information(std::string const& p_command) const;
 
 	/**
-	 * @returns a human-friendly string listing the available
-	 * commands.
+	 * In each element \e e of the returned vector, \e e.first is
+	 * the main command word, and \e e.second is a vector of aliases
+	 * for that command word.
 	 */
-	std::string available_commands() const;
+	std::vector<std::pair<std::string, std::vector<std::string>>>
+	available_commands() const;
 
 private:
 	int process_unrecognized_command(std::string const& p_command) const;
