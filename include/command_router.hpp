@@ -70,8 +70,6 @@ public:
 
 private:
 	int process_unrecognized_command(std::string const& p_command) const;
-
-public:
 	std::ostream& ordinary_ostream() const;
 	std::ostream& error_ostream() const;
 	void create_command(CommandProcessorPtr const& p_cpp);
