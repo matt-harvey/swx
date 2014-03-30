@@ -4,6 +4,7 @@
 
 #include "command_processor.hpp"
 #include "info.hpp"
+#include <cassert>
 #include <iomanip>
 #include <iostream>
 #include <ostream>
@@ -60,6 +61,11 @@ CommandProcessor::process
 	{
 		p_error_ostream << message << endl;
 	}
+	if (error_messages.empty())
+	{
+		return 0;
+	}
+	assert (error_messages.size() > 0);
 	return 1;
 }
 

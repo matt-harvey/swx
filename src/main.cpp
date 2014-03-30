@@ -25,8 +25,8 @@ int main(int argc, char** argv)
 {
 	if (argc < 2)
 	{
-		// TODO Make this better.
 		cerr << "Subcommand not provided." << endl;
+		cerr << CommandRouter::directions_to_get_help() << endl;
 		return 1;
 	}
 	assert (argc >= 2);

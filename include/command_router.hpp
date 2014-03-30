@@ -60,11 +60,14 @@ public:
 	 * for that command word.
 	 */
 	std::vector<std::pair<std::string, std::vector<std::string>>>
-	available_commands() const;
+		available_commands() const;
 
-	std::string error_message_for_unrecognized_subcommand
+	static std::string directions_to_get_help();
+
+public:
+	static std::string error_message_for_unrecognized_subcommand
 	(	std::string const& p_command
-	) const;
+	);
 
 private:
 	int process_unrecognized_command(std::string const& p_command) const;

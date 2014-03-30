@@ -6,6 +6,7 @@
 #include "print_command_processor.hpp"
 #include "command_processor.hpp"
 #include "help_command_processor.hpp"
+#include "info.hpp"
 #include "switch_command_processor.hpp"
 #include "time_log.hpp"
 #include "version_command_processor.hpp"
@@ -33,6 +34,15 @@ using std::vector;
 namespace swx
 {
 
+namespace
+{
+	string help_command_string()
+	{
+		return "help";
+	}
+
+}  // end anonymous namespace
+
 CommandRouter::CommandRouter(TimeLog& p_time_log): m_time_log(p_time_log)
 {
 	populate_command_processor_map();	
@@ -53,7 +63,7 @@ CommandRouter::populate_command_processor_map()
 	create_command(version_processor);	
 	
 	CommandProcessorPtr help_processor
-	(	new HelpCommandProcessor("help", {"h"}, *this)
+	(	new HelpCommandProcessor(help_command_string(), {"h"}, *this)
 	);
 	create_command(help_processor);
 
@@ -85,7 +95,13 @@ CommandRouter::process_command
 	else
 	{
 		assert (it->second);
-		return it->second->process(p_args, ordinary_ostream(), error_ostream());
+		int const ret =
+			it->second->process(p_args, ordinary_ostream(), error_ostream());
+		if (ret != 0)
+		{
+			error_ostream() << directions_to_get_help() << endl;
+		}
+		return ret;
 	}
 }
 
@@ -125,9 +141,20 @@ CommandRouter::available_commands() const
 }
 
 string
+CommandRouter::directions_to_get_help()
+{
+	return
+		string("For usage information, enter: '") +
+		Info::application_name() +
+		' ' +
+		help_command_string() +
+		"'.";
+}
+
+string
 CommandRouter::error_message_for_unrecognized_subcommand
 (	string const& p_command
-) const
+)
 {
 	return string("Unrecognized subcommand: ") + p_command;
 }
@@ -136,7 +163,9 @@ int
 CommandRouter::process_unrecognized_command(string const& p_command) const
 {
 	error_ostream() << error_message_for_unrecognized_subcommand(p_command)
-	                << endl;
+	                << endl
+					<< directions_to_get_help()
+					<< endl;
 	return 1;
 }
 
