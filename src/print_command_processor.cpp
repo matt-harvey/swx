@@ -50,9 +50,13 @@ PrintCommandProcessor::do_get_help_lines() const
 {
 	HelpLine const basic_usage_help_line
 	(	"ACTIVITY",
-		"Print a summary of time spent on activity named ACTIVITY"
+		"Print a summary of time spent on ACTIVITY"
 	);
-	return vector<HelpLine>{basic_usage_help_line};
+	HelpLine const special_usage_help_line
+	(	"",
+		"Print a summary of time not spent on any activity"
+	);
+	return vector<HelpLine>{basic_usage_help_line, special_usage_help_line};
 }
 
 }  // namespace swx

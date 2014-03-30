@@ -52,7 +52,7 @@ HelpCommandProcessor::do_process
 						   << "SUBCOMMAND [ARGS..]" << endl
 						   << "\nAvailable subcommmands are:\n\n"
 		                   << m_command_router.available_commands() << "\n"
-						   << "For more information on a specific subcommand,"
+						   << "For more information on a particular subcommand,"
 						   << " enter '"
 						   << Info::application_name() << ' '
 						   << command_word() << " SUBCOMMAND'." << endl;

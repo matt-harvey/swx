@@ -90,7 +90,7 @@ CommandProcessor::usage_descriptor() const
 		);
 	}
 	left_col_width +=
-		Info::application_name().length() + 1 + m_command_word.length() + 3;
+		Info::application_name().length() + 1 + m_command_word.length() + 2;
 	ostringstream oss;
 	auto const orig_flags = oss.flags();
 	for (auto const& line: help_lines)
