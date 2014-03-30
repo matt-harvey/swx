@@ -85,7 +85,7 @@ HelpCommandProcessor::do_process
 	{
 		ostringstream oss;
 		oss << CommandRouter::
-		          error_message_for_unrecognized_subcommand(p_args[0]);
+		          error_message_for_unrecognized_command(p_args[0]);
 		ret.push_back(oss.str());
 	}
 	return ret;	

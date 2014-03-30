@@ -113,7 +113,7 @@ CommandRouter::help_information(string const& p_command) const
 	if (it == m_command_processor_map.end())
 	{
 		throw runtime_error
-		(	error_message_for_unrecognized_subcommand(p_command)
+		(	error_message_for_unrecognized_command(p_command)
 		);
 	}
 	return it->second->usage_descriptor();
@@ -152,7 +152,7 @@ CommandRouter::directions_to_get_help()
 }
 
 string
-CommandRouter::error_message_for_unrecognized_subcommand
+CommandRouter::error_message_for_unrecognized_command
 (	string const& p_command
 )
 {
@@ -162,7 +162,7 @@ CommandRouter::error_message_for_unrecognized_subcommand
 int
 CommandRouter::process_unrecognized_command(string const& p_command) const
 {
-	error_ostream() << error_message_for_unrecognized_subcommand(p_command)
+	error_ostream() << error_message_for_unrecognized_command(p_command)
 	                << endl
 					<< directions_to_get_help()
 					<< endl;

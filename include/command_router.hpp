@@ -37,7 +37,7 @@ public:
 	CommandRouter& operator=(CommandRouter&& rhs) = delete;
 	~CommandRouter() = default;
 
-// ordinary member functions
+// ordinary and static member functions
 private:
 	void populate_command_processor_map();
 
@@ -64,8 +64,7 @@ public:
 
 	static std::string directions_to_get_help();
 
-public:
-	static std::string error_message_for_unrecognized_subcommand
+	static std::string error_message_for_unrecognized_command
 	(	std::string const& p_command
 	);
 
