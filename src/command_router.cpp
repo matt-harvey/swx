@@ -5,13 +5,16 @@
 #include "command_router.hpp"
 #include "print_command_processor.hpp"
 #include "command_processor.hpp"
+#include "help_command_processor.hpp"
 #include "switch_command_processor.hpp"
 #include "time_log.hpp"
 #include "version_command_processor.hpp"
 #include <cassert>
 #include <iostream>
 #include <ostream>
+#include <set>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -20,6 +23,8 @@ using std::cout;
 using std::endl;
 using std::ostream;
 using std::ostringstream;
+using std::runtime_error;
+using std::set;
 using std::string;
 using std::vector;
 
@@ -44,6 +49,11 @@ CommandRouter::populate_command_processor_map()
 	(	new VersionCommandProcessor("version", {"v"})
 	);
 	create_command(version_processor);	
+	
+	CommandProcessorPtr help_processor
+	(	new HelpCommandProcessor("help", {"h"}, *this)
+	);
+	create_command(help_processor);
 
 	CommandProcessorPtr switch_processor
 	(	new SwitchCommandProcessor("switch", {"s"}, m_time_log)
@@ -75,6 +85,41 @@ CommandRouter::process_command
 		assert (it->second);
 		return it->second->process(p_args, ordinary_ostream(), error_ostream());
 	}
+}
+
+string
+CommandRouter::help_information(string const& p_command) const
+{
+	ostringstream oss;
+	auto const it = m_command_processor_map.find(p_command);
+	if (it == m_command_processor_map.end())
+	{
+		oss << '\"' << p_command << "\" not a recognized subcommand.";
+		throw runtime_error(oss.str());
+	}
+	return it->second->usage_descriptor();
+}
+
+string
+CommandRouter::available_commands() const
+{
+	set<string> lines;
+	auto const b = m_command_processor_map.begin();
+	auto const e = m_command_processor_map.end();
+	for (auto it = b; it != e; ++it)
+	{
+		ostringstream oss;
+		CommandProcessor const& cp = *it->second;
+		oss << cp.command_word();
+		for (auto const& alias: cp.aliases())
+		{
+			oss << ", " << alias;
+		}
+		lines.insert(oss.str());
+	}
+	ostringstream oss1;
+	for (auto const& line: lines) oss1 << line << '\n';
+	return oss1.str();
 }
 
 int

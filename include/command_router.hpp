@@ -46,6 +46,19 @@ public:
 		std::vector<std::string> const& p_args
 	) const;
 
+
+	/**
+	 * @throws std::runtime_error if p_command is not a registered
+	 * command word.
+	 */
+	std::string help_information(std::string const& p_command) const;
+
+	/**
+	 * @returns a human-friendly string listing the available
+	 * commands.
+	 */
+	std::string available_commands() const;
+
 private:
 	int process_unrecognized_command(std::string const& p_command) const;
 	std::ostream& ordinary_ostream() const;

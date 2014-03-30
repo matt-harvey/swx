@@ -3,6 +3,7 @@
  */
 
 #include "command_processor.hpp"
+#include "info.hpp"
 #include <iomanip>
 #include <iostream>
 #include <ostream>
@@ -11,6 +12,7 @@
 #include <vector>
 
 using std::endl;
+using std::left;
 using std::ostream;
 using std::ostringstream;
 using std::setw;
@@ -87,22 +89,26 @@ CommandProcessor::usage_descriptor() const
 			left_col_width
 		);
 	}
-	left_col_width += 3;
+	left_col_width +=
+		Info::application_name().length() + 1 + m_command_word.length() + 3;
 	ostringstream oss;
 	auto const orig_flags = oss.flags();
 	for (auto const& line: help_lines)
 	{
 		oss << setw(left_col_width)
-		    << m_command_word
-		    << ' '
-		    << line.args_descriptor;
+		    << left
+		    << Info::application_name() + ' ' + m_command_word + ' ' +
+			     line.args_descriptor
+		    << "  ";
 		oss.flags(orig_flags);
-		oss << line.usage_descriptor
+		oss << left
+		    << line.usage_descriptor
 		    << '\n';
+		oss.flags(orig_flags);
 	}
 	if (!m_aliases.empty())
 	{
-		oss << "Aliased as: ";
+		oss << "\nAliased as: ";
 		auto it = m_aliases.begin();
 		oss << *it;
 		for (++it; it != m_aliases.end(); ++it)
