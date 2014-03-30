@@ -62,8 +62,14 @@ public:
 	std::vector<std::pair<std::string, std::vector<std::string>>>
 	available_commands() const;
 
+	std::string error_message_for_unrecognized_subcommand
+	(	std::string const& p_command
+	) const;
+
 private:
 	int process_unrecognized_command(std::string const& p_command) const;
+
+public:
 	std::ostream& ordinary_ostream() const;
 	std::ostream& error_ostream() const;
 	void create_command(CommandProcessorPtr const& p_cpp);

@@ -96,8 +96,9 @@ CommandRouter::help_information(string const& p_command) const
 	auto const it = m_command_processor_map.find(p_command);
 	if (it == m_command_processor_map.end())
 	{
-		oss << '\"' << p_command << "\" not a recognized subcommand.";
-		throw runtime_error(oss.str());
+		throw runtime_error
+		(	error_message_for_unrecognized_subcommand(p_command)
+		);
 	}
 	return it->second->usage_descriptor();
 }
@@ -123,10 +124,19 @@ CommandRouter::available_commands() const
 	return ret;
 }
 
+string
+CommandRouter::error_message_for_unrecognized_subcommand
+(	string const& p_command
+) const
+{
+	return string("Unrecognized subcommand: ") + p_command;
+}
+
 int
 CommandRouter::process_unrecognized_command(string const& p_command) const
 {
-	error_ostream() << "Unrecognized subcommand: " << p_command << endl;
+	error_ostream() << error_message_for_unrecognized_subcommand(p_command)
+	                << endl;
 	return 1;
 }
 
