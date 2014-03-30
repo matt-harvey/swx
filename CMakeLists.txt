@@ -30,7 +30,7 @@ add_definitions (
 	# Controls format in which dates are stored in data file.
 	# If you change this, remember also to change SWX_FORMATTED_BUF_LEN
 	# accordingly.
-	-DSWX_FORMAT_STRING="%Y-%m-%d %H:%M:%S"
+	-DSWX_FORMAT_STRING="%Y-%m-%dT%H:%M:%S"
 
 	# Must be at least 1 greater than the length of the longest
 	# string that could result from formatting a date using
