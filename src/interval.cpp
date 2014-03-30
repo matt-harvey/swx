@@ -14,6 +14,7 @@
 using std::endl;
 using std::fixed;
 using std::ios_base;
+using std::left;
 using std::ostream;
 using std::right;
 using std::setprecision;
@@ -82,20 +83,28 @@ operator<<(std::ostream& os, std::vector<Interval> const& container)
 	double accum_hours = 0.0;
 	try
 	{
+		auto const gap = "  ";
 		for (auto const& interval: container)
 		{
 			double hours = interval.duration().count() / 60.0 / 60.0;
 			accum_hours += hours;
 
-			os << time_point_to_stamp(interval.beginning()) << "    "
-			   << time_point_to_stamp(interval.ending()) << "  ";
+			os << time_point_to_stamp(interval.beginning()) << gap
+			   << time_point_to_stamp(interval.ending()) << gap;
 
 			os << fixed
 			   << setprecision(SWX_OUTPUT_PRECISION)
 			   << right;
 
-			os << setw(SWX_OUTPUT_WIDTH) << round(hours) << "  "
-			   << setw(SWX_OUTPUT_WIDTH) << round(accum_hours) << endl;
+			os << setw(SWX_OUTPUT_WIDTH) << round(hours) << gap
+			   << setw(SWX_OUTPUT_WIDTH) << round(accum_hours);
+
+			if (interval.is_live())
+			{
+				os << left << gap << "ongoing";
+			}
+
+			os << endl;
 
 			os.flags(orig_flags);
 		}

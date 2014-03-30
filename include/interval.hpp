@@ -17,9 +17,6 @@ namespace swx
 /**
  * Represent an interval of time. It may be open (still running) or
  * closed (has an end).
- *
- * @todo HIGH PRIORITY Reflect whether live or not when printing (vectors of)
- * Intervals.
  */
 class Interval
 {
