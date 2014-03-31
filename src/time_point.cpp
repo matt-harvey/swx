@@ -5,20 +5,33 @@
 #include "time_point.hpp"
 #include <chrono>
 #include <ctime>
+#include <stdexcept>
+#include <string>
 
 namespace chrono = std::chrono;
 
 using std::localtime;
 using std::mktime;
+using std::runtime_error;
+using std::string;
 using std::tm;
 using std::time_t;
 
 namespace swx
 {
 
-TimePoint now()
+TimePoint
+now()
 {
 	return chrono::system_clock::now();
+}
+
+TimePoint
+start_of_day(TimePoint const& p_time_point)
+{
+	tm time_tm = time_point_to_tm(p_time_point);
+	time_tm.tm_hour = time_tm.tm_min = time_tm.tm_sec = 0;
+	return tm_to_time_point(time_tm);
 }
 
 std::tm
@@ -39,11 +52,46 @@ tm_to_time_point(tm const& p_tm)
 }
 
 TimePoint
-start_of_day(TimePoint const& p_time_point)
+time_stamp_to_point(string const& p_time_stamp)
 {
-	tm time_tm = time_point_to_tm(p_time_point);
-	time_tm.tm_hour = time_tm.tm_min = time_tm.tm_sec = 0;
-	return tm_to_time_point(time_tm);
+	// don't make this static - caused odd bug with strptime
+	char const format[] = SWX_FORMAT_STRING;
+
+	tm tm;
+	bool parse_error = false;
+#	ifdef __GNUC__
+		if (strptime(p_time_stamp.c_str(), format, &tm) == nullptr)
+		{
+			parse_error = true;
+		}
+#	else
+		stringstream ss;
+		ss << p_time_stamp;
+		ss >> get_time(&tm, format);
+		if (!ss)
+		{
+			parse_error = true;
+		}
+#	endif
+	if (parse_error)
+	{
+		throw runtime_error("Could not parse timestamp.");
+	}
+	return chrono::system_clock::from_time_t(mktime(&tm));
+}
+
+string
+time_point_to_stamp(TimePoint const& p_time_point)
+{
+	// don't make this static - caused odd bug with strptime
+	char const format[] = SWX_FORMAT_STRING;
+	tm const time_tmp = time_point_to_tm(p_time_point);
+	char buf[SWX_FORMATTED_BUF_LEN];
+	if (strftime(buf, SWX_FORMATTED_BUF_LEN, format, &time_tmp) == 0)
+	{
+		throw runtime_error("Error formatting TimePoint.");
+	}
+	return string(buf);
 }
 
 }   // namespace swx

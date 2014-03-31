@@ -7,34 +7,25 @@
 
 #include <chrono>
 #include <ctime>
+#include <string>
 
 namespace swx
 {
 
-/**
- * Represents a point in time.
- */
 typedef std::chrono::time_point<std::chrono::system_clock> TimePoint;
 
-/**
- * Convenience function.
- */
 TimePoint now();
-
-/**
- * Convert to a std::tm.
- */
-std::tm time_point_to_tm(TimePoint const& p_time_point);
-
-/**
- * Convert from a std::tm.
- */
-TimePoint tm_to_time_point(std::tm const& p_tm);
 
 /**
  * The first TimePoint of the day on which p_time_point falls.
  */
 TimePoint start_of_day(TimePoint const& p_time_point);
+
+std::tm time_point_to_tm(TimePoint const& p_time_point);
+TimePoint tm_to_time_point(std::tm const& p_tm);
+TimePoint time_stamp_to_point(std::string const& p_time_stamp);
+std::string time_point_to_stamp(TimePoint const& p_time_point);
+
 
 }  // namespace swx
 

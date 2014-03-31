@@ -89,7 +89,6 @@ set(
 	src/string_utilities.cpp
 	src/switch_command_processor.cpp
 	src/time_point.cpp
-	src/time_utilities.cpp
 	src/time_log.cpp
 	src/version_command_processor.cpp
 )

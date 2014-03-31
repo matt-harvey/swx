@@ -4,9 +4,7 @@
 
 #include "time_log.hpp"
 #include "string_utilities.hpp"
-#include "time_utilities.hpp"
 #include "time_point.hpp"
-#include "time_utilities.hpp"
 #include <algorithm>
 #include <cassert>
 #include <chrono>

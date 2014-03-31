@@ -1,7 +1,6 @@
 // Copyright 2014 Matthew Harvey
 
 #include "command_router.hpp"
-#include "time_utilities.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
 #include <cassert>
