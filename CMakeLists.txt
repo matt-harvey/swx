@@ -81,7 +81,6 @@ set(
 	src/print_command_processor.cpp
 	src/command_processor.cpp
 	src/command_router.cpp
-	src/day.cpp
 	src/help_command_processor.cpp
 	src/info.cpp
 	src/interval.cpp

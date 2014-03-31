@@ -3,7 +3,6 @@
 #ifndef GUARD_interval_hpp_6955864893717628
 #define GUARD_interval_hpp_6955864893717628
 
-#include "day.hpp"
 #include "seconds.hpp"
 #include "time_point.hpp"
 #include <chrono>

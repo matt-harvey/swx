@@ -18,15 +18,17 @@ class TimeLog
 {
 // nested types and typedefs
 private:
+
 	typedef std::vector<std::string> ActivityNames;
 	typedef ActivityNames::size_type ActivityId;
+	typedef std::map<std::string, ActivityId> ActivityMap;
+
 	struct Entry
 	{
 		Entry(ActivityId p_activity_id, TimePoint const& p_time_point);
 		ActivityId activity_id;
 		TimePoint time_point;
 	};
-	typedef std::map<std::string, ActivityId> ActivityMap;
 
 // special member functions
 public:
@@ -49,6 +51,7 @@ public:
 	std::vector<Interval> get_intervals_by_activity_name
 	(	std::string const& p_activity_name
 	);
+
 private:
 	void clear_cache();
 	void mark_cache_as_stale();
