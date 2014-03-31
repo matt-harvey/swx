@@ -2,8 +2,8 @@
  * Copyright 2014 Matthew Harvey
  */
 
-#ifndef GUARD_time_conversion_hpp_4901403805660738
-#define GUARD_time_conversion_hpp_4901403805660738
+#ifndef GUARD_time_utilities_hpp_4901403805660738
+#define GUARD_time_utilities_hpp_4901403805660738
 
 #include "time_point.hpp"
 #include <string>
@@ -17,4 +17,4 @@ std::string time_point_to_stamp(TimePoint const& p_time_point);
 
 }  // namespace swx
 
-#endif  // GUARD_time_conversion_hpp_4901403805660738
+#endif  // GUARD_time_utilities_hpp_4901403805660738
