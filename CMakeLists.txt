@@ -86,6 +86,7 @@ set(
 	src/info.cpp
 	src/interval.cpp
 	src/round.cpp
+	src/stream_flag_guard.cpp
 	src/string_utilities.cpp
 	src/switch_command_processor.cpp
 	src/time_conversion.cpp

@@ -3,6 +3,7 @@
 #include "interval.hpp"
 #include "round.hpp"
 #include "seconds.hpp"
+#include "stream_flag_guard.hpp"
 #include "time_conversion.hpp"
 #include "time_point.hpp"
 #include <cassert>
@@ -79,40 +80,25 @@ Interval::is_live() const
 ostream&
 operator<<(std::ostream& os, std::vector<Interval> const& container)
 {
-	ios_base::fmtflags const orig_flags = os.flags();
 	double accum_hours = 0.0;
-	try
+	auto const gap = "  ";
+	for (auto const& interval: container)
 	{
-		auto const gap = "  ";
-		for (auto const& interval: container)
+		StreamFlagGuard guard(os);
+		double hours = interval.duration().count() / 60.0 / 60.0;
+		accum_hours += hours;
+		os << time_point_to_stamp(interval.beginning()) << gap
+		   << time_point_to_stamp(interval.ending()) << gap;
+		os << fixed
+		   << setprecision(SWX_OUTPUT_PRECISION)
+		   << right;
+		os << setw(SWX_OUTPUT_WIDTH) << round(hours) << gap
+		   << setw(SWX_OUTPUT_WIDTH) << round(accum_hours);
+		if (interval.is_live())
 		{
-			double hours = interval.duration().count() / 60.0 / 60.0;
-			accum_hours += hours;
-
-			os << time_point_to_stamp(interval.beginning()) << gap
-			   << time_point_to_stamp(interval.ending()) << gap;
-
-			os << fixed
-			   << setprecision(SWX_OUTPUT_PRECISION)
-			   << right;
-
-			os << setw(SWX_OUTPUT_WIDTH) << round(hours) << gap
-			   << setw(SWX_OUTPUT_WIDTH) << round(accum_hours);
-
-			if (interval.is_live())
-			{
-				os << left << gap << "ongoing";
-			}
-
-			os << endl;
-
-			os.flags(orig_flags);
+			os << left << gap << "ongoing";
 		}
-	}
-	catch (...)
-	{
-		os.flags(orig_flags);	
-		throw;
+		os << endl;
 	}
 	return os;
 }

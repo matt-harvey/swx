@@ -4,6 +4,7 @@
 
 #include "command_processor.hpp"
 #include "info.hpp"
+#include "stream_flag_guard.hpp"
 #include <cassert>
 #include <iomanip>
 #include <iostream>
@@ -98,19 +99,17 @@ CommandProcessor::usage_descriptor() const
 	left_col_width +=
 		Info::application_name().length() + 1 + m_command_word.length() + 2;
 	ostringstream oss;
-	auto const orig_flags = oss.flags();
 	for (auto const& line: help_lines)
 	{
+		StreamFlagGuard guard(oss);
 		oss << setw(left_col_width)
 		    << left
 		    << Info::application_name() + ' ' + m_command_word + ' ' +
 			     line.args_descriptor
 		    << "  ";
-		oss.flags(orig_flags);
-		oss << left
-		    << line.usage_descriptor
+		guard.reset();
+		oss << line.usage_descriptor
 		    << '\n';
-		oss.flags(orig_flags);
 	}
 	if (!m_aliases.empty())
 	{
