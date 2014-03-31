@@ -3,6 +3,7 @@
  */
 
 #include "time_utilities.hpp"
+#include "time_point.hpp"
 #include <chrono>
 #include <cstring>
 #include <ctime>
@@ -62,10 +63,9 @@ string time_point_to_stamp(TimePoint const& p_time_point)
 {
 	// don't make this static - caused odd bug with strptime
 	char const format[] = SWX_FORMAT_STRING;
-	time_t const time_time_t = chrono::system_clock::to_time_t(p_time_point);
-	auto const time_tmp = localtime(&time_time_t);
+	tm const time_tmp = time_point_to_tm(p_time_point);
 	char buf[SWX_FORMATTED_BUF_LEN];
-	if (strftime(buf, SWX_FORMATTED_BUF_LEN, format, time_tmp) == 0)
+	if (strftime(buf, SWX_FORMATTED_BUF_LEN, format, &time_tmp) == 0)
 	{
 		throw runtime_error("Error formatting TimePoint.");
 	}

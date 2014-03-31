@@ -27,7 +27,6 @@ using std::getline;
 using std::ifstream;
 using std::isspace;
 using std::ios;
-using std::mktime;
 using std::move;
 using std::ofstream;
 using std::remove;

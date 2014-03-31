@@ -6,6 +6,7 @@
 #define GUARD_time_utilities_hpp_4901403805660738
 
 #include "time_point.hpp"
+#include <ctime>
 #include <string>
 
 namespace swx
