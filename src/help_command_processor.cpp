@@ -67,7 +67,7 @@ HelpCommandProcessor::do_process
 		p_ordinary_ostream << "Usage: "
 		                   << Info::application_name() << ' '
 						   << "SUBCOMMAND [ARGS..]" << endl
-						   << "\nAvailable subcommmands are:\n\n"
+						   << "\nAvailable subcommands are:\n\n"
 		                   << oss.str() << "\n"
 						   << "For more information on a particular subcommand,"
 						   << " enter '"
