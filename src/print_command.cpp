@@ -51,27 +51,30 @@ PrintCommand::do_process
 	std::ostream& p_ordinary_ostream
 )
 {
-	string const activity_name = squish(p_args.begin(), p_args.end());
-	p_ordinary_ostream <<
-		m_time_log.get_intervals_by_activity_name(move(activity_name));
-	return ErrorMessages();
+	ErrorMessages ret;
+	if (p_args.empty())
+	{
+		ret.push_back("Too few arguments passed to this subcommand.");
+	}
+	else
+	{
+		string const activity_name = squish(p_args.begin(), p_args.end());
+		p_ordinary_ostream <<
+			m_time_log.get_intervals_by_activity_name(move(activity_name));
+	}
+	return ret;
 }
 
 vector<Command::HelpLine>
 PrintCommand::do_get_help_lines() const
 {
-	string const format_description =
-		" (start, end, duration-in-decimal-hours, "
-		"cumulutive-duration-in-decimal-hours)";
-	HelpLine const basic_usage_help_line
+	HelpLine const help_line
 	(	"ACTIVITY",
-		"Print summary of time spent on ACTIVITY" + format_description
+		"Print summary of time spent on ACTIVITY "
+			"(start, end, duration-in-decimal-hours, "
+			"cumulutive-duration-in-decimal-hours)"
 	);
-	HelpLine const special_usage_help_line
-	(	"",
-		"Print summary of \"idle\" time" + format_description
-	);
-	return vector<HelpLine>{basic_usage_help_line, special_usage_help_line};
+	return vector<HelpLine>{help_line};
 }
 
 }  // namespace swx
