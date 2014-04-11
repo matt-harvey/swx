@@ -53,8 +53,6 @@ private:
 		std::ostream& p_ordinary_ostream
 	) override;
 
-	virtual ErrorMessages do_validate(Arguments const& p_args) override;
-
 	std::vector<HelpLine> do_get_help_lines() const override;
 
 // member variables

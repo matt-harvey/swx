@@ -65,11 +65,7 @@ CommandProcessor::process
 	ostream& p_error_ostream
 )
 {
-	ErrorMessages error_messages = do_validate(p_args);
-	if (error_messages.empty())
-	{
-		error_messages = do_process(p_args, p_ordinary_ostream);
-	}
+	auto const error_messages = do_process(p_args, p_ordinary_ostream);
 	for (auto const& message: error_messages)
 	{
 		p_error_ostream << message << endl;
@@ -80,13 +76,6 @@ CommandProcessor::process
 	}
 	assert (error_messages.size() > 0);
 	return 1;
-}
-
-CommandProcessor::ErrorMessages
-CommandProcessor::do_validate(Arguments const& p_args)
-{
-	(void)p_args;  // ignore param.
-	return ErrorMessages();
 }
 
 string

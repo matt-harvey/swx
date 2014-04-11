@@ -87,32 +87,29 @@ HelpCommandProcessor::do_process
 						   << command_word() << " SUBCOMMAND'." << endl;
 		return ret;
 	}
-	assert (p_args.size() == 1);
-	try
+	else if (p_args.size() == 1)
 	{
-		p_ordinary_ostream << m_command_router.help_information(p_args[0])
-		                   << endl;			
+		try
+		{
+			p_ordinary_ostream << m_command_router.help_information(p_args[0])
+							   << endl;			
+		}
+		catch (runtime_error&)
+		{
+			ostringstream oss;
+			oss << CommandRouter::
+					  error_message_for_unrecognized_command(p_args[0]);
+			ret.push_back(oss.str());
+		}
 	}
-	catch (runtime_error&)
+	else
 	{
-		ostringstream oss;
-		oss << CommandRouter::
-		          error_message_for_unrecognized_command(p_args[0]);
-		ret.push_back(oss.str());
+		assert (p_args.size() > 1);
+		ret.push_back("Too many arguments passed to this subcommand.");
 	}
 	return ret;	
 }
 
-CommandProcessor::ErrorMessages
-HelpCommandProcessor::do_validate(Arguments const& p_args)
-{
-	ErrorMessages ret;
-	if (p_args.size() > 1)
-	{
-		ret.push_back("Too many arguments passed to this subcommand.");
-	}
-	return ret;
-}
 
 std::vector<CommandProcessor::HelpLine>
 HelpCommandProcessor::do_get_help_lines() const

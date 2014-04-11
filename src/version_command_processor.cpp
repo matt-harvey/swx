@@ -56,13 +56,6 @@ VersionCommandProcessor::do_process
 	return ErrorMessages();
 }
 
-CommandProcessor::ErrorMessages
-VersionCommandProcessor::do_validate(Arguments const& p_args)
-{
-	(void)p_args;  // ignore param.
-	return ErrorMessages();
-}
-
 vector<CommandProcessor::HelpLine>
 VersionCommandProcessor::do_get_help_lines() const
 {

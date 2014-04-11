@@ -24,7 +24,6 @@
 #include <ctime>
 #include <fstream>
 #include <iomanip>
-#include <iostream>  // TEMP for logging
 #include <ios>
 #include <iostream>
 #include <sstream>
@@ -93,7 +92,6 @@ TimeLog::get_intervals_by_activity_name(string const& p_activity_name)
 	{
 		if (m_entries[i].activity_id == activity_id)
 		{
-			// TODO Factor this into separate function.
 			auto const time_point = m_entries[i].time_point;
 			auto const j = i + 1;
 			auto const done = (j == m_entries.size());

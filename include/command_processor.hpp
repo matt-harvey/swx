@@ -79,8 +79,6 @@ private:
 	(	Arguments const& p_args,
 		std::ostream& p_ordinary_ostream
 	) = 0;
-
-	virtual ErrorMessages do_validate(Arguments const& p_args);
 	
 	virtual std::vector<HelpLine> do_get_help_lines() const = 0;
 
