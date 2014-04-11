@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#ifndef GUARD_switch_command_processor_hpp_9219790538409627
-#define GUARD_switch_command_processor_hpp_9219790538409627
+#ifndef GUARD_switch_command_hpp_9219790538409627
+#define GUARD_switch_command_hpp_9219790538409627
 
-#include "command_processor.hpp"
+#include "command.hpp"
 #include "time_log.hpp"
 #include <ostream>
 #include <string>
@@ -26,20 +26,20 @@
 namespace swx
 {
 
-class SwitchCommandProcessor: public CommandProcessor
+class SwitchCommand: public Command
 {
 // special member functions
 public:
-	explicit SwitchCommandProcessor
+	explicit SwitchCommand
 	(	std::string const& p_command_word,
 		std::vector<std::string> const& p_aliases,
 		TimeLog& p_time_log
 	);
-	SwitchCommandProcessor(SwitchCommandProcessor const& rhs) = delete;
-	SwitchCommandProcessor(SwitchCommandProcessor&& rhs) = delete;
-	SwitchCommandProcessor& operator=(SwitchCommandProcessor const& rhs) = delete;
-	SwitchCommandProcessor& operator=(SwitchCommandProcessor&& rhs) = delete;
-	virtual ~SwitchCommandProcessor();
+	SwitchCommand(SwitchCommand const& rhs) = delete;
+	SwitchCommand(SwitchCommand&& rhs) = delete;
+	SwitchCommand& operator=(SwitchCommand const& rhs) = delete;
+	SwitchCommand& operator=(SwitchCommand&& rhs) = delete;
+	virtual ~SwitchCommand();
 
 // inherited virtual functions
 private:
@@ -54,8 +54,8 @@ private:
 private:
 	TimeLog& m_time_log;
 
-};  // class SwitchCommandProcessor
+};  // class SwitchCommand
 
 }  // namespace swx
 
-#endif  // GUARD_switch_command_processor_hpp_9219790538409627
+#endif  // GUARD_switch_command_hpp_9219790538409627

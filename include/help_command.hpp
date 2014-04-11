@@ -14,29 +14,37 @@
  * limitations under the License.
  */
 
-#ifndef GUARD_version_command_processor_hpp_12242928944641225
-#define GUARD_version_command_processor_hpp_12242928944641225
+#ifndef GUARD_help_command_hpp_8550137443724153
+#define GUARD_help_command_hpp_8550137443724153
 
-#include "command_processor.hpp"
-#include <ostream>
+#include "command.hpp"
 #include <string>
+#include <vector>
 
 namespace swx
 {
 
-class VersionCommandProcessor: public CommandProcessor
+// begin forward declarations
+
+class CommandManager;
+
+// end forward declarations
+
+class HelpCommand: public Command
 {
 // special member functions
 public:
-	VersionCommandProcessor
+	HelpCommand
 	(	std::string const& p_command_word,
-		std::vector<std::string> const& p_aliases
+		std::vector<std::string> const& p_aliases,
+		CommandManager const& p_command_manager
 	);
-	VersionCommandProcessor(VersionCommandProcessor const& rhs) = delete;
-	VersionCommandProcessor(VersionCommandProcessor&& rhs) = delete;
-	VersionCommandProcessor& operator=(VersionCommandProcessor const& rhs) = delete;
-	VersionCommandProcessor& operator=(VersionCommandProcessor&& rhs) = delete;
-	virtual ~VersionCommandProcessor();
+
+	HelpCommand(HelpCommand const& rhs) = delete;
+	HelpCommand(HelpCommand&& rhs) = delete;
+	HelpCommand& operator=(HelpCommand const& rhs) = delete;
+	HelpCommand& operator=(HelpCommand&& rhs) = delete;
+	virtual ~HelpCommand();
 
 // inherited virtual functions
 private:
@@ -47,8 +55,12 @@ private:
 
 	std::vector<HelpLine> do_get_help_lines() const override;
 
-};  // class VersionCommandProcessor
+// member variables
+private:
+	CommandManager const& m_command_manager;
+
+};  // class HelpCommand
 
 }  // namespace swx
 
-#endif  // GUARD_version_command_processor_hpp_12242928944641225
+#endif  // GUARD_help_command_hpp_8550137443724153

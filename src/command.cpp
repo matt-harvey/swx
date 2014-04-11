@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "command_processor.hpp"
+#include "command.hpp"
 #include "info.hpp"
 #include "stream_flag_guard.hpp"
 #include <cassert>
@@ -36,7 +36,7 @@ using std::vector;
 namespace swx
 {
 
-CommandProcessor::HelpLine::HelpLine
+Command::HelpLine::HelpLine
 (	string const& p_args_descriptor,
 	string const& p_usage_descriptor
 ):
@@ -45,7 +45,7 @@ CommandProcessor::HelpLine::HelpLine
 {
 }
 
-CommandProcessor::CommandProcessor
+Command::Command
 (	string const& p_command_word,
 	vector<string> const& p_aliases
 ):
@@ -54,12 +54,12 @@ CommandProcessor::CommandProcessor
 {
 }
 
-CommandProcessor::~CommandProcessor()
+Command::~Command()
 {
 }
 
 int
-CommandProcessor::process
+Command::process
 (	vector<string> const& p_args,
 	ostream& p_ordinary_ostream,
 	ostream& p_error_ostream
@@ -79,7 +79,7 @@ CommandProcessor::process
 }
 
 string
-CommandProcessor::usage_descriptor() const
+Command::usage_descriptor() const
 {
 	// TODO MEDIUM PRIORITY This should handle wrapping of the right-hand cell to
 	// a reasonable width if necessary.
@@ -126,13 +126,13 @@ CommandProcessor::usage_descriptor() const
 }
 
 string const&
-CommandProcessor::command_word() const
+Command::command_word() const
 {
 	return m_command_word;
 }
 
 vector<string> const&
-CommandProcessor::aliases() const
+Command::aliases() const
 {
 	return m_aliases;
 }

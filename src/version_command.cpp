@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "version_command_processor.hpp"
-#include "command_processor.hpp"
+#include "version_command.hpp"
+#include "command.hpp"
 #include "info.hpp"
 #include <iostream>
 #include <ostream>
@@ -30,20 +30,20 @@ using std::vector;
 namespace swx
 {
 
-VersionCommandProcessor::VersionCommandProcessor
+VersionCommand::VersionCommand
 (	string const& p_command_word,
 	vector<string> const& p_aliases
 ):
-	CommandProcessor(p_command_word, p_aliases)
+	Command(p_command_word, p_aliases)
 {
 }
 
-VersionCommandProcessor::~VersionCommandProcessor()
+VersionCommand::~VersionCommand()
 {
 }
 
-CommandProcessor::ErrorMessages
-VersionCommandProcessor::do_process
+Command::ErrorMessages
+VersionCommand::do_process
 (	Arguments const& p_args,
 	ostream& p_ordinary_ostream
 )
@@ -56,8 +56,8 @@ VersionCommandProcessor::do_process
 	return ErrorMessages();
 }
 
-vector<CommandProcessor::HelpLine>
-VersionCommandProcessor::do_get_help_lines() const
+vector<Command::HelpLine>
+VersionCommand::do_get_help_lines() const
 {
 	HelpLine const basic_usage_help_line
 	(	"",

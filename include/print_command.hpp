@@ -14,37 +14,31 @@
  * limitations under the License.
  */
 
-#ifndef GUARD_help_command_processor_hpp_8550137443724153
-#define GUARD_help_command_processor_hpp_8550137443724153
+#ifndef GUARD_print_command_23685825347754091
+#define GUARD_print_command_23685825347754091
 
-#include "command_processor.hpp"
+#include "command.hpp"
+#include "time_log.hpp"
 #include <string>
 #include <vector>
 
 namespace swx
 {
 
-// begin forward declarations
-
-class CommandManager;
-
-// end forward declarations
-
-class HelpCommandProcessor: public CommandProcessor
+class PrintCommand: public Command
 {
 // special member functions
 public:
-	HelpCommandProcessor
+	PrintCommand
 	(	std::string const& p_command_word,
 		std::vector<std::string> const& p_aliases,
-		CommandManager const& p_command_manager
+		TimeLog& p_time_log
 	);
-
-	HelpCommandProcessor(HelpCommandProcessor const& rhs) = delete;
-	HelpCommandProcessor(HelpCommandProcessor&& rhs) = delete;
-	HelpCommandProcessor& operator=(HelpCommandProcessor const& rhs) = delete;
-	HelpCommandProcessor& operator=(HelpCommandProcessor&& rhs) = delete;
-	virtual ~HelpCommandProcessor();
+	PrintCommand(PrintCommand const& rhs) = delete;
+	PrintCommand(PrintCommand&& rhs) = delete;
+	PrintCommand& operator=(PrintCommand const& rhs) = delete;
+	PrintCommand& operator=(PrintCommand&& rhs) = delete;
+	virtual ~PrintCommand();
 
 // inherited virtual functions
 private:
@@ -55,12 +49,11 @@ private:
 
 	std::vector<HelpLine> do_get_help_lines() const override;
 
-// member variables
 private:
-	CommandManager const& m_command_manager;
+	TimeLog& m_time_log;
 
-};  // class HelpCommandProcessor
+};  // class PrintCommand
 
 }  // namespace swx
 
-#endif  // GUARD_help_command_processor_hpp_8550137443724153
+#endif  // GUARD_print_command_hpp_23685825347754091

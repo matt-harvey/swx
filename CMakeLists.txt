@@ -92,19 +92,19 @@ set(
 
 set(
 	common_sources
-	src/print_command_processor.cpp
-	src/command_processor.cpp
+	src/print_command.cpp
+	src/command.cpp
 	src/command_manager.cpp
-	src/help_command_processor.cpp
+	src/help_command.cpp
 	src/info.cpp
 	src/interval.cpp
 	src/round.cpp
 	src/stream_flag_guard.cpp
 	src/string_utilities.cpp
-	src/switch_command_processor.cpp
+	src/switch_command.cpp
 	src/time_point.cpp
 	src/time_log.cpp
-	src/version_command_processor.cpp
+	src/version_command.cpp
 )
 
 add_library(swx_common ${common_sources})

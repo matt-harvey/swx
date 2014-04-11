@@ -14,31 +14,29 @@
  * limitations under the License.
  */
 
-#ifndef GUARD_print_command_processor_23685825347754091
-#define GUARD_print_command_processor_23685825347754091
+#ifndef GUARD_version_command_hpp_12242928944641225
+#define GUARD_version_command_hpp_12242928944641225
 
-#include "command_processor.hpp"
-#include "time_log.hpp"
+#include "command.hpp"
+#include <ostream>
 #include <string>
-#include <vector>
 
 namespace swx
 {
 
-class PrintCommandProcessor: public CommandProcessor
+class VersionCommand: public Command
 {
 // special member functions
 public:
-	PrintCommandProcessor
+	VersionCommand
 	(	std::string const& p_command_word,
-		std::vector<std::string> const& p_aliases,
-		TimeLog& p_time_log
+		std::vector<std::string> const& p_aliases
 	);
-	PrintCommandProcessor(PrintCommandProcessor const& rhs) = delete;
-	PrintCommandProcessor(PrintCommandProcessor&& rhs) = delete;
-	PrintCommandProcessor& operator=(PrintCommandProcessor const& rhs) = delete;
-	PrintCommandProcessor& operator=(PrintCommandProcessor&& rhs) = delete;
-	virtual ~PrintCommandProcessor();
+	VersionCommand(VersionCommand const& rhs) = delete;
+	VersionCommand(VersionCommand&& rhs) = delete;
+	VersionCommand& operator=(VersionCommand const& rhs) = delete;
+	VersionCommand& operator=(VersionCommand&& rhs) = delete;
+	virtual ~VersionCommand();
 
 // inherited virtual functions
 private:
@@ -49,11 +47,8 @@ private:
 
 	std::vector<HelpLine> do_get_help_lines() const override;
 
-private:
-	TimeLog& m_time_log;
-
-};  // class PrintCommandProcessor
+};  // class VersionCommand
 
 }  // namespace swx
 
-#endif  // GUARD_print_command_processor_hpp_23685825347754091
+#endif  // GUARD_version_command_hpp_12242928944641225

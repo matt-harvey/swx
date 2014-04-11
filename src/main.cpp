@@ -31,7 +31,7 @@ using swx::CommandManager;
 using swx::TimeLog;
 
 // TODO Interaction between CommandManager,
-// CommandProcessor and derived of the latter, seems
+// Command and derived of the latter, seems
 // messy, especially in regards to error handling.
 
 int main(int argc, char** argv)

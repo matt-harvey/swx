@@ -15,13 +15,13 @@
  */
 
 #include "command_manager.hpp"
-#include "print_command_processor.hpp"
-#include "command_processor.hpp"
-#include "help_command_processor.hpp"
+#include "print_command.hpp"
+#include "command.hpp"
+#include "help_command.hpp"
 #include "info.hpp"
-#include "switch_command_processor.hpp"
+#include "switch_command.hpp"
 #include "time_log.hpp"
-#include "version_command_processor.hpp"
+#include "version_command.hpp"
 #include <cassert>
 #include <iostream>
 #include <ostream>
@@ -57,9 +57,9 @@ namespace
 
 CommandManager::CommandManager(TimeLog& p_time_log): m_time_log(p_time_log)
 {
-	populate_command_processor_map();	
+	populate_command_map();	
 #	ifndef NDEBUG
-		for (auto const& entry: m_command_processor_map)
+		for (auto const& entry: m_command_map)
 		{
 			assert (entry.second);
 		}
@@ -67,25 +67,25 @@ CommandManager::CommandManager(TimeLog& p_time_log): m_time_log(p_time_log)
 }
 
 void
-CommandManager::populate_command_processor_map()
+CommandManager::populate_command_map()
 {
-	CommandProcessorPtr version_processor
-	(	new VersionCommandProcessor("version", {"v"})
+	CommandPtr version_processor
+	(	new VersionCommand("version", {"v"})
 	);
 	create_command(version_processor);	
 	
-	CommandProcessorPtr help_processor
-	(	new HelpCommandProcessor(help_command_string(), {"h"}, *this)
+	CommandPtr help_processor
+	(	new HelpCommand(help_command_string(), {"h"}, *this)
 	);
 	create_command(help_processor);
 
-	CommandProcessorPtr switch_processor
-	(	new SwitchCommandProcessor("switch", {"s"}, m_time_log)
+	CommandPtr switch_processor
+	(	new SwitchCommand("switch", {"s"}, m_time_log)
 	);
 	create_command(switch_processor);
 
-	CommandProcessorPtr print_processor
-	(	new PrintCommandProcessor("print", {"p"}, m_time_log)
+	CommandPtr print_processor
+	(	new PrintCommand("print", {"p"}, m_time_log)
 	);
 	create_command(print_processor);
 		
@@ -98,8 +98,8 @@ CommandManager::process_command
 	vector<string> const& p_args
 ) const
 {
-	auto const it = m_command_processor_map.find(p_command);
-	if (it == m_command_processor_map.end())
+	auto const it = m_command_map.find(p_command);
+	if (it == m_command_map.end())
 	{
 		return process_unrecognized_command(p_command);
 	}
@@ -120,8 +120,8 @@ string
 CommandManager::help_information(string const& p_command) const
 {
 	ostringstream oss;
-	auto const it = m_command_processor_map.find(p_command);
-	if (it == m_command_processor_map.end())
+	auto const it = m_command_map.find(p_command);
+	if (it == m_command_map.end())
 	{
 		throw runtime_error
 		(	error_message_for_unrecognized_command(p_command)
@@ -135,12 +135,12 @@ CommandManager::available_commands() const
 {
 	set<string> command_words;
 	vector<pair<string, vector<string>>> ret;
-	auto const b = m_command_processor_map.begin();
-	auto const e = m_command_processor_map.end();
+	auto const b = m_command_map.begin();
+	auto const e = m_command_map.end();
 	for (auto it = b; it != e; ++it)
 	{
 		ostringstream oss;
-		CommandProcessor const& cp = *it->second;
+		Command const& cp = *it->second;
 		string const word = cp.command_word();
 		if (command_words.find(word) == command_words.end())
 		{
@@ -193,7 +193,7 @@ CommandManager::error_ostream() const
 }
 
 void
-CommandManager::create_command(CommandProcessorPtr const& p_cpp)
+CommandManager::create_command(CommandPtr const& p_cpp)
 {
 	register_command_word(p_cpp->command_word(), p_cpp);
 	for (auto const& alias: p_cpp->aliases())
@@ -206,10 +206,10 @@ CommandManager::create_command(CommandProcessorPtr const& p_cpp)
 void
 CommandManager::register_command_word
 (	string const& p_word,
-	CommandProcessorPtr const& p_cpp
+	CommandPtr const& p_cpp
 )
 {
-	if (m_command_processor_map.find(p_word) != m_command_processor_map.end())
+	if (m_command_map.find(p_word) != m_command_map.end())
 	{
 		ostringstream oss;
 		oss << "Command processor word \""
@@ -217,7 +217,7 @@ CommandManager::register_command_word
 			<< "\" has already been registered.";
 		throw std::runtime_error(oss.str());
 	}
-	m_command_processor_map[p_word] = p_cpp;
+	m_command_map[p_word] = p_cpp;
 	return;
 }
 

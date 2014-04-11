@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "help_command_processor.hpp"
-#include "command_processor.hpp"
+#include "help_command.hpp"
+#include "command.hpp"
 #include "command_manager.hpp"
 #include "info.hpp"
 #include <cassert>
@@ -38,22 +38,22 @@ using std::vector;
 namespace swx
 {
 
-HelpCommandProcessor::HelpCommandProcessor
+HelpCommand::HelpCommand
 (	string const& p_command_word,
 	vector<string> const& p_aliases,
 	CommandManager const& p_command_manager
 ):
-	CommandProcessor(p_command_word, p_aliases),
+	Command(p_command_word, p_aliases),
 	m_command_manager(p_command_manager)
 {
 }
 
-HelpCommandProcessor::~HelpCommandProcessor()
+HelpCommand::~HelpCommand()
 {
 }
 
-CommandProcessor::ErrorMessages
-HelpCommandProcessor::do_process
+Command::ErrorMessages
+HelpCommand::do_process
 (	Arguments const& p_args,
 	ostream& p_ordinary_ostream
 )
@@ -111,8 +111,8 @@ HelpCommandProcessor::do_process
 }
 
 
-std::vector<CommandProcessor::HelpLine>
-HelpCommandProcessor::do_get_help_lines() const
+std::vector<Command::HelpLine>
+HelpCommand::do_get_help_lines() const
 {
 	HelpLine const general_help_line("", "Print general help information");
 	HelpLine const specific_help_line

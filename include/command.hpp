@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef GUARD_command_processor_hpp_08439188501070807
-#define GUARD_command_processor_hpp_08439188501070807
+#ifndef GUARD_command_hpp_08439188501070807
+#define GUARD_command_hpp_08439188501070807
 
 #include <ostream>
 #include <string>
@@ -28,7 +28,7 @@ namespace swx
  * @todo Find a more unified way to generate the help messages for
  * each subclass (to ensure they're all in the same format).
  */
-class CommandProcessor
+class Command
 {
 // nested types and typedefs
 protected:
@@ -38,7 +38,7 @@ protected:
 	struct HelpLine
 	{
 	public:
-		friend class CommandProcessor;
+		friend class Command;
 		HelpLine
 		(	std::string const& p_args_descriptor,
 			std::string const& p_usage_descriptor
@@ -50,15 +50,15 @@ protected:
 
 // special member functions
 public:
-	CommandProcessor
+	Command
 	(	std::string const& p_command_word,
 		std::vector<std::string> const& p_aliases
 	);
-	CommandProcessor(CommandProcessor const& rhs) = delete;
-	CommandProcessor(CommandProcessor&& rhs) = delete;
-	CommandProcessor& operator=(CommandProcessor const& rhs) = delete;
-	CommandProcessor& operator=(CommandProcessor&& rhs) = delete;
-	virtual ~CommandProcessor();
+	Command(Command const& rhs) = delete;
+	Command(Command&& rhs) = delete;
+	Command& operator=(Command const& rhs) = delete;
+	Command& operator=(Command&& rhs) = delete;
+	virtual ~Command();
 
 // ordinary member functions
 public:
@@ -87,8 +87,8 @@ private:
 	std::string const m_command_word;
 	std::vector<std::string> const m_aliases;
 
-};  // class CommandProcessor
+};  // class Command
 
 }  // namespace swx
 
-#endif  // GUARD_command_processor_hpp_08439188501070807
+#endif  // GUARD_command_hpp_08439188501070807

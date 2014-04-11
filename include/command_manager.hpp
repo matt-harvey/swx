@@ -17,7 +17,7 @@
 #ifndef GUARD_command_manager_hpp_6901861572126794
 #define GUARD_command_manager_hpp_6901861572126794
 
-#include "command_processor.hpp"
+#include "command.hpp"
 #include "time_log.hpp"
 #include <memory>
 #include <ostream>
@@ -34,11 +34,11 @@ class CommandManager
 // nested types
 private:
 	typedef
-		std::shared_ptr<CommandProcessor>
-		CommandProcessorPtr;
+		std::shared_ptr<Command>
+		CommandPtr;
 	typedef
-		std::map<std::string, CommandProcessorPtr>
-		CommandProcessorMap;
+		std::map<std::string, CommandPtr>
+		CommandMap;
 
 // special member functions
 public:
@@ -51,7 +51,7 @@ public:
 
 // ordinary and static member functions
 private:
-	void populate_command_processor_map();
+	void populate_command_map();
 
 public:
 	int process_command
@@ -83,16 +83,16 @@ private:
 	int process_unrecognized_command(std::string const& p_command) const;
 	std::ostream& ordinary_ostream() const;
 	std::ostream& error_ostream() const;
-	void create_command(CommandProcessorPtr const& p_cpp);
+	void create_command(CommandPtr const& p_cpp);
 	void register_command_word
 	(	std::string const& p_word,
-		CommandProcessorPtr const& p_cpp
+		CommandPtr const& p_cpp
 	);
 
 // member variables
 private:
 	TimeLog& m_time_log;
-	CommandProcessorMap m_command_processor_map;
+	CommandMap m_command_map;
 
 };  // class CommandManager
 

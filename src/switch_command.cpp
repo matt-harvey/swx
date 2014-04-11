@@ -14,61 +14,67 @@
  * limitations under the License.
  */
 
-#include "print_command_processor.hpp"
-#include "command_processor.hpp"
-#include "interval.hpp"
+#include "switch_command.hpp"
+#include "command.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
+#include "time_point.hpp"
+#include <iostream>
 #include <ostream>
+#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
 
 using std::move;
+using std::ostream;
+using std::ostringstream;
 using std::string;
 using std::vector;
 
 namespace swx
 {
 
-PrintCommandProcessor::PrintCommandProcessor
+SwitchCommand::SwitchCommand
 (	string const& p_command_word,
 	vector<string> const& p_aliases,
 	TimeLog& p_time_log
 ):
-	CommandProcessor(p_command_word, p_aliases),
+	Command(p_command_word, p_aliases),
 	m_time_log(p_time_log)
 {
 }
 
-PrintCommandProcessor::~PrintCommandProcessor()
+SwitchCommand::~SwitchCommand()
 {
 }
 
-CommandProcessor::ErrorMessages
-PrintCommandProcessor::do_process
+Command::ErrorMessages
+SwitchCommand::do_process
 (	Arguments const& p_args,
-	std::ostream& p_ordinary_ostream
+	ostream& p_ordinary_ostream
 )
 {
-	string const activity_name = squish(p_args.begin(), p_args.end());
-	p_ordinary_ostream <<
-		m_time_log.get_intervals_by_activity_name(move(activity_name));
+	(void)p_ordinary_ostream;  // ignore param.
+	TimePoint const time_point = now();
+	string const activity_name(squish(p_args.begin(), p_args.end()));
+	m_time_log.append_entry(move(activity_name), time_point);
 	return ErrorMessages();
 }
 
-vector<CommandProcessor::HelpLine>
-PrintCommandProcessor::do_get_help_lines() const
+vector<Command::HelpLine>
+SwitchCommand::do_get_help_lines() const
 {
-	HelpLine const basic_usage_help_line
+	HelpLine const switching_line
 	(	"ACTIVITY",
-		"Print a summary of time spent on ACTIVITY"
+		"Start accruing time to ACTIVITY, and stop accruing time to the "
+			"current activity (if any)"
 	);
-	HelpLine const special_usage_help_line
+	HelpLine const stopping_line
 	(	"",
-		"Print a summary of time not spent on any activity"
+		"Stop accruing time to any activity"
 	);
-	return vector<HelpLine>{basic_usage_help_line, special_usage_help_line};
+	return vector<HelpLine>{switching_line, stopping_line};
 }
 
 }  // namespace swx
