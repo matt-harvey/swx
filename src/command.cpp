@@ -81,8 +81,8 @@ Command::process
 string
 Command::usage_descriptor() const
 {
-	// TODO MEDIUM PRIORITY This should handle wrapping of the right-hand cell to
-	// a reasonable width if necessary.
+	// TODO MEDIUM PRIORITY This should handle wrapping of the right-hand cell
+	// to a reasonable width if necessary.
 	auto const help_lines = do_get_help_lines();
 	typedef string::size_type ColWidth;
 	ColWidth command_word_length = m_command_word.length();

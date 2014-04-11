@@ -15,6 +15,7 @@
  */
 
 #include "command_manager.hpp"
+#include "day_command.hpp"
 #include "print_command.hpp"
 #include "command.hpp"
 #include "help_command.hpp"
@@ -69,25 +70,30 @@ CommandManager::CommandManager(TimeLog& p_time_log): m_time_log(p_time_log)
 void
 CommandManager::populate_command_map()
 {
-	CommandPtr version_processor
+	CommandPtr version_command
 	(	new VersionCommand("version", {"v"})
 	);
-	create_command(version_processor);	
+	create_command(version_command);	
 	
-	CommandPtr help_processor
+	CommandPtr help_command
 	(	new HelpCommand(help_command_string(), {"h"}, *this)
 	);
-	create_command(help_processor);
+	create_command(help_command);
 
-	CommandPtr switch_processor
+	CommandPtr switch_command
 	(	new SwitchCommand("switch", {"s"}, m_time_log)
 	);
-	create_command(switch_processor);
+	create_command(switch_command);
 
-	CommandPtr print_processor
+	CommandPtr print_command
 	(	new PrintCommand("print", {"p"}, m_time_log)
 	);
-	create_command(print_processor);
+	create_command(print_command);
+
+	CommandPtr day_command
+	(	new DayCommand("day", {"d"}, m_time_log)
+	);
+	create_command(day_command);
 		
 	return;
 }
@@ -212,7 +218,7 @@ CommandManager::register_command_word
 	if (m_command_map.find(p_word) != m_command_map.end())
 	{
 		ostringstream oss;
-		oss << "Command processor word \""
+		oss << "Command word \""
 		    << p_word
 			<< "\" has already been registered.";
 		throw std::runtime_error(oss.str());
