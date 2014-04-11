@@ -59,7 +59,6 @@ public:
 		std::vector<std::string> const& p_args
 	) const;
 
-
 	/**
 	 * @throws std::runtime_error if p_command is not a registered
 	 * command word.

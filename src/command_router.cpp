@@ -101,8 +101,7 @@ CommandRouter::process_command
 	auto const it = m_command_processor_map.find(p_command);
 	if (it == m_command_processor_map.end())
 	{
-		process_unrecognized_command(p_command);
-		return 1;
+		return process_unrecognized_command(p_command);
 	}
 	else
 	{
