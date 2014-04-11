@@ -16,7 +16,7 @@
 
 #include "help_command_processor.hpp"
 #include "command_processor.hpp"
-#include "command_router.hpp"
+#include "command_manager.hpp"
 #include "info.hpp"
 #include <cassert>
 #include <iostream>
@@ -41,10 +41,10 @@ namespace swx
 HelpCommandProcessor::HelpCommandProcessor
 (	string const& p_command_word,
 	vector<string> const& p_aliases,
-	CommandRouter const& p_command_router
+	CommandManager const& p_command_manager
 ):
 	CommandProcessor(p_command_word, p_aliases),
-	m_command_router(p_command_router)
+	m_command_manager(p_command_manager)
 {
 }
 
@@ -62,7 +62,7 @@ HelpCommandProcessor::do_process
 	if (p_args.empty())
 	{
 		vector<pair<string, vector<string>>> subcommands =
-			m_command_router.available_commands();
+			m_command_manager.available_commands();
 		ostringstream oss;
 		for (auto const& pair: subcommands)
 		{
@@ -91,13 +91,13 @@ HelpCommandProcessor::do_process
 	{
 		try
 		{
-			p_ordinary_ostream << m_command_router.help_information(p_args[0])
+			p_ordinary_ostream << m_command_manager.help_information(p_args[0])
 							   << endl;			
 		}
 		catch (runtime_error&)
 		{
 			ostringstream oss;
-			oss << CommandRouter::
+			oss << CommandManager::
 					  error_message_for_unrecognized_command(p_args[0]);
 			ret.push_back(oss.str());
 		}

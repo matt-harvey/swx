@@ -26,7 +26,7 @@ namespace swx
 
 // begin forward declarations
 
-class CommandRouter;
+class CommandManager;
 
 // end forward declarations
 
@@ -37,7 +37,7 @@ public:
 	HelpCommandProcessor
 	(	std::string const& p_command_word,
 		std::vector<std::string> const& p_aliases,
-		CommandRouter const& p_command_router
+		CommandManager const& p_command_manager
 	);
 
 	HelpCommandProcessor(HelpCommandProcessor const& rhs) = delete;
@@ -57,7 +57,7 @@ private:
 
 // member variables
 private:
-	CommandRouter const& m_command_router;
+	CommandManager const& m_command_manager;
 
 };  // class HelpCommandProcessor
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "command_router.hpp"
+#include "command_manager.hpp"
 #include "print_command_processor.hpp"
 #include "command_processor.hpp"
 #include "help_command_processor.hpp"
@@ -55,7 +55,7 @@ namespace
 
 }  // end anonymous namespace
 
-CommandRouter::CommandRouter(TimeLog& p_time_log): m_time_log(p_time_log)
+CommandManager::CommandManager(TimeLog& p_time_log): m_time_log(p_time_log)
 {
 	populate_command_processor_map();	
 #	ifndef NDEBUG
@@ -67,7 +67,7 @@ CommandRouter::CommandRouter(TimeLog& p_time_log): m_time_log(p_time_log)
 }
 
 void
-CommandRouter::populate_command_processor_map()
+CommandManager::populate_command_processor_map()
 {
 	CommandProcessorPtr version_processor
 	(	new VersionCommandProcessor("version", {"v"})
@@ -93,7 +93,7 @@ CommandRouter::populate_command_processor_map()
 }
 
 int
-CommandRouter::process_command
+CommandManager::process_command
 (	string const& p_command,
 	vector<string> const& p_args
 ) const
@@ -117,7 +117,7 @@ CommandRouter::process_command
 }
 
 string
-CommandRouter::help_information(string const& p_command) const
+CommandManager::help_information(string const& p_command) const
 {
 	ostringstream oss;
 	auto const it = m_command_processor_map.find(p_command);
@@ -131,7 +131,7 @@ CommandRouter::help_information(string const& p_command) const
 }
 
 vector<pair<string, vector<string>>>
-CommandRouter::available_commands() const
+CommandManager::available_commands() const
 {
 	set<string> command_words;
 	vector<pair<string, vector<string>>> ret;
@@ -152,7 +152,7 @@ CommandRouter::available_commands() const
 }
 
 string
-CommandRouter::directions_to_get_help()
+CommandManager::directions_to_get_help()
 {
 	return
 		string("For usage information, enter: '") +
@@ -163,7 +163,7 @@ CommandRouter::directions_to_get_help()
 }
 
 string
-CommandRouter::error_message_for_unrecognized_command
+CommandManager::error_message_for_unrecognized_command
 (	string const& p_command
 )
 {
@@ -171,7 +171,7 @@ CommandRouter::error_message_for_unrecognized_command
 }
 
 int
-CommandRouter::process_unrecognized_command(string const& p_command) const
+CommandManager::process_unrecognized_command(string const& p_command) const
 {
 	error_ostream() << error_message_for_unrecognized_command(p_command)
 	                << endl
@@ -181,19 +181,19 @@ CommandRouter::process_unrecognized_command(string const& p_command) const
 }
 
 ostream&
-CommandRouter::ordinary_ostream() const
+CommandManager::ordinary_ostream() const
 {
 	return cout;	
 }
 
 ostream&
-CommandRouter::error_ostream() const
+CommandManager::error_ostream() const
 {
 	return cerr;
 }
 
 void
-CommandRouter::create_command(CommandProcessorPtr const& p_cpp)
+CommandManager::create_command(CommandProcessorPtr const& p_cpp)
 {
 	register_command_word(p_cpp->command_word(), p_cpp);
 	for (auto const& alias: p_cpp->aliases())
@@ -204,7 +204,7 @@ CommandRouter::create_command(CommandProcessorPtr const& p_cpp)
 }
 
 void
-CommandRouter::register_command_word
+CommandManager::register_command_word
 (	string const& p_word,
 	CommandProcessorPtr const& p_cpp
 )

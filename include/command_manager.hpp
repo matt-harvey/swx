@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef GUARD_command_router_hpp_6901861572126794
-#define GUARD_command_router_hpp_6901861572126794
+#ifndef GUARD_command_manager_hpp_6901861572126794
+#define GUARD_command_manager_hpp_6901861572126794
 
 #include "command_processor.hpp"
 #include "time_log.hpp"
@@ -29,7 +29,7 @@
 namespace swx
 {
 
-class CommandRouter
+class CommandManager
 {
 // nested types
 private:
@@ -42,12 +42,12 @@ private:
 
 // special member functions
 public:
-	explicit CommandRouter(TimeLog& p_time_log);
-	CommandRouter(CommandRouter const& rhs) = delete;
-	CommandRouter(CommandRouter&& rhs) = delete;
-	CommandRouter& operator=(CommandRouter const& rhs) = delete;
-	CommandRouter& operator=(CommandRouter&& rhs) = delete;
-	~CommandRouter() = default;
+	explicit CommandManager(TimeLog& p_time_log);
+	CommandManager(CommandManager const& rhs) = delete;
+	CommandManager(CommandManager&& rhs) = delete;
+	CommandManager& operator=(CommandManager const& rhs) = delete;
+	CommandManager& operator=(CommandManager&& rhs) = delete;
+	~CommandManager() = default;
 
 // ordinary and static member functions
 private:
@@ -94,8 +94,8 @@ private:
 	TimeLog& m_time_log;
 	CommandProcessorMap m_command_processor_map;
 
-};  // class CommandRouter
+};  // class CommandManager
 
 }  // namespace swx
 
-#endif  // GUARD_command_router_hpp_6901861572126794
+#endif  // GUARD_command_manager_hpp_6901861572126794

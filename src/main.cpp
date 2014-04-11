@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "command_router.hpp"
+#include "command_manager.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
 #include <cassert>
@@ -27,10 +27,10 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::vector;
-using swx::CommandRouter;
+using swx::CommandManager;
 using swx::TimeLog;
 
-// TODO Interaction between CommandRouter,
+// TODO Interaction between CommandManager,
 // CommandProcessor and derived of the latter, seems
 // messy, especially in regards to error handling.
 
@@ -39,7 +39,7 @@ int main(int argc, char** argv)
 	if (argc < 2)
 	{
 		cerr << "Subcommand not provided." << endl;
-		cerr << CommandRouter::directions_to_get_help() << endl;
+		cerr << CommandManager::directions_to_get_help() << endl;
 		return 1;
 	}
 	assert (argc >= 2);
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 	}
 	string const path_to_time_log("time_log.swx");  // TODO Change this.
 	TimeLog time_log(path_to_time_log);
-	CommandRouter router(time_log);
-	router.process_command(argv[1], args);
+	CommandManager manager(time_log);
+	manager.process_command(argv[1], args);
 	return 0;
 }

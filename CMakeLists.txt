@@ -94,7 +94,7 @@ set(
 	common_sources
 	src/print_command_processor.cpp
 	src/command_processor.cpp
-	src/command_router.cpp
+	src/command_manager.cpp
 	src/help_command_processor.cpp
 	src/info.cpp
 	src/interval.cpp
