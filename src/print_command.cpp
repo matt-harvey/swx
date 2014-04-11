@@ -60,13 +60,16 @@ PrintCommand::do_process
 vector<Command::HelpLine>
 PrintCommand::do_get_help_lines() const
 {
+	string const format_description =
+		" (start, end, duration-in-decimal-hours, "
+		"cumulutive-duration-in-decimal-hours)";
 	HelpLine const basic_usage_help_line
 	(	"ACTIVITY",
-		"Print a summary of time spent on ACTIVITY"
+		"Print summary of time spent on ACTIVITY" + format_description
 	);
 	HelpLine const special_usage_help_line
 	(	"",
-		"Print a summary of time not spent on any activity"
+		"Print summary of \"idle\" time" + format_description
 	);
 	return vector<HelpLine>{basic_usage_help_line, special_usage_help_line};
 }
