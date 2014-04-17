@@ -18,6 +18,7 @@
 #define GUARD_time_log_hpp_6591341885082117
 
 #include "interval.hpp"
+#include "stint.hpp"
 #include "time_point.hpp"
 #include <string>
 #include <map>
@@ -62,6 +63,14 @@ public:
 
 	std::vector<Interval> get_intervals_by_activity_name
 	(	std::string const& p_activity_name
+	);
+
+	/**
+	 * @todo IMPLEMENT.
+	 */
+	std::vector<Stint> get_stints_between
+	(	TimePoint const& p_begin,
+		TimePoint const& p_end
 	);
 
 private:

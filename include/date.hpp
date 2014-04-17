@@ -22,13 +22,42 @@ namespace swx
 
 class Date
 {
+// static factory functions
 public:
-	Date() = default;
+	static Date today();
+
+// special member functions
+public:
+
+	Date
+	(	unsigned int p_year,          // years since 1900
+		unsigned char p_month,        // 0-11
+		unsigned char p_day_of_month  // 1-31
+	);
+
 	Date(Date const& rhs) = default;
 	Date(Date&& rhs) = default;
 	Date& operator=(Date const& rhs) = default;
 	Date& operator=(Date&& rhs) = default;
 	~Date() = default;
+
+// getters
+public:
+	unsigned int year() const;           // years since 1900
+	unsigned char month() const;         // 0-11
+	unsigned char day_of_month() const;  // 1-31
+
+// operators
+public:
+	// increment by one day
+	Date const& operator++();        // prefix
+	Date operator++(int);            // postfix
+
+// member variables
+private:
+	unsigned char m_day_of_month;   // 1-31
+	unsigned char m_month;          // 0-11
+	unsigned int m_year;            // years since 1900
 
 };  // class Date
 

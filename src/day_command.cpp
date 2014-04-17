@@ -16,6 +16,8 @@
 
 #include "day_command.hpp"
 #include "command.hpp"
+#include "stint.hpp"
+#include "time_point.hpp"
 #include <ostream>
 #include <string>
 #include <vector>
@@ -49,8 +51,9 @@ DayCommand::do_process
 	ErrorMessages ret;
 	if (p_args.empty())
 	{
-		// TODO Implement this.
-		p_ordinary_ostream << "UNIMPLEMENTED\n";
+		TimePoint const n = now();
+		p_ordinary_ostream <<
+			m_time_log.get_stints_between(day_begin(n), day_end(n));
 	}
 	else
 	{

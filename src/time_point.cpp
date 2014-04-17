@@ -15,6 +15,7 @@
  */
 
 #include "time_point.hpp"
+#include "date.hpp"
 #include <chrono>
 #include <ctime>
 #include <stdexcept>
@@ -39,10 +40,27 @@ now()
 }
 
 TimePoint
-start_of_day(TimePoint const& p_time_point)
+day_begin(TimePoint const& p_time_point)
 {
 	tm time_tm = time_point_to_tm(p_time_point);
 	time_tm.tm_hour = time_tm.tm_min = time_tm.tm_sec = 0;
+	time_tm.tm_isdst = -1;
+	return tm_to_time_point(time_tm);
+}
+
+TimePoint
+day_end(TimePoint const& p_time_point)
+{
+	// TODO Given how mktime automatically adjusts out-of-range fields,
+	// we may not need to use Day here at all. Need to confirm this.
+	tm time_tm = time_point_to_tm(p_time_point);
+	Date day(time_tm.tm_year, time_tm.tm_mon, time_tm.tm_mday);
+	++day;
+	time_tm.tm_hour = time_tm.tm_min = time_tm.tm_sec = 0;
+	time_tm.tm_year = day.year();
+	time_tm.tm_mon = day.month();
+	time_tm.tm_mday = day.day_of_month();
+	time_tm.tm_isdst = -1;
 	return tm_to_time_point(time_tm);
 }
 

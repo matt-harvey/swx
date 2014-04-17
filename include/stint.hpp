@@ -19,6 +19,8 @@
 
 #include "interval.hpp"
 #include <string>
+#include <ostream>
+#include <vector>
 
 namespace swx
 {
@@ -45,6 +47,14 @@ private:
 	Interval m_interval;
 
 };  // class Stint
+
+/**
+ * @todo Implement this.
+ */
+std::ostream& operator<<
+(	std::ostream& os,
+	std::vector<Stint> const& container
+);
 
 }  // namespace swx
 

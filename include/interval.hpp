@@ -21,7 +21,6 @@
 #include "time_point.hpp"
 #include <chrono>
 #include <ostream>
-#include <stdexcept>
 #include <vector>
 
 namespace swx
