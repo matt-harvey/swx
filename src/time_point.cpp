@@ -16,18 +16,15 @@
 
 #include "time_point.hpp"
 #include "date.hpp"
-#include <cassert>
 #include <chrono>
 #include <cstring>
 #include <ctime>
-#include <iostream>
 #include <stdexcept>
 #include <string>
 
 namespace chrono = std::chrono;
 
-using std::cerr;
-using std::endl;
+using std::localtime;
 using std::memset;
 using std::mktime;
 using std::runtime_error;
@@ -56,8 +53,9 @@ day_begin(TimePoint const& p_time_point)
 TimePoint
 day_end(TimePoint const& p_time_point)
 {
-	// TODO Given how mktime automatically adjusts out-of-range fields,
-	// we may not need to use Day here at all. Need to confirm this.
+	// TODO HIGH PRIORITY Given how mktime automatically adjusts out-of-range
+	// fields, we may not need to use Day here at all. Need to confirm this.
+
 	tm time_tm = time_point_to_tm(p_time_point);
 	Date day(time_tm.tm_year, time_tm.tm_mon, time_tm.tm_mday);
 	++day;
@@ -73,17 +71,8 @@ std::tm
 time_point_to_tm(TimePoint const& p_time_point)
 {
 	time_t const time_time_t = chrono::system_clock::to_time_t(p_time_point);
-	tm* time_tm_ptr = new tm;
-	if (!localtime_r(&time_time_t, time_tm_ptr))
-	{
-		delete time_tm_ptr;
-		time_tm_ptr = nullptr;
-		throw runtime_error("Error calling localtime_r!");
-	}
-	tm const ret = *time_tm_ptr;
-	delete time_tm_ptr;
-	time_tm_ptr = nullptr;
-	return ret;
+	tm* const time_tm_ptr = localtime(&time_time_t);
+	return *time_tm_ptr;
 }
 
 TimePoint
@@ -97,7 +86,6 @@ tm_to_time_point(tm const& p_tm)
 TimePoint
 time_stamp_to_point(string const& p_time_stamp)
 {
-
 	// don't make this static - caused odd bug with strptime
 	char const format[] = SWX_FORMAT_STRING;
 
@@ -132,7 +120,6 @@ time_point_to_stamp(TimePoint const& p_time_point)
 	// don't make this static - caused odd bug with strptime
 	char const format[] = SWX_FORMAT_STRING;
 	tm const time_tmp = time_point_to_tm(p_time_point);
-	assert (SWX_FORMATTED_BUF_LEN >= string("YYYY-MM-DDTHH:MM:SS").size() + 1);
 	char buf[SWX_FORMATTED_BUF_LEN];
 	if (strftime(buf, SWX_FORMATTED_BUF_LEN, format, &time_tmp) == 0)
 	{
