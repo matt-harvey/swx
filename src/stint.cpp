@@ -46,6 +46,7 @@ namespace swx
 namespace
 {
 	// TODO MEDIUM PRIORITY Duplicated in interval.cpp
+
 	double round(double x)
 	{
 		return swx::round
@@ -78,6 +79,8 @@ Stint::interval() const
 ostream&
 operator<<(ostream& os, vector<Stint> const& container)
 {
+	// TODO LOW PRIORITY Tidy this up.
+
 	map<string, double> accum_map;
 	double accum_hours = 0.0;
 	string live_activity;

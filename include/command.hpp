@@ -24,10 +24,6 @@
 namespace swx
 {
 
-/**
- * @todo Find a more unified way to generate the help messages for
- * each subclass (to ensure they're all in the same format).
- */
 class Command
 {
 // nested types and typedefs

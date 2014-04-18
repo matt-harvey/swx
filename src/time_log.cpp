@@ -49,7 +49,7 @@ using std::tm;
 using std::upper_bound;
 using std::vector;
 
-// TODO Need better error reporting on parsing error.
+// TODO MEDIUM PRIORITY Need better error reporting on parsing error.
 
 namespace chrono = std::chrono;
 
@@ -71,7 +71,7 @@ TimeLog::append_entry
 	TimePoint const& p_time_point
 )
 {
-	// TODO Make this atomic?
+	// TODO HIGH PRIORITY Make this atomic?
 	mark_cache_as_stale();
 	ofstream outfile(m_filepath.c_str(), ios::app);
 	outfile << time_point_to_stamp(p_time_point)
@@ -97,7 +97,7 @@ TimeLog::get_intervals_by_activity_name(string const& p_activity_name)
 	{
 		if (m_entries[i].activity_id == activity_id)
 		{
-			// TODO Factor out code shared between here and
+			// TODO MEDIUM PRIORITY Factor out code shared between here and
 			// get_stints_between.
 			auto const time_point = m_entries[i].time_point;
 			auto const j = i + 1;
@@ -131,6 +131,10 @@ TimeLog::get_stints_between(TimePoint const& p_begin, TimePoint const& p_end)
 	for ( ; it != end_entries && it->time_point < p_end; ++it)
 	{
 		// TODO HIGH PRIORITY Take proper care of "straddling".
+		// Where a Stint starts before p_begin and ends after p_begin,
+		// we should should break it into two, and push onto ret only
+		// that part of it that starts at p_begin.
+
 		string const activity_name = activity_id_to_name(it->activity_id);
 		auto const time_point = it->time_point;
 		auto const next_it = it + 1;
