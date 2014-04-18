@@ -16,14 +16,19 @@
 
 #include "time_point.hpp"
 #include "date.hpp"
+#include <cassert>
 #include <chrono>
+#include <cstring>
 #include <ctime>
+#include <iostream>
 #include <stdexcept>
 #include <string>
 
 namespace chrono = std::chrono;
 
-using std::localtime;
+using std::cerr;
+using std::endl;
+using std::memset;
 using std::mktime;
 using std::runtime_error;
 using std::string;
@@ -68,8 +73,16 @@ std::tm
 time_point_to_tm(TimePoint const& p_time_point)
 {
 	time_t const time_time_t = chrono::system_clock::to_time_t(p_time_point);
-	tm* const time_tm_ptr = localtime(&time_time_t);
+	tm* time_tm_ptr = new tm;
+	if (!localtime_r(&time_time_t, time_tm_ptr))
+	{
+		delete time_tm_ptr;
+		time_tm_ptr = nullptr;
+		throw runtime_error("Error calling localtime_r!");
+	}
 	tm const ret = *time_tm_ptr;
+	delete time_tm_ptr;
+	time_tm_ptr = nullptr;
 	return ret;
 }
 
@@ -84,10 +97,13 @@ tm_to_time_point(tm const& p_tm)
 TimePoint
 time_stamp_to_point(string const& p_time_stamp)
 {
+
 	// don't make this static - caused odd bug with strptime
 	char const format[] = SWX_FORMAT_STRING;
 
 	tm tm;
+	memset(&tm, 0, sizeof(tm));
+	tm.tm_isdst = -1;
 	bool parse_error = false;
 #	ifdef __GNUC__
 		if (strptime(p_time_stamp.c_str(), format, &tm) == nullptr)
@@ -116,6 +132,7 @@ time_point_to_stamp(TimePoint const& p_time_point)
 	// don't make this static - caused odd bug with strptime
 	char const format[] = SWX_FORMAT_STRING;
 	tm const time_tmp = time_point_to_tm(p_time_point);
+	assert (SWX_FORMATTED_BUF_LEN >= string("YYYY-MM-DDTHH:MM:SS").size() + 1);
 	char buf[SWX_FORMATTED_BUF_LEN];
 	if (strftime(buf, SWX_FORMATTED_BUF_LEN, format, &time_tmp) == 0)
 	{

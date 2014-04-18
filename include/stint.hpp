@@ -30,27 +30,19 @@ class Stint
 // special member functions
 public:
 	Stint(std::string const& p_activity_name, Interval const& p_interval);
-	Stint(Stint const& rhs) = default;
-	Stint(Stint&& rhs) = default;
-	Stint& operator=(Stint const& rhs) = default;
-	Stint& operator=(Stint&& rhs) = default;
-	~Stint() = default;
 
 // ordinary member functions
 public:
-	std::string activity_name() const;
+	std::string const& activity_name() const;
 	Interval interval() const;
 
 // member variables
 private:
-	std::string const& m_activity_name;
+	std::string m_activity_name;
 	Interval m_interval;
 
 };  // class Stint
 
-/**
- * @todo Implement this.
- */
 std::ostream& operator<<
 (	std::ostream& os,
 	std::vector<Stint> const& container

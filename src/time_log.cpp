@@ -33,6 +33,7 @@
 #include <utility>
 #include <vector>
 
+using std::cerr;
 using std::endl;
 using std::getline;
 using std::ifstream;
@@ -193,12 +194,13 @@ TimeLog::register_activity(string const& p_activity_name)
 void
 TimeLog::load_entry(string const& p_entry_string)
 {
-	static string const time_format("YYYY-MM-DD HH:MM:SS");
+	static string const time_format("YYYY-MM-DDTHH:MM:SS");
 	if (p_entry_string.size() < time_format.size())
 	{
 		throw runtime_error("TimeLog parsing error.");	
 	}
 	auto it = p_entry_string.begin() + time_format.size();
+	assert (it > p_entry_string.begin());
 	string const time_stamp(p_entry_string.begin(), it);
 	string const activity_name = trim(string(it, p_entry_string.end()));
 	auto const activity_id = register_activity(activity_name);

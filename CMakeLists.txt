@@ -49,7 +49,13 @@ add_definitions (
 	# Must be at least 1 greater than the length of the longest
 	# string that could result from formatting a date using
 	# SWX_FORMAT_STRING
-	-DSWX_FORMATTED_BUF_LEN=20
+	-DSWX_FORMATTED_BUF_LEN=20;
+
+	# For formatting output of decimal hours
+	-DSWX_OUTPUT_ROUNDING_NUMERATOR=1
+	-DSWX_OUTPUT_ROUNDING_DENOMINATOR=4
+	-DSWX_OUTPUT_PRECISION=2
+	-DSWX_OUTPUT_WIDTH=6
 )
 
 if (CMAKE_COMPILER_IS_GNUCXX)

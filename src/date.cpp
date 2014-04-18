@@ -31,7 +31,7 @@ namespace
 		return x % y == 0;
 	}
 
-	bool is_leap_year(unsigned int p_year)
+	bool is_leap_year(int p_year)
 	{
 		if (divides_evenly(p_year, 4))
 		{
@@ -50,7 +50,7 @@ namespace
 		}
 	}
 
-	bool days_in_month(unsigned char p_month, bool p_is_leap_year)
+	bool days_in_month(int p_month, bool p_is_leap_year)
 	{
 		switch (p_month)
 		{
@@ -77,7 +77,7 @@ namespace
 			days_in_month(p_date.month(), is_leap_year(p_date.year()));
 	}
 
-	bool is_last_month_of_year(unsigned char p_month)
+	bool is_last_month_of_year(int p_month)
 	{
 		return p_month == 11;
 	}
@@ -90,30 +90,26 @@ Date::today()
 	return Date(time_tm.tm_year, time_tm.tm_mon, time_tm.tm_mday);
 }
 
-Date::Date
-(	unsigned int p_year,
-	unsigned char p_month,
-	unsigned char p_day_of_month
-):
+Date::Date(int p_year, int p_month, int p_day_of_month):
 	m_day_of_month(p_day_of_month),
 	m_month(p_month),
 	m_year(p_year)
 {
 }
 
-unsigned int
+int
 Date::year() const
 {
 	return m_year;
 }
 
-unsigned char
+int
 Date::month() const
 {
 	return m_month;
 }
 
-unsigned char
+int
 Date::day_of_month() const
 {
 	return m_day_of_month;

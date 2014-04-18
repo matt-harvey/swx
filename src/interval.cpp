@@ -34,11 +34,6 @@ using std::right;
 using std::setprecision;
 using std::setw;
 
-#define SWX_OUTPUT_ROUNDING_NUMERATOR 1
-#define SWX_OUTPUT_ROUNDING_DENOMINATOR 4
-#define SWX_OUTPUT_PRECISION 2
-#define SWX_OUTPUT_WIDTH 6
-
 namespace swx
 {
 

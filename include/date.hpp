@@ -30,9 +30,9 @@ public:
 public:
 
 	Date
-	(	unsigned int p_year,          // years since 1900
-		unsigned char p_month,        // 0-11
-		unsigned char p_day_of_month  // 1-31
+	(	int p_year,          // years since 1900
+		int p_month,        // 0-11
+		int p_day_of_month  // 1-31
 	);
 
 	Date(Date const& rhs) = default;
@@ -43,9 +43,9 @@ public:
 
 // getters
 public:
-	unsigned int year() const;           // years since 1900
-	unsigned char month() const;         // 0-11
-	unsigned char day_of_month() const;  // 1-31
+	int year() const;           // years since 1900
+	int month() const;         // 0-11
+	int day_of_month() const;  // 1-31
 
 // operators
 public:
@@ -55,9 +55,9 @@ public:
 
 // member variables
 private:
-	unsigned char m_day_of_month;   // 1-31
-	unsigned char m_month;          // 0-11
-	unsigned int m_year;            // years since 1900
+	int m_day_of_month;   // 1-31
+	int m_month;          // 0-11
+	int m_year;            // years since 1900
 
 };  // class Date
 
