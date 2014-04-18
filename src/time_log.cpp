@@ -15,6 +15,7 @@
  */
 
 #include "time_log.hpp"
+#include "stint.hpp"
 #include "string_utilities.hpp"
 #include "time_point.hpp"
 #include <algorithm>
@@ -30,6 +31,7 @@
 #include <stdexcept>
 #include <string>
 #include <utility>
+#include <vector>
 
 using std::endl;
 using std::getline;
@@ -43,6 +45,8 @@ using std::runtime_error;
 using std::string;
 using std::stringstream;
 using std::tm;
+using std::upper_bound;
+using std::vector;
 
 // TODO Need better error reporting on parsing error.
 
@@ -62,7 +66,7 @@ TimeLog::TimeLog(string const& p_filepath):
 
 void
 TimeLog::append_entry
-(	std::string const& p_activity_name,
+(	string const& p_activity_name,
 	TimePoint const& p_time_point
 )
 {
@@ -76,11 +80,11 @@ TimeLog::append_entry
 	return;
 }
 
-std::vector<Interval>
+vector<Interval>
 TimeLog::get_intervals_by_activity_name(string const& p_activity_name)
 {
 	load();
-	std::vector<Interval> ret;
+	vector<Interval> ret;
 	auto const it = m_activity_map.find(p_activity_name);
 	if (it == m_activity_map.end())
 	{
@@ -92,6 +96,8 @@ TimeLog::get_intervals_by_activity_name(string const& p_activity_name)
 	{
 		if (m_entries[i].activity_id == activity_id)
 		{
+			// TODO Factor out code shared between here and
+			// get_stints_between.
 			auto const time_point = m_entries[i].time_point;
 			auto const j = i + 1;
 			auto const done = (j == m_entries.size());
@@ -102,6 +108,39 @@ TimeLog::get_intervals_by_activity_name(string const& p_activity_name)
 		}
 	}
 	return ret;
+}
+
+vector<Stint>
+TimeLog::get_stints_between(TimePoint const& p_begin, TimePoint const& p_end)
+{
+	load();	
+	vector<Stint> ret;
+	auto const beg_entries = m_entries.begin();
+	auto const end_entries = m_entries.end();
+	Entry const dummy(0, p_begin);
+	auto const comp =
+		[](Entry const& lhs, Entry const& rhs)
+		{
+			return lhs.time_point < rhs.time_point;
+		};
+	auto it = upper_bound(beg_entries, end_entries, dummy, comp);
+	for ( ; it != beg_entries && it->time_point > p_begin; --it)
+	{
+	}
+	for ( ; it != end_entries && it->time_point < p_end; ++it)
+	{
+		// TODO HIGH PRIORITY Take proper care of "straddling".
+		string const activity_name = activity_id_to_name(it->activity_id);
+		auto const time_point = it->time_point;
+		auto const next_it = it + 1;
+		auto const done = (next_it == end_entries);
+		auto const next_time_point = (done? now(): next_it->time_point);
+		auto const raw_duration = next_time_point - time_point;
+		auto const seconds = chrono::duration_cast<Seconds>(raw_duration);
+		Interval const interval(time_point, seconds, done);
+		ret.push_back(Stint(activity_name, interval));
+	}
+	return ret;	
 }
 
 void
@@ -122,14 +161,17 @@ TimeLog::mark_cache_as_stale()
 void
 TimeLog::load()
 {
-	clear_cache();
-	ifstream infile(m_filepath.c_str());
-	string line;
-	while (getline(infile, line))
+	if (!m_is_loaded)
 	{
-		load_entry(line);	
+		clear_cache();
+		ifstream infile(m_filepath.c_str());
+		string line;
+		while (getline(infile, line))
+		{
+			load_entry(line);	
+		}
+		m_is_loaded = true;
 	}
-	m_is_loaded = true;
 	return;
 }
 
@@ -164,6 +206,13 @@ TimeLog::load_entry(string const& p_entry_string)
 	Entry entry(activity_id, time_point);
 	m_entries.push_back(entry);
 	return;
+}
+
+string
+TimeLog::activity_id_to_name(ActivityId p_activity_id)
+{
+	load();
+	return m_activity_names[p_activity_id];
 }
 
 TimeLog::Entry::Entry(ActivityId p_activity_id, TimePoint const& p_time_point):

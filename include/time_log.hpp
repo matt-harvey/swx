@@ -65,9 +65,6 @@ public:
 	(	std::string const& p_activity_name
 	);
 
-	/**
-	 * @todo IMPLEMENT.
-	 */
 	std::vector<Stint> get_stints_between
 	(	TimePoint const& p_begin,
 		TimePoint const& p_end
@@ -79,6 +76,7 @@ private:
 	void load();
 	ActivityId register_activity(std::string const& p_activity_name);
 	void load_entry(std::string const& p_entry_string);
+	std::string activity_id_to_name(ActivityId p_activity_id);
 
 // member variables
 private:

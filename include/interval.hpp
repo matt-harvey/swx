@@ -56,9 +56,6 @@ private:
 
 };  // class Interval
 
-template <typename IntervalContainer>
-IntervalContainer unstraddle_by_days(IntervalContainer const& container);
-
 std::ostream& operator<<
 (	std::ostream& os,
 	std::vector<Interval> const& container
