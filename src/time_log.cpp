@@ -218,7 +218,7 @@ string
 TimeLog::activity_id_to_name(ActivityId p_activity_id)
 {
 	load();
-	return m_activity_names[p_activity_id];
+	return m_activity_names.at(p_activity_id);
 }
 
 TimeLog::Entry::Entry(ActivityId p_activity_id, TimePoint const& p_time_point):

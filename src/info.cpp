@@ -15,9 +15,13 @@
  */
 
 #include "info.hpp"
+#include <cstdlib>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 
+using std::getenv;
+using std::runtime_error;
 using std::string;
 using std::ostringstream;
 
@@ -37,6 +41,25 @@ Info::version()
 	oss << SWX_VERSION_MAJOR << '.'
 	    << SWX_VERSION_MINOR << '.'
 		<< SWX_VERSION_PATCH;
+	return oss.str();
+}
+
+string
+Info::data_dir()
+{
+	// TODO HIGH PRIORITY Make this portable
+	auto const home_dir = getenv("HOME");
+	if (home_dir == nullptr)
+	{
+		throw runtime_error
+		(	"Cannot find home directory when looking for configuration "
+			"filepath"
+		);
+	}
+	ostringstream oss;
+	oss << home_dir
+		<< Info::application_name()
+		<< "/config";
 	return oss.str();
 }
 

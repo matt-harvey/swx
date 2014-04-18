@@ -40,6 +40,7 @@ public:
 public:
 	static std::string application_name();
 	static std::string version();
+	static std::string data_dir();
 
 };  // class Info
 
