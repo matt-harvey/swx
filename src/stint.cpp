@@ -102,7 +102,7 @@ operator<<(ostream& os, vector<Stint> const& container)
 				it->second += hours;
 			}
 			os << time_point_to_stamp(interval.beginning()) << gap
-			   << time_point_to_stamp(interval.ending());
+			   << time_point_to_stamp(interval.ending()) << gap;
 			os << fixed << setprecision(SWX_OUTPUT_PRECISION) << right;
 			os << setw(SWX_OUTPUT_WIDTH) << round(hours);
 			if (interval.is_live())
