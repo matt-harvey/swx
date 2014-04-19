@@ -17,6 +17,7 @@
 #ifndef GUARD_config_hpp_32019735189163934
 #define GUARD_config_hpp_32019735189163934
 
+#include <cassert>
 #include <map>
 #include <sstream>
 #include <stdexcept>
@@ -55,14 +56,14 @@ private:
 	void set_option(std::string const& p_key, Value const& p_value);
 
 	template <typename Value>
-	Value get_option(std::string const& p_key) const;
+	Value get_option(std::string const& p_key);
 
 // helper functions
 private:
 	void load();
 	void save();
-	void do_load_from(string const& p_filepath);
-	void do_save_to(string const& p_filepath);
+	void do_load_from(std::string const& p_filepath);
+	void do_save_to(std::string const& p_filepath);
 
 // member variables
 private:
@@ -77,7 +78,7 @@ private:
 
 template <typename Value>
 void
-Config::set_option<Value>(string const& p_key, Value const& p_value)
+Config::set_option(std::string const& p_key, Value const& p_value)
 {
 	load();
 	std::ostringstream oss;
@@ -88,7 +89,7 @@ Config::set_option<Value>(string const& p_key, Value const& p_value)
 
 template <typename Value>
 Value
-Config::get_option<Value>(string const& p_key) const
+Config::get_option(std::string const& p_key)
 {
 	load();
 	Value ret;
@@ -100,7 +101,7 @@ Config::get_option<Value>(string const& p_key) const
 		throw std::runtime_error(oss.str());
 	}
 	assert (it != m_map.end());
-	string const raw = it->second;
+	std::string const raw = it->second;
 	std::stringstream ss;
 	ss << raw;
 	ss >> ret;

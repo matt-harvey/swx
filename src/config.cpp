@@ -16,13 +16,18 @@
 
 #include "config.hpp"
 #include "info.hpp"
+#include "string_utilities.hpp"
 #include <cassert>
 #include <map>
+#include <sstream>
+#include <stdexcept>
 #include <string>
 #include <utility>
 
 using std::map;
+using std::ostringstream;
 using std::pair;
+using std::runtime_error;
 using std::string;
 
 namespace swx
@@ -33,18 +38,32 @@ namespace
 	pair<string, string> parse_config_line(string const& p_line)
 	{
 		pair<string, string> ret;
-		string temp;
+		ostringstream oss;
 		for (auto it = p_line.begin(); it != p_line.end(); ++it)
 		{
 			if (*it == '=')
 			{
-				ret.first = temp;	
-				// TODO IN THE MIDDLE OF WORKING ON THIS
+				ret.first = trim(oss.str());
+				oss.clear();
+			}
+			else
+			{
+				oss << *it;
 			}
 		}
+		if (ret.first.empty())
+		{
+			runtime_error("Config parsing error");	
+		}
+		else
+		{
+			ret.second = trim(oss.str());
+		}
+		return ret;
 	}
 
 }  // end anonymous namespace
+
 
 Config&
 Config::instance()
