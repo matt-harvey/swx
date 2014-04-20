@@ -55,6 +55,11 @@ private:
 private:
 	void set_option(std::string const& p_key, std::string const& p_value);
 
+	void unchecked_set_option
+	(	std::string const& p_key,
+		std::string const& p_value
+	);
+
 	template <typename Value>
 	Value get_option(std::string const& p_key);
 

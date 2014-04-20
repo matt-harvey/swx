@@ -26,8 +26,9 @@ It is still being written and is not yet ready for use.
 Dependencies
 ============
 
-``swx`` is written in standard C++, and uses some C++11 features. To build
-it, you will need:
+``swx`` is written in standard C++, and uses some C++11 features. It is designed
+to build and run on Unix-like systems only (Linux, OSX, BSD), and will not
+work on Windows. To build it, you will need:
 
 - A reasonably conformant C++ compiler and standard library implementation
 
@@ -45,13 +46,9 @@ Building and installing
 
 Open a command line and ``cd`` to the project root.
 
-On Unix-like systems, enter::
+Enter::
 
 	cmake -i
-
-(On Windows, you will need to use the ``-G`` option to choose a Makefile
-generator first, or else run ``cmake-gui.exe .``. See CMake documentation for
-further details.)
 
 You will be prompted with ``Would you like to see the advanced options? [No]:``.
 Enter ``n``. Then follow the prompts.
@@ -66,7 +63,7 @@ Once you have finished configuring the build with CMake, enter::
 
 	make install
 
-If you are on a Unix-like system you may need to run this as root, i.e.::
+You may need to run this as root, i.e.::
 
 	sudo make install
 

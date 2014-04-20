@@ -124,8 +124,7 @@ Config::path_to_log()
 
 Config::Config():
 	m_is_loaded(false),
-	// TODO HIGH PRIORITY Make filepath portable
-	m_filepath(Info::data_dir() + "/config")
+	m_filepath(Info::data_dir() + "/config")  // non-portable
 {
 	assert (m_map.empty());
 }
@@ -136,6 +135,20 @@ Config::~Config()
 
 void
 Config::set_option(string const& p_key, string const& p_value)
+{
+	auto const it = m_map.find(p_key);
+	if (it == m_map.end())
+	{
+		ostringstream oss;
+		oss << "Unrecognized option: " << p_key;
+		throw runtime_error(oss.str());
+	}
+	it->second = p_value;
+	return;
+}
+
+void
+Config::unchecked_set_option(string const& p_key, string const& p_value)
 {
 	m_map[p_key] = p_value;
 	return;
@@ -184,15 +197,15 @@ Config::do_load_from(string const& p_filepath)
 void
 Config::set_defaults()
 {
-	set_option("output_rounding_numerator", "1");
-	set_option("output_rounding_denominator", "4");
-	set_option("output_precision", "2");
-	set_option("output_width", "6");
-	set_option("format_string", "%Y-%m-%dT%H:%M:%S");
-	set_option("formatted_buf_len", "80");
+	unchecked_set_option("output_rounding_numerator", "1");
+	unchecked_set_option("output_rounding_denominator", "4");
+	unchecked_set_option("output_precision", "2");
+	unchecked_set_option("output_width", "6");
+	unchecked_set_option("format_string", "%Y-%m-%dT%H:%M:%S");
+	unchecked_set_option("formatted_buf_len", "80");
 
-	// TODO Make this portable
-	set_option("path_to_log", Info::data_dir() + "/data");
+	// non-portable
+	unchecked_set_option("path_to_log", Info::data_dir() + "/data");
 
 	return;
 }

@@ -85,20 +85,13 @@ time_stamp_to_point(string const& p_time_stamp)
 	memset(&tm, 0, sizeof(tm));
 	tm.tm_isdst = -1;
 	bool parse_error = false;
-#	ifdef __GNUC__
-		if (strptime(p_time_stamp.c_str(), format, &tm) == nullptr)
-		{
-			parse_error = true;
-		}
-#	else
-		stringstream ss;
-		ss << p_time_stamp;
-		ss >> get_time(&tm, format);
-		if (!ss)
-		{
-			parse_error = true;
-		}
-#	endif
+	
+	// non-portable
+	if (strptime(p_time_stamp.c_str(), format, &tm) == nullptr)
+	{
+		parse_error = true;
+	}
+
 	if (parse_error)
 	{
 		throw runtime_error("Could not parse timestamp.");
