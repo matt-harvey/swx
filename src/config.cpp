@@ -35,6 +35,10 @@ using std::pair;
 using std::runtime_error;
 using std::string;
 
+// TODO HIGH PRIORITY Need to make it so that config directory and file
+// is created on first running, with config file prepopulated with
+// commented-out syntax summary and commented-out default options.
+
 namespace swx
 {
 
@@ -112,6 +116,12 @@ Config::formatted_buf_len()
 	return instance().get_option<unsigned int>("formatted_buf_len");
 }
 
+string
+Config::path_to_log()
+{
+	return instance().get_option<string>("path_to_log");
+}
+
 Config::Config():
 	m_is_loaded(false),
 	// TODO HIGH PRIORITY Make filepath portable
@@ -180,6 +190,10 @@ Config::set_defaults()
 	set_option("output_width", "6");
 	set_option("format_string", "%Y-%m-%dT%H:%M:%S");
 	set_option("formatted_buf_len", "80");
+
+	// TODO Make this portable
+	set_option("path_to_log", Info::data_dir() + "/data");
+
 	return;
 }
 

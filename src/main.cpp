@@ -15,6 +15,7 @@
  */
 
 #include "command_manager.hpp"
+#include "config.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
 #include <cassert>
@@ -28,7 +29,10 @@ using std::endl;
 using std::string;
 using std::vector;
 using swx::CommandManager;
+using swx::Config;
 using swx::TimeLog;
+
+// TODO Ensure ~/.swx directory and config file actually exist.
 
 int main(int argc, char** argv)
 {
@@ -45,8 +49,7 @@ int main(int argc, char** argv)
 		string const arg(argv[i]);
 		args.push_back(arg);
 	}
-	string const path_to_time_log("time_log.swx");  // TODO Change this.
-	TimeLog time_log(path_to_time_log);
+	TimeLog time_log(Config::path_to_log());
 	CommandManager manager(time_log);
 	manager.process_command(argv[1], args);
 	return 0;
