@@ -82,81 +82,66 @@ TimeLog::append_entry
 	return;
 }
 
-vector<Interval>
-TimeLog::get_intervals_by_activity_name(string const& p_activity_name)
-{
-	load();
-	vector<Interval> ret;
-	auto const it = m_activity_map.find(p_activity_name);
-	if (it == m_activity_map.end())
-	{
-		return ret;
-	}
-	auto const activity_id = it->second;
-	auto const sz = m_entries.size();
-	for (decltype(m_entries)::size_type i = 0; i != sz; ++i)
-	{
-		if (m_entries[i].activity_id == activity_id)
-		{
-			auto const time_point = m_entries[i].time_point;
-			auto const j = i + 1;
-			auto const done = (j == m_entries.size());
-			auto const next_time_point = (done? now(): m_entries[j].time_point);
-			auto const raw_duration = next_time_point - time_point;
-			auto const seconds = chrono::duration_cast<Seconds>(raw_duration);
-			ret.push_back(Interval(time_point, seconds, done));
-		}
-	}
-	return ret;
-}
-
 vector<Stint>
-TimeLog::get_stints_between(TimePoint const& p_begin, TimePoint const& p_end)
+TimeLog::get_stints
+(	string const* p_activity_name,
+	TimePoint const* p_begin,
+	TimePoint const* p_end
+)
 {
 	// TODO MEDIUM PRIORITY Tidy this up.
 	load();	
 	vector<Stint> ret;
-	if (p_end <= p_begin)
-	{
-		return ret;
-	}
 	auto const beg_entries = m_entries.begin();
 	auto const end_entries = m_entries.end();
-	Entry const dummy(0, p_begin);
-	auto const comp =
-		[](Entry const& lhs, Entry const& rhs)
-		{
-			return lhs.time_point < rhs.time_point;
-		};
-	auto it = upper_bound(beg_entries, end_entries, dummy, comp);
-	if (it == end_entries)
+	auto it = beg_entries;
+	if (p_begin != nullptr)
 	{
-		if (end_entries != beg_entries)
+		auto const comp =
+			[](Entry const& lhs, Entry const& rhs)
+			{
+				return lhs.time_point < rhs.time_point;
+			};
+		Entry const dummy(0, *p_begin);
+		it = upper_bound(beg_entries, end_entries, dummy, comp);
+		if (it == end_entries)
 		{
-			--it;
+			if (end_entries != beg_entries)
+			{
+				--it;
+			}
 		}
-	}
-	else
-	{
-		for ( ; it != beg_entries && it->time_point > p_begin; --it)
+		else
 		{
+			assert (p_begin);
+			for ( ; (it != beg_entries) && (it->time_point > *p_begin); --it)
+			{
+			}
 		}
 	}
 	auto const n = now();
-	for ( ; it != end_entries && it->time_point < p_end; ++it)
+	for
+	(	;
+		(it != end_entries) && (!p_end || (it->time_point < *p_end));
+		++it
+	)
 	{
 		string const activity_name = activity_id_to_name(it->activity_id);
+		if (p_activity_name && (*p_activity_name != activity_name))
+		{
+			continue;
+		}
 		auto time_point = it->time_point;
-		if (time_point < p_begin) time_point = p_begin;
+		if (p_begin && (time_point < *p_begin)) time_point = *p_begin;
 		auto const next_it = it + 1;
 		auto const done = (next_it == end_entries);
 		auto default_next_time_point = (n > time_point? n: time_point);
 		auto next_time_point =
 			(done? default_next_time_point: next_it->time_point);
-		if (next_time_point > p_end) next_time_point = p_end;
-		assert (time_point >= p_begin);
-		assert (next_time_point >= p_begin);
-		assert (next_time_point <= p_end);
+		if (p_end && (next_time_point > *p_end)) next_time_point = *p_end;
+		assert (!p_begin || (time_point >= *p_begin));
+		assert (!p_begin || (next_time_point >= *p_begin));
+		assert (!p_end || (next_time_point <= *p_end));
 		assert (next_time_point >= time_point);
 		auto const raw_duration = next_time_point - time_point;
 		auto const seconds = chrono::duration_cast<Seconds>(raw_duration);

@@ -62,13 +62,13 @@ public:
 		TimePoint const& p_time_point
 	);
 
-	std::vector<Interval> get_intervals_by_activity_name
-	(	std::string const& p_activity_name
-	);
-
-	std::vector<Stint> get_stints_between
-	(	TimePoint const& p_begin,
-		TimePoint const& p_end
+	// Pass optional non-null pointers to filter by
+	// activity name and date range.
+	// Client retains the ownership of pointed-to memory.
+	std::vector<Stint> get_stints
+	(	std::string const* p_activity_name = nullptr,
+		TimePoint const* p_begin = nullptr,
+		TimePoint const* p_end = nullptr
 	);
 
 private:

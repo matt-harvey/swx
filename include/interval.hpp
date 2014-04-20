@@ -56,11 +56,6 @@ private:
 
 };  // class Interval
 
-std::ostream& operator<<
-(	std::ostream& os,
-	std::vector<Interval> const& container
-);
-
 }  // namespace swx
 
 #endif  // GUARD_interval_hpp_6955864893717628

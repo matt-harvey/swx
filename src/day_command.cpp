@@ -52,8 +52,9 @@ DayCommand::do_process
 	if (p_args.empty())
 	{
 		TimePoint const n = now();
-		p_ordinary_ostream <<
-			m_time_log.get_stints_between(day_begin(n), day_end(n));
+		auto const b = day_begin(n);
+		auto const e = day_end(n);
+		p_ordinary_ostream << m_time_log.get_stints(nullptr, &b, &e);
 	}
 	else
 	{
