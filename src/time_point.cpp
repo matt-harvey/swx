@@ -15,6 +15,7 @@
  */
 
 #include "time_point.hpp"
+#include "config.hpp"
 #include "date.hpp"
 #include <chrono>
 #include <cstring>
@@ -87,8 +88,8 @@ TimePoint
 time_stamp_to_point(string const& p_time_stamp)
 {
 	// don't make this static - caused odd bug with strptime
-	char const format[] = SWX_FORMAT_STRING;
-
+	string const format_str = Config::format_string();
+	char const* format = format_str.c_str();
 	tm tm;
 	memset(&tm, 0, sizeof(tm));
 	tm.tm_isdst = -1;
@@ -118,14 +119,19 @@ string
 time_point_to_stamp(TimePoint const& p_time_point)
 {
 	// don't make this static - caused odd bug with strptime
-	char const format[] = SWX_FORMAT_STRING;
+	string const format_str = Config::format_string();
+	char const* format = format_str.c_str();
 	tm const time_tmp = time_point_to_tm(p_time_point);
-	char buf[SWX_FORMATTED_BUF_LEN];
-	if (strftime(buf, SWX_FORMATTED_BUF_LEN, format, &time_tmp) == 0)
+	auto const buf_len = Config::formatted_buf_len();
+	char* buf = new char[buf_len];
+	if (strftime(buf, buf_len, format, &time_tmp) == 0)
 	{
+		delete[] buf;
 		throw runtime_error("Error formatting TimePoint.");
 	}
-	return string(buf);
+	string const ret(buf);
+	delete[] buf;
+	return ret;
 }
 
 }   // namespace swx

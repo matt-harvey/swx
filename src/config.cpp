@@ -17,13 +17,18 @@
 #include "config.hpp"
 #include "info.hpp"
 #include "string_utilities.hpp"
+#include <algorithm>
 #include <cassert>
+#include <fstream>
 #include <map>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <utility>
 
+using std::find;
+using std::getline;
+using std::ifstream;
 using std::map;
 using std::ostringstream;
 using std::pair;
@@ -35,35 +40,34 @@ namespace swx
 
 namespace
 {
-	pair<string, string> parse_config_line(string const& p_line)
+	enum class LineType
 	{
-		pair<string, string> ret;
-		ostringstream oss;
-		for (auto it = p_line.begin(); it != p_line.end(); ++it)
+		blank,
+		entry,
+		error
+	};
+
+	LineType parse_line(string const& p_line, pair<string, string>& p_out)
+	{
+		string const line = trim(p_line);
+		if (line.empty() || line[0] == '#')
 		{
-			if (*it == '=')
-			{
-				ret.first = trim(oss.str());
-				oss.clear();
-			}
-			else
-			{
-				oss << *it;
-			}
+			return LineType::blank;
 		}
-		if (ret.first.empty())
+		auto const it = find(line.begin(), line.end(), '=');
+		if (it == line.end() || it == line.begin())
 		{
-			runtime_error("Config parsing error");	
+			return LineType::error;
 		}
-		else
-		{
-			ret.second = trim(oss.str());
-		}
-		return ret;
+		string first(line.begin(), it);
+		assert (it != line.end());
+		string second(it + 1, line.end());
+		p_out.first = trim(first);
+		p_out.second = trim(second);
+		return LineType::entry;
 	}
 
 }  // end anonymous namespace
-
 
 Config&
 Config::instance()
@@ -118,7 +122,13 @@ Config::Config():
 
 Config::~Config()
 {
-	save();
+}
+
+void
+Config::set_option(string const& p_key, string const& p_value)
+{
+	m_map[p_key] = p_value;
+	return;
 }
 
 void
@@ -126,6 +136,7 @@ Config::load()
 {
 	if (!m_is_loaded)
 	{
+		set_defaults();
 		do_load_from(m_filepath);
 		m_is_loaded = true;
 	}
@@ -133,25 +144,43 @@ Config::load()
 }
 
 void
-Config::save()
+Config::do_load_from(string const& p_filepath)
 {
-	if (m_is_loaded)
+	ifstream infile(p_filepath.c_str());
+	string line;
+	size_t line_number = 1;
+	while (getline(infile, line))
 	{
-		do_save_to(m_filepath);
+		pair<string, string> pair;
+		auto const line_type =  parse_line(line, pair);
+		if (line_type == LineType::error)
+		{
+			ostringstream oss;
+			oss << "Parsing error in config file at "
+			    << p_filepath
+				<< ", line "
+				<< line_number;
+			throw runtime_error(oss.str());
+		}
+		else if (line_type == LineType::entry)
+		{
+			set_option(pair.first, pair.second);
+		}
+		++line_number;
 	}
 	return;
 }
 
 void
-Config::do_load_from(string const& p_filepath)
+Config::set_defaults()
 {
-	// TODO Implement.
-}
-
-void
-Config::do_save_to(string const& p_filepath)
-{
-	// TODO Implement.
+	set_option("output_rounding_numerator", "1");
+	set_option("output_rounding_denominator", "4");
+	set_option("output_precision", "2");
+	set_option("output_width", "6");
+	set_option("format_string", "%Y-%m-%dT%H:%M:%S");
+	set_option("formatted_buf_len", "80");
+	return;
 }
 
 }  // namespace swx

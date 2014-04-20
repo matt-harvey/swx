@@ -40,22 +40,6 @@ add_definitions (
 	-DSWX_VERSION_MAJOR=${version_major}
 	-DSWX_VERSION_MINOR=${version_minor}
 	-DSWX_VERSION_PATCH=${version_patch}
-
-	# Controls format in which dates are stored in data file.
-	# If you change this, remember also to change SWX_FORMATTED_BUF_LEN
-	# accordingly.
-	-DSWX_FORMAT_STRING="%Y-%m-%dT%H:%M:%S"
-
-	# Must be at least 1 greater than the length of the longest
-	# string that could result from formatting a date using
-	# SWX_FORMAT_STRING
-	-DSWX_FORMATTED_BUF_LEN=20;
-
-	# For formatting output of decimal hours
-	-DSWX_OUTPUT_ROUNDING_NUMERATOR=1
-	-DSWX_OUTPUT_ROUNDING_DENOMINATOR=4
-	-DSWX_OUTPUT_PRECISION=2
-	-DSWX_OUTPUT_WIDTH=6
 )
 
 if (CMAKE_COMPILER_IS_GNUCXX)

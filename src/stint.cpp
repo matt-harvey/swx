@@ -15,6 +15,7 @@
  */
 
 #include "stint.hpp"
+#include "config.hpp"
 #include "interval.hpp"
 #include "round.hpp"
 #include "stream_flag_guard.hpp"
@@ -42,22 +43,6 @@ using std::vector;
 namespace swx
 {
 
-
-namespace
-{
-	// TODO MEDIUM PRIORITY Duplicated in interval.cpp
-
-	double round(double x)
-	{
-		return swx::round
-		(	x,
-			SWX_OUTPUT_ROUNDING_NUMERATOR,
-			SWX_OUTPUT_ROUNDING_DENOMINATOR
-		);
-	}
-
-}  // end anonymous namespace
-
 Stint::Stint(string const& p_activity_name, Interval const& p_interval):
 	m_activity_name(p_activity_name),
 	m_interval(p_interval)
@@ -80,12 +65,15 @@ ostream&
 operator<<(ostream& os, vector<Stint> const& container)
 {
 	// TODO LOW PRIORITY Tidy this up.
-
 	map<string, double> accum_map;
 	double accum_hours = 0.0;
 	string live_activity;
 	assert (live_activity.empty());
 	auto const gap = "  ";
+	auto const rounding_num = Config::output_rounding_numerator();
+	auto const rounding_den = Config::output_rounding_denominator();
+	auto const output_width = Config::output_width();
+	auto const output_precision = Config::output_precision();
 	for (auto const& stint: container)
 	{
 		string const activity = stint.activity_name();
@@ -106,8 +94,9 @@ operator<<(ostream& os, vector<Stint> const& container)
 			}
 			os << time_point_to_stamp(interval.beginning()) << gap
 			   << time_point_to_stamp(interval.ending()) << gap;
-			os << fixed << setprecision(SWX_OUTPUT_PRECISION) << right;
-			os << setw(SWX_OUTPUT_WIDTH) << round(hours);
+			os << fixed << setprecision(output_precision) << right;
+			os << setw(output_width)
+			   << round(hours, rounding_num, rounding_den);
 			if (interval.is_live())
 			{
 				os << '*';
@@ -139,9 +128,9 @@ operator<<(ostream& os, vector<Stint> const& container)
 		double const hours = pair.second;
 		os << left << setw(max_activity_name_width) << activity;
 		os << fixed
-		   << setprecision(SWX_OUTPUT_PRECISION)
+		   << setprecision(output_precision)
 		   << right;
-		os << setw(SWX_OUTPUT_WIDTH) << round(hours);
+		os << setw(output_width) << round(hours, rounding_num, rounding_den);
 		guard.reset();
 		if (live_activity == activity)
 		{
@@ -154,9 +143,10 @@ operator<<(ostream& os, vector<Stint> const& container)
 		StreamFlagGuard guard(os);
 		os << '\n' << left << setw(max_activity_name_width) << "TOTAL";
 		os << fixed
-		   << setprecision(SWX_OUTPUT_PRECISION)
+		   << setprecision(output_precision)
 		   << right;
-		os << setw(SWX_OUTPUT_WIDTH) << round(accum_hours) << endl;
+		os << setw(output_width)
+		   << round(accum_hours, rounding_num, rounding_den) << endl;
 	}
 	if (!live_activity.empty())
 	{

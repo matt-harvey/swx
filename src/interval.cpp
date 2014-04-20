@@ -15,6 +15,7 @@
  */
 
 #include "interval.hpp"
+#include "config.hpp"
 #include "round.hpp"
 #include "seconds.hpp"
 #include "stream_flag_guard.hpp"
@@ -36,19 +37,6 @@ using std::setw;
 
 namespace swx
 {
-
-namespace
-{
-	double round(double x)
-	{
-		return swx::round
-		(	x,
-			SWX_OUTPUT_ROUNDING_NUMERATOR,
-			SWX_OUTPUT_ROUNDING_DENOMINATOR
-		);
-	}
-
-}  // end anonymous namespace
 
 Interval::Interval
 (	TimePoint const& p_beginning,
@@ -90,6 +78,10 @@ operator<<(std::ostream& os, std::vector<Interval> const& container)
 {
 	double accum_hours = 0.0;
 	auto const gap = "  ";
+	auto const output_precision = Config::output_precision();
+	auto const output_width = Config::output_width();
+	auto const rounding_num = Config::output_rounding_numerator();
+	auto const rounding_den = Config::output_rounding_denominator();
 	for (auto const& interval: container)
 	{
 		StreamFlagGuard guard(os);
@@ -98,10 +90,12 @@ operator<<(std::ostream& os, std::vector<Interval> const& container)
 		os << time_point_to_stamp(interval.beginning()) << gap
 		   << time_point_to_stamp(interval.ending()) << gap;
 		os << fixed
-		   << setprecision(SWX_OUTPUT_PRECISION)
+		   << setprecision(output_precision)
 		   << right;
-		os << setw(SWX_OUTPUT_WIDTH) << round(hours) << gap
-		   << setw(SWX_OUTPUT_WIDTH) << round(accum_hours);
+		os << setw(output_width)
+		   << round(hours, rounding_num, rounding_den) << gap
+		   << setw(output_width)
+		   << round(accum_hours, rounding_num, rounding_den);
 		if (interval.is_live())
 		{
 			os << left << gap << "ongoing";

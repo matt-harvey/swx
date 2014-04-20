@@ -52,8 +52,7 @@ private:
 
 // accessors
 private:
-	template <typename Value>
-	void set_option(std::string const& p_key, Value const& p_value);
+	void set_option(std::string const& p_key, std::string const& p_value);
 
 	template <typename Value>
 	Value get_option(std::string const& p_key);
@@ -61,9 +60,8 @@ private:
 // helper functions
 private:
 	void load();
-	void save();
 	void do_load_from(std::string const& p_filepath);
-	void do_save_to(std::string const& p_filepath);
+	void set_defaults();
 
 // member variables
 private:
@@ -75,17 +73,6 @@ private:
 
 
 // MEMBER TEMPLATE IMPLEMENTATIONS
-
-template <typename Value>
-void
-Config::set_option(std::string const& p_key, Value const& p_value)
-{
-	load();
-	std::ostringstream oss;
-	oss << p_value;
-	m_map[p_key] = oss.str();
-	return;
-}
 
 template <typename Value>
 Value
@@ -101,14 +88,13 @@ Config::get_option(std::string const& p_key)
 		throw std::runtime_error(oss.str());
 	}
 	assert (it != m_map.end());
-	std::string const raw = it->second;
-	std::stringstream ss;
-	ss << raw;
+	std::stringstream ss(it->second);
 	ss >> ret;
 	if (!ss)
 	{
 		std::ostringstream oss;
-		oss << "Could not parse value for configuration key: " << p_key;
+		oss << "Could not parse value for configuration key \"" << p_key
+		    << "\" from value string \"" << it->second << "\"";
 		throw std::runtime_error(oss.str());
 	}
 	return ret;

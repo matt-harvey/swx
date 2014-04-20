@@ -58,8 +58,8 @@ Info::data_dir()
 	}
 	ostringstream oss;
 	oss << home_dir
-		<< Info::application_name()
-		<< "/config";
+	    << "/."
+		<< Info::application_name();
 	return oss.str();
 }
 
