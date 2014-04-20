@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <cassert>
 #include <chrono>
+#include <cstddef>
 #include <cstring>
 #include <ctime>
 #include <fstream>
@@ -43,13 +44,12 @@ using std::move;
 using std::ofstream;
 using std::remove;
 using std::runtime_error;
+using std::size_t;
 using std::string;
 using std::stringstream;
 using std::tm;
 using std::upper_bound;
 using std::vector;
-
-// TODO MEDIUM PRIORITY Need better error reporting on parsing error.
 
 namespace chrono = std::chrono;
 
@@ -115,6 +115,10 @@ TimeLog::get_stints_between(TimePoint const& p_begin, TimePoint const& p_end)
 	// TODO MEDIUM PRIORITY Tidy this up.
 	load();	
 	vector<Stint> ret;
+	if (p_end <= p_begin)
+	{
+		return ret;
+	}
 	auto const beg_entries = m_entries.begin();
 	auto const end_entries = m_entries.end();
 	Entry const dummy(0, p_begin);
@@ -184,9 +188,11 @@ TimeLog::load()
 		clear_cache();
 		ifstream infile(m_filepath.c_str());
 		string line;
+		size_t line_number = 1;
 		while (getline(infile, line))
 		{
-			load_entry(line);	
+			load_entry(line, line_number);
+			++line_number
 		}
 		m_is_loaded = true;
 	}
@@ -209,12 +215,14 @@ TimeLog::register_activity(string const& p_activity_name)
 }
 
 void
-TimeLog::load_entry(string const& p_entry_string)
+TimeLog::load_entry(string const& p_entry_string, size_t line_number)
 {
 	static string const time_format("YYYY-MM-DDTHH:MM:SS");
 	if (p_entry_string.size() < time_format.size())
 	{
-		throw runtime_error("TimeLog parsing error.");	
+		ostringstream oss << "TimeLog parsing error at line "
+		                  << line_number << '.';
+		throw runtime_error(oss.str());
 	}
 	auto it = p_entry_string.begin() + time_format.size();
 	assert (it > p_entry_string.begin());
@@ -227,8 +235,10 @@ TimeLog::load_entry(string const& p_entry_string)
 	{
 		auto const last_time_point = m_entries.back().time_point;
 		if (entry.time_point < last_time_point)
-		{
-			throw runtime_error("TimeLog entries out of order.");
+		
+			ostringstream oss << "TimeLog entries out of order at line "
+			                  << line_number << '.'; 
+			throw runtime_error(oss.str());
 		}
 	}
 	m_entries.push_back(entry);
