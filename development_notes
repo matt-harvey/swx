@@ -1,9 +1,0 @@
-Classes
-	
-	Interval
-		+ start_time: timestamp
-		+ finishing_time: timestamp
-		+ project: Project
-	
-	Project
-		+ intervals: vector<Interval> 
