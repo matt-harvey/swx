@@ -39,10 +39,6 @@ using std::pair;
 using std::runtime_error;
 using std::string;
 
-// TODO HIGH PRIORITY Need to make it so that config directory and file
-// is created on first running, with config file prepopulated with
-// commented-out syntax summary and commented-out default options.
-
 namespace swx
 {
 

@@ -26,8 +26,6 @@
 namespace swx
 {
 
-// TODO Remember that options need to default to values per the macros
-// defined in CMakeLists.txt.
 class Config
 {
 // nested types
