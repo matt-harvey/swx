@@ -6,3 +6,4 @@ CMakeCache.txt
 CMakeFiles/
 libswx_common.a
 time_log.swx
+install_manifest.txt

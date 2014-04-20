@@ -109,3 +109,11 @@ add_library(swx_common ${common_sources})
 
 add_executable(${executable_stem_name} src/main.cpp)
 target_link_libraries(${executable_stem_name} swx_common ${libraries})
+
+# Installation
+install(
+	TARGETS
+		${executable_stem_name}
+	RUNTIME DESTINATION
+		"${CMAKE_INSTALL_PREFIX}/bin"
+)
