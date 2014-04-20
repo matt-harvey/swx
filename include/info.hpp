@@ -40,7 +40,7 @@ public:
 public:
 	static std::string application_name();
 	static std::string version();
-	static std::string data_dir();
+	static std::string home_dir();
 
 };  // class Info
 

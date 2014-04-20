@@ -30,6 +30,19 @@ namespace swx
 // defined in CMakeLists.txt.
 class Config
 {
+// nested types
+private:
+	struct OptionData
+	{
+		OptionData() = default;
+		OptionData
+		(	std::string const& p_value,
+			std::string const& p_description
+		);
+		std::string value;
+		std::string description;  // should be one line
+	};
+
 // static accessors
 private:
 	static Config& instance();
@@ -53,11 +66,11 @@ private:
 
 // accessors
 private:
-	void set_option(std::string const& p_key, std::string const& p_value);
+	void set_option_value(std::string const& p_key, std::string const& p_value);
 
 	void unchecked_set_option
 	(	std::string const& p_key,
-		std::string const& p_value
+		OptionData const& p_option_data
 	);
 
 	template <typename Value>
@@ -68,12 +81,13 @@ private:
 	void load();
 	void do_load_from(std::string const& p_filepath);
 	void set_defaults();
+	void initialize_config_file(std::string const& p_filepath);
 
 // member variables
 private:
 	bool m_is_loaded;
 	std::string m_filepath;
-	std::map<std::string, std::string> m_map;
+	std::map<std::string, OptionData> m_map;
 
 };  // class Config
 
@@ -94,13 +108,13 @@ Config::get_option(std::string const& p_key)
 		throw std::runtime_error(oss.str());
 	}
 	assert (it != m_map.end());
-	std::stringstream ss(it->second);
+	std::stringstream ss(it->second.value);
 	ss >> ret;
 	if (!ss)
 	{
 		std::ostringstream oss;
 		oss << "Could not parse value for configuration key \"" << p_key
-		    << "\" from value string \"" << it->second << "\"";
+		    << "\" from value string \"" << it->second.value << "\"";
 		throw std::runtime_error(oss.str());
 	}
 	return ret;

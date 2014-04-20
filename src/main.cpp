@@ -32,8 +32,6 @@ using swx::CommandManager;
 using swx::Config;
 using swx::TimeLog;
 
-// TODO Ensure ~/.swx directory and config file actually exist.
-
 int main(int argc, char** argv)
 {
 	if (argc < 2)

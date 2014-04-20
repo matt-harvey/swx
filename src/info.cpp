@@ -45,22 +45,14 @@ Info::version()
 }
 
 string
-Info::data_dir()
+Info::home_dir()
 {
-	// TODO HIGH PRIORITY Make this portable
-	auto const home_dir = getenv("HOME");
+	auto const home_dir = getenv("HOME");  // non-portable
 	if (home_dir == nullptr)
 	{
-		throw runtime_error
-		(	"Cannot find home directory when looking for configuration "
-			"filepath"
-		);
+		throw runtime_error("Cannot find home directory");
 	}
-	ostringstream oss;
-	oss << home_dir
-	    << "/."
-		<< Info::application_name();
-	return oss.str();
+	return string(home_dir);
 }
 
 }  // namespace swx

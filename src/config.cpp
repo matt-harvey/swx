@@ -17,8 +17,10 @@
 #include "config.hpp"
 #include "info.hpp"
 #include "string_utilities.hpp"
+#include <unistd.h>
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 #include <fstream>
 #include <map>
 #include <sstream>
@@ -26,10 +28,12 @@
 #include <string>
 #include <utility>
 
+using std::endl;
 using std::find;
 using std::getline;
 using std::ifstream;
 using std::map;
+using std::ofstream;
 using std::ostringstream;
 using std::pair;
 using std::runtime_error;
@@ -72,6 +76,12 @@ namespace
 	}
 
 }  // end anonymous namespace
+
+Config::OptionData::OptionData(string const& p_value, string const& p_description):
+	value(p_value),
+	description(p_description)
+{
+}
 
 Config&
 Config::instance()
@@ -124,7 +134,7 @@ Config::path_to_log()
 
 Config::Config():
 	m_is_loaded(false),
-	m_filepath(Info::data_dir() + "/config")  // non-portable
+	m_filepath(Info::home_dir() + "/.swxrc")  // non-portable
 {
 	assert (m_map.empty());
 }
@@ -134,23 +144,26 @@ Config::~Config()
 }
 
 void
-Config::set_option(string const& p_key, string const& p_value)
+Config::set_option_value(string const& p_key, string const& p_value)
 {
 	auto const it = m_map.find(p_key);
 	if (it == m_map.end())
 	{
 		ostringstream oss;
-		oss << "Unrecognized option: " << p_key;
+		oss << "Unrecognized configuration key: " << p_key;
 		throw runtime_error(oss.str());
 	}
-	it->second = p_value;
+	it->second.value = p_value;
 	return;
 }
 
 void
-Config::unchecked_set_option(string const& p_key, string const& p_value)
+Config::unchecked_set_option
+(	string const& p_key,
+	OptionData const& p_option_data
+)
 {
-	m_map[p_key] = p_value;
+	m_map[p_key] = p_option_data;
 	return;
 }
 
@@ -170,6 +183,10 @@ void
 Config::do_load_from(string const& p_filepath)
 {
 	ifstream infile(p_filepath.c_str());
+	if (!infile)
+	{
+		initialize_config_file(p_filepath);
+	}
 	string line;
 	size_t line_number = 1;
 	while (getline(infile, line))
@@ -187,7 +204,7 @@ Config::do_load_from(string const& p_filepath)
 		}
 		else if (line_type == LineType::entry)
 		{
-			set_option(pair.first, pair.second);
+			set_option_value(pair.first, pair.second);
 		}
 		++line_number;
 	}
@@ -197,17 +214,87 @@ Config::do_load_from(string const& p_filepath)
 void
 Config::set_defaults()
 {
-	unchecked_set_option("output_rounding_numerator", "1");
-	unchecked_set_option("output_rounding_denominator", "4");
-	unchecked_set_option("output_precision", "2");
-	unchecked_set_option("output_width", "6");
-	unchecked_set_option("format_string", "%Y-%m-%dT%H:%M:%S");
-	unchecked_set_option("formatted_buf_len", "80");
+	string const rounding_explanation
+	(	"output_rounding_numerator and output_rounding_denominator together "
+			"determine rounding behaviour when printing a duration figure. "
+			"For example, if output_rounding_numerator is 1 and "
+			"output_rounding_denominator is 4, and the output duration "
+			"is measured in hours, then the output will be rounded to the "
+			"nearest quarter of an hour."
+	);
+	unchecked_set_option
+	(	"output_rounding_numerator",
+		OptionData("1", rounding_explanation)
+	);
+	unchecked_set_option
+	(	"output_rounding_denominator",
+		OptionData("4", rounding_explanation)
+	);
+	unchecked_set_option
+	(	"output_precision",
+		OptionData
+		(	"2",
+			"Determines the number of decimal places of precision for "
+				"durations when output in decimal format."
+		)
+	);
+	unchecked_set_option
+	(	"output_width",
+		OptionData("6", "Field width when printing durations.")
+	);
+	unchecked_set_option
+	(	"format_string",
+		OptionData
+		(	"%Y-%m-%dT%H:%M:%S",
+			"Determines formatting when displaying points in time. See the "
+				"documentation for the C function strftime for details. If you"
+				" change this, you should also review the formatted_buf_len "
+				"to ensure it will be adequate."
+		)
+	);
+	unchecked_set_option
+	(	"formatted_buf_len",
+		OptionData
+		(	"80",
+			"Should be set to a value that is at least one greater than the "
+				"length of the longest string expected to be printed as a "
+				"result of formatting a time point using format_string."
+		)
+	);
 
 	// non-portable
-	unchecked_set_option("path_to_log", Info::data_dir() + "/data");
+	auto user_name = getlogin();
+	string const stem = (user_name? user_name: "time_log");
+	unchecked_set_option
+	(	"path_to_log",
+		OptionData
+		(	Info::home_dir() + "/" + stem + ".swx",
+			"Path to file from in which time log is recorded."
+		)
+	);
 
 	return;
+}
+
+void
+Config::initialize_config_file(string const& p_filepath)
+{
+	ofstream outfile(p_filepath.c_str());
+	outfile << "# Configuration options for " << Info::application_name()
+	        << " can be set in this file.\n"
+			<< "#\n"
+	        << "# SYNTAX:\n"
+	        << "#\tkey=value\n"
+	        << "#\tBlank lines are permitted.\n"
+	        << "#\tComments must occupy a line to themselves beginning '#'\n"
+			<< "##########################################################";
+	for (auto const& entry: m_map)
+	{
+		outfile << '\n' << endl;
+		OptionData const data = entry.second;
+		outfile << "# " << data.description << '\n'
+				<< entry.first << '=' << data.value;
+	}
 }
 
 }  // namespace swx

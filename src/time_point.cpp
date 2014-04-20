@@ -107,6 +107,8 @@ time_point_to_stamp(TimePoint const& p_time_point)
 	char const* format = format_str.c_str();
 	tm const time_tmp = time_point_to_tm(p_time_point);
 	auto const buf_len = Config::formatted_buf_len();
+
+	// TODO Use a smart pointer here.
 	char* buf = new char[buf_len];
 	if (strftime(buf, buf_len, format, &time_tmp) == 0)
 	{
