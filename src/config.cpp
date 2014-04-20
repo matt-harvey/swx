@@ -51,14 +51,24 @@ namespace
 		error
 	};
 
+	char commenting_char()
+	{
+		return '#';
+	}
+	
+	char separator()
+	{
+		return '=';
+	}
+
 	LineType parse_line(string const& p_line, pair<string, string>& p_out)
 	{
 		string const line = trim(p_line);
-		if (line.empty() || line[0] == '#')
+		if (line.empty() || line[0] == commenting_char())
 		{
 			return LineType::blank;
 		}
-		auto const it = find(line.begin(), line.end(), '=');
+		auto const it = find(line.begin(), line.end(), separator());
 		if (it == line.end() || it == line.begin())
 		{
 			return LineType::error;
@@ -71,9 +81,33 @@ namespace
 		return LineType::entry;
 	}
 
+	string comment_out(string const& s)
+	{
+		if (s.empty())
+		{
+			return s;
+		}
+		ostringstream oss;
+		oss << commenting_char() << ' ';
+		string::size_type const sz = s.size();
+		for (string::size_type i = 0; i != sz; ++i)
+		{
+			auto const c = s[i];
+		 	oss << c;
+			if ((c == '\n') && (i + 1 != sz))
+			{
+				oss << commenting_char() << ' ';
+			}
+		}
+		return oss.str();
+	}
+
 }  // end anonymous namespace
 
-Config::OptionData::OptionData(string const& p_value, string const& p_description):
+Config::OptionData::OptionData
+(	string const& p_value,
+	string const& p_description
+):
 	value(p_value),
 	description(p_description)
 {
@@ -211,12 +245,12 @@ void
 Config::set_defaults()
 {
 	string const rounding_explanation
-	(	"output_rounding_numerator and output_rounding_denominator together "
-			"determine rounding behaviour when printing a duration figure. "
-			"For example, if output_rounding_numerator is 1 and "
-			"output_rounding_denominator is 4, and the output duration "
-			"is measured in hours, then the output will be rounded to the "
-			"nearest quarter of an hour."
+	(	"output_rounding_numerator and output_rounding_denominator together\n"
+		"determine rounding behaviour when printing a duration figure. For \n"
+		"For example, if output_rounding_numerator is 1 and\n"
+		"output_rounding_denominator is 4, and the output duration is\n"
+		"measured in hours, then the output will be rounded to the nearest\n"
+		"quarter of an hour."
 	);
 	unchecked_set_option
 	(	"output_rounding_numerator",
@@ -230,8 +264,8 @@ Config::set_defaults()
 	(	"output_precision",
 		OptionData
 		(	"2",
-			"Determines the number of decimal places of precision for "
-				"durations when output in decimal format."
+			"Determines the number of decimal places of precision for\n"
+			"durations when output in decimal format."
 		)
 	);
 	unchecked_set_option
@@ -242,19 +276,19 @@ Config::set_defaults()
 	(	"format_string",
 		OptionData
 		(	"%Y-%m-%dT%H:%M:%S",
-			"Determines formatting when displaying points in time. See the "
-				"documentation for the C function strftime for details. If you"
-				" change this, you should also review the formatted_buf_len "
-				"to ensure it will be adequate."
+			"Determines formatting when displaying points in time. See the\n"
+			"documentation for the C function strftime for details. If you\n"
+			"If you change this, you should also review the formatted_buf_len\n"
+			"option to ensure it will be adequate."
 		)
 	);
 	unchecked_set_option
 	(	"formatted_buf_len",
 		OptionData
 		(	"80",
-			"Should be set to a value that is at least one greater than the "
-				"length of the longest string expected to be printed as a "
-				"result of formatting a time point using format_string."
+			"Should be set to a value that is at least one greater than the\n"
+			"length of the longest string expected to be printed as a result\n"
+			"of formatting a time point using format_string."
 		)
 	);
 
@@ -276,20 +310,28 @@ void
 Config::initialize_config_file(string const& p_filepath)
 {
 	ofstream outfile(p_filepath.c_str());
-	outfile << "# Configuration options for " << Info::application_name()
-	        << " can be set in this file.\n"
-			<< "#\n"
-	        << "# SYNTAX:\n"
-	        << "#\tkey=value\n"
-	        << "#\tBlank lines are permitted.\n"
-	        << "#\tComments must occupy a line to themselves beginning '#'\n"
-			<< "##########################################################";
+	ostringstream oss;
+	oss << "Configuation options for " << Info::application_name()
+	    << " can be set in this file.\n"
+		<< "\n"
+		<< "SYNTAX:\n"
+		<< "\tkey" << separator() << "value\n"
+		<< "\tBlank lines are permitted.\n"
+		<< "\tComments must occupy a line to themselves beginning with '"
+		<< commenting_char() << "'.\n";
+	outfile << comment_out(oss.str()) << string(80, commenting_char());
 	for (auto const& entry: m_map)
 	{
 		outfile << '\n' << endl;
 		OptionData const data = entry.second;
-		outfile << "# " << data.description << '\n'
-				<< entry.first << '=' << data.value;
+		outfile << comment_out(data.description) << '\n'
+		        << comment_out("Default: " + data.value) << '\n'
+				<< comment_out
+				   (	"To customize, uncomment and edit the following "
+				   		"line accordingly."
+				   )
+				<< '\n'
+				<< comment_out(entry.first + separator() + data.value);
 	}
 }
 
