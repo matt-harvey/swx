@@ -309,6 +309,7 @@ Config::set_defaults()
 void
 Config::initialize_config_file(string const& p_filepath)
 {
+	// TODO Make this atomic?
 	ofstream outfile(p_filepath.c_str());
 	ostringstream oss;
 	oss << "Configuation options for " << Info::application_name()

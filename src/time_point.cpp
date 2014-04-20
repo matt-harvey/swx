@@ -19,6 +19,7 @@
 #include <chrono>
 #include <cstring>
 #include <ctime>
+#include <memory>
 #include <stdexcept>
 #include <string>
 
@@ -31,6 +32,7 @@ using std::runtime_error;
 using std::string;
 using std::tm;
 using std::time_t;
+using std::unique_ptr;
 
 namespace swx
 {
@@ -107,16 +109,12 @@ time_point_to_stamp(TimePoint const& p_time_point)
 	char const* format = format_str.c_str();
 	tm const time_tmp = time_point_to_tm(p_time_point);
 	auto const buf_len = Config::formatted_buf_len();
-
-	// TODO Use a smart pointer here.
-	char* buf = new char[buf_len];
-	if (strftime(buf, buf_len, format, &time_tmp) == 0)
+	unique_ptr<char[]> buf(new char[buf_len]);
+	if (strftime(buf.get(), buf_len, format, &time_tmp) == 0)
 	{
-		delete[] buf;
 		throw runtime_error("Error formatting TimePoint.");
 	}
-	string const ret(buf);
-	delete[] buf;
+	string const ret(buf.get());
 	return ret;
 }
 
