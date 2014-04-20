@@ -17,7 +17,6 @@
 #ifndef GUARD_time_point_hpp_285827964211734
 #define GUARD_time_point_hpp_285827964211734
 
-#include "date.hpp"
 #include <chrono>
 #include <ctime>
 #include <string>

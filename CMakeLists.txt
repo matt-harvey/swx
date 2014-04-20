@@ -87,7 +87,6 @@ set(
 	src/command.cpp
 	src/command_manager.cpp
 	src/config.cpp
-	src/date.cpp
 	src/help_command.cpp
 	src/info.cpp
 	src/interval.cpp
