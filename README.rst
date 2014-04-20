@@ -27,7 +27,7 @@ Dependencies
 ============
 
 ``swx`` is written in standard C++, and uses some C++11 features. It is designed
-to build and run on Unix-like systems only (Linux, OSX, BSD), and will not
+to be built and run on Unix-like systems only (Linux, OSX, BSD), and will not
 work on Windows. To build it, you will need:
 
 - A reasonably conformant C++ compiler and standard library implementation
@@ -40,6 +40,11 @@ Usage
 Enter ``swx help`` to get help.
 
 *TODO* Expand on this.
+
+Configuration
+=============
+
+*TODO*
 
 Building and installing
 =======================
