@@ -32,7 +32,7 @@ work on Windows. To build it, you will need:
 
 - A reasonably conformant C++ compiler and standard library implementation
 
-- CMake (version 2.8 or later) (http://www.cmake.org)
+- CMake (version 2.8.10 or later) (http://www.cmake.org)
 
 Usage
 =====
@@ -63,6 +63,9 @@ return to this step and answer ``y`` to configure more detailed build options.)
 
 If in doubt about a particular option, it is generally best just to hit enter
 and keep the default setting for the option.
+
+Depending on your compiler, you may need to set an option to build with
+C++11 support enabled.
 
 Once you have finished configuring the build with CMake, enter::
 
