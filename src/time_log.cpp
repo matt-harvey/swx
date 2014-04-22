@@ -201,14 +201,14 @@ TimeLog::register_activity(string const& p_activity_name)
 }
 
 void
-TimeLog::load_entry(string const& p_entry_string, size_t line_number)
+TimeLog::load_entry(string const& p_entry_string, size_t p_line_number)
 {
 	static string const time_format("YYYY-MM-DDTHH:MM:SS");
 	if (p_entry_string.size() < time_format.size())
 	{
 		ostringstream oss;
 		oss << "TimeLog parsing error at line "
-		    << line_number << '.';
+		    << p_line_number << '.';
 		throw runtime_error(oss.str());
 	}
 	auto it = p_entry_string.begin() + time_format.size();
@@ -225,7 +225,7 @@ TimeLog::load_entry(string const& p_entry_string, size_t line_number)
 		{		
 			ostringstream oss;
 			oss << "TimeLog entries out of order at line "
-			    << line_number << '.'; 
+			    << p_line_number << '.'; 
 			throw runtime_error(oss.str());
 		}
 	}

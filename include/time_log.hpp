@@ -62,7 +62,7 @@ public:
 	TimeLog& operator=(TimeLog&& rhs) = delete;
 	~TimeLog() = default;
 
-/// ordinary member functions
+// ordinary member functions
 public:
 
 	/**
@@ -90,7 +90,12 @@ private:
 	void mark_cache_as_stale();
 	void load();
 	ActivityId register_activity(std::string const& p_activity_name);
-	void load_entry(std::string const& p_entry_string, std::size_t line_number);
+
+	void load_entry
+	(	std::string const& p_entry_string,
+		std::size_t p_line_number
+	);
+
 	std::string activity_id_to_name(ActivityId p_activity_id);
 
 // member variables
