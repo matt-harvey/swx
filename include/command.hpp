@@ -24,6 +24,13 @@
 namespace swx
 {
 
+/**
+ * Represents a command that processes arguments received from
+ * the command line.
+ *
+ * To implement a specific subcommand, inherit from this class and implement
+ * its virtual functions.
+ */
 class Command
 {
 // nested types and typedefs

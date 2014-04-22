@@ -26,6 +26,9 @@
 namespace swx
 {
 
+/**
+ * Manages application configuration options and the configuration file.
+ */
 class Config
 {
 // nested types
@@ -38,7 +41,7 @@ private:
 			std::string const& p_description
 		);
 		std::string value;
-		std::string description;  // should be one line
+		std::string description;
 	};
 
 // static accessors

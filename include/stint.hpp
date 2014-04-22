@@ -25,6 +25,9 @@
 namespace swx
 {
 
+/**
+ * Represents a period of time spent performing a specific activity.
+ */
 class Stint
 {
 // special member functions

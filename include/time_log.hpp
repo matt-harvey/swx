@@ -28,6 +28,10 @@
 namespace swx
 {
 
+/**
+ * Represents a record of time spent on various activities, persisted to a
+ * plain text file.
+ */
 class TimeLog
 {
 // nested types and typedefs
@@ -37,6 +41,9 @@ private:
 	typedef ActivityNames::size_type ActivityId;
 	typedef std::map<std::string, ActivityId> ActivityMap;
 
+	/**
+	 * Represents a single record in the log.
+	 */
 	struct Entry
 	{
 		Entry(ActivityId p_activity_id, TimePoint const& p_time_point);
@@ -57,14 +64,21 @@ public:
 
 /// ordinary member functions
 public:
+
+	/**
+	 * Push a new record onto the log. The new record will be immediately
+	 * persisted to file.
+	 */
 	void append_entry
 	(	std::string const& p_activity_name,
 		TimePoint const& p_time_point
 	);
 
-	// Pass optional non-null pointers to filter by
-	// activity name and date range.
-	// Client retains the ownership of pointed-to memory.
+	/**
+	 * Pass non-null pointers to filter by activity name and/or date
+	 * range, or pass null pointers to ignore a particular filter.
+	 * Caller retains ownership of pointed-to memory.
+	 */
 	std::vector<Stint> get_stints
 	(	std::string const* p_activity_name = nullptr,
 		TimePoint const* p_begin = nullptr,

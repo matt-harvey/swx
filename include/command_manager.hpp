@@ -29,6 +29,12 @@
 namespace swx
 {
 
+/**
+ * Manages the various commands provided by the application.
+ *
+ * Processes command line arguments, by passing them to the appropriate
+ * Command instance.
+ */
 class CommandManager
 {
 // nested types
@@ -54,6 +60,7 @@ private:
 	void populate_command_map();
 
 public:
+
 	int process_command
 	(	std::string const& p_command,
 		std::vector<std::string> const& p_args

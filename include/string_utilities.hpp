@@ -23,6 +23,10 @@
 namespace swx
 {
 
+/**
+ * @returns a string that is identical to \e p_string except in that
+ * whitespace has been trimmed from the beginning and end.
+ */
 std::string trim(std::string const& p_string);
 
 template <typename StringIter>

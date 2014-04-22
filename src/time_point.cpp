@@ -80,7 +80,7 @@ tm_to_time_point(tm const& p_tm)
 TimePoint
 time_stamp_to_point(string const& p_time_stamp)
 {
-	// don't make this static - caused odd bug with strptime
+	// don't make this static - caused odd bug with strptime (?)
 	string const format_str = Config::format_string();
 	char const* format = format_str.c_str();
 	tm tm;
@@ -104,7 +104,7 @@ time_stamp_to_point(string const& p_time_stamp)
 string
 time_point_to_stamp(TimePoint const& p_time_point)
 {
-	// don't make this static - caused odd bug with strptime
+	// don't make this static - caused odd bug with strptime (?)
 	string const format_str = Config::format_string();
 	char const* format = format_str.c_str();
 	tm const time_tmp = time_point_to_tm(p_time_point);

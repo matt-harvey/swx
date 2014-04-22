@@ -23,6 +23,9 @@
 namespace swx
 {
 
+/**
+ * Manages stream flags using RAII.
+ */
 class StreamFlagGuard
 {
 public:
