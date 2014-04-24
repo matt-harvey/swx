@@ -89,6 +89,7 @@ set(
 	src/command_manager.cpp
 	src/config.cpp
 	src/help_command.cpp
+	src/help_line.cpp
 	src/info.cpp
 	src/interval.cpp
 	src/round.cpp

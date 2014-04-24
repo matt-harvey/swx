@@ -16,6 +16,7 @@
 
 #include "version_command.hpp"
 #include "command.hpp"
+#include "help_line.hpp"
 #include "info.hpp"
 #include <iostream>
 #include <ostream>
@@ -34,7 +35,11 @@ VersionCommand::VersionCommand
 (	string const& p_command_word,
 	vector<string> const& p_aliases
 ):
-	Command(p_command_word, p_aliases)
+	Command
+	(	p_command_word,
+		p_aliases,
+		vector<HelpLine>{ HelpLine("Print version information and exit.") }
+	)
 {
 }
 
@@ -54,16 +59,6 @@ VersionCommand::do_process
 					   << Info::version()
 					   << endl;
 	return ErrorMessages();
-}
-
-vector<Command::HelpLine>
-VersionCommand::do_get_help_lines() const
-{
-	HelpLine const basic_usage_help_line
-	(	"",
-		"Print version information and exit"
-	);
-	return vector<HelpLine>{basic_usage_help_line};
 }
 
 }  // namespace swx

@@ -17,6 +17,7 @@
 #ifndef GUARD_command_hpp_08439188501070807
 #define GUARD_command_hpp_08439188501070807
 
+#include "help_line.hpp"
 #include <ostream>
 #include <string>
 #include <vector>
@@ -38,25 +39,14 @@ protected:
 	typedef std::vector<std::string> Arguments;
 	typedef std::vector<std::string> ErrorMessages;
 
-	struct HelpLine
-	{
-	public:
-		friend class Command;
-		HelpLine
-		(	std::string const& p_args_descriptor,
-			std::string const& p_usage_descriptor
-		);
-	private:
-		std::string args_descriptor;
-		std::string usage_descriptor;
-	};
-
 // special member functions
-public:
+protected:
 	Command
 	(	std::string const& p_command_word,
-		std::vector<std::string> const& p_aliases
+		std::vector<std::string> const& p_aliases,
+		std::vector<HelpLine> const& p_help_lines
 	);
+public:
 	Command(Command const& rhs) = delete;
 	Command(Command&& rhs) = delete;
 	Command& operator=(Command const& rhs) = delete;
@@ -82,13 +72,12 @@ private:
 	(	Arguments const& p_args,
 		std::ostream& p_ordinary_ostream
 	) = 0;
-	
-	virtual std::vector<HelpLine> do_get_help_lines() const = 0;
 
 // member variables
 private:
 	std::string const m_command_word;
 	std::vector<std::string> const m_aliases;
+	std::vector<HelpLine> const m_help_lines;
 
 };  // class Command
 

@@ -16,6 +16,7 @@
 
 #include "day_command.hpp"
 #include "command.hpp"
+#include "help_line.hpp"
 #include "stint.hpp"
 #include "string_utilities.hpp"
 #include "time_point.hpp"
@@ -34,7 +35,17 @@ DayCommand::DayCommand
 	vector<string> const& p_aliases,
 	TimeLog& p_time_log
 ):
-	Command(p_command_word, p_aliases),
+	Command
+	(	p_command_word,
+		p_aliases,
+		vector<HelpLine>
+		{	HelpLine("Print summary of time spent on all activities today"),
+			HelpLine
+			(	"Print summary of time spent on ACTIVITY today",
+				"ACTIVITY"
+			)
+		}
+	),
 	m_time_log(p_time_log)
 {
 }
@@ -63,15 +74,6 @@ DayCommand::do_process
 		p_ordinary_ostream << m_time_log.get_stints(&activity_name, &b, &e);
 	}
 	return ret;
-}
-
-vector<Command::HelpLine>
-DayCommand::do_get_help_lines() const
-{
-	return vector<HelpLine>
-	{	HelpLine("", "Print summary of time spent on all activities today."),
-		HelpLine("ACTIVITY", "Print summary of time spent on ACTIVITY today.")
-	};
 }
 
 }  // namespace swx

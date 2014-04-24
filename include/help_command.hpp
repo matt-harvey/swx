@@ -53,8 +53,6 @@ private:
 		std::ostream& p_ordinary_ostream
 	) override;
 
-	std::vector<HelpLine> do_get_help_lines() const override;
-
 // member variables
 private:
 	CommandManager const& m_command_manager;

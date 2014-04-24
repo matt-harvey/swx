@@ -15,6 +15,7 @@
  */
 
 #include "command.hpp"
+#include "help_line.hpp"
 #include "info.hpp"
 #include "stream_flag_guard.hpp"
 #include <cassert>
@@ -36,21 +37,14 @@ using std::vector;
 namespace swx
 {
 
-Command::HelpLine::HelpLine
-(	string const& p_args_descriptor,
-	string const& p_usage_descriptor
-):
-	args_descriptor(p_args_descriptor),
-	usage_descriptor(p_usage_descriptor)
-{
-}
-
 Command::Command
 (	string const& p_command_word,
-	vector<string> const& p_aliases
+	vector<string> const& p_aliases,
+	vector<HelpLine> const& p_help_lines
 ):
 	m_command_word(p_command_word),
-	m_aliases(p_aliases)
+	m_aliases(p_aliases),
+	m_help_lines(p_help_lines)
 {
 }
 
@@ -84,14 +78,15 @@ Command::usage_descriptor() const
 	// TODO LOW PRIORITY This should handle wrapping of the right-hand cell
 	// to a reasonable width if necessary.
 
-	auto const help_lines = do_get_help_lines();
+	// TODO The formatting code possibly belongs with HelpLine rather than
+	// here.
 	typedef string::size_type ColWidth;
 	ColWidth command_word_length = m_command_word.length();
 	ColWidth left_col_width = command_word_length;
-	for (auto const& line: help_lines)
+	for (auto const& line: m_help_lines)
 	{
 		ColWidth const left_cell_width =
-			line.args_descriptor.length() + command_word_length;
+			line.args_descriptor().length() + command_word_length;
 		left_col_width =
 		(	(left_cell_width > left_col_width)?
 			left_cell_width:
@@ -101,16 +96,16 @@ Command::usage_descriptor() const
 	left_col_width +=
 		Info::application_name().length() + 1 + m_command_word.length() + 2;
 	ostringstream oss;
-	for (auto const& line: help_lines)
+	for (auto const& line: m_help_lines)
 	{
 		StreamFlagGuard guard(oss);
 		oss << setw(left_col_width)
 		    << left
 		    << Info::application_name() + ' ' + m_command_word + ' ' +
-			     line.args_descriptor
+			     line.args_descriptor()
 		    << "  ";
 		guard.reset();
-		oss << line.usage_descriptor
+		oss << line.usage_descriptor()
 		    << '\n';
 	}
 	if (!m_aliases.empty())

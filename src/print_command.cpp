@@ -16,6 +16,7 @@
 
 #include "print_command.hpp"
 #include "command.hpp"
+#include "help_line.hpp"
 #include "interval.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
@@ -39,7 +40,14 @@ PrintCommand::PrintCommand
 	vector<string> const& p_aliases,
 	TimeLog& p_time_log
 ):
-	Command(p_command_word, p_aliases),
+	Command
+	(	p_command_word,
+		p_aliases,
+		vector<HelpLine>
+		{	HelpLine("Print summary of time spent on all activities."),
+			HelpLine("Print summary of time spent on ACTIVITY", "ACTIVITY")
+		}
+	),
 	m_time_log(p_time_log)
 {
 }
@@ -65,15 +73,6 @@ PrintCommand::do_process
 		p_ordinary_ostream << m_time_log.get_stints(&activity_name);
 	}
 	return ret;
-}
-
-vector<Command::HelpLine>
-PrintCommand::do_get_help_lines() const
-{
-	return vector<HelpLine>
-	{	HelpLine("", "Print summary of time spent on all activities."),
-		HelpLine("ACTIVITY", "Print summary of time spent on ACTIVITY.")
-	};
 }
 
 }  // namespace swx

@@ -15,6 +15,7 @@
  */
 
 #include "help_command.hpp"
+#include "help_line.hpp"
 #include "command.hpp"
 #include "command_manager.hpp"
 #include "info.hpp"
@@ -43,7 +44,14 @@ HelpCommand::HelpCommand
 	vector<string> const& p_aliases,
 	CommandManager const& p_command_manager
 ):
-	Command(p_command_word, p_aliases),
+	Command
+	(	p_command_word,
+		p_aliases,
+		vector<HelpLine>
+		{	HelpLine("Print general help information."),
+			HelpLine("Print help information for SUBCOMMAND", "SUBCOMMAND")
+		}
+	),
 	m_command_manager(p_command_manager)
 {
 }
@@ -109,18 +117,5 @@ HelpCommand::do_process
 	}
 	return ret;	
 }
-
-
-std::vector<Command::HelpLine>
-HelpCommand::do_get_help_lines() const
-{
-	HelpLine const general_help_line("", "Print general help information");
-	HelpLine const specific_help_line
-	(	"SUBCOMMAND",
-		"Print specific help information for SUBCOMMAND"
-	);
-	return vector<HelpLine>{general_help_line, specific_help_line};
-}
-
 
 }  // namespace swx

@@ -16,6 +16,7 @@
 
 #include "switch_command.hpp"
 #include "command.hpp"
+#include "help_line.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
@@ -40,7 +41,20 @@ SwitchCommand::SwitchCommand
 	vector<string> const& p_aliases,
 	TimeLog& p_time_log
 ):
-	Command(p_command_word, p_aliases),
+	Command
+	(	p_command_word,
+		p_aliases,
+		vector<HelpLine>
+		{	HelpLine
+			(	"Stop accruing time to any activity."
+			),
+			HelpLine
+			(	"Start accruing time to ACTIVITY, and stop accruing time to "
+					"the current activity (if any)",
+				"ACTIVITY"
+			)
+		}
+	),
 	m_time_log(p_time_log)
 {
 }
@@ -60,21 +74,6 @@ SwitchCommand::do_process
 	string const activity_name(squish(p_args.begin(), p_args.end()));
 	m_time_log.append_entry(move(activity_name), time_point);
 	return ErrorMessages();
-}
-
-vector<Command::HelpLine>
-SwitchCommand::do_get_help_lines() const
-{
-	HelpLine const switching_line
-	(	"ACTIVITY",
-		"Start accruing time to ACTIVITY, and stop accruing time to the "
-			"current activity (if any)"
-	);
-	HelpLine const stopping_line
-	(	"",
-		"Stop accruing time to any activity"
-	);
-	return vector<HelpLine>{switching_line, stopping_line};
 }
 
 }  // namespace swx
