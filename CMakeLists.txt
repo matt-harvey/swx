@@ -24,8 +24,8 @@ set (application_name "swx")
 set (executable_stem_name "swx")
 set (file_extension ".swx")
 project (${application_name})
-set (version_major 1)
-set (version_minor 0)
+set (version_major 0)
+set (version_minor 1)
 set (version_patch 0)
 
 # Definitions to be passed to the compiler
