@@ -32,8 +32,6 @@ using swx::CommandManager;
 using swx::Config;
 using swx::TimeLog;
 
-// TODO Not properly parsing time formats containing blank space.
-
 int main(int argc, char** argv)
 {
 	if (argc < 2)

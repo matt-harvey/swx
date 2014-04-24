@@ -77,6 +77,7 @@ namespace
 		assert (it != line.end());
 		string second(it + 1, line.end());
 		p_out.first = trim(first);
+		
 		p_out.second = trim(second);
 		return LineType::entry;
 	}
@@ -123,43 +124,45 @@ Config::instance()
 unsigned int
 Config::output_rounding_numerator()
 {
-	return instance().get_option<unsigned int>("output_rounding_numerator");
+	return instance().
+		get_option_value<unsigned int>("output_rounding_numerator");
 }
 
 unsigned int
 Config::output_rounding_denominator()
 {
-	return instance().get_option<unsigned int>("output_rounding_denominator");
+	return instance().
+		get_option_value<unsigned int>("output_rounding_denominator");
 }
 
 unsigned int
 Config::output_precision()
 {
-	return instance().get_option<unsigned int>("output_precision");
+	return instance().get_option_value<unsigned int>("output_precision");
 }
 
 unsigned int
 Config::output_width()
 {
-	return instance().get_option<unsigned int>("output_width");
+	return instance().get_option_value<unsigned int>("output_width");
 }
 
 string
 Config::format_string()
 {
-	return instance().get_option<string>("format_string");
+	return instance().get_option_value<string>("format_string");
 }
 
 unsigned int
 Config::formatted_buf_len()
 {
-	return instance().get_option<unsigned int>("formatted_buf_len");
+	return instance().get_option_value<unsigned int>("formatted_buf_len");
 }
 
 string
 Config::path_to_log()
 {
-	return instance().get_option<string>("path_to_log");
+	return instance().get_option_value<string>("path_to_log");
 }
 
 Config::Config():
@@ -195,6 +198,21 @@ Config::unchecked_set_option
 {
 	m_map[p_key] = p_option_data;
 	return;
+}
+
+string
+Config::get_raw_option_value(std::string const& p_key)
+{
+	load();
+	auto const it = m_map.find(p_key);
+	if (it == m_map.end())
+	{
+		ostringstream oss;
+		oss << "Could not find configuration key: " << p_key;
+		throw std::runtime_error(oss.str());
+	}
+	assert (it != m_map.end());
+	return it->second.value;
 }
 
 void

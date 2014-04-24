@@ -75,7 +75,9 @@ private:
 	);
 
 	template <typename Value>
-	Value get_option(std::string const& p_key);
+	Value get_option_value(std::string const& p_key);
+
+	std::string get_raw_option_value(std::string const& p_key);
 
 // helper functions
 private:
@@ -97,28 +99,30 @@ private:
 
 template <typename Value>
 Value
-Config::get_option(std::string const& p_key)
+Config::get_option_value(std::string const& p_key)
 {
 	load();
 	Value ret;
-	auto const it = m_map.find(p_key);
-	if (it == m_map.end())
-	{
-		std::ostringstream oss;
-		oss << "Could not find configuration key: " << p_key;
-		throw std::runtime_error(oss.str());
-	}
-	assert (it != m_map.end());
-	std::stringstream ss(it->second.value);
+	auto const raw_value = get_raw_option_value(p_key);
+	std::stringstream ss(raw_value);
 	ss >> ret;
 	if (!ss)
 	{
 		std::ostringstream oss;
 		oss << "Could not parse value for configuration key \"" << p_key
-		    << "\" from value string \"" << it->second.value << "\"";
+		    << "\" from value string \"" << raw_value << "\"";
 		throw std::runtime_error(oss.str());
 	}
 	return ret;
+}
+
+template <>
+inline
+std::string
+Config::get_option_value<std::string>(std::string const& p_key)
+{
+	load();
+	return get_raw_option_value(p_key);
 }
 
 }  // namespace swx
