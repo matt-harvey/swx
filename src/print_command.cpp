@@ -28,6 +28,9 @@ using std::move;
 using std::string;
 using std::vector;
 
+// TODO MEDIUM PRIORITY There should be a "brief" option to print a summary of
+// totals only, rather than the list plus summary.
+
 namespace swx
 {
 
@@ -54,7 +57,7 @@ PrintCommand::do_process
 	ErrorMessages ret;
 	if (p_args.empty())
 	{
-		ret.push_back("Too few arguments passed to this subcommand.");
+		p_ordinary_ostream << m_time_log.get_stints();	
 	}
 	else
 	{
@@ -67,13 +70,10 @@ PrintCommand::do_process
 vector<Command::HelpLine>
 PrintCommand::do_get_help_lines() const
 {
-	HelpLine const help_line
-	(	"ACTIVITY",
-		"Print summary of time spent on ACTIVITY "
-			"(start, end, duration-in-decimal-hours, "
-			"cumulutive-duration-in-decimal-hours)"
-	);
-	return vector<HelpLine>{help_line};
+	return vector<HelpLine>
+	{	HelpLine("", "Print summary of time spent on all activities."),
+		HelpLine("ACTIVITY", "Print summary of time spent on ACTIVITY.")
+	};
 }
 
 }  // namespace swx

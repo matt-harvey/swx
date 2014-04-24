@@ -17,6 +17,7 @@
 #include "day_command.hpp"
 #include "command.hpp"
 #include "stint.hpp"
+#include "string_utilities.hpp"
 #include "time_point.hpp"
 #include <ostream>
 #include <string>
@@ -49,16 +50,17 @@ DayCommand::do_process
 )
 {
 	ErrorMessages ret;
+	TimePoint const n = now();
+	auto const b = day_begin(n);
+	auto const e = day_end(n);
 	if (p_args.empty())
 	{
-		TimePoint const n = now();
-		auto const b = day_begin(n);
-		auto const e = day_end(n);
 		p_ordinary_ostream << m_time_log.get_stints(nullptr, &b, &e);
 	}
 	else
 	{
-		ret.push_back("Too many arguments passed to this subcommand.");
+		auto const activity_name = squish(p_args.begin(), p_args.end());
+		p_ordinary_ostream << m_time_log.get_stints(&activity_name, &b, &e);
 	}
 	return ret;
 }
@@ -66,8 +68,10 @@ DayCommand::do_process
 vector<Command::HelpLine>
 DayCommand::do_get_help_lines() const
 {
-	HelpLine const help_line("", "Print summary of today's activities");
-	return vector<HelpLine>{help_line};
+	return vector<HelpLine>
+	{	HelpLine("", "Print summary of time spent on all activities today."),
+		HelpLine("ACTIVITY", "Print summary of time spent on ACTIVITY today.")
+	};
 }
 
 }  // namespace swx
