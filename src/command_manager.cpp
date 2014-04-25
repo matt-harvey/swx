@@ -15,12 +15,12 @@
  */
 
 #include "command_manager.hpp"
-#include "day_command.hpp"
 #include "print_command.hpp"
 #include "command.hpp"
 #include "help_command.hpp"
 #include "info.hpp"
 #include "switch_command.hpp"
+#include "today_command.hpp"
 #include "time_log.hpp"
 #include "version_command.hpp"
 #include <cassert>
@@ -90,10 +90,10 @@ CommandManager::populate_command_map()
 	);
 	create_command(print_command);
 
-	CommandPtr day_command
-	(	new DayCommand("day", {"d"}, m_time_log)
+	CommandPtr today_command
+	(	new TodayCommand("today", {"t"}, m_time_log)
 	);
-	create_command(day_command);
+	create_command(today_command);
 		
 	return;
 }

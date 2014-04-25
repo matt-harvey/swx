@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef GUARD_day_command_hpp_01995176124384243
-#define GUARD_day_command_hpp_01995176124384243
+#ifndef GUARD_today_command_hpp_01995176124384243
+#define GUARD_today_command_hpp_01995176124384243
 
 #include "command.hpp"
 #include "time_log.hpp"
@@ -31,20 +31,20 @@ class CommandManager;
 
 // end forward declarations
 
-class DayCommand: public Command
+class TodayCommand: public Command
 {
 // special member functions
 public:
-	DayCommand
+	TodayCommand
 	(	std::string const& p_command_word,
 		std::vector<std::string> const& p_aliases,
 		TimeLog& p_time_log
 	);
-	DayCommand(DayCommand const& rhs) = delete;
-	DayCommand(DayCommand&& rhs) = delete;
-	DayCommand& operator=(DayCommand const& rhs) = delete;
-	DayCommand& operator=(DayCommand&& rhs) = delete;
-	virtual ~DayCommand();
+	TodayCommand(TodayCommand const& rhs) = delete;
+	TodayCommand(TodayCommand&& rhs) = delete;
+	TodayCommand& operator=(TodayCommand const& rhs) = delete;
+	TodayCommand& operator=(TodayCommand&& rhs) = delete;
+	virtual ~TodayCommand();
 
 // inherited virtual functions
 private:
@@ -56,8 +56,8 @@ private:
 private:
 	TimeLog& m_time_log;
 
-};  // class DayCommand
+};  // class TodayCommand
 
 }  // namespace swx
 
-#endif  // GUARD_day_command_hpp_01995176124384243
+#endif  // GUARD_today_command_hpp_01995176124384243

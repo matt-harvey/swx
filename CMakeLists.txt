@@ -83,7 +83,7 @@ set(
 
 set(
 	common_sources
-	src/day_command.cpp
+	src/today_command.cpp
 	src/print_command.cpp
 	src/command.cpp
 	src/command_manager.cpp

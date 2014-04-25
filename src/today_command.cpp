@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "day_command.hpp"
+#include "today_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
 #include "stint.hpp"
@@ -30,7 +30,7 @@ using std::vector;
 namespace swx
 {
 
-DayCommand::DayCommand
+TodayCommand::TodayCommand
 (	string const& p_command_word,
 	vector<string> const& p_aliases,
 	TimeLog& p_time_log
@@ -50,12 +50,12 @@ DayCommand::DayCommand
 {
 }
 
-DayCommand::~DayCommand()
+TodayCommand::~TodayCommand()
 {
 }
 
 Command::ErrorMessages
-DayCommand::do_process
+TodayCommand::do_process
 (	Arguments const& p_args,
 	std::ostream& p_ordinary_ostream
 )
