@@ -14,9 +14,11 @@
 # limitations under the License.
 ###
 
+
 # Preliminaries
 
 cmake_minimum_required (VERSION 2.8.10)
+
 
 # Set project and version
 
@@ -27,6 +29,7 @@ project (${application_name})
 set (version_major 0)
 set (version_minor 1)
 set (version_patch 0)
+
 
 # Definitions to be passed to the compiler
 
@@ -42,14 +45,11 @@ add_definitions (
 	-DSWX_VERSION_PATCH=${version_patch}
 )
 
-if (CMAKE_COMPILER_IS_GNUCXX)
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x")
-endif ()
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 
 # Find dependencies
 
-# find_library (UNIT_TEST_LIBRARY UnitTest++ REQUIRED)
 if (WIN32)
 	set (
 		extra_libraries
@@ -68,9 +68,6 @@ elseif (UNIX)
 		dl
 	)
 endif ()
-#if (UNIT_TEST_LIBRARY-NOTFOUND)
-#	message ("Could not find UnitTest++ - cannot build tests.")
-#endif ()
 
 include_directories(
 	include
@@ -107,15 +104,15 @@ set(
 
 add_library(swx_common ${common_sources})
 
-# Building the tests
-# goes here...
 
-# Building the main executable
+# Build the main executable
 
 add_executable(${executable_stem_name} src/main.cpp)
 target_link_libraries(${executable_stem_name} swx_common ${libraries})
 
+
 # Installation
+
 install(
 	TARGETS
 		${executable_stem_name}
