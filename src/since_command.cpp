@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,27 +14,29 @@
  * limitations under the License.
  */
 
-#include "print_command.hpp"
+#include "since_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
+#include <memory>
 #include <ostream>
+#include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
 using std::ostream;
+using std::ostringstream;
+using std::runtime_error;
 using std::string;
+using std::unique_ptr;
 using std::vector;
-
-// TODO MEDIUM PRIORITY There should be a "brief" option to print a summary of
-// totals only, rather than the list plus summary. This should apply to all
-// the "printing" commands.
 
 namespace swx
 {
 
-PrintCommand::PrintCommand
+SinceCommand::SinceCommand
 (	string const& p_command_word,
 	vector<string> const& p_aliases,
 	TimeLog& p_time_log
@@ -43,20 +45,27 @@ PrintCommand::PrintCommand
 	(	p_command_word,
 		p_aliases,
 		vector<HelpLine>
-		{	HelpLine("Print summary of time spent on all activities."),
-			HelpLine("Print summary of time spent on ACTIVITY", "ACTIVITY")
+		{	HelpLine
+			(	"Print summary of time spent on all activities since "
+					"TIMESTAMP",
+				"TIMESTAMP"
+			),
+			HelpLine
+			(	"Print summary of time spent on ACTIVITY since TIMESTAMP",
+				"TIMESTAMP ACTIVITY"
+			)
 		}
 	),
 	m_time_log(p_time_log)
 {
 }
 
-PrintCommand::~PrintCommand()
+SinceCommand::~SinceCommand()
 {
 }
 
 Command::ErrorMessages
-PrintCommand::do_process
+SinceCommand::do_process
 (	Arguments const& p_args,
 	ostream& p_ordinary_ostream
 )
@@ -64,12 +73,37 @@ PrintCommand::do_process
 	ErrorMessages ret;
 	if (p_args.empty())
 	{
-		p_ordinary_ostream << m_time_log.get_stints();	
+		ret.push_back("Too few arguments passed to this subcommand.");
 	}
 	else
 	{
-		string const activity_name = squish(p_args.begin(), p_args.end());
-		p_ordinary_ostream << m_time_log.get_stints(&activity_name);
+		unique_ptr<TimePoint> time_point_ptr;
+		try
+		{
+			time_point_ptr.reset
+			(	new TimePoint(time_stamp_to_point(p_args[0]))
+			);
+		}
+		catch (runtime_error&)
+		{
+			ostringstream oss;
+			oss << "Could not parse timestamp: " << p_args[0];
+			ret.push_back(oss.str());
+		}
+		if (p_args.size() == 1)
+		{
+			p_ordinary_ostream <<
+				m_time_log.get_stints(nullptr, time_point_ptr.get());
+		}
+		else
+		{
+			string const activity_name =
+				squish(p_args.begin() + 1, p_args.end());
+			p_ordinary_ostream << m_time_log.get_stints
+			(	&activity_name,
+				time_point_ptr.get()
+			);
+		}
 	}
 	return ret;
 }

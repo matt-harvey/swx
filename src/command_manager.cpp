@@ -15,13 +15,16 @@
  */
 
 #include "command_manager.hpp"
-#include "print_command.hpp"
+#include "between_command.hpp"
 #include "command.hpp"
 #include "help_command.hpp"
 #include "info.hpp"
+#include "print_command.hpp"
+#include "since_command.hpp"
 #include "switch_command.hpp"
 #include "today_command.hpp"
 #include "time_log.hpp"
+#include "until_command.hpp"
 #include "version_command.hpp"
 #include <cassert>
 #include <iostream>
@@ -81,7 +84,7 @@ CommandManager::populate_command_map()
 	create_command(help_command);
 
 	CommandPtr switch_command
-	(	new SwitchCommand("switch", {"s"}, m_time_log)
+	(	new SwitchCommand("switch", {"sw"}, m_time_log)
 	);
 	create_command(switch_command);
 
@@ -94,7 +97,22 @@ CommandManager::populate_command_map()
 	(	new TodayCommand("today", {"t"}, m_time_log)
 	);
 	create_command(today_command);
-		
+
+	CommandPtr since_command
+	(	new SinceCommand("since", {"si"}, m_time_log)
+	);
+	create_command(since_command);
+
+	CommandPtr until_command
+	(	new UntilCommand("until", {"u"}, m_time_log)
+	);
+	create_command(until_command);
+
+	CommandPtr between_command
+	(	new BetweenCommand("between", {"b"}, m_time_log)
+	);
+	create_command(between_command);
+
 	return;
 }
 
