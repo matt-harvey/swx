@@ -34,21 +34,29 @@ using swx::TimeLog;
 
 int main(int argc, char** argv)
 {
-	if (argc < 2)
+	try
 	{
-		cerr << "Subcommand not provided." << endl;
-		cerr << CommandManager::directions_to_get_help() << endl;
-		return 1;
+		if (argc < 2)
+		{
+			cerr << "Subcommand not provided." << endl;
+			cerr << CommandManager::directions_to_get_help() << endl;
+			return 1;
+		}
+		assert (argc >= 2);
+		vector<string> args;
+		for (int i = 2; i != argc; ++i)
+		{
+			string const arg(argv[i]);
+			args.push_back(arg);
+		}
+		TimeLog time_log(Config::path_to_log());
+		CommandManager manager(time_log);
+		manager.process_command(argv[1], args);
 	}
-	assert (argc >= 2);
-	vector<string> args;
-	for (int i = 2; i != argc; ++i)
+	catch (...)
 	{
-		string const arg(argv[i]);
-		args.push_back(arg);
+		// Ensure stack is fully unwound.
+		throw;
 	}
-	TimeLog time_log(Config::path_to_log());
-	CommandManager manager(time_log);
-	manager.process_command(argv[1], args);
 	return 0;
 }
