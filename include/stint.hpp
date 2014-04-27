@@ -32,6 +32,13 @@ class Stint
 {
 // special member functions
 public:
+
+	/**
+	 * Note \e p_activity is stored <em>as a reference</em>. The
+	 * Stint object does not make its own copy of the string. The
+	 * caller should ensure that the string used to initialize the Stint
+	 * will persist for as long as the Stint persists.
+	 */
 	Stint(std::string const& p_activity, Interval const& p_interval);
 
 // ordinary member functions
@@ -41,7 +48,7 @@ public:
 
 // member variables
 private:
-	std::string m_activity;
+	std::string const& m_activity;
 	Interval m_interval;
 
 };  // class Stint

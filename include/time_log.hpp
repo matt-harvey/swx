@@ -96,7 +96,7 @@ private:
 		std::size_t p_line_number
 	);
 
-	std::string id_to_activity(ActivityId p_activity_id);
+	std::string const& id_to_activity(ActivityId p_activity_id);
 
 	std::vector<Entry>::const_iterator find_entry_just_before
 	(	TimePoint const& p_time_point

@@ -214,7 +214,7 @@ TimeLog::load_entry(string const& p_entry_string, size_t p_line_number)
 	return;
 }
 
-string
+string const&
 TimeLog::id_to_activity(ActivityId p_activity_id)
 {
 	load();
