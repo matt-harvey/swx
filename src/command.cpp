@@ -77,46 +77,33 @@ Command::usage_descriptor() const
 {
 	// TODO LOW PRIORITY This should handle wrapping of the right-hand cell
 	// to a reasonable width if necessary.
-
-	// TODO The formatting code possibly belongs with HelpLine rather than
-	// here.
 	typedef string::size_type ColWidth;
 	ColWidth command_word_length = m_command_word.length();
 	ColWidth left_col_width = command_word_length;
+	auto const app_name = Info::application_name();
 	for (auto const& line: m_help_lines)
 	{
 		ColWidth const left_cell_width =
 			line.args_descriptor().length() + command_word_length;
-		left_col_width =
-		(	(left_cell_width > left_col_width)?
-			left_cell_width:
-			left_col_width
-		);
+		if (left_cell_width > left_col_width) left_col_width = left_cell_width;
 	}
-	left_col_width +=
-		Info::application_name().length() + 1 + m_command_word.length() + 2;
+	left_col_width += app_name.length() + 1 + m_command_word.length() + 2;
 	ostringstream oss;
 	for (auto const& line: m_help_lines)
 	{
 		StreamFlagGuard guard(oss);
-		oss << setw(left_col_width)
-		    << left
-		    << Info::application_name() + ' ' + m_command_word + ' ' +
-			     line.args_descriptor()
-		    << "  ";
+		oss << setw(left_col_width) << left
+		    << (app_name + ' ' + m_command_word + ' ' + line.args_descriptor())
+			<< "  ";
 		guard.reset();
-		oss << line.usage_descriptor()
-		    << '\n';
+		oss << line.usage_descriptor() << endl;
 	}
 	if (!m_aliases.empty())
 	{
 		oss << "\nAliased as: ";
 		auto it = m_aliases.begin();
 		oss << *it;
-		for (++it; it != m_aliases.end(); ++it)
-		{
-			oss << ", " << *it;	
-		}
+		for (++it; it != m_aliases.end(); ++it) oss << ", " << *it;
 	}
 	return oss.str();
 }

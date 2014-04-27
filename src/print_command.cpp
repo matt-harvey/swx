@@ -68,8 +68,8 @@ PrintCommand::do_process
 	}
 	else
 	{
-		string const activity_name = squish(p_args.begin(), p_args.end());
-		p_ordinary_ostream << m_time_log.get_stints(&activity_name);
+		string const activity = squish(p_args.begin(), p_args.end());
+		p_ordinary_ostream << m_time_log.get_stints(&activity);
 	}
 	return ret;
 }

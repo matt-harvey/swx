@@ -32,16 +32,16 @@ class Stint
 {
 // special member functions
 public:
-	Stint(std::string const& p_activity_name, Interval const& p_interval);
+	Stint(std::string const& p_activity, Interval const& p_interval);
 
 // ordinary member functions
 public:
-	std::string const& activity_name() const;
+	std::string const& activity() const;
 	Interval interval() const;
 
 // member variables
 private:
-	std::string m_activity_name;
+	std::string m_activity;
 	Interval m_interval;
 
 };  // class Stint

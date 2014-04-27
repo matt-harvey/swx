@@ -70,8 +70,8 @@ TodayCommand::do_process
 	}
 	else
 	{
-		auto const activity_name = squish(p_args.begin(), p_args.end());
-		p_ordinary_ostream << m_time_log.get_stints(&activity_name, &b, &e);
+		auto const activity = squish(p_args.begin(), p_args.end());
+		p_ordinary_ostream << m_time_log.get_stints(&activity, &b, &e);
 	}
 	return ret;
 }

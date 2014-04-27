@@ -43,16 +43,54 @@ using std::vector;
 namespace swx
 {
 
-Stint::Stint(string const& p_activity_name, Interval const& p_interval):
-	m_activity_name(p_activity_name),
+namespace
+{
+	ostream& print_activity
+	(	ostream& p_os,
+		string const& p_name,
+		unsigned int p_width
+	)
+	{
+		StreamFlagGuard guard(p_os);
+		p_os << left << setw(p_width) << p_name;
+		return p_os;
+	}
+
+	ostream& print_hours
+	(	ostream& p_os,
+		double p_hours,
+		unsigned int p_rounding_num,
+		unsigned int p_rounding_den,
+		unsigned int p_precision,
+		unsigned int p_width
+	)
+	{
+		StreamFlagGuard guard(p_os);
+		p_os << fixed << setprecision(p_precision) << right
+		    << setw(p_width)
+		    << round(p_hours, p_rounding_num, p_rounding_den);
+		return p_os;
+	}
+
+	ostream& print_time_point(ostream& p_os, TimePoint const& p_time_point)
+	{
+		StreamFlagGuard guard(p_os);
+		p_os << time_point_to_stamp(p_time_point);
+		return p_os;
+	}
+
+}  // end anonymous namespace
+
+Stint::Stint(string const& p_activity, Interval const& p_interval):
+	m_activity(p_activity),
 	m_interval(p_interval)
 {
 }
 
 string const&
-Stint::activity_name() const
+Stint::activity() const
 {
-	return m_activity_name;
+	return m_activity;
 }
 
 Interval
@@ -64,23 +102,20 @@ Stint::interval() const
 ostream&
 operator<<(ostream& os, vector<Stint> const& container)
 {
-	// TODO LOW PRIORITY Tidy this up.
 	map<string, double> accum_map;
 	double accum_hours = 0.0;
 	string live_activity;
-	assert (live_activity.empty());
 	auto const gap = "  ";
 	auto const rounding_num = Config::output_rounding_numerator();
 	auto const rounding_den = Config::output_rounding_denominator();
-	auto const output_width = Config::output_width();
-	auto const output_precision = Config::output_precision();
+	auto const w = Config::output_width();
+	auto const prec = Config::output_precision();
 	for (auto const& stint: container)
 	{
-		string const activity = stint.activity_name();
+		string const activity = stint.activity();
 		if (!activity.empty())
 		{
-			StreamFlagGuard guard(os);
-			Interval const interval = stint.interval();
+			auto const interval = stint.interval();
 			double hours = interval.duration().count() / 60.0 / 60.0;
 			accum_hours += hours;
 			auto const it = accum_map.find(activity);
@@ -92,11 +127,9 @@ operator<<(ostream& os, vector<Stint> const& container)
 			{
 				it->second += hours;
 			}
-			os << time_point_to_stamp(interval.beginning()) << gap
-			   << time_point_to_stamp(interval.ending()) << gap;
-			os << fixed << setprecision(output_precision) << right;
-			os << setw(output_width)
-			   << round(hours, rounding_num, rounding_den);
+			print_time_point(os, interval.beginning()) << gap;
+			print_time_point(os, interval.ending()) << gap;
+			print_hours(os, hours, rounding_num, rounding_den, prec, w);
 			if (interval.is_live())
 			{
 				os << '*';
@@ -106,52 +139,31 @@ operator<<(ostream& os, vector<Stint> const& container)
 			{
 				os << ' ';
 			}
-			guard.reset();
 			os << gap << activity << endl;
 		}
 	}
 	os << endl;
-	string::size_type max_activity_name_width = 0;
+	string::size_type max_name_width = 0;
 	for (auto const& pair: accum_map)
 	{
-		string const& activity_name = pair.first;
-		auto const length = activity_name.length();
-		if (length > max_activity_name_width)
-		{
-			max_activity_name_width = length;
-		}
+		string const& activity = pair.first;
+		auto const length = activity.length();
+		if (length > max_name_width) max_name_width = length;
 	}
 	for (auto const& pair: accum_map)
 	{
-		StreamFlagGuard guard(os);
 		string const& activity = pair.first;
 		double const hours = pair.second;
-		os << left << setw(max_activity_name_width) << activity;
-		os << fixed
-		   << setprecision(output_precision)
-		   << right;
-		os << setw(output_width) << round(hours, rounding_num, rounding_den);
-		guard.reset();
-		if (live_activity == activity)
-		{
-			os << '*';
-		}
+		print_activity(os, activity, max_name_width);
+		print_hours(os, hours, rounding_num, rounding_den, prec, w);
+		if (live_activity == activity) os << '*';
 		os << endl;
 	}
-	// anonymous scope
-	{
-		StreamFlagGuard guard(os);
-		os << '\n' << left << setw(max_activity_name_width) << "TOTAL";
-		os << fixed
-		   << setprecision(output_precision)
-		   << right;
-		os << setw(output_width)
-		   << round(accum_hours, rounding_num, rounding_den) << endl;
-	}
-	if (!live_activity.empty())
-	{
-		os << "\n*ongoing" << endl;
-	}
+	os << endl;
+	print_activity(os, "TOTAL", max_name_width);
+	print_hours(os, accum_hours, rounding_num, rounding_den, prec, w);
+	os << endl;
+	if (!live_activity.empty()) os << "\n*ongoing" << endl;
 	return os;
 }
 

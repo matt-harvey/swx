@@ -97,13 +97,9 @@ UntilCommand::do_process
 		}
 		else
 		{
-			string const activity_name =
-				squish(p_args.begin() + 1, p_args.end());
-			p_ordinary_ostream << m_time_log.get_stints
-			(	&activity_name,
-				nullptr,
-				time_point_ptr.get()
-			);
+			string const activity = squish(p_args.begin() + 1, p_args.end());
+			p_ordinary_ostream <<
+				m_time_log.get_stints(&activity, nullptr, time_point_ptr.get());
 		}
 	}
 	return ret;

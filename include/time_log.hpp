@@ -37,8 +37,8 @@ class TimeLog
 // nested types and typedefs
 private:
 
-	typedef std::vector<std::string> ActivityNames;
-	typedef ActivityNames::size_type ActivityId;
+	typedef std::vector<std::string> Activities;
+	typedef Activities::size_type ActivityId;
 	typedef std::map<std::string, ActivityId> ActivityMap;
 
 	/**
@@ -70,7 +70,7 @@ public:
 	 * persisted to file.
 	 */
 	void append_entry
-	(	std::string const& p_activity_name,
+	(	std::string const& p_activity,
 		TimePoint const& p_time_point
 	);
 
@@ -80,7 +80,7 @@ public:
 	 * Caller retains ownership of pointed-to memory.
 	 */
 	std::vector<Stint> get_stints
-	(	std::string const* p_activity_name = nullptr,
+	(	std::string const* p_activity = nullptr,
 		TimePoint const* p_begin = nullptr,
 		TimePoint const* p_end = nullptr
 	);
@@ -89,21 +89,25 @@ private:
 	void clear_cache();
 	void mark_cache_as_stale();
 	void load();
-	ActivityId register_activity(std::string const& p_activity_name);
+	ActivityId register_activity(std::string const& p_activity);
 
 	void load_entry
 	(	std::string const& p_entry_string,
 		std::size_t p_line_number
 	);
 
-	std::string activity_id_to_name(ActivityId p_activity_id);
+	std::string id_to_activity(ActivityId p_activity_id);
+
+	std::vector<Entry>::const_iterator find_entry_just_before
+	(	TimePoint const& p_time_point
+	);
 
 // member variables
 private:
 	bool m_is_loaded;
 	std::string m_filepath;
 	std::vector<Entry> m_entries;
-	ActivityNames m_activity_names;
+	Activities m_activities;
 	ActivityMap m_activity_map;
 
 };  // class TimeLog

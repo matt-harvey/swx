@@ -25,12 +25,6 @@
 namespace swx
 {
 
-// begin forward declarations
-
-class CommandManager;
-
-// end forward declarations
-
 class TodayCommand: public Command
 {
 // special member functions
