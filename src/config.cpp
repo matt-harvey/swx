@@ -294,16 +294,21 @@ Config::set_defaults()
 	(	"format_string",
 		OptionData
 		(	"%Y-%m-%dT%H:%M:%S",
-			"Determines formatting when displaying points in time. See the\n"
-			"documentation for the C function strftime for details. If you\n"
+			"Determines the format used when parsing and printing timestamps.\n"
+			"See the documentation for the C function strftime for details.\n"
 			"If you change this, you should also review the formatted_buf_len\n"
-			"option to ensure it will be adequate."
+			"option to ensure it will be adequate.\n"
+			"Note, changing this option will NOT cause the timestamps already\n"
+			"entered in the data file to be retroactively reformatted. This\n"
+			"will cause parsing errors unless you manually reformat the old\n"
+			"entries to the new format. It is therefore best to decide on a\n"
+			"format when you first run the program, and then stick with it."
 		)
 	);
 	unchecked_set_option
 	(	"formatted_buf_len",
 		OptionData
-		(	"80",
+		(	"50",
 			"Should be set to a value that is at least one greater than the\n"
 			"length of the longest string expected to be printed as a result\n"
 			"of formatting a time point using format_string."
@@ -336,6 +341,8 @@ Config::initialize_config_file(string const& p_filepath)
 		<< "SYNTAX:\n"
 		<< "\tkey" << separator() << "value\n"
 		<< "\tBlank lines are permitted.\n"
+		<< "\tDo NOT place quotes around value.\n"
+		<< "\tvalue may contain whitespace.\n"
 		<< "\tComments must occupy a line to themselves beginning with '"
 		<< commenting_char() << "'.\n";
 	outfile << comment_out(oss.str()) << string(80, commenting_char());
