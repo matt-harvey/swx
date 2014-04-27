@@ -225,7 +225,7 @@ TimeLog::find_entry_just_before(TimePoint const& p_time_point)
 	Iter const e = m_entries.end();
 	Entry const dummy(0, p_time_point);
 	Iter it = upper_bound(b, e, dummy, comp);
-	while ((it != b) && (it == e) || (it->time_point > p_time_point))
+	while (((it != b) && (it == e)) || (it->time_point > p_time_point))
 	{
 		--it;
 	}
