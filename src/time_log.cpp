@@ -57,6 +57,16 @@ namespace chrono = std::chrono;
 namespace swx
 {
 
+namespace
+{
+	string::size_type expected_time_stamp_length()
+	{
+		static string const time_format = time_point_to_stamp(now());
+		return time_format.length();
+	}
+
+}  // end anonymous namespace
+
 TimeLog::TimeLog(string const& p_filepath):
 	m_is_loaded(false),
 	m_filepath(p_filepath)
@@ -175,15 +185,14 @@ TimeLog::register_activity(string const& p_activity)
 void
 TimeLog::load_entry(string const& p_entry_string, size_t p_line_number)
 {
-	static string const time_format("YYYY-MM-DDTHH:MM:SS");
-	if (p_entry_string.size() < time_format.size())
+	if (p_entry_string.size() < expected_time_stamp_length())
 	{
 		ostringstream oss;
 		oss << "TimeLog parsing error at line "
 		    << p_line_number << '.';
 		throw runtime_error(oss.str());
 	}
-	auto it = p_entry_string.begin() + time_format.size();
+	auto it = p_entry_string.begin() + expected_time_stamp_length();
 	assert (it > p_entry_string.begin());
 	string const time_stamp(p_entry_string.begin(), it);
 	string const activity = trim(string(it, p_entry_string.end()));
