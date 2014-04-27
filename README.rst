@@ -30,7 +30,7 @@ Basic usage
 ``swx`` provides a series of subcommands, of which you can see a list by
 entering ``swx help``. The basic pattern of usage is::
 
-    ``swx <SUBCOMMAND> [ARGUMENTS]``
+    swx <SUBCOMMAND> [ARGUMENTS]
 
 The "switch" command
 --------------------
