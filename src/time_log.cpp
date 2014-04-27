@@ -103,13 +103,11 @@ TimeLog::get_stints
 			if (p_begin && (tp < *p_begin)) tp = *p_begin;
 			auto const next_it = it + 1;
 			auto const done = (next_it == e);
-			auto default_next_tp = (n > tp? n: tp);
-			auto next_tp = (done? default_next_tp: next_it->time_point);
+			auto next_tp = (done? (n > tp? n: tp): next_it->time_point);
 			if (p_end && (next_tp > *p_end)) next_tp = *p_end;
-			assert (!p_begin || (tp >= *p_begin));
-			assert (!p_begin || (next_tp >= *p_begin));
-			assert (!p_end || (next_tp <= *p_end));
 			assert (next_tp >= tp);
+			assert (!p_begin || (tp >= *p_begin));
+			assert (!p_end || (next_tp <= *p_end));
 			auto const seconds = chrono::duration_cast<Seconds>(next_tp - tp);
 			Interval const interval(tp, seconds, done);
 			ret.push_back(Stint(id_to_activity(current_activity_id), interval));
@@ -158,10 +156,17 @@ TimeLog::register_activity(string const& p_activity)
 	auto const it = m_activity_map.find(p_activity);
 	if (it == m_activity_map.end())
 	{
-		// TODO Make this atomic?
 		auto const ret = m_activities.size();
 		m_activities.push_back(p_activity);
-		m_activity_map[p_activity] = ret;
+		try
+		{
+			m_activity_map.insert(ActivityMap::value_type(p_activity, ret));
+		}
+		catch (...)
+		{
+			m_activities.pop_back();
+			throw;
+		}
 		return ret;
 	}
 	return it->second;
