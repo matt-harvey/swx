@@ -21,10 +21,117 @@ Overview
 ``swx`` is simple command line application for keeping track of the amount of
 time you spend on different activities.
 
-It is still being written and is not yet ready for use.
+Usage
+=====
 
-Dependencies
-============
+Basic usage
+-----------
+
+``swx`` provides a series of subcommands, of which you can see a list by
+entering ``swx help``. The basic pattern of usage is::
+
+    ``swx <SUBCOMMAND> [ARGUMENTS]``
+
+The "switch" command
+--------------------
+
+The subcommand you will use most often is ``switch``.
+
+Suppose you start working on the activity of "answering emails". You would come
+up with a name for this activity, say ``answering emails``. When you start
+working on this activity, you would enter the following at the command line::
+
+    swx switch answering emails
+
+The activity name can be any number of words strung together, and is
+case-sensitive. You can use the alias ``sw`` if you don't want to type
+``switch``.
+
+Suppose you stop answering emails and start "spreadsheeting". You can record a
+transition from one activity to another, by entering ``swx switch``, plus the
+name of the acitivity that you are switching *to*, in this case::
+
+    swx switch spreadsheeting
+
+If you cease doing any activity at all (or at least, any activity you care about
+recording), then you would record this cessation by entering simply::
+    
+    swx switch
+
+Printing activity summaries
+---------------------------
+
+To output a summary of the time you have spent on your various activities,
+various "printing commands" are available::
+
+    swx print
+    swx since
+    swx between
+    swx until
+    swx today
+
+Enter ``swx help <SUBCOMMAND>`` for detailed usage information in regards to
+each of these. They all follow a similar pattern, and allow you to enter an
+optional activity name, if you want to see only time spent on a given activity,
+or to omit the activity name, if you want to see time spent on all activities.
+
+``swx today`` prints a summary of only the current day's activities.
+
+``swx print`` prints a summary of activity that is not filtered by time at all.
+
+The other printing commands take one or two timestamps as arguments, to show
+only activity *since* a certain time, only activity *until* a certain time, or
+only activity *between* two times. The activity name (if any) is entered after
+the timestamp(s). By default, you must enter timestamps in ISO format
+("YYYY-MM-DDTHH:MM:SS") (without quotes). (You can customize this format in the
+configuration file - see Configuration_ below - but note that changing this
+format will also change the format of timestamps as read from and written to
+the data file, *without* retroactively reformatting the timestamps that are
+already stored - with resulting parsing errors unless you are prepared to
+reformat manually all your already-entered timestamps to the new format.)
+
+The printed activity summary has two sections. The top section shows each
+"stint" on a given activity in the following format:
+
+    start-time  end-time  hours-spent-in-digital-format  activity-name
+
+The bottom section is an alphabetically ordered list of activities with the
+total amount of time spent for each activity, during the period in question,
+shown in terms of digital hours.
+
+By default, the number of hours shown is rounded to the nearest quarter of
+an hour. This rounding behaviour can be changed in the Configuration_.
+
+Manually editing the time log
+-----------------------------
+
+``swx`` stores a log of your activities in a plain text file, which by default
+is located in your home directory, and is named ``<YOUR-USER-NAME>.swx``.
+You are free to edit this file in a text editor if you want to change the
+times or activity names recorded. Be sure to preserve the prescribed timestamp
+format, and to leave a space between the timestamp and the activity name
+(if any) on any given line. (Lines without an activity name record a cessation
+of activity.) Also, the time log must be such that the timestamps appear in
+ascending order (or at least, non-descending order). Be sure to preserve this
+order if you edit the file manually.
+
+Help
+----
+
+Enter ``swx help`` to see a summary of usage, or ``swx help <SUBCOMMAND>`` to
+see a summary of usage for a particular subcommand.
+
+Enter ``swx version`` to see version information.
+
+Configuration
+=============
+
+Configuration options are stored in your home directory in the file named
+``.swxrc``, which will be created the first time you run the program. The
+contents of this file should be reasonably self-explanatory.
+
+Building and installing
+=======================
 
 ``swx`` is written in standard C++, and uses some C++11 features. It is designed
 to be built and run on Unix-like systems only (Linux, OSX, BSD), and will not
@@ -34,22 +141,7 @@ work on Windows. To build it, you will need:
 
 - CMake (version 2.8.10 or later) (http://www.cmake.org)
 
-Usage
-=====
-
-Enter ``swx help`` to get help.
-
-*TODO* Expand on this.
-
-Configuration
-=============
-
-*TODO*
-
-Building and installing
-=======================
-
-Open a command line and ``cd`` to the project root.
+Download and unzip the source code and ``cd`` into the source root.
 
 Enter::
 
@@ -97,7 +189,18 @@ At the project root, enter::
 Uninstalling
 ============
 
-*TODO*
+When you run ``make install``, a file named ``install_manifest.txt`` will be
+created in the source directory. This file contains a list of all files
+installed by ``make install``. To uninstall ``swx``, you need manually to
+remove each of the files in this list (of which there may well be only one).
+
+In addition, the first time you run ``swx``, it will create a configuration
+file called ``.swxrc``, in your home directory. Also, the first time you run
+``swx switch`` (or ``swx sw``), it will create a data file, in which your
+activity log will be stored. Unless you have specified otherwise in your
+configuration file, this data file will be stored in your home directory, and
+will be named ``<YOUR-USER-NAME>.swx``. You may or may not want to remove this
+file if you uninstall ``swx``.
 
 Contact
 =======
