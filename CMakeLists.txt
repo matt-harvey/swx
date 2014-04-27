@@ -27,7 +27,7 @@ set (executable_stem_name "swx")
 set (file_extension ".swx")
 project (${application_name})
 set (version_major 0)
-set (version_minor 1)
+set (version_minor 5)
 set (version_patch 0)
 
 
