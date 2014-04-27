@@ -92,10 +92,12 @@ TimeLog::get_stints
 	auto const e = m_entries.end();
 	auto it = (p_begin? find_entry_just_before(*p_begin): m_entries.begin());
 	auto const n = now();
+	ActivityId const sought_activity_id =
+		(p_activity? register_activity(*p_activity): 0);
 	for ( ; (it != e) && (!p_end || (it->time_point < *p_end)); ++it)
 	{
-		auto const activity = id_to_activity(it->activity_id);
-		if (!p_activity || (*p_activity == activity))
+		ActivityId const current_activity_id = it->activity_id;
+		if (!p_activity || (sought_activity_id == current_activity_id))
 		{
 			auto tp = it->time_point;
 			if (p_begin && (tp < *p_begin)) tp = *p_begin;
@@ -110,7 +112,7 @@ TimeLog::get_stints
 			assert (next_tp >= tp);
 			auto const seconds = chrono::duration_cast<Seconds>(next_tp - tp);
 			Interval const interval(tp, seconds, done);
-			ret.push_back(Stint(activity, interval));
+			ret.push_back(Stint(id_to_activity(current_activity_id), interval));
 		}
 	}
 	return ret;	
