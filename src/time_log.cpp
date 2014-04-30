@@ -102,8 +102,7 @@ TimeLog::get_stints
 	auto const e = m_entries.end();
 	auto it = (p_begin? find_entry_just_before(*p_begin): m_entries.begin());
 	auto const n = now();
-	ActivityId const sought_activity_id =
-		(p_activity? register_activity(*p_activity): 0);
+	ActivityId const sought_activity_id = (p_activity? register_activity(*p_activity): 0);
 	for ( ; (it != e) && (!p_end || (it->time_point < *p_end)); ++it)
 	{
 		ActivityId const current_activity_id = it->activity_id;
@@ -225,18 +224,17 @@ vector<TimeLog::Entry>::const_iterator
 TimeLog::find_entry_just_before(TimePoint const& p_time_point)
 {
 	load();
-	typedef vector<TimeLog::Entry>::const_iterator Iter;
 	auto const comp = [](Entry const& lhs, Entry const& rhs)
 	{
 		return lhs.time_point < rhs.time_point;
 	};
-	Iter const b = m_entries.begin();
-	Iter const e = m_entries.end();
+	auto const b = m_entries.begin(), e = m_entries.end();
 	Entry const dummy(0, p_time_point);
-	Iter it = upper_bound(b, e, dummy, comp);
-	while ((it != b) && ((it == e) || (it->time_point > p_time_point))) --it;
+	auto it = upper_bound(b, e, dummy, comp);
+	for ( ; (it != b) && ((it == e) || (it->time_point > p_time_point)); --it)
+	{
+	}
 	return it;
-
 }
 
 TimeLog::Entry::Entry(ActivityId p_activity_id, TimePoint const& p_time_point):
