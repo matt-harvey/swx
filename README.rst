@@ -35,8 +35,6 @@ entering ``swx help``. The basic pattern of usage is::
 The "switch" command
 --------------------
 
-The subcommand you will use most often is ``switch``.
-
 Suppose you start working on the activity of "answering emails". You would come
 up with a name for this activity, say ``answering emails``. When you start
 working on this activity, you would enter the following at the command line::
@@ -63,7 +61,7 @@ The "resume" command
 
 Suppose you are currently "inactive" - on a lunch break, let's say - and then
 you want to resume the most recent activity you were working on before your
-break. Entering ``swx resume`` (or simply ``swx r``) to record a resumption of
+break. Enter ``swx resume`` (or simply ``swx r``) to record a resumption of
 the activity you were working on just before the break.
 
 If you are currently "active", then ``swx resume`` will do nothing, but will
