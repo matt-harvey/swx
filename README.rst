@@ -58,6 +58,18 @@ recording), then you would record this cessation by entering simply::
     
     swx switch
 
+The "resume" command
+--------------------
+
+Suppose you are currently "inactive" - on a lunch break, let's say - and then
+you want to resume the most recent activity you were working on before your
+break. Entering ``swx resume`` (or simply ``swx r``) to record a resumption of
+the activity you were working on just before the break.
+
+If you are currently "active", then ``swx resume`` will do nothing, but will
+print a message informing you of the current activity.
+
+
 Printing activity summaries
 ---------------------------
 
