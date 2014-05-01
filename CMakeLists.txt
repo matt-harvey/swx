@@ -60,6 +60,7 @@ set(
 	src/info.cpp
 	src/interval.cpp
 	src/reporting_command.cpp
+	src/resume_command.cpp
 	src/round.cpp
 	src/since_command.cpp
 	src/stint.cpp

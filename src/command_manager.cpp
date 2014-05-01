@@ -20,6 +20,7 @@
 #include "help_command.hpp"
 #include "info.hpp"
 #include "print_command.hpp"
+#include "resume_command.hpp"
 #include "since_command.hpp"
 #include "switch_command.hpp"
 #include "today_command.hpp"
@@ -87,6 +88,11 @@ CommandManager::populate_command_map()
 	(	new SwitchCommand("switch", {"sw"}, m_time_log)
 	);
 	create_command(switch_command);
+
+	CommandPtr resume_command
+	(	new ResumeCommand("resume", {}, m_time_log)
+	);
+	create_command(resume_command);
 
 	CommandPtr print_command
 	(	new PrintCommand("print", {"p"}, m_time_log)

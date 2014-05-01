@@ -125,6 +125,35 @@ TimeLog::get_stints
 	return ret;	
 }
 
+vector<string>
+TimeLog::last_activities(size_t p_num)
+{
+	load();
+	vector<string> ret;
+	if (m_entries.empty())
+	{
+		return ret;
+	}
+	assert (m_entries.size() >= 1);
+	auto const b = m_entries.begin();
+	auto it = m_entries.end();
+	--it;
+	auto last_id = it->activity_id;
+	assert (last_id == m_entries.back().activity_id);
+	ret.push_back(id_to_activity(last_id));
+	for (--it; (it != b) && (ret.size() != p_num); --it)
+	{
+		assert (ret.size() >= 1);
+		auto const current_id = it->activity_id;
+		if (current_id != last_id)
+		{
+			ret.push_back(id_to_activity(current_id));
+			last_id = current_id;
+		}
+	}
+	return ret;
+}
+
 void
 TimeLog::clear_cache()
 {

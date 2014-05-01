@@ -85,6 +85,20 @@ public:
 		TimePoint const* p_end = nullptr
 	);
 
+	/**
+	 * @returns a vector containing the last \e p_num Activities in the log.
+	 * The "inactive activity", represented by the empty string, is counted as
+	 * an activity for these purposes. The last activity is listed first in the
+	 * vector, then the penultimate Activity, etc.. If there are consecutive
+	 * entries in the log that have the same Activity, these are treated as if
+	 * they were a single combined Entry for the purposes of this function.
+	 *
+	 * If there are fewer than \e p_num Activities to return, then a shorter
+	 * vector is returned. If the TimeLog is empty, then an empty vector
+	 * will be returned.
+	 */
+	std::vector<std::string> last_activities(std::size_t p_num);
+
 private:
 	void clear_cache();
 	void mark_cache_as_stale();
