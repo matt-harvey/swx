@@ -47,8 +47,7 @@ ResumeCommand::ResumeCommand
 		vector<HelpLine>
 		{	HelpLine
 			(	"If currently inactive, start accruing time to the most recent "
-				"activity; or if currently active, switch to the activity that "
-				"was last active before the current one."
+				"activity; or if already active, do nothing."
 			)
 		}
 	),
@@ -66,17 +65,36 @@ ResumeCommand::do_process
 	ostream& p_ordinary_ostream
 )
 {
+	ErrorMessages ret;
 	auto const last_activities = m_time_log.last_activities(2);
+	string const no_activity_message("No activity has yet been recorded.");
 	if (last_activities.empty())
 	{
-		return ErrorMessages{"No activity has yet been recorded."};
+		ret.push_back(no_activity_message);
 	}
-	TimePoint const time_point = now();
-	assert ((last_activities.size() == 1) || (last_activities.size() == 2));
-	string const activity = last_activities.back();
-	m_time_log.append_entry(activity, time_point);
-	p_ordinary_ostream << "Resumed: " << activity << endl;
-	return ErrorMessages();
+	else if (last_activities.front().empty())
+	{
+		switch (last_activities.size())
+		{
+		case 1:
+			ret.push_back(no_activity_message);
+			break;
+		case 2:
+			assert (!last_activities.back().empty());
+			m_time_log.append_entry(last_activities.back(), now());
+			p_ordinary_ostream << "Resumed: " << last_activities.back() << endl;
+			break;
+		default:
+			assert (false);
+		}
+	}
+	else
+	{
+		p_ordinary_ostream << "Already active: "
+		                   << last_activities.front()
+						   << endl;
+	}
+	return ret;
 }
 
 }  // namespace swx
