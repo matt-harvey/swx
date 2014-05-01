@@ -17,7 +17,7 @@
 #ifndef GUARD_since_command_hpp_6417256927312006
 #define GUARD_since_command_hpp_6417256927312006
 
-#include "command.hpp"
+#include "reporting_command.hpp"
 #include "time_log.hpp"
 #include <string>
 #include <vector>
@@ -25,7 +25,7 @@
 namespace swx
 {
 
-class SinceCommand: public Command
+class SinceCommand: public ReportingCommand
 {
 // special member functions
 public:
@@ -46,10 +46,6 @@ private:
 	(	Arguments const& p_args,
 		std::ostream& p_ordinary_ostream
 	) override;
-
-// member variables
-private:
-	TimeLog& m_time_log;
 
 };  // class SinceCommand
 

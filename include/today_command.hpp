@@ -17,7 +17,7 @@
 #ifndef GUARD_today_command_hpp_01995176124384243
 #define GUARD_today_command_hpp_01995176124384243
 
-#include "command.hpp"
+#include "reporting_command.hpp"
 #include "time_log.hpp"
 #include <string>
 #include <vector>
@@ -25,7 +25,7 @@
 namespace swx
 {
 
-class TodayCommand: public Command
+class TodayCommand: public ReportingCommand
 {
 // special member functions
 public:
@@ -46,9 +46,6 @@ private:
 	(	Arguments const& p_args,
 		std::ostream& p_ordinary_ostream
 	) override;
-
-private:
-	TimeLog& m_time_log;
 
 };  // class TodayCommand
 

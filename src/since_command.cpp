@@ -17,6 +17,7 @@
 #include "since_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
+#include "reporting_command.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
 #include <memory>
@@ -41,7 +42,7 @@ SinceCommand::SinceCommand
 	vector<string> const& p_aliases,
 	TimeLog& p_time_log
 ):
-	Command
+	ReportingCommand
 	(	p_command_word,
 		p_aliases,
 		vector<HelpLine>
@@ -54,9 +55,9 @@ SinceCommand::SinceCommand
 			(	"Print summary of time spent on ACTIVITY since TIMESTAMP",
 				"TIMESTAMP ACTIVITY"
 			)
-		}
-	),
-	m_time_log(p_time_log)
+		},
+		p_time_log
+	)
 {
 }
 
@@ -92,14 +93,12 @@ SinceCommand::do_process
 		}
 		if (p_args.size() == 1)
 		{
-			p_ordinary_ostream <<
-				m_time_log.get_stints(nullptr, time_point_ptr.get());
+			print_report(p_ordinary_ostream, nullptr, time_point_ptr.get());
 		}
 		else
 		{
 			string const activity = squish(p_args.begin() + 1, p_args.end());
-			p_ordinary_ostream <<
-				m_time_log.get_stints(&activity, time_point_ptr.get());
+			print_report(p_ordinary_ostream, &activity, time_point_ptr.get());
 		}
 	}
 	return ret;

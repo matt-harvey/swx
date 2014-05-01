@@ -17,6 +17,7 @@
 #include "between_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
+#include "reporting_command.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
 #include <memory>
@@ -41,7 +42,7 @@ BetweenCommand::BetweenCommand
 	vector<string> const& p_aliases,
 	TimeLog& p_time_log
 ):
-	Command
+	ReportingCommand
 	(	p_command_word,
 		p_aliases,
 		vector<HelpLine>
@@ -55,9 +56,9 @@ BetweenCommand::BetweenCommand
 					"TIMESTAMP1 and TIMESTAMP2",
 				"TIMESTAMP1 TIMESTAMP2 ACTIVITY"
 			)
-		}
-	),
-	m_time_log(p_time_log)
+		},
+		p_time_log
+	)
 {
 }
 
@@ -106,8 +107,9 @@ BetweenCommand::do_process
 		}
 		if (p_args.size() == 2)
 		{
-			p_ordinary_ostream << m_time_log.get_stints
-			(	nullptr,
+			print_report
+			(	p_ordinary_ostream,
+				nullptr,
 				time_point_since_ptr.get(),
 				time_point_until_ptr.get()
 			);
@@ -115,8 +117,9 @@ BetweenCommand::do_process
 		else
 		{
 			string const activity = squish(p_args.begin() + 2, p_args.end());
-			p_ordinary_ostream << m_time_log.get_stints
-			(	&activity,
+			print_report
+			(	p_ordinary_ostream,
+				&activity,
 				time_point_since_ptr.get(),
 				time_point_until_ptr.get()
 			);

@@ -90,6 +90,7 @@ set(
 	src/help_line.cpp
 	src/info.cpp
 	src/interval.cpp
+	src/reporting_command.cpp
 	src/round.cpp
 	src/since_command.cpp
 	src/stint.cpp

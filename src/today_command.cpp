@@ -17,6 +17,7 @@
 #include "today_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
+#include "reporting_command.hpp"
 #include "stint.hpp"
 #include "string_utilities.hpp"
 #include "time_point.hpp"
@@ -35,7 +36,7 @@ TodayCommand::TodayCommand
 	vector<string> const& p_aliases,
 	TimeLog& p_time_log
 ):
-	Command
+	ReportingCommand
 	(	p_command_word,
 		p_aliases,
 		vector<HelpLine>
@@ -44,9 +45,9 @@ TodayCommand::TodayCommand
 			(	"Print summary of time spent on ACTIVITY today",
 				"ACTIVITY"
 			)
-		}
-	),
-	m_time_log(p_time_log)
+		},
+		p_time_log
+	)
 {
 }
 
@@ -66,12 +67,12 @@ TodayCommand::do_process
 	auto const e = day_end(n);
 	if (p_args.empty())
 	{
-		p_ordinary_ostream << m_time_log.get_stints(nullptr, &b, &e);
+		print_report(p_ordinary_ostream, nullptr, &b, &e);
 	}
 	else
 	{
 		auto const activity = squish(p_args.begin(), p_args.end());
-		p_ordinary_ostream << m_time_log.get_stints(&activity, &b, &e);
+		print_report(p_ordinary_ostream, &activity, &b, &e);
 	}
 	return ret;
 }

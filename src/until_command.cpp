@@ -17,6 +17,7 @@
 #include "until_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
+#include "reporting_command.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
 #include <memory>
@@ -41,7 +42,7 @@ UntilCommand::UntilCommand
 	vector<string> const& p_aliases,
 	TimeLog& p_time_log
 ):
-	Command
+	ReportingCommand
 	(	p_command_word,
 		p_aliases,
 		vector<HelpLine>
@@ -54,9 +55,9 @@ UntilCommand::UntilCommand
 			(	"Print summary of time spent on ACTIVITY until TIMESTAMP",
 				"TIMESTAMP ACTIVITY"
 			)
-		}
-	),
-	m_time_log(p_time_log)
+		},
+		p_time_log
+	)
 {
 }
 
@@ -92,14 +93,22 @@ UntilCommand::do_process
 		}
 		if (p_args.size() == 1)
 		{
-			p_ordinary_ostream <<
-				m_time_log.get_stints(nullptr, nullptr, time_point_ptr.get());
+			print_report
+			(	p_ordinary_ostream,
+				nullptr,
+				nullptr,
+				time_point_ptr.get()
+			);
 		}
 		else
 		{
 			string const activity = squish(p_args.begin() + 1, p_args.end());
-			p_ordinary_ostream <<
-				m_time_log.get_stints(&activity, nullptr, time_point_ptr.get());
+			print_report
+			(	p_ordinary_ostream,
+				&activity,
+				nullptr,
+				time_point_ptr.get()
+			);
 		}
 	}
 	return ret;
