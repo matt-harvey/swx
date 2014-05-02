@@ -67,31 +67,38 @@ ResumeCommand::do_process
 )
 {
 	ErrorMessages ret;
-	auto const last_activities = m_time_log.last_activities(2);
-	auto const n = now();
-	bool const is_active = m_time_log.is_active_at(n);
-	if (last_activities.empty())
+	if (!p_args.empty())
 	{
-		ret.push_back("No activity has yet been recorded.");
-	}
-	else if (!is_active)
-	{
-		auto const activity = last_activities[0];
-		m_time_log.append_entry(activity, n);
-		p_ordinary_ostream << "Resumed: " << activity << endl;
-	}
-	else if (last_activities.size() == 1)
-	{
-		assert (is_active);
-		ret.push_back("No prior activity to resume.");
+		ret.push_back("Too many arguments passed to this command.");
 	}
 	else
 	{
-		assert (is_active);
-		assert (last_activities.size() == 2);
-		auto const activity = last_activities[1];
-		m_time_log.append_entry(activity, n);
-		p_ordinary_ostream << "Resumed: " << activity << endl;
+		auto const last_activities = m_time_log.last_activities(2);
+		auto const n = now();
+		bool const is_active = m_time_log.is_active_at(n);
+		if (last_activities.empty())
+		{
+			ret.push_back("No activity has yet been recorded.");
+		}
+		else if (!is_active)
+		{
+			auto const activity = last_activities[0];
+			m_time_log.append_entry(activity, n);
+			p_ordinary_ostream << "Resumed: " << activity << endl;
+		}
+		else if (last_activities.size() == 1)
+		{
+			assert (is_active);
+			ret.push_back("No prior activity to resume.");
+		}
+		else
+		{
+			assert (is_active);
+			assert (last_activities.size() == 2);
+			auto const activity = last_activities[1];
+			m_time_log.append_entry(activity, n);
+			p_ordinary_ostream << "Resumed: " << activity << endl;
+		}
 	}
 	return ret;
 }
