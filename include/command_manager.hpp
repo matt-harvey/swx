@@ -81,6 +81,7 @@ public:
 		available_commands() const;
 
 	static std::string directions_to_get_help();
+	static std::string directions_to_get_help(std::string const& p_command);
 
 	static std::string error_message_for_unrecognized_command
 	(	std::string const& p_command
@@ -90,10 +91,10 @@ private:
 	int process_unrecognized_command(std::string const& p_command) const;
 	std::ostream& ordinary_ostream() const;
 	std::ostream& error_ostream() const;
-	void create_command(CommandPtr const& p_cpp);
+	void create_command(CommandPtr const& p_cp);
 	void register_command_word
 	(	std::string const& p_word,
-		CommandPtr const& p_cpp
+		CommandPtr const& p_cp
 	);
 
 // member variables

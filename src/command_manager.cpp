@@ -140,7 +140,7 @@ CommandManager::process_command
 			it->second->process(p_args, ordinary_ostream(), error_ostream());
 		if (ret != 0)
 		{
-			error_ostream() << directions_to_get_help() << endl;
+			error_ostream() << directions_to_get_help(p_command) << endl;
 		}
 		return ret;
 	}
@@ -184,12 +184,27 @@ CommandManager::available_commands() const
 string
 CommandManager::directions_to_get_help()
 {
-	return
-		string("For usage information, enter: '") +
-		Info::application_name() +
-		' ' +
-		help_command_string() +
-		"'.";
+	ostringstream oss;
+	oss << "For usage information, enter '"
+	    << Info::application_name()
+		<< ' '
+		<< help_command_string()
+		<< "'.";
+	return oss.str();
+}
+
+string
+CommandManager::directions_to_get_help(string const& p_command)
+{
+	ostringstream oss;
+	oss << "For usage information, enter '"
+	    << Info::application_name()
+		<< ' '
+		<< help_command_string()
+		<< ' '
+		<< p_command
+		<< "'.";
+	return oss.str();
 }
 
 string
@@ -223,12 +238,12 @@ CommandManager::error_ostream() const
 }
 
 void
-CommandManager::create_command(CommandPtr const& p_cpp)
+CommandManager::create_command(CommandPtr const& p_cp)
 {
-	register_command_word(p_cpp->command_word(), p_cpp);
-	for (auto const& alias: p_cpp->aliases())
+	register_command_word(p_cp->command_word(), p_cp);
+	for (auto const& alias: p_cp->aliases())
 	{
-		register_command_word(alias, p_cpp);
+		register_command_word(alias, p_cp);
 	}
 	return;
 }
@@ -236,7 +251,7 @@ CommandManager::create_command(CommandPtr const& p_cpp)
 void
 CommandManager::register_command_word
 (	string const& p_word,
-	CommandPtr const& p_cpp
+	CommandPtr const& p_cp
 )
 {
 	if (m_command_map.find(p_word) != m_command_map.end())
@@ -247,7 +262,7 @@ CommandManager::register_command_word
 			<< "\" has already been registered.";
 		throw std::runtime_error(oss.str());
 	}
-	m_command_map[p_word] = p_cpp;
+	m_command_map[p_word] = p_cp;
 	return;
 }
 
