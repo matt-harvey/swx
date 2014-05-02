@@ -47,7 +47,8 @@ ResumeCommand::ResumeCommand
 		vector<HelpLine>
 		{	HelpLine
 			(	"If currently inactive, start accruing time to the most recent "
-				"activity; or if already active, do nothing."
+				"activity; or if already active, switch to the activity that "
+				"was last active before the current one."
 			)
 		}
 	),
@@ -67,32 +68,30 @@ ResumeCommand::do_process
 {
 	ErrorMessages ret;
 	auto const last_activities = m_time_log.last_activities(2);
-	string const no_activity_message("No activity has yet been recorded.");
+	auto const n = now();
+	bool const is_active = m_time_log.is_active_at(n);
 	if (last_activities.empty())
 	{
-		ret.push_back(no_activity_message);
+		ret.push_back("No activity has yet been recorded.");
 	}
-	else if (last_activities.front().empty())
+	else if (!is_active)
 	{
-		switch (last_activities.size())
-		{
-		case 1:
-			ret.push_back(no_activity_message);
-			break;
-		case 2:
-			assert (!last_activities.back().empty());
-			m_time_log.append_entry(last_activities.back(), now());
-			p_ordinary_ostream << "Resumed: " << last_activities.back() << endl;
-			break;
-		default:
-			assert (false);
-		}
+		auto const activity = last_activities[0];
+		m_time_log.append_entry(activity, n);
+		p_ordinary_ostream << "Resumed: " << activity << endl;
+	}
+	else if (last_activities.size() == 1)
+	{
+		assert (is_active);
+		ret.push_back("No prior activity to resume.");
 	}
 	else
 	{
-		p_ordinary_ostream << "Already active: "
-		                   << last_activities.front()
-						   << endl;
+		assert (is_active);
+		assert (last_activities.size() == 2);
+		auto const activity = last_activities[1];
+		m_time_log.append_entry(activity, n);
+		p_ordinary_ostream << "Resumed: " << activity << endl;
 	}
 	return ret;
 }

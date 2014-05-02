@@ -60,13 +60,15 @@ The "resume" command
 --------------------
 
 Suppose you are currently "inactive" - on a lunch break, let's say - and then
-you want to resume the most recent activity you were working on before your
-break. Enter ``swx resume`` (or simply ``swx r``) to record a resumption of
-the activity you were working on just before the break.
+you return to work and want to resume the most recent activity you were working
+on before your break. Enter ``swx resume`` (or simply ``swx r``) to record a
+resumption of the activity you were working on just before the break. This is
+equivalent to entering ``swx switch`` with the name of the most recent activity.
 
-If you are currently "active", then ``swx resume`` will do nothing, but will
-print a message informing you of the current activity.
-
+If you are currently "active", then ``swx resume`` will record a switch to
+the activity that was active just before the current one. This is useful for
+when you are working on one activity, are briefly interrupted by another
+activity, and then want to resume work on the original activity.
 
 Printing activity summaries
 ---------------------------

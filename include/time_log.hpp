@@ -86,18 +86,25 @@ public:
 	);
 
 	/**
-	 * @returns a vector containing the last \e p_num Activities in the log.
-	 * The "inactive activity", represented by the empty string, is counted as
-	 * an activity for these purposes. The last activity is listed first in the
-	 * vector, then the penultimate Activity, etc.. If there are consecutive
-	 * entries in the log that have the same Activity, these are treated as if
-	 * they were a single combined Entry for the purposes of this function.
+	 * @returns a vector containing the last \e p_num Activities in the log
+	 * (not counting the empty, "inactive activity"). The last activity
+	 * is listed at the front of the vector, then the penultimate activity,
+	 * etc.. If there are consecutive entries in the log that have the same
+	 * activity, these are treated as if there were a single combined entry
+	 * for the purposes of the function. Thus the returned vector never
+	 * contains consecutive identical activities.
 	 *
-	 * If there are fewer than \e p_num Activities to return, then a shorter
-	 * vector is returned. If the TimeLog is empty, then an empty vector
-	 * will be returned.
+	 * If there are fewer than \e p_num Activities to return, then a
+	 * correspondingly shorter vector is returned. If the TimeLog is empty,
+	 * then an empty vector will be returned.
 	 */
 	std::vector<std::string> last_activities(std::size_t p_num);
+
+	/**
+	 * @return \e true if and only if there is an activity recorded in the log
+	 * that is ongoing as at \e p_time_point.
+	 */
+	bool is_active_at(TimePoint const& p_time_point);
 
 private:
 	void clear_cache();

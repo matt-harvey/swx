@@ -135,23 +135,36 @@ TimeLog::last_activities(size_t p_num)
 		return ret;
 	}
 	assert (m_entries.size() >= 1);
-	auto const b = m_entries.begin();
-	auto it = m_entries.end();
-	--it;
-	auto last_id = it->activity_id;
-	assert (last_id == m_entries.back().activity_id);
-	ret.push_back(id_to_activity(last_id));
-	for (--it; (it != b) && (ret.size() != p_num); --it)
+	typedef decltype(m_entries)::const_reverse_iterator RevIter;
+	for (RevIter it = m_entries.rbegin(); it != m_entries.rend(); ++it)
 	{
-		assert (ret.size() >= 1);
-		auto const current_id = it->activity_id;
-		if (current_id != last_id)
+		if (ret.size() == p_num)
 		{
-			ret.push_back(id_to_activity(current_id));
-			last_id = current_id;
+			break;
+		}
+		auto const& activity = id_to_activity(it->activity_id);
+		if (!activity.empty() && (ret.empty() || (activity != ret.back())))
+		{
+			ret.push_back(activity);
 		}
 	}
+	assert (ret.size() <= p_num);
+	assert (ret.size() <= m_entries.size());
 	return ret;
+}
+
+bool
+TimeLog::is_active_at(TimePoint const& p_time_point)
+{
+	load();
+	auto const entry_it = find_entry_just_before(p_time_point);
+	if (entry_it == m_entries.end())
+	{
+		return false;
+	}
+	assert (entry_it != m_entries.end());
+	auto const& activity = id_to_activity(entry_it->activity_id);
+	return !activity.empty();
 }
 
 void
