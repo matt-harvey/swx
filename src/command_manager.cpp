@@ -197,7 +197,7 @@ CommandManager::error_message_for_unrecognized_command
 (	string const& p_command
 )
 {
-	return string("Unrecognized subcommand: ") + p_command;
+	return string("Unrecognized command: ") + p_command;
 }
 
 int

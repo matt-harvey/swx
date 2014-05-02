@@ -49,7 +49,7 @@ HelpCommand::HelpCommand
 		p_aliases,
 		vector<HelpLine>
 		{	HelpLine("Print general help information."),
-			HelpLine("Print help information for SUBCOMMAND", "SUBCOMMAND")
+			HelpLine("Print help information for COMMAND", "COMMAND")
 		}
 	),
 	m_command_manager(p_command_manager)
@@ -69,10 +69,10 @@ HelpCommand::do_process
 	ErrorMessages ret;
 	if (p_args.empty())
 	{
-		vector<pair<string, vector<string>>> subcommands =
+		vector<pair<string, vector<string>>> commands =
 			m_command_manager.available_commands();
 		ostringstream oss;
-		for (auto const& pair: subcommands)
+		for (auto const& pair: commands)
 		{
 			oss << pair.first;
 			if (!pair.second.empty())
@@ -86,13 +86,13 @@ HelpCommand::do_process
 		}
 		p_ordinary_ostream << "Usage: "
 		                   << Info::application_name() << ' '
-						   << "SUBCOMMAND [ARGS..]" << endl
-						   << "\nAvailable subcommands are:\n\n"
+						   << "COMMAND [ARGS..]" << endl
+						   << "\nAvailable commands are:\n\n"
 		                   << oss.str() << "\n"
-						   << "For more information on a particular subcommand,"
+						   << "For more information on a particular command,"
 						   << " enter '"
 						   << Info::application_name() << ' '
-						   << command_word() << " SUBCOMMAND'." << endl;
+						   << command_word() << " COMMAND'." << endl;
 		return ret;
 	}
 	else if (p_args.size() == 1)
@@ -113,7 +113,7 @@ HelpCommand::do_process
 	else
 	{
 		assert (p_args.size() > 1);
-		ret.push_back("Too many arguments passed to this subcommand.");
+		ret.push_back("Too many arguments passed to this command.");
 	}
 	return ret;	
 }

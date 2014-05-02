@@ -74,7 +74,7 @@ SinceCommand::do_process
 	ErrorMessages ret;
 	if (p_args.empty())
 	{
-		ret.push_back("Too few arguments passed to this subcommand.");
+		ret.push_back("Too few arguments passed to this command.");
 	}
 	else
 	{

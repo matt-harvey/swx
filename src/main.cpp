@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 	{
 		if (argc < 2)
 		{
-			cerr << "Subcommand not provided." << endl;
+			cerr << "Command not provided." << endl;
 			cerr << CommandManager::directions_to_get_help() << endl;
 			return 1;
 		}

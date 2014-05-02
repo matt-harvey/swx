@@ -75,7 +75,7 @@ BetweenCommand::do_process
 	ErrorMessages ret;
 	if (p_args.size() < 2)
 	{
-		ret.push_back("Too few arguments passed to this subcommand.");
+		ret.push_back("Too few arguments passed to this command.");
 	}
 	else
 	{

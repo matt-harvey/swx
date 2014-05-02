@@ -27,10 +27,10 @@ Usage
 Basic usage
 -----------
 
-``swx`` provides a series of subcommands, of which you can see a list by
+``swx`` provides a series of commands, of which you can see a list by
 entering ``swx help``. The basic pattern of usage is::
 
-    swx <SUBCOMMAND> [ARGUMENTS]
+    swx <COMMAND> [ARGUMENTS]
 
 The "switch" command
 --------------------
@@ -82,7 +82,7 @@ various "printing commands" are available::
     swx until
     swx today
 
-Enter ``swx help <SUBCOMMAND>`` for detailed usage information in regards to
+Enter ``swx help <COMMAND>`` for detailed usage information in regards to
 each of these. They all follow a similar pattern, and allow you to enter an
 optional activity name, if you want to see only time spent on a given activity,
 or to omit the activity name, if you want to see time spent on all activities.
@@ -130,8 +130,8 @@ order if you edit the file manually.
 Help
 ----
 
-Enter ``swx help`` to see a summary of usage, or ``swx help <SUBCOMMAND>`` to
-see a summary of usage for a particular subcommand.
+Enter ``swx help`` to see a summary of usage, or ``swx help <COMMAND>`` to
+see a summary of usage for a particular command.
 
 Enter ``swx version`` to see version information.
 
