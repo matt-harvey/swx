@@ -92,7 +92,7 @@ BetweenCommand::do_process
 		{
 			ostringstream oss;
 			oss << "Could not parse timestamp: " << p_args[0];
-			throw runtime_error(oss.str());
+			ret.push_back(oss.str());
 		}
 		try
 		{
@@ -105,6 +105,10 @@ BetweenCommand::do_process
 			ostringstream oss;
 			oss << "Could not parse timestamp: " << p_args[1];
 			ret.push_back(oss.str());
+		}
+		if (!ret.empty())
+		{
+			return ret;
 		}
 		if (p_args.size() == 2)
 		{
