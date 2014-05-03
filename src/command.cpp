@@ -40,9 +40,11 @@ namespace swx
 Command::Command
 (	string const& p_command_word,
 	vector<string> const& p_aliases,
+	string const& p_usage_summary,
 	vector<HelpLine> const& p_help_lines
 ):
 	m_command_word(p_command_word),
+	m_usage_summary(p_usage_summary),
 	m_aliases(p_aliases),
 	m_help_lines(p_help_lines)
 {
@@ -70,6 +72,12 @@ Command::process
 	}
 	assert (error_messages.size() > 0);
 	return 1;
+}
+
+string
+Command::usage_summary() const
+{
+	return m_usage_summary;
 }
 
 string

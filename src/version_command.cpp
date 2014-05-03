@@ -38,7 +38,8 @@ VersionCommand::VersionCommand
 	Command
 	(	p_command_word,
 		p_aliases,
-		vector<HelpLine>{ HelpLine("Print version information and exit.") }
+		"Print version information",
+		vector<HelpLine>{ HelpLine("Print version information") }
 	)
 {
 }

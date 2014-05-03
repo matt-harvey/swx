@@ -74,10 +74,13 @@ public:
 
 	/**
 	 * In each element \e e of the returned vector, \e e.first is
-	 * the main command word, and \e e.second is a vector of aliases
-	 * for that command word.
+	 * the main command word, \e e.second is a vector of aliases
+	 * for that command word, and \e e.third is the usage summary for
+	 * that command.
+	 *
+	 * @todo LOW PRIORITY Give this a nicer interface.
 	 */
-	std::vector<std::pair<std::string, std::vector<std::string>>>
+	std::vector<std::tuple<std::string, std::vector<std::string>, std::string>>
 		available_commands() const;
 
 	static std::string directions_to_get_help();

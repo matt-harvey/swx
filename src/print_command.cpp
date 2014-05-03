@@ -39,6 +39,7 @@ PrintCommand::PrintCommand
 	ReportingCommand
 	(	p_command_word,
 		p_aliases,
+		"Print summary of activities",
 		vector<HelpLine>
 		{	HelpLine("Print summary of time spent on all activities."),
 			HelpLine("Print summary of time spent on ACTIVITY", "ACTIVITY")

@@ -44,11 +44,12 @@ ResumeCommand::ResumeCommand
 	Command
 	(	p_command_word,
 		p_aliases,
+		"Resume previous activity",
 		vector<HelpLine>
 		{	HelpLine
 			(	"If currently inactive, start accruing time to the most recent "
 				"activity; or if already active, switch to the activity that "
-				"was last active before the current one."
+				"was last active before the current one"
 			)
 		}
 	),

@@ -35,6 +35,7 @@ public:
 	ReportingCommand
 	(	std::string const& p_command_word,
 		std::vector<std::string> const& p_aliases,
+		std::string const& p_usage_summary,
 		std::vector<HelpLine> const& p_help_lines,
 		TimeLog& p_time_log
 	);

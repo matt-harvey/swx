@@ -42,9 +42,10 @@ SwitchCommand::SwitchCommand
 	Command
 	(	p_command_word,
 		p_aliases,
+		"Switch between activities, or cease activity",
 		vector<HelpLine>
 		{	HelpLine
-			(	"Stop accruing time to any activity."
+			(	"Stop accruing time to any activity"
 			),
 			HelpLine
 			(	"Start accruing time to ACTIVITY, and stop accruing time to "

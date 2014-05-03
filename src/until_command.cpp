@@ -45,6 +45,7 @@ UntilCommand::UntilCommand
 	ReportingCommand
 	(	p_command_word,
 		p_aliases,
+		"Print summary of activities until a given time",
 		vector<HelpLine>
 		{	HelpLine
 			(	"Print summary of time spent on all activities until "

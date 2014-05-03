@@ -45,6 +45,7 @@ BetweenCommand::BetweenCommand
 	ReportingCommand
 	(	p_command_word,
 		p_aliases,
+		"Print summary of activities between two times",
 		vector<HelpLine>
 		{	HelpLine
 			(	"Print summary of time spent on all activities between "

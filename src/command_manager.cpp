@@ -42,10 +42,10 @@ using std::cout;
 using std::endl;
 using std::ostream;
 using std::ostringstream;
-using std::pair;
 using std::runtime_error;
 using std::set;
 using std::string;
+using std::tuple;
 using std::vector;
 
 namespace swx
@@ -160,22 +160,22 @@ CommandManager::help_information(string const& p_command) const
 	return it->second->usage_descriptor();
 }
 
-vector<pair<string, vector<string>>>
+vector<tuple<string, vector<string>, string>>
 CommandManager::available_commands() const
 {
 	set<string> command_words;
-	vector<pair<string, vector<string>>> ret;
+	vector<tuple<string, vector<string>, string>> ret;
 	auto const b = m_command_map.begin();
 	auto const e = m_command_map.end();
 	for (auto it = b; it != e; ++it)
 	{
 		ostringstream oss;
-		Command const& cp = *it->second;
-		string const word = cp.command_word();
+		Command const& c = *it->second;
+		string const word = c.command_word();
 		if (command_words.find(word) == command_words.end())
 		{
 			command_words.insert(word);
-			ret.push_back(make_pair(word, cp.aliases()));
+			ret.push_back(make_tuple(word, c.aliases(), c.usage_summary()));
 		}
 	}
 	return ret;

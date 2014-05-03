@@ -44,6 +44,7 @@ protected:
 	Command
 	(	std::string const& p_command_word,
 		std::vector<std::string> const& p_aliases,
+		std::string const& p_usage_summary,
 		std::vector<HelpLine> const& p_help_lines
 	);
 public:
@@ -61,6 +62,7 @@ public:
 		std::ostream& p_error_ostream
 	);
 
+	std::string usage_summary() const;
 	std::string usage_descriptor() const;
 	std::string const& command_word() const;
 	std::vector<std::string> const& aliases() const;
@@ -76,6 +78,7 @@ private:
 // member variables
 private:
 	std::string const m_command_word;
+	std::string const m_usage_summary;
 	std::vector<std::string> const m_aliases;
 	std::vector<HelpLine> const m_help_lines;
 
