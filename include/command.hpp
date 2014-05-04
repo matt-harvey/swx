@@ -18,6 +18,7 @@
 #define GUARD_command_hpp_08439188501070807
 
 #include "help_line.hpp"
+#include <map>
 #include <ostream>
 #include <string>
 #include <vector>
@@ -55,6 +56,10 @@ public:
 	virtual ~Command();
 
 // ordinary member functions
+protected:
+	void add_boolean_option(char p_flag, std::string const& p_description);
+	bool has_boolean_option(char p_flag) const;
+
 public:
 	int process
 	(	std::vector<std::string> const& p_args,
@@ -81,6 +86,7 @@ private:
 	std::string const m_usage_summary;
 	std::vector<std::string> const m_aliases;
 	std::vector<HelpLine> const m_help_lines;
+	std::map<char, std::string> m_boolean_options;
 
 };  // class Command
 

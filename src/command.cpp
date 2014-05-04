@@ -23,6 +23,7 @@
 #include <iostream>
 #include <ostream>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -30,6 +31,7 @@ using std::endl;
 using std::left;
 using std::ostream;
 using std::ostringstream;
+using std::runtime_error;
 using std::setw;
 using std::string;
 using std::vector;
@@ -52,6 +54,25 @@ Command::Command
 
 Command::~Command()
 {
+}
+
+void
+Command::add_boolean_option(char p_flag, string const& p_description)
+{
+	if (has_boolean_option(p_flag))
+	{
+		ostringstream oss;
+		oss << "Flag already enabled for this Command: " << p_flag;
+		throw runtime_error(oss.str());
+	}
+	m_boolean_options[p_flag] = p_description;
+	return;
+}
+
+bool
+Command::has_boolean_option(char p_flag) const
+{
+	return m_boolean_options.find(p_flag) != m_boolean_options.end();
 }
 
 int
