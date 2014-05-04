@@ -26,6 +26,12 @@
 namespace swx
 {
 
+// begin forward declarations
+
+class ParsedArguments;
+
+// end forward declarations
+
 /**
  * Represents a command that processes arguments received from
  * the command line.
@@ -58,11 +64,11 @@ public:
 // ordinary member functions
 protected:
 	void add_boolean_option(char p_flag, std::string const& p_description);
+public:
 	bool has_boolean_option(char p_flag) const;
 
-public:
 	int process
-	(	std::vector<std::string> const& p_args,
+	(	ParsedArguments const& p_args,
 		std::ostream& p_ordinary_ostream,
 		std::ostream& p_error_ostream
 	);
@@ -76,7 +82,7 @@ public:
 private:
 
 	virtual ErrorMessages do_process
-	(	Arguments const& p_args,
+	(	ParsedArguments const& p_args,
 		std::ostream& p_ordinary_ostream
 	) = 0;
 

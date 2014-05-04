@@ -19,6 +19,7 @@
 #include "command.hpp"
 #include "command_manager.hpp"
 #include "info.hpp"
+#include "parsed_arguments.hpp"
 #include "stream_flag_guard.hpp"
 #include <cassert>
 #include <iomanip>
@@ -69,13 +70,14 @@ HelpCommand::~HelpCommand()
 
 Command::ErrorMessages
 HelpCommand::do_process
-(	Arguments const& p_args,
+(	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
 	// TODO LOW PRIORITY Tidy this up.
 	ErrorMessages ret;
-	if (p_args.empty())
+	Arguments const args = p_args.ordinary_args();
+	if (args.empty())
 	{
 		bool abbreviations_exist;
 		auto commands = m_command_manager.available_commands();
@@ -115,26 +117,27 @@ HelpCommand::do_process
 			<< " enter '"
 			<< Info::application_name() << ' '
 			<< command_word() << " <COMMAND>'." << endl;
+		// TODO Print info. re. options as well.
 		return ret;
 	}
-	else if (p_args.size() == 1)
+	else if (args.size() == 1)
 	{
 		try
 		{
-			p_ordinary_ostream << m_command_manager.help_information(p_args[0])
+			p_ordinary_ostream << m_command_manager.help_information(args[0])
 							   << endl;			
 		}
 		catch (runtime_error&)
 		{
 			ostringstream oss;
 			oss << CommandManager::
-					  error_message_for_unrecognized_command(p_args[0]);
+					  error_message_for_unrecognized_command(args[0]);
 			ret.push_back(oss.str());
 		}
 	}
 	else
 	{
-		assert (p_args.size() > 1);
+		assert (args.size() > 1);
 		ret.push_back("Too many arguments passed to this command.");
 	}
 	return ret;	

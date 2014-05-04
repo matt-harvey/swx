@@ -17,6 +17,7 @@
 #include "today_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
+#include "parsed_arguments.hpp"
 #include "reporting_command.hpp"
 #include "stint.hpp"
 #include "string_utilities.hpp"
@@ -58,21 +59,22 @@ TodayCommand::~TodayCommand()
 
 Command::ErrorMessages
 TodayCommand::do_process
-(	Arguments const& p_args,
+(	ParsedArguments const& p_args,
 	std::ostream& p_ordinary_ostream
 )
 {
+	Arguments const args = p_args.ordinary_args();
 	ErrorMessages ret;
 	TimePoint const n = now();
 	auto const b = day_begin(n);
 	auto const e = day_end(n);
-	if (p_args.empty())
+	if (args.empty())
 	{
 		print_report(p_ordinary_ostream, nullptr, &b, &e);
 	}
 	else
 	{
-		auto const activity = squish(p_args.begin(), p_args.end());
+		auto const activity = squish(args.begin(), args.end());
 		print_report(p_ordinary_ostream, &activity, &b, &e);
 	}
 	return ret;

@@ -18,6 +18,7 @@
 #include "command.hpp"
 #include "help_line.hpp"
 #include "info.hpp"
+#include "parsed_arguments.hpp"
 #include <iostream>
 #include <ostream>
 #include <string>
@@ -50,7 +51,7 @@ VersionCommand::~VersionCommand()
 
 Command::ErrorMessages
 VersionCommand::do_process
-(	Arguments const& p_args,
+(	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {

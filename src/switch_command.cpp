@@ -17,6 +17,7 @@
 #include "switch_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
+#include "parsed_arguments.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
@@ -64,13 +65,14 @@ SwitchCommand::~SwitchCommand()
 
 Command::ErrorMessages
 SwitchCommand::do_process
-(	Arguments const& p_args,
+(	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
 	(void)p_ordinary_ostream;  // ignore param.
+	Arguments const args = p_args.ordinary_args();
 	TimePoint const time_point = now();
-	string const activity(squish(p_args.begin(), p_args.end()));
+	string const activity(squish(args.begin(), args.end()));
 	m_time_log.append_entry(activity, time_point);
 	return ErrorMessages();
 }

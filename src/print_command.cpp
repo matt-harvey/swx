@@ -17,6 +17,7 @@
 #include "print_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
+#include "parsed_arguments.hpp"
 #include "reporting_command.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
@@ -55,18 +56,19 @@ PrintCommand::~PrintCommand()
 
 Command::ErrorMessages
 PrintCommand::do_process
-(	Arguments const& p_args,
+(	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
 	ErrorMessages ret;
-	if (p_args.empty())
+	Arguments const args = p_args.ordinary_args();
+	if (args.empty())
 	{
 		print_report(p_ordinary_ostream);
 	}
 	else
 	{
-		string const activity = squish(p_args.begin(), p_args.end());
+		string const activity = squish(args.begin(), args.end());
 		print_report(p_ordinary_ostream, &activity);
 	}
 	return ret;

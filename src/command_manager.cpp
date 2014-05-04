@@ -19,6 +19,7 @@
 #include "command.hpp"
 #include "help_command.hpp"
 #include "info.hpp"
+#include "parsed_arguments.hpp"
 #include "print_command.hpp"
 #include "resume_command.hpp"
 #include "since_command.hpp"
@@ -136,8 +137,12 @@ CommandManager::process_command
 	else
 	{
 		assert (it->second);
-		int const ret =
-			it->second->process(p_args, ordinary_ostream(), error_ostream());
+		auto const command_ptr = it->second;
+		int const ret = command_ptr->process
+		(	ParsedArguments(p_args),
+			ordinary_ostream(),
+			error_ostream()
+		);
 		if (ret != 0)
 		{
 			error_ostream() << directions_to_get_help(p_command) << endl;

@@ -17,6 +17,7 @@
 #include "since_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
+#include "parsed_arguments.hpp"
 #include "reporting_command.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
@@ -68,12 +69,13 @@ SinceCommand::~SinceCommand()
 
 Command::ErrorMessages
 SinceCommand::do_process
-(	Arguments const& p_args,
+(	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
 	ErrorMessages ret;
-	if (p_args.empty())
+	Arguments const args = p_args.ordinary_args();
+	if (args.empty())
 	{
 		ret.push_back("Too few arguments passed to this command.");
 	}
@@ -83,23 +85,23 @@ SinceCommand::do_process
 		try
 		{
 			time_point_ptr.reset
-			(	new TimePoint(time_stamp_to_point(p_args[0]))
+			(	new TimePoint(time_stamp_to_point(args[0]))
 			);
 		}
 		catch (runtime_error&)
 		{
 			ostringstream oss;
-			oss << "Could not parse timestamp: " << p_args[0];
+			oss << "Could not parse timestamp: " << args[0];
 			ret.push_back(oss.str());
 			return ret;
 		}
-		if (p_args.size() == 1)
+		if (args.size() == 1)
 		{
 			print_report(p_ordinary_ostream, nullptr, time_point_ptr.get());
 		}
 		else
 		{
-			string const activity = squish(p_args.begin() + 1, p_args.end());
+			string const activity = squish(args.begin() + 1, args.end());
 			print_report(p_ordinary_ostream, &activity, time_point_ptr.get());
 		}
 	}

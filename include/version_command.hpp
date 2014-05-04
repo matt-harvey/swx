@@ -24,6 +24,12 @@
 namespace swx
 {
 
+// begin forward declarations
+
+class ParsedArguments;
+
+// end forward declarations
+
 class VersionCommand: public Command
 {
 // special member functions
@@ -41,7 +47,7 @@ public:
 // inherited virtual functions
 private:
 	virtual ErrorMessages do_process
-	(	Arguments const& p_args,
+	(	ParsedArguments const& p_args,
 		std::ostream& p_ordinary_ostream
 	) override;
 

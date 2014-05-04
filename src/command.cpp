@@ -17,6 +17,7 @@
 #include "command.hpp"
 #include "help_line.hpp"
 #include "info.hpp"
+#include "parsed_arguments.hpp"
 #include "stream_flag_guard.hpp"
 #include <cassert>
 #include <iomanip>
@@ -50,6 +51,11 @@ Command::Command
 	m_aliases(p_aliases),
 	m_help_lines(p_help_lines)
 {
+	add_boolean_option
+	(	'-',
+		"Treat any labelled ('-') arguments after this flag as "
+			"ordinary arguments"
+	);
 }
 
 Command::~Command()
@@ -77,11 +83,26 @@ Command::has_boolean_option(char p_flag) const
 
 int
 Command::process
-(	vector<string> const& p_args,
+(	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream,
 	ostream& p_error_ostream
 )
 {
+	auto const flags = p_args.single_character_flags();
+	bool has_unrecognized_option = false;
+	for (auto c: flags)
+	{
+		if (!has_boolean_option(c))
+		{
+			p_error_ostream << "Unrecognized option: " << c << endl;
+			has_unrecognized_option = true;
+		}
+	}
+	if (has_unrecognized_option)
+	{
+		p_error_ostream << "Aborted" << endl;
+		return 1;
+	}
 	auto const error_messages = do_process(p_args, p_ordinary_ostream);
 	for (auto const& message: error_messages)
 	{
@@ -89,6 +110,7 @@ Command::process
 	}
 	if (error_messages.empty())
 	{
+		assert (!has_unrecognized_option);
 		return 0;
 	}
 	assert (error_messages.size() > 0);

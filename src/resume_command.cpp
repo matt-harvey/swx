@@ -17,6 +17,7 @@
 #include "resume_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
+#include "parsed_arguments.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
@@ -63,12 +64,13 @@ ResumeCommand::~ResumeCommand()
 
 Command::ErrorMessages
 ResumeCommand::do_process
-(	Arguments const& p_args,
+(	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
 	ErrorMessages ret;
-	if (!p_args.empty())
+	Arguments const args = p_args.ordinary_args();
+	if (!args.empty())
 	{
 		ret.push_back("Too many arguments passed to this command.");
 	}
