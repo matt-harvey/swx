@@ -18,7 +18,6 @@
 #include "command.hpp"
 #include "help_line.hpp"
 #include "info.hpp"
-#include "parsed_arguments.hpp"
 #include <iostream>
 #include <ostream>
 #include <string>

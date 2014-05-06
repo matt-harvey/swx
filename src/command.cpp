@@ -17,28 +17,109 @@
 #include "command.hpp"
 #include "help_line.hpp"
 #include "info.hpp"
-#include "parsed_arguments.hpp"
 #include "stream_flag_guard.hpp"
 #include <cassert>
 #include <iomanip>
 #include <iostream>
 #include <ostream>
+#include <set>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 using std::endl;
 using std::left;
+using std::make_pair;
 using std::ostream;
 using std::ostringstream;
+using std::pair;
 using std::runtime_error;
+using std::set;
 using std::setw;
 using std::string;
 using std::vector;
 
 namespace swx
 {
+
+namespace
+{
+	
+	char flag_prefix()
+	{
+		return '-';
+	}
+
+	pair<char, string> double_dash_option()
+	{
+		return make_pair
+		(	'-',
+			"Treat any dash-prefixed arguments after this flag as "
+				"ordinary arguments"
+		);
+	}
+
+}  // end anonymous namespace
+
+Command::ParsedArguments::ParsedArguments
+(	vector<string> const& p_raw_args,
+	bool p_recognize_double_dash
+)
+{
+	if (!p_recognize_double_dash)
+	{
+		m_ordinary_args = p_raw_args;
+		return;
+	}
+	ostringstream oss;
+	oss << flag_prefix() << double_dash_option().first;
+	string const double_dash = oss.str();
+	for (auto it = p_raw_args.begin(); it != p_raw_args.end(); ++it)
+	{
+		auto const& arg = *it;
+		if (arg == double_dash)
+		{
+			copy(it + 1, p_raw_args.end(), back_inserter(m_ordinary_args));
+			break;
+		}
+		else if (!arg.empty() && (arg[0] == flag_prefix()))
+		{
+			m_single_character_flags.insert(arg.begin() + 1, arg.end());
+		}
+		else
+		{
+			m_ordinary_args.push_back(*it);	
+		}
+	}
+}
+
+vector<string>
+Command::ParsedArguments::ordinary_args() const
+{
+	return m_ordinary_args;
+}
+
+string
+Command::ParsedArguments::single_character_flags() const
+{
+	string const ret
+	(	m_single_character_flags.begin(),
+		m_single_character_flags.end()
+	);
+#	ifndef NDEBUG
+		for (auto it = ret.begin(); it != ret.end(); ++it)
+		{
+			auto const next = it + 1;
+			if (next != ret.end())
+			{
+				assert (*it < *next);
+			}
+		}
+#	endif
+	return ret;
+}
 
 Command::Command
 (	string const& p_command_word,
@@ -51,11 +132,6 @@ Command::Command
 	m_aliases(p_aliases),
 	m_help_lines(p_help_lines)
 {
-	add_boolean_option
-	(	'-',
-		"Treat any dash-prefixed arguments after this flag as "
-			"ordinary arguments"
-	);
 }
 
 Command::~Command()
@@ -72,6 +148,8 @@ Command::add_boolean_option(char p_flag, string const& p_description)
 		throw runtime_error(oss.str());
 	}
 	m_boolean_options[p_flag] = p_description;
+	pair<char, string> const double_dash = double_dash_option();
+	m_boolean_options[double_dash.first] = double_dash.second;
 	return;
 }
 
@@ -83,12 +161,15 @@ Command::has_boolean_option(char p_flag) const
 
 int
 Command::process
-(	ParsedArguments const& p_args,
+(	Arguments const& p_args,
 	ostream& p_ordinary_ostream,
 	ostream& p_error_ostream
 )
 {
-	auto const flags = p_args.single_character_flags();
+	ParsedArguments const parsed_args(p_args, !m_boolean_options.empty());
+	auto const flags = parsed_args.single_character_flags();
+	assert (!m_boolean_options.empty() || flags.empty());
+	assert (has_boolean_option(double_dash_option().first) || flags.empty());
 	bool has_unrecognized_option = false;
 	for (auto c: flags)
 	{
@@ -103,7 +184,7 @@ Command::process
 		p_error_ostream << "Aborted" << endl;
 		return 1;
 	}
-	auto const error_messages = do_process(p_args, p_ordinary_ostream);
+	auto const error_messages = do_process(parsed_args, p_ordinary_ostream);
 	for (auto const& message: error_messages)
 	{
 		p_error_ostream << message << endl;

@@ -17,7 +17,6 @@
 #include "switch_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
-#include "parsed_arguments.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"

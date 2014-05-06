@@ -17,7 +17,6 @@
 #include "today_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
-#include "parsed_arguments.hpp"
 #include "reporting_command.hpp"
 #include "stint.hpp"
 #include "string_utilities.hpp"

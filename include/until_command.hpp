@@ -25,12 +25,6 @@
 namespace swx
 {
 
-// begin forward declarations
-
-class ParsedArguments;
-
-// end forward declarations
-
 class UntilCommand: public ReportingCommand
 {
 // special member functions

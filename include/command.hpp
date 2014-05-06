@@ -20,6 +20,7 @@
 #include "help_line.hpp"
 #include <map>
 #include <ostream>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -46,6 +47,21 @@ protected:
 	typedef std::vector<std::string> Arguments;
 	typedef std::vector<std::string> ErrorMessages;
 
+protected:
+	class ParsedArguments
+	{
+	public:
+		ParsedArguments
+		(	std::vector<std::string> const& p_raw_args,
+			bool p_recognize_double_dash
+		);
+		std::vector<std::string> ordinary_args() const;
+		std::string single_character_flags() const;
+	private:
+		std::set<char> m_single_character_flags;
+		std::vector<std::string> m_ordinary_args;
+	};
+
 // special member functions
 protected:
 	Command
@@ -68,7 +84,7 @@ public:
 	bool has_boolean_option(char p_flag) const;
 
 	int process
-	(	ParsedArguments const& p_args,
+	(	Arguments const& p_args,
 		std::ostream& p_ordinary_ostream,
 		std::ostream& p_error_ostream
 	);

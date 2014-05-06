@@ -24,12 +24,6 @@
 namespace swx
 {
 
-// begin forward declarations
-
-class ParsedArguments;
-
-// end forward declarations
-
 class VersionCommand: public Command
 {
 // special member functions

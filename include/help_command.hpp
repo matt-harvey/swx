@@ -27,7 +27,6 @@ namespace swx
 // begin forward declarations
 
 class CommandManager;
-class ParsedArguments;
 
 // end forward declarations
 

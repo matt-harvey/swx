@@ -19,7 +19,6 @@
 #include "command.hpp"
 #include "command_manager.hpp"
 #include "info.hpp"
-#include "parsed_arguments.hpp"
 #include "stream_flag_guard.hpp"
 #include <cassert>
 #include <iomanip>

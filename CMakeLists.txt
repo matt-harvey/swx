@@ -59,7 +59,6 @@ set(
 	src/help_line.cpp
 	src/info.cpp
 	src/interval.cpp
-	src/parsed_arguments.cpp
 	src/reporting_command.cpp
 	src/resume_command.cpp
 	src/round.cpp
