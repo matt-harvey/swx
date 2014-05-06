@@ -53,7 +53,7 @@ Command::Command
 {
 	add_boolean_option
 	(	'-',
-		"Treat any labelled ('-') arguments after this flag as "
+		"Treat any dash-prefixed arguments after this flag as "
 			"ordinary arguments"
 	);
 }
@@ -140,6 +140,7 @@ Command::usage_descriptor() const
 	}
 	left_col_width += app_name.length() + 1 + m_command_word.length() + 2;
 	ostringstream oss;
+	oss << "Usage:\n\n";
 	for (auto const& line: m_help_lines)
 	{
 		StreamFlagGuard guard(oss);
@@ -147,7 +148,7 @@ Command::usage_descriptor() const
 		    << (app_name + ' ' + m_command_word + ' ' + line.args_descriptor())
 			<< "  ";
 		guard.reset();
-		oss << line.usage_descriptor() << endl;
+		oss << line.usage_descriptor() << '\n';
 	}
 	if (!m_aliases.empty())
 	{
@@ -155,6 +156,16 @@ Command::usage_descriptor() const
 		auto it = m_aliases.begin();
 		oss << *it;
 		for (++it; it != m_aliases.end(); ++it) oss << ", " << *it;
+	}
+	if (!m_boolean_options.empty())
+	{
+		oss << "\n\nOptions:\n";
+		for (auto const& option: m_boolean_options)
+		{
+			char const c = option.first;
+			string const description = option.second;
+			oss << "\n-" << c << "     " << description;
+		}
 	}
 	return oss.str();
 }
