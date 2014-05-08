@@ -36,18 +36,23 @@ The "switch" command
 --------------------
 
 Suppose you start working on the activity of "answering emails". You would come
-up with a name for this activity, say ``answering emails``. When you start
+up with a name for this activity, say ``answering emails``. When you first start
 working on this activity, you would enter the following at the command line::
 
-    swx switch answering emails
+    swx switch -c answering emails
 
 The activity name can be any number of words strung together, and is
 case-sensitive. You can use the alias ``sw`` if you don't want to type
 ``switch``.
 
-Suppose you stop answering emails and start "spreadsheeting". You can record a
-transition from one activity to another, by entering ``swx switch``, plus the
-name of the acitivity that you are switching *to*, in this case::
+The ``-c`` option tells the ``switch`` command that this is the first time you
+are working on this activity. On subsequent occasions, when you switch back to
+an already-used activity, you should omit the ``-c`` option.
+
+Suppose you stop answering emails and restart work on a previous activity,
+"spreadsheeting". You can record a transition from one activity to another, by
+entering ``swx switch``, plus the name of the acitivity that you are switching
+*to*, in this case::
 
     swx switch spreadsheeting
 
