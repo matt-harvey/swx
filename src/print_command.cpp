@@ -63,12 +63,16 @@ PrintCommand::do_process
 	Arguments const args = p_args.ordinary_args();
 	if (args.empty())
 	{
-		print_report(p_ordinary_ostream);
+		print_report(p_ordinary_ostream, p_args.single_character_flags());
 	}
 	else
 	{
 		string const activity = squish(args.begin(), args.end());
-		print_report(p_ordinary_ostream, &activity);
+		print_report
+		(	p_ordinary_ostream,
+			p_args.single_character_flags(),
+			&activity
+		);
 	}
 	return ret;
 }

@@ -55,6 +55,7 @@ protected:
 	 */
 	std::ostream& print_report
 	(	std::ostream& p_os,
+		std::string const& p_options,
 		std::string const* p_activity = nullptr,
 		TimePoint const* p_begin = nullptr,
 		TimePoint const* p_end = nullptr

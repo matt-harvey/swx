@@ -69,12 +69,24 @@ TodayCommand::do_process
 	auto const e = day_end(n);
 	if (args.empty())
 	{
-		print_report(p_ordinary_ostream, nullptr, &b, &e);
+		print_report
+		(	p_ordinary_ostream,
+			p_args.single_character_flags(),
+			nullptr,
+			&b,
+			&e
+		);
 	}
 	else
 	{
 		auto const activity = squish(args.begin(), args.end());
-		print_report(p_ordinary_ostream, &activity, &b, &e);
+		print_report
+		(	p_ordinary_ostream,
+			p_args.single_character_flags(),
+			&activity,
+			&b,
+			&e
+		);
 	}
 	return ret;
 }

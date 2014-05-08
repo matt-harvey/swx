@@ -100,8 +100,14 @@ Stint::interval() const
 }
 
 ostream&
-operator<<(ostream& os, vector<Stint> const& container)
+print_stints_report
+(	ostream& p_os,
+	vector<Stint> const& p_container,
+	bool p_print_summary,
+	bool p_print_list
+)
 {
+	// TODO MEDIUM PRIORITY Tidy this.
 	map<string, double> accum_map;
 	double accum_hours = 0.0;
 	string live_activity;
@@ -112,15 +118,18 @@ operator<<(ostream& os, vector<Stint> const& container)
 	auto const prec = Config::output_precision();
 	bool last_activity_empty = true;
 	for
-	(	vector<Stint>::const_iterator it = container.begin();
-		it != container.end();
+	(	vector<Stint>::const_iterator it = p_container.begin();
+		it != p_container.end();
 		++it
 	)
 	{
 		string const activity = it->activity();
 		if (activity.empty())
 		{
-			if (!last_activity_empty) os << endl;	
+			if (p_print_list && !last_activity_empty)
+			{
+				p_os << endl;	
+			}
 			last_activity_empty = true;
 		}
 		else
@@ -128,54 +137,53 @@ operator<<(ostream& os, vector<Stint> const& container)
 			last_activity_empty = false;
 			auto const interval = it->interval();
 			double hours = interval.duration().count() / 60.0 / 60.0;
-			accum_hours += hours;
-			auto const it = accum_map.find(activity);
-			if (it == accum_map.end())
+			if (p_print_summary)
 			{
-				accum_map[activity] = hours;
+				accum_hours += hours;
+				auto const jt = accum_map.find(activity);
+				if (jt == accum_map.end()) accum_map[activity] = hours;
+				else jt->second += hours;
 			}
-			else
+			if (p_print_list)
 			{
-				it->second += hours;
+				print_time_point(p_os, interval.beginning()) << gap;
+				print_time_point(p_os, interval.ending()) << gap;
+				print_hours(p_os, hours, rounding_num, rounding_den, prec, w);
+				p_os << (interval.is_live()? '*': ' ');
+				p_os << gap << activity << endl;
 			}
-			print_time_point(os, interval.beginning()) << gap;
-			print_time_point(os, interval.ending()) << gap;
-			print_hours(os, hours, rounding_num, rounding_den, prec, w);
-			if (interval.is_live())
-			{
-				os << '*';
-				live_activity = activity;
-			}
-			else
-			{
-				os << ' ';
-			}
-			os << gap << activity << endl;
+			if (interval.is_live()) live_activity = activity;
 		}
 	}
-	os << endl;
-	string::size_type max_name_width = 0;
-	for (auto const& pair: accum_map)
+	if (p_print_summary && p_print_list) p_os << endl;
+	if (p_print_summary)
 	{
-		string const& activity = pair.first;
-		auto const length = activity.length();
-		if (length > max_name_width) max_name_width = length;
+		string::size_type max_name_width = 0;
+		for (auto const& pair: accum_map)
+		{
+			string const& activity = pair.first;
+			auto const length = activity.length();
+			if (length > max_name_width) max_name_width = length;
+		}
+		for (auto const& pair: accum_map)
+		{
+			string const& activity = pair.first;
+			double const hours = pair.second;
+			print_activity(p_os, activity, max_name_width);
+			print_hours(p_os, hours, rounding_num, rounding_den, prec, w);
+			if (live_activity == activity) p_os << '*';
+			p_os << endl;
+		}
+		p_os << endl;
+		print_activity(p_os, "TOTAL", max_name_width);
+		print_hours(p_os, accum_hours, rounding_num, rounding_den, prec, w);
+		p_os << endl;
 	}
-	for (auto const& pair: accum_map)
+	if (p_print_summary || p_print_list)
 	{
-		string const& activity = pair.first;
-		double const hours = pair.second;
-		print_activity(os, activity, max_name_width);
-		print_hours(os, hours, rounding_num, rounding_den, prec, w);
-		if (live_activity == activity) os << '*';
-		os << endl;
+		if (!live_activity.empty()) p_os << "\n*ongoing" << endl;
 	}
-	os << endl;
-	print_activity(os, "TOTAL", max_name_width);
-	print_hours(os, accum_hours, rounding_num, rounding_den, prec, w);
-	os << endl;
-	if (!live_activity.empty()) os << "\n*ongoing" << endl;
-	return os;
+	return p_os;
 }
 
 }  // namespace swx

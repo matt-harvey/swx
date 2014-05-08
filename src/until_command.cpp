@@ -98,6 +98,7 @@ UntilCommand::do_process
 		{
 			print_report
 			(	p_ordinary_ostream,
+				p_args.single_character_flags(),
 				nullptr,
 				nullptr,
 				time_point_ptr.get()
@@ -108,6 +109,7 @@ UntilCommand::do_process
 			string const activity = squish(args.begin() + 1, args.end());
 			print_report
 			(	p_ordinary_ostream,
+				p_args.single_character_flags(),
 				&activity,
 				nullptr,
 				time_point_ptr.get()

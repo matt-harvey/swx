@@ -53,9 +53,11 @@ private:
 
 };  // class Stint
 
-std::ostream& operator<<
-(	std::ostream& os,
-	std::vector<Stint> const& container
+std::ostream& print_stints_report
+(	std::ostream& p_os,
+	std::vector<Stint> const& p_container,
+	bool p_print_summary = true,
+	bool p_print_list = false
 );
 
 }  // namespace swx

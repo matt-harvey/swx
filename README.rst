@@ -108,14 +108,18 @@ the data file, *without* retroactively reformatting the timestamps that are
 already stored - with resulting parsing errors unless you are prepared to
 reformat manually all your already-entered timestamps to the new format.)
 
-The printed activity summary has two sections. The top section shows each
-"stint" on a given activity in the following format:
+By default, only a summary of activity is printed. This comprises an
+alphabetically ordered list of activities with the total amount of time spent
+for each activity, during the period in question, shown in terms of digital
+hours.
+
+If you pass the ``-l`` option to the reporting command, then then instead
+a list of individual activity stints will be shown, in the following format:
 
     start-time  end-time  hours-spent-in-digital-format  activity-name
 
-The bottom section is an alphabetically ordered list of activities with the
-total amount of time spent for each activity, during the period in question,
-shown in terms of digital hours.
+If you pass the ``-v`` option, then both the detailed list and the summary will
+be printed.
 
 By default, the number of hours shown is rounded to the nearest quarter of
 an hour. This rounding behaviour can be changed in the Configuration_.

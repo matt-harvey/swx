@@ -115,6 +115,7 @@ BetweenCommand::do_process
 		{
 			print_report
 			(	p_ordinary_ostream,
+				p_args.single_character_flags(),
 				nullptr,
 				time_point_since_ptr.get(),
 				time_point_until_ptr.get()
@@ -125,6 +126,7 @@ BetweenCommand::do_process
 			string const activity = squish(args.begin() + 2, args.end());
 			print_report
 			(	p_ordinary_ostream,
+				p_args.single_character_flags(),
 				&activity,
 				time_point_since_ptr.get(),
 				time_point_until_ptr.get()

@@ -96,12 +96,22 @@ SinceCommand::do_process
 		}
 		if (args.size() == 1)
 		{
-			print_report(p_ordinary_ostream, nullptr, time_point_ptr.get());
+			print_report
+			(	p_ordinary_ostream,
+				p_args.single_character_flags(),
+				nullptr,
+				time_point_ptr.get()
+			);
 		}
 		else
 		{
 			string const activity = squish(args.begin() + 1, args.end());
-			print_report(p_ordinary_ostream, &activity, time_point_ptr.get());
+			print_report
+			(	p_ordinary_ostream,
+				p_args.single_character_flags(),
+				&activity,
+				time_point_ptr.get()
+			);
 		}
 	}
 	return ret;
