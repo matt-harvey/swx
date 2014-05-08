@@ -26,9 +26,6 @@ using std::ostream;
 using std::string;
 using std::vector;
 
-// TODO MEDIUM PRIORITY There should be a "brief" option to print a summary of
-// totals only, rather than the list plus summary.
-
 namespace swx
 {
 
