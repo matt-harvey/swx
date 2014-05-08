@@ -110,12 +110,23 @@ operator<<(ostream& os, vector<Stint> const& container)
 	auto const rounding_den = Config::output_rounding_denominator();
 	auto const w = Config::output_width();
 	auto const prec = Config::output_precision();
-	for (auto const& stint: container)
+	bool last_activity_empty = true;
+	for
+	(	vector<Stint>::const_iterator it = container.begin();
+		it != container.end();
+		++it
+	)
 	{
-		string const activity = stint.activity();
-		if (!activity.empty())
+		string const activity = it->activity();
+		if (activity.empty())
 		{
-			auto const interval = stint.interval();
+			if (!last_activity_empty) os << endl;	
+			last_activity_empty = true;
+		}
+		else
+		{
+			last_activity_empty = false;
+			auto const interval = it->interval();
 			double hours = interval.duration().count() / 60.0 / 60.0;
 			accum_hours += hours;
 			auto const it = accum_map.find(activity);
