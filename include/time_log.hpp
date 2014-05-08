@@ -106,6 +106,12 @@ public:
 	 */
 	bool is_active_at(TimePoint const& p_time_point);
 
+	/**
+	 * @returns \e true if and only if p_activity has already been recorded
+	 * at least once in the log.
+	 */
+	bool has_activity(std::string const& p_activity);
+
 private:
 	void clear_cache();
 	void mark_cache_as_stale();

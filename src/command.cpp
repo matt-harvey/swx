@@ -121,6 +121,12 @@ Command::ParsedArguments::single_character_flags() const
 	return ret;
 }
 
+bool
+Command::ParsedArguments::has_flag(char c) const
+{
+	return m_single_character_flags.find(c) != m_single_character_flags.end();
+}
+
 Command::Command
 (	string const& p_command_word,
 	vector<string> const& p_aliases,

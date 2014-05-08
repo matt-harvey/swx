@@ -27,6 +27,7 @@
 #include <string>
 #include <vector>
 
+using std::endl;
 using std::ostream;
 using std::ostringstream;
 using std::string;
@@ -34,6 +35,15 @@ using std::vector;
 
 namespace swx
 {
+
+namespace
+{
+	char activity_creation_flag()
+	{
+		return 'c';
+	}
+
+}  // end anonymous namespace
 
 SwitchCommand::SwitchCommand
 (	string const& p_command_word,
@@ -50,13 +60,19 @@ SwitchCommand::SwitchCommand
 			),
 			HelpLine
 			(	"Start accruing time to ACTIVITY, and stop accruing time to "
-					"the current activity (if any)",
+					"the current activity (if any); raise an error if ACTIVITY "
+					"does not exist",
 				"ACTIVITY"
 			)
 		}
 	),
 	m_time_log(p_time_log)
 {
+	add_boolean_option
+	(	activity_creation_flag(),
+		"Create a new activity named ACTIVITY, and start accruing time to it; "
+			"raise an error if an activity with this name already exists"
+	);
 }
 
 SwitchCommand::~SwitchCommand()
@@ -69,7 +85,7 @@ SwitchCommand::do_process
 	ostream& p_ordinary_ostream
 )
 {
-	(void)p_ordinary_ostream;  // ignore param.
+	// TODO LOW PRIORITY Tidy this.
 	ErrorMessages error_messages;
 	Arguments const args = p_args.ordinary_args();
 	TimePoint const time_point = now();
@@ -77,8 +93,9 @@ SwitchCommand::do_process
 	if (activity.empty() && !m_time_log.is_active_at(time_point))
 	{
 		error_messages.push_back("Already inactive.");
+		return error_messages;
 	}
-	else if (!activity.empty() && m_time_log.is_active_at(time_point))
+	if (!activity.empty() && m_time_log.is_active_at(time_point))
 	{
 		vector<string> const vec = m_time_log.last_activities(1);
 		assert (!vec.empty());
@@ -87,16 +104,53 @@ SwitchCommand::do_process
 			ostringstream oss;
 			oss << "Already active: " << activity;
 			error_messages.push_back(oss.str());
+			return error_messages;
 		}
-		else
+	}
+	char const acf = activity_creation_flag();
+	if
+	(	(p_args.has_flag(acf) && !m_time_log.has_activity(activity)) ||
+		(!p_args.has_flag(acf) && m_time_log.has_activity(activity)) ||
+		activity.empty()
+	)
+	{
+		m_time_log.append_entry(activity, time_point);
+		if (activity.empty())
 		{
-			m_time_log.append_entry(activity, time_point);
+			p_ordinary_ostream << "Switched to inactive." << endl;
 		}
+		else if (p_args.has_flag(acf))
+		{
+			p_ordinary_ostream << "Created new activity: " << activity
+			                   << endl;
+		}
+		p_ordinary_ostream << "Switched to activity: " << activity
+		                   << endl;
+		return error_messages;
+	}
+	ostringstream oss;
+	if (p_args.has_flag(acf))
+	{
+		assert (m_time_log.has_activity(activity));
+		oss << "Activity already exists: " << activity;
 	}
 	else
 	{
-		m_time_log.append_entry(activity, time_point);
+		assert (!p_args.has_flag(acf));
+		assert (!m_time_log.has_activity(activity));
+		oss << "Non-existent activity: " << activity
+		    << "\nUse -c option to create and switch to a new activity.";
 	}
+	oss << "\nCurrent activity unchanged: ";
+	if (m_time_log.is_active_at(time_point))
+	{
+		oss << m_time_log.last_activities(1).at(0);
+	}
+	else
+	{
+		oss << "(currently inactive)";
+	}
+	error_messages.push_back(oss.str());
 	return error_messages;
 }
 

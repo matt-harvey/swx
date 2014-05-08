@@ -57,6 +57,7 @@ protected:
 		);
 		std::vector<std::string> ordinary_args() const;
 		std::string single_character_flags() const;
+		bool has_flag(char c) const;
 	private:
 		std::set<char> m_single_character_flags;
 		std::vector<std::string> m_ordinary_args;

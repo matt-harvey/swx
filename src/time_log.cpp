@@ -167,6 +167,13 @@ TimeLog::is_active_at(TimePoint const& p_time_point)
 	return !activity.empty();
 }
 
+bool
+TimeLog::has_activity(string const& p_activity)
+{
+	load();
+	return m_activity_map.find(p_activity) != m_activity_map.end();
+}
+
 void
 TimeLog::clear_cache()
 {
