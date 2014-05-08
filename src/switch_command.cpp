@@ -20,6 +20,7 @@
 #include "string_utilities.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
+#include <cassert>
 #include <iostream>
 #include <ostream>
 #include <sstream>
@@ -69,11 +70,34 @@ SwitchCommand::do_process
 )
 {
 	(void)p_ordinary_ostream;  // ignore param.
+	ErrorMessages error_messages;
 	Arguments const args = p_args.ordinary_args();
 	TimePoint const time_point = now();
 	string const activity(squish(args.begin(), args.end()));
-	m_time_log.append_entry(activity, time_point);
-	return ErrorMessages();
+	if (activity.empty() && !m_time_log.is_active_at(time_point))
+	{
+		error_messages.push_back("Already inactive.");
+	}
+	else if (!activity.empty() && m_time_log.is_active_at(time_point))
+	{
+		vector<string> const vec = m_time_log.last_activities(1);
+		assert (!vec.empty());
+		if (vec[0] == activity)
+		{
+			ostringstream oss;
+			oss << "Already active: " << activity;
+			error_messages.push_back(oss.str());
+		}
+		else
+		{
+			m_time_log.append_entry(activity, time_point);
+		}
+	}
+	else
+	{
+		m_time_log.append_entry(activity, time_point);
+	}
+	return error_messages;
 }
 
 }  // namespace swx
