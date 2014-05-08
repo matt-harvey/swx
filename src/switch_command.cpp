@@ -117,15 +117,17 @@ SwitchCommand::do_process
 		m_time_log.append_entry(activity, time_point);
 		if (activity.empty())
 		{
-			p_ordinary_ostream << "Switched to inactive." << endl;
+			p_ordinary_ostream << "Activity ceased." << endl;
 		}
 		else if (p_args.has_flag(acf))
 		{
-			p_ordinary_ostream << "Created new activity: " << activity
-			                   << endl;
+			p_ordinary_ostream << "Created and switched to new activity: "
+			                   << activity << endl;
 		}
-		p_ordinary_ostream << "Switched to activity: " << activity
-		                   << endl;
+		else
+		{
+			p_ordinary_ostream << "Switched to: " << activity << endl;
+		}
 		return error_messages;
 	}
 	ostringstream oss;
@@ -141,14 +143,14 @@ SwitchCommand::do_process
 		oss << "Non-existent activity: " << activity
 		    << "\nUse -c option to create and switch to a new activity.";
 	}
-	oss << "\nCurrent activity unchanged: ";
 	if (m_time_log.is_active_at(time_point))
 	{
-		oss << m_time_log.last_activities(1).at(0);
+		oss << "\nCurrent activity remains: "
+		    << m_time_log.last_activities(1).at(0);
 	}
 	else
 	{
-		oss << "(currently inactive)";
+		oss << "\nRemaining inactive." << endl;
 	}
 	error_messages.push_back(oss.str());
 	return error_messages;
