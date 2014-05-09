@@ -14,63 +14,49 @@
  * limitations under the License.
  */
 
-#ifndef GUARD_reporting_command_hpp_869979514679862
-#define GUARD_reporting_command_hpp_869979514679862
+#ifndef GUARD_recording_command_hpp_9906369540796788
+#define GUARD_recording_command_hpp_9906369540796788
 
 #include "command.hpp"
 #include "help_line.hpp"
 #include "time_log.hpp"
-#include "time_point.hpp"
-#include <ostream>
 #include <string>
 #include <vector>
 
 namespace swx
 {
 
-class ReportingCommand: public Command
+class RecordingCommand: public Command
 {
 // special member functions
 public:
-	ReportingCommand
+	RecordingCommand
 	(	std::string const& p_command_word,
 		std::vector<std::string> const& p_aliases,
 		std::string const& p_usage_summary,
 		std::vector<HelpLine> const& p_help_lines,
 		TimeLog& p_time_log
 	);
-	ReportingCommand(ReportingCommand const& rhs) = delete;
-	ReportingCommand(ReportingCommand&& rhs) = delete;
-	ReportingCommand& operator=(ReportingCommand const& rhs) = delete;
-	ReportingCommand& operator=(ReportingCommand&& rhs) = delete;
-	virtual ~ReportingCommand();
+	RecordingCommand(RecordingCommand const& rhs) = delete;
+	RecordingCommand(RecordingCommand&& rhs) = delete;
+	RecordingCommand& operator=(RecordingCommand const& rhs) = delete;
+	RecordingCommand& operator=(RecordingCommand&& rhs) = delete;
+	virtual ~RecordingCommand();
 
 // ordinary member functions
 protected:
-	
-	/**
-	 * Pass non-null pointers to filter by activity name and/or date
-	 * range, or pass null pointers to ignore a particular filter.
-	 * Caller retains ownership of pointed-to memory.
-	 */
-	std::ostream& print_report
-	(	std::ostream& p_os,
-		std::string const& p_options,
-		std::string const* p_activity = nullptr,
-		TimePoint const* p_begin = nullptr,
-		TimePoint const* p_end = nullptr
-	);
+	TimeLog& time_log();
 
 // inherited virtual functions
-private:
+protected:
 	virtual std::string do_get_category() const override;
 
 // member variables
 private:
-	TimeLog& m_time_log;
+	TimeLog& m_time_log;	
 
-};  // class ReportingCommand
+};  // class RecordingCommand
 
 }  // namespace swx
 
-#endif  // GUARD_reporting_command_hpp_869979514679862
+#endif  // GUARD_recording_command_hpp_9906369540796788

@@ -18,11 +18,13 @@
 #define GUARD_command_manager_hpp_6901861572126794
 
 #include "command.hpp"
+#include "stream_flag_guard.hpp"
 #include "time_log.hpp"
 #include <memory>
 #include <ostream>
 #include <string>
 #include <map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -40,10 +42,7 @@ class CommandManager
 // nested types
 private:
 	typedef
-		std::shared_ptr<Command>
-		CommandPtr;
-	typedef
-		std::map<std::string, CommandPtr>
+		std::map<std::string, std::shared_ptr<Command>>
 		CommandMap;
 
 // special member functions
@@ -67,21 +66,18 @@ public:
 	) const;
 
 	/**
+	 * @returns a string providing help information for a particular
+	 * command.
+	 *
 	 * @throws std::runtime_error if p_command is not a registered
 	 * command word.
 	 */
 	std::string help_information(std::string const& p_command) const;
 
 	/**
-	 * In each element \e e of the returned vector, \e e.first is
-	 * the main command word, \e e.second is a vector of aliases
-	 * for that command word, and \e e.third is the usage summary for
-	 * that command.
-	 *
-	 * @todo LOW PRIORITY Give this a nicer interface.
+	 * @returns a string providing general help information.
 	 */
-	std::vector<std::tuple<std::string, std::vector<std::string>, std::string>>
-		available_commands() const;
+	std::string help_information() const;
 
 	static std::string directions_to_get_help();
 	static std::string directions_to_get_help(std::string const& p_command);
@@ -94,10 +90,10 @@ private:
 	int process_unrecognized_command(std::string const& p_command) const;
 	std::ostream& ordinary_ostream() const;
 	std::ostream& error_ostream() const;
-	void create_command(CommandPtr const& p_cp);
+	void create_command(std::shared_ptr<Command> const& p_cp);
 	void register_command_word
 	(	std::string const& p_word,
-		CommandPtr const& p_cp
+		std::shared_ptr<Command> const& p_cp
 	);
 
 // member variables

@@ -17,6 +17,7 @@
 #include "resume_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
+#include "recording_command.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
@@ -41,7 +42,7 @@ ResumeCommand::ResumeCommand
 	vector<string> const& p_aliases,
 	TimeLog& p_time_log
 ):
-	Command
+	RecordingCommand
 	(	p_command_word,
 		p_aliases,
 		"Resume previous activity",
@@ -51,9 +52,9 @@ ResumeCommand::ResumeCommand
 				"activity; or if already active, switch to the activity that "
 				"was last active before the current one"
 			)
-		}
-	),
-	m_time_log(p_time_log)
+		},
+		p_time_log
+	)
 {
 }
 
@@ -75,9 +76,9 @@ ResumeCommand::do_process
 	}
 	else
 	{
-		auto const last_activities = m_time_log.last_activities(2);
+		auto const last_activities = time_log().last_activities(2);
 		auto const n = now();
-		bool const is_active = m_time_log.is_active_at(n);
+		bool const is_active = time_log().is_active_at(n);
 		if (last_activities.empty())
 		{
 			ret.push_back("No activity has yet been recorded.");
@@ -85,7 +86,7 @@ ResumeCommand::do_process
 		else if (!is_active)
 		{
 			auto const activity = last_activities[0];
-			m_time_log.append_entry(activity, n);
+			time_log().append_entry(activity, n);
 			p_ordinary_ostream << "Resumed: " << activity << endl;
 		}
 		else if (last_activities.size() == 1)
@@ -98,7 +99,7 @@ ResumeCommand::do_process
 			assert (is_active);
 			assert (last_activities.size() == 2);
 			auto const activity = last_activities[1];
-			m_time_log.append_entry(activity, n);
+			time_log().append_entry(activity, n);
 			p_ordinary_ostream << "Resumed: " << activity << endl;
 		}
 	}

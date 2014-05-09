@@ -159,6 +159,12 @@ Command::add_boolean_option(char p_flag, string const& p_description)
 	return;
 }
 
+string
+Command::category() const
+{
+	return do_get_category();
+}
+
 bool
 Command::has_boolean_option(char p_flag) const
 {
@@ -267,6 +273,12 @@ vector<string> const&
 Command::aliases() const
 {
 	return m_aliases;
+}
+
+string
+Command::do_get_category() const
+{
+	return "Miscellaneous";
 }
 
 }  // namespace swx

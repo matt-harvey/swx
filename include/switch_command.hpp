@@ -17,7 +17,7 @@
 #ifndef GUARD_switch_command_hpp_9219790538409627
 #define GUARD_switch_command_hpp_9219790538409627
 
-#include "command.hpp"
+#include "recording_command.hpp"
 #include "time_log.hpp"
 #include <ostream>
 #include <string>
@@ -32,7 +32,7 @@ class ParsedArguments;
 
 // end forward declarations
 
-class SwitchCommand: public Command
+class SwitchCommand: public RecordingCommand
 {
 // special member functions
 public:
@@ -53,10 +53,6 @@ private:
 	(	ParsedArguments const& p_args,
 		std::ostream& p_ordinary_ostream
 	) override;
-
-// member variables
-private:
-	TimeLog& m_time_log;
 
 };  // class SwitchCommand
 

@@ -28,24 +28,33 @@
 #include "until_command.hpp"
 #include "version_command.hpp"
 #include <cassert>
+#include <iomanip>
+#include <ios>
 #include <iostream>
+#include <map>
+#include <memory>
 #include <ostream>
 #include <set>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
 using std::cerr;
 using std::cout;
 using std::endl;
+using std::left;
+using std::map;
 using std::ostream;
 using std::ostringstream;
 using std::runtime_error;
 using std::set;
+using std::setw;
+using std::shared_ptr;
 using std::string;
-using std::tuple;
+using std::unordered_set;
 using std::vector;
 
 namespace swx
@@ -74,47 +83,47 @@ CommandManager::CommandManager(TimeLog& p_time_log): m_time_log(p_time_log)
 void
 CommandManager::populate_command_map()
 {
-	CommandPtr version_command
+	shared_ptr<Command> version_command
 	(	new VersionCommand("version", {"v"})
 	);
 	create_command(version_command);	
 	
-	CommandPtr help_command
+	shared_ptr<Command> help_command
 	(	new HelpCommand(help_command_string(), {"h"}, *this)
 	);
 	create_command(help_command);
 
-	CommandPtr switch_command
+	shared_ptr<Command> switch_command
 	(	new SwitchCommand("switch", {"sw"}, m_time_log)
 	);
 	create_command(switch_command);
 
-	CommandPtr resume_command
+	shared_ptr<Command> resume_command
 	(	new ResumeCommand("resume", {"r"}, m_time_log)
 	);
 	create_command(resume_command);
 
-	CommandPtr print_command
+	shared_ptr<Command> print_command
 	(	new PrintCommand("print", {"p"}, m_time_log)
 	);
 	create_command(print_command);
 
-	CommandPtr today_command
+	shared_ptr<Command> today_command
 	(	new TodayCommand("today", {"t"}, m_time_log)
 	);
 	create_command(today_command);
 
-	CommandPtr since_command
+	shared_ptr<Command> since_command
 	(	new SinceCommand("since", {"si"}, m_time_log)
 	);
 	create_command(since_command);
 
-	CommandPtr until_command
+	shared_ptr<Command> until_command
 	(	new UntilCommand("until", {"u"}, m_time_log)
 	);
 	create_command(until_command);
 
-	CommandPtr between_command
+	shared_ptr<Command> between_command
 	(	new BetweenCommand("between", {"b"}, m_time_log)
 	);
 	create_command(between_command);
@@ -164,25 +173,68 @@ CommandManager::help_information(string const& p_command) const
 	return it->second->usage_descriptor();
 }
 
-vector<tuple<string, vector<string>, string>>
-CommandManager::available_commands() const
+string
+CommandManager::help_information() const
 {
-	set<string> command_words;
-	vector<tuple<string, vector<string>, string>> ret;
-	auto const b = m_command_map.begin();
-	auto const e = m_command_map.end();
-	for (auto it = b; it != e; ++it)
+	typedef string Category;
+	map<Category, set<shared_ptr<Command>>> grouped_commands;
+	for (auto const& pair: m_command_map)
 	{
-		ostringstream oss;
-		Command const& c = *it->second;
-		string const word = c.command_word();
-		if (command_words.find(word) == command_words.end())
+		shared_ptr<Command> command_ptr = pair.second;
+		Category const category = command_ptr->category();
+		auto const group_iter = grouped_commands.find(category);
+		if (group_iter == grouped_commands.end())
 		{
-			command_words.insert(word);
-			ret.push_back(make_tuple(word, c.aliases(), c.usage_summary()));
+			grouped_commands[category] = set<shared_ptr<Command>>{command_ptr};
+		}
+		else
+		{
+			group_iter->second.insert(command_ptr);
 		}
 	}
-	return ret;
+	ostringstream oss;
+	oss << "Usage: " << Info::application_name() << " <COMMAND> [ARGS...]\n";
+	string::size_type width = 0;
+	for (auto const& pair: grouped_commands)
+	{
+		auto const& command_group = pair.second;
+		for (auto const& command_ptr: command_group)
+		{
+			auto const& command = *command_ptr;
+			string::size_type current_width = command.command_word().size();
+			for (auto const& alias: command.aliases())
+			{
+				current_width += 2;
+				current_width += alias.size();
+			}
+			current_width += 4;
+			width = ((current_width > width)? current_width: width);
+		}
+	}
+	for (auto const& pair: grouped_commands)
+	{
+		Category const& category = pair.first;
+		oss << '\n' << category << " commands:\n\n";
+		auto const& command_group = pair.second;
+		for (auto const& command_ptr: command_group)
+		{
+			auto const& command = *command_ptr;
+			StreamFlagGuard guard(oss);
+			ostringstream oss2;
+			oss2 << command.command_word();
+			for (auto const& alias: command.aliases())
+			{
+				oss2 << ", " << alias;
+			}
+			oss << "  " << setw(width) << left << oss2.str();
+			guard.reset();
+			oss << command.usage_summary() << '\n';
+		}
+	}
+	oss << "\nFor more information on a particular command, enter '"
+	    << Info::application_name() << ' '
+		<< help_command_string() << " <COMMAND>'.\n";
+	return oss.str();
 }
 
 string
@@ -242,7 +294,7 @@ CommandManager::error_ostream() const
 }
 
 void
-CommandManager::create_command(CommandPtr const& p_cp)
+CommandManager::create_command(shared_ptr<Command> const& p_cp)
 {
 	register_command_word(p_cp->command_word(), p_cp);
 	for (auto const& alias: p_cp->aliases())
@@ -255,7 +307,7 @@ CommandManager::create_command(CommandPtr const& p_cp)
 void
 CommandManager::register_command_word
 (	string const& p_word,
-	CommandPtr const& p_cp
+	shared_ptr<Command> const& p_cp
 )
 {
 	if (m_command_map.find(p_word) != m_command_map.end())

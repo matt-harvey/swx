@@ -17,6 +17,7 @@
 #include "switch_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
+#include "recording_command.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
@@ -50,7 +51,7 @@ SwitchCommand::SwitchCommand
 	vector<string> const& p_aliases,
 	TimeLog& p_time_log
 ):
-	Command
+	RecordingCommand
 	(	p_command_word,
 		p_aliases,
 		"Switch between activities, or cease activity",
@@ -64,9 +65,9 @@ SwitchCommand::SwitchCommand
 					"does not exist",
 				"ACTIVITY"
 			)
-		}
-	),
-	m_time_log(p_time_log)
+		},
+		p_time_log
+	)
 {
 	add_boolean_option
 	(	activity_creation_flag(),
@@ -90,14 +91,14 @@ SwitchCommand::do_process
 	Arguments const args = p_args.ordinary_args();
 	TimePoint const time_point = now();
 	string const activity(squish(args.begin(), args.end()));
-	if (activity.empty() && !m_time_log.is_active_at(time_point))
+	if (activity.empty() && !time_log().is_active_at(time_point))
 	{
 		error_messages.push_back("Already inactive.");
 		return error_messages;
 	}
-	if (!activity.empty() && m_time_log.is_active_at(time_point))
+	if (!activity.empty() && time_log().is_active_at(time_point))
 	{
-		vector<string> const vec = m_time_log.last_activities(1);
+		vector<string> const vec = time_log().last_activities(1);
 		assert (!vec.empty());
 		if (vec[0] == activity)
 		{
@@ -109,12 +110,12 @@ SwitchCommand::do_process
 	}
 	char const acf = activity_creation_flag();
 	if
-	(	(p_args.has_flag(acf) && !m_time_log.has_activity(activity)) ||
-		(!p_args.has_flag(acf) && m_time_log.has_activity(activity)) ||
+	(	(p_args.has_flag(acf) && !time_log().has_activity(activity)) ||
+		(!p_args.has_flag(acf) && time_log().has_activity(activity)) ||
 		activity.empty()
 	)
 	{
-		m_time_log.append_entry(activity, time_point);
+		time_log().append_entry(activity, time_point);
 		if (activity.empty())
 		{
 			p_ordinary_ostream << "Activity ceased." << endl;
@@ -133,20 +134,20 @@ SwitchCommand::do_process
 	ostringstream oss;
 	if (p_args.has_flag(acf))
 	{
-		assert (m_time_log.has_activity(activity));
+		assert (time_log().has_activity(activity));
 		oss << "Activity already exists: " << activity;
 	}
 	else
 	{
 		assert (!p_args.has_flag(acf));
-		assert (!m_time_log.has_activity(activity));
+		assert (!time_log().has_activity(activity));
 		oss << "Non-existent activity: " << activity
 		    << "\nUse -c option to create and switch to a new activity.";
 	}
-	if (m_time_log.is_active_at(time_point))
+	if (time_log().is_active_at(time_point))
 	{
 		oss << "\nCurrent activity remains: "
-		    << m_time_log.last_activities(1).at(0);
+		    << time_log().last_activities(1).at(0);
 	}
 	else
 	{

@@ -82,6 +82,12 @@ public:
 protected:
 	void add_boolean_option(char p_flag, std::string const& p_description);
 public:
+
+	/**
+	 * @returns "Miscellaneous" unless do_get_category() is overridden.
+	 */
+	std::string category() const;
+
 	bool has_boolean_option(char p_flag) const;
 
 	int process
@@ -97,6 +103,7 @@ public:
 
 // virtual functions
 private:
+	virtual std::string do_get_category() const;
 
 	virtual ErrorMessages do_process
 	(	ParsedArguments const& p_args,

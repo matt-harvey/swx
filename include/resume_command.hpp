@@ -17,7 +17,7 @@
 #ifndef GUARD_resume_command_hpp_2942334922469377
 #define GUARD_resume_command_hpp_2942334922469377
 
-#include "command.hpp"
+#include "recording_command.hpp"
 #include "time_log.hpp"
 #include <ostream>
 #include <string>
@@ -26,7 +26,7 @@
 namespace swx
 {
 
-class ResumeCommand: public Command
+class ResumeCommand: public RecordingCommand
 {
 // special member functions
 public:
@@ -47,10 +47,6 @@ private:
 	(	ParsedArguments const& p_args,
 		std::ostream& p_ordinary_ostream
 	) override;
-
-// member variables
-private:
-	TimeLog& m_time_log;
 
 };  // class ResumeCommand
 
