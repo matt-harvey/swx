@@ -45,8 +45,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # Dependencies
 
-include_directories(include)
-set(libraries pthread dl)
+find_package(Boost 1.53.0 COMPONENTS regex REQUIRED)
+include_directories(include ${Boost_INCLUDE_DIRS})
+set(libraries ${Boost_LIBRARIES} pthread dl)
 set(
 	common_sources
 	src/today_command.cpp

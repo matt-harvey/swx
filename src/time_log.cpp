@@ -33,7 +33,11 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <boost/regex.hpp>
 
+using boost::match_posix;
+using boost::regex;
+using boost::regex_search;
 using std::cerr;
 using std::endl;
 using std::getline;
@@ -94,20 +98,34 @@ vector<Stint>
 TimeLog::get_stints
 (	string const* p_activity,
 	TimePoint const* p_begin,
-	TimePoint const* p_end
+	TimePoint const* p_end,
+	bool p_use_regex
 )
 {
 	load();	
+	regex reg;
+	if (!p_activity) p_use_regex = false;
+	if (p_use_regex)
+	{
+		assert (p_activity);
+		reg = regex(*p_activity, regex::extended);
+	}
 	vector<Stint> ret;
 	auto const e = m_entries.end();
 	auto it = (p_begin? find_entry_just_before(*p_begin): m_entries.begin());
 	auto const n = now();
-	ActivityId const sought_activity_id = (p_activity? register_activity(*p_activity): 0);
+	ActivityId const sought_activity_id =
+		(p_activity? register_activity(*p_activity): 0);
 	for ( ; (it != e) && (!p_end || (it->time_point < *p_end)); ++it)
 	{
 		ActivityId const current_activity_id = it->activity_id;
-		if (!p_activity || (sought_activity_id == current_activity_id))
+		if (!p_activity || (sought_activity_id == current_activity_id) || p_use_regex)
 		{
+			string const& current_activity = id_to_activity(current_activity_id);
+			if (p_use_regex && !regex_search(current_activity, reg, match_posix))
+			{
+				continue;
+			}
 			auto tp = it->time_point;
 			if (p_begin && (tp < *p_begin)) tp = *p_begin;
 			auto const next_it = it + 1;
@@ -119,7 +137,7 @@ TimeLog::get_stints
 			assert (!p_end || (next_tp <= *p_end));
 			auto const seconds = chrono::duration_cast<Seconds>(next_tp - tp);
 			Interval const interval(tp, seconds, done);
-			ret.push_back(Stint(id_to_activity(current_activity_id), interval));
+			ret.push_back(Stint(current_activity, interval));
 		}
 	}
 	return ret;	

@@ -78,11 +78,18 @@ public:
 	 * Pass non-null pointers to filter by activity name and/or date
 	 * range, or pass null pointers to ignore a particular filter.
 	 * Caller retains ownership of pointed-to memory.
+	 *
+	 * If \e p_use_regex is passed \e true, then, rather than retrieving only
+	 * stints with <em>*p_activity</em> as their activity, then function will
+	 * retrieve stints for which their activity matches <em>*p_activity</em>,
+	 * treated as a POSIX extended regular expression.
+	 * 
 	 */
 	std::vector<Stint> get_stints
-	(	std::string const* p_activity = nullptr,
-		TimePoint const* p_begin = nullptr,
-		TimePoint const* p_end = nullptr
+	(	std::string const* p_activity,
+		TimePoint const* p_begin,
+		TimePoint const* p_end,
+		bool p_use_regex = false
 	);
 
 	/**

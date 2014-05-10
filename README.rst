@@ -121,6 +121,11 @@ a list of individual activity stints will be shown, in the following format:
 If you pass the ``-v`` option, then both the detailed list and the summary will
 be printed.
 
+If you pass the ``-r`` option, then the activity string you pass will be treated
+as a regular expression (of the POSIX extended variety), rather than an exact
+activity name. Any activities will then be shown for which their activity name
+matches this regular expression.
+
 By default, the number of hours shown is rounded to the nearest quarter of
 an hour. This rounding behaviour can be changed in the Configuration_.
 
@@ -162,6 +167,8 @@ work on Windows. To build it, you will need:
 - A reasonably conformant C++ compiler and standard library implementation
 
 - CMake (version 2.8.10 or later) (http://www.cmake.org)
+
+- The Boost regex library (version 1.53 or later) (http://www.boost.org)
 
 Download and unzip the source code and ``cd`` into the source root.
 

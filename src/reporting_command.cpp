@@ -49,6 +49,11 @@ ReportingCommand::ReportingCommand
 		"Print both a list of individual activity stints, and a "
 			"summary of the time spent on each activity"
 	);
+	add_boolean_option
+	(	'r',
+		"Treat ACTIVITY as a (POSIX extended) regular expression, and include "
+			"all activities that match it"
+	);
 }
 
 ReportingCommand::~ReportingCommand()
@@ -66,6 +71,7 @@ ReportingCommand::print_report
 {
 	bool detail = false;
 	bool summary = true;
+	bool use_regex = false;
 	for (char c: p_options)
 	{
 		switch (c)
@@ -73,6 +79,9 @@ ReportingCommand::print_report
 		case 'l':
 			detail = true;
 			summary = false;
+			break;
+		case 'r':
+			use_regex = true;
 			break;
 		case 'v':
 			detail = true;
@@ -82,7 +91,7 @@ ReportingCommand::print_report
 	}
 	return print_stints_report
 	(	p_os,
-		m_time_log.get_stints(p_activity, p_begin, p_end),
+		m_time_log.get_stints(p_activity, p_begin, p_end, use_regex),
 		summary,
 		detail
 	);
