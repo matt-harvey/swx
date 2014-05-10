@@ -84,7 +84,7 @@ void
 CommandManager::populate_command_map()
 {
 	shared_ptr<Command> version_command
-	(	new VersionCommand("version", {"v"})
+	(	new VersionCommand("version", {})
 	);
 	create_command(version_command);	
 	
@@ -94,12 +94,12 @@ CommandManager::populate_command_map()
 	create_command(help_command);
 
 	shared_ptr<Command> switch_command
-	(	new SwitchCommand("switch", {"sw"}, m_time_log)
+	(	new SwitchCommand("switch", {"s"}, m_time_log)
 	);
 	create_command(switch_command);
 
 	shared_ptr<Command> resume_command
-	(	new ResumeCommand("resume", {}, m_time_log)
+	(	new ResumeCommand("resume", {"r"}, m_time_log)
 	);
 	create_command(resume_command);
 
@@ -114,17 +114,17 @@ CommandManager::populate_command_map()
 	create_command(today_command);
 
 	shared_ptr<Command> since_command
-	(	new SinceCommand("since", {"si"}, m_time_log)
+	(	new SinceCommand("since", {}, m_time_log)
 	);
 	create_command(since_command);
 
 	shared_ptr<Command> until_command
-	(	new UntilCommand("until", {"u"}, m_time_log)
+	(	new UntilCommand("until", {}, m_time_log)
 	);
 	create_command(until_command);
 
 	shared_ptr<Command> between_command
-	(	new BetweenCommand("between", {"b"}, m_time_log)
+	(	new BetweenCommand("between", {}, m_time_log)
 	);
 	create_command(between_command);
 

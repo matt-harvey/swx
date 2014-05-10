@@ -42,7 +42,7 @@ working on this activity, you would enter the following at the command line::
     swx switch -c answering emails
 
 The activity name can be any number of words strung together, and is
-case-sensitive. You can use the alias ``sw`` if you don't want to type
+case-sensitive. You can use the alias ``s`` if you don't want to type
 ``switch``.
 
 The ``-c`` option tells the ``switch`` command that this is the first time you
@@ -65,7 +65,9 @@ If you pass the ``-r`` option to ``swx switch``, then the activity argument will
 be considered as a regular expression (of the POSIX extended variety), rather
 than an exact activity name. A switch will then be recorded to the most recently
 active activity the name of which matches that regular expression. This can save
-a fair bit of typing when switching back to a recently used activity.
+a fair bit of typing when switching back to a recently used activity. Note that
+invoking ``swx switch -r <REGEX>`` is exactly equivalent to invoking
+``swx resume <REGEX>`` (see below).
 
 The "resume" command
 --------------------
@@ -81,6 +83,12 @@ If you are currently "active", then ``swx resume`` will record a switch to
 the activity that was active just before the current one. This is useful for
 when you are working on one activity, are briefly interrupted by another
 activity, and then want to resume work on the original activity.
+
+If you pass an argument to ``swx resume``, the argument will be treated as a
+regular expression (of the POSIX extended variety), and a switch will be
+recorded to the most recent activity the name of which matches that regular
+expression. This is exactly equivalent to invoking ``swx switch`` with the
+``-r`` option.
 
 Reporting commands
 ------------------

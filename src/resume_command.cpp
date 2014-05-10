@@ -51,6 +51,11 @@ ResumeCommand::ResumeCommand
 			(	"If currently inactive, start accruing time to the most recent "
 				"activity; or if already active, switch to the activity that "
 				"was last active before the current one"
+			),
+			HelpLine
+			(	"Switch to the most recent activity matching REGEX, treated as "
+					"a (POSIX extended) regular expression",
+				"REGEX"
 			)
 		},
 		p_time_log
@@ -70,14 +75,10 @@ ResumeCommand::do_process
 {
 	ErrorMessages ret;
 	Arguments const args = p_args.ordinary_args();
-	if (!args.empty())
-	{
-		ret.push_back("Too many arguments passed to this command.");
-	}
-	else
+	auto const n = now();
+	if (args.empty())
 	{
 		auto const last_activities = time_log().last_activities(2);
-		auto const n = now();
 		bool const is_active = time_log().is_active_at(n);
 		if (last_activities.empty())
 		{
@@ -99,6 +100,22 @@ ResumeCommand::do_process
 			assert (is_active);
 			assert (last_activities.size() == 2);
 			auto const activity = last_activities[1];
+			time_log().append_entry(activity, n);
+			p_ordinary_ostream << "Resumed: " << activity << endl;
+		}
+	}
+	else
+	{
+		string const reg = squish(args.begin(), args.end());
+		string const activity = time_log().last_activity_to_match(reg);
+		if (activity.empty())
+		{
+			ostringstream oss;
+			oss << "No activity matches regex: " << reg;
+			ret.push_back(oss.str());
+		}
+		else
+		{
 			time_log().append_entry(activity, n);
 			p_ordinary_ostream << "Resumed: " << activity << endl;
 		}
