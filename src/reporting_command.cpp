@@ -118,4 +118,10 @@ ReportingCommand::do_get_category() const
 	return "Reporting";
 }
 
+bool
+ReportingCommand::does_support_placeholders() const
+{
+	return true;
+}
+
 }  // namespace swx

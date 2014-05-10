@@ -19,6 +19,7 @@
 #include "command.hpp"
 #include "help_command.hpp"
 #include "info.hpp"
+#include "placeholder.hpp"
 #include "print_command.hpp"
 #include "resume_command.hpp"
 #include "since_command.hpp"

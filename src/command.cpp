@@ -17,6 +17,7 @@
 #include "command.hpp"
 #include "help_line.hpp"
 #include "info.hpp"
+#include "placeholder.hpp"
 #include "stream_flag_guard.hpp"
 #include <cassert>
 #include <iomanip>
@@ -57,7 +58,7 @@ namespace
 		return make_pair
 		(	'-',
 			"Treat any dash-prefixed arguments after this flag as "
-				"ordinary arguments"
+				"ordinary arguments, rather than flags"
 		);
 	}
 
@@ -237,7 +238,7 @@ Command::usage_descriptor() const
 	for (auto const& line: m_help_lines)
 	{
 		StreamFlagGuard guard(oss);
-		oss << setw(left_col_width) << left
+		oss << "  " << setw(left_col_width) << left
 		    << (app_name + ' ' + m_command_word + ' ' + line.args_descriptor())
 			<< "  ";
 		guard.reset();
@@ -250,14 +251,31 @@ Command::usage_descriptor() const
 		oss << *it;
 		for (++it; it != m_aliases.end(); ++it) oss << ", " << *it;
 	}
+	left_col_width = 6;
 	if (!m_boolean_options.empty())
 	{
 		oss << "\n\nOptions:\n";
 		for (auto const& option: m_boolean_options)
 		{
-			char const c = option.first;
-			string const description = option.second;
-			oss << "\n-" << c << "     " << description;
+			StreamFlagGuard guard(oss);
+			string const flag{'-', option.first};
+			string const& description = option.second;
+			oss << "\n  " << setw(left_col_width) << left
+			    << flag;
+			guard.reset();
+			oss << description;
+		}
+	}
+	if (does_support_placeholders())
+	{
+		auto const placeholder_lines = placeholder_help(left_col_width);
+		if (!placeholder_lines.empty())
+		{
+			oss << "\n\nPlaceholders:\n";
+			for (auto const& line: placeholder_lines)
+			{
+				oss << "\n  " << line;
+			}
 		}
 	}
 	return oss.str();
@@ -279,6 +297,12 @@ string
 Command::do_get_category() const
 {
 	return "Miscellaneous";
+}
+
+bool
+Command::does_support_placeholders() const
+{
+	return false;
 }
 
 }  // namespace swx

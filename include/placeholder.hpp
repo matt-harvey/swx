@@ -38,6 +38,14 @@ std::vector<std::string> expand_placeholders
 	TimeLog& p_time_log
 );
 
+/**
+ * @returns a vector of strings each of which is a line of help text,
+ * which together explain the usage of placeholders.
+ */
+std::vector<std::string> placeholder_help
+(	std::string::size_type p_left_column_width
+);
+
 }  // namespace swx
 
 #endif  // GUARD_placeholder_hpp_31044386248590605

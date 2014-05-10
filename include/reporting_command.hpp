@@ -67,6 +67,7 @@ protected:
 // inherited virtual functions
 private:
 	virtual std::string do_get_category() const override;
+	virtual bool does_support_placeholders() const override;
 
 // member variables
 private:

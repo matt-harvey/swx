@@ -110,6 +110,12 @@ private:
 		std::ostream& p_ordinary_ostream
 	) = 0;
 
+	/**
+	 * If you use placeholders in a derived class, override this to
+	 * return \e true, so that the help string is modified accordingly.
+	 */
+	virtual bool does_support_placeholders() const;
+
 // member variables
 private:
 	std::string const m_command_word;

@@ -21,11 +21,13 @@
 #include <cassert>
 #include <cstddef>
 #include <iterator>
+#include <sstream>
 #include <string>
 #include <vector>
 
 using std::back_inserter;
 using std::copy;
+using std::ostringstream;
 using std::size_t;
 using std::string;
 using std::vector;
@@ -35,6 +37,11 @@ namespace swx
 
 namespace
 {
+
+	char tree_traversal_char()
+	{
+		return '_';
+	}
 
 	/**
 	 * @returns \e true if p_str successfully expands into an
@@ -57,7 +64,7 @@ namespace
 		}
 		for (char c: p_str)
 		{
-			if (c == '_') ++depth;
+			if (c == tree_traversal_char()) ++depth;
 			else return false;
 		}
 		if (p_time_log.is_active())
@@ -74,6 +81,10 @@ namespace
 			{
 			}
 			copy(b, it, back_inserter(p_vec));
+		}
+		else
+		{
+			p_vec.push_back("");
 		}
 		return true;
 	}
@@ -93,6 +104,39 @@ expand_placeholders(vector<string> const& p_components, TimeLog& p_time_log)
 		}
 	}
 	return vec;
+}
+
+vector<string>
+placeholder_help(string::size_type p_left_column_width)
+{
+	vector<string> ret;
+	vector<string>::size_type const num_lines = 3;
+	string::size_type const min_width = num_lines + 1;
+	if (min_width > p_left_column_width) p_left_column_width = min_width;
+	for (string::size_type i = 1; i <= num_lines; ++i)
+	{
+		ostringstream oss;
+		oss << string(i, tree_traversal_char())
+		    << string(p_left_column_width - i, ' ');
+		switch (i)
+		{
+		case 1:
+			oss << "Expands into name of current activity "
+			    << "(or empty string if inactive)";
+			break;
+		case 2:
+			oss << "Expands into name of parent of current activity "
+			    << "(or empty string if no parent)";
+			break;
+		case 3:
+			oss << "Expands into name of parent of parent (etc.)";
+			break;
+		default:
+			assert (false);
+		}
+		ret.push_back(oss.str());
+	}
+	return ret;	
 }
 
 }  // namespace swx

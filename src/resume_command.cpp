@@ -74,6 +74,7 @@ ResumeCommand::do_process
 	ostream& p_ordinary_ostream
 )
 {
+	// TODO MEDIUM PRIORITY Tidy this.
 	ErrorMessages ret;
 	Arguments const args =
 		expand_placeholders(p_args.ordinary_args(), time_log());
@@ -133,6 +134,12 @@ ResumeCommand::do_process
 		}
 	}
 	return ret;
+}
+
+bool
+ResumeCommand::does_support_placeholders() const
+{
+	return true;
 }
 
 }  // namespace swx

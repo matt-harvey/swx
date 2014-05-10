@@ -97,7 +97,7 @@ SwitchCommand::do_process
 	ostream& p_ordinary_ostream
 )
 {
-	// TODO LOW PRIORITY Tidy this.
+	// TODO MEDIUM PRIORITY Tidy this.
 	ErrorMessages error_messages;
 	Arguments const args =
 		expand_placeholders(p_args.ordinary_args(), time_log());
@@ -186,6 +186,12 @@ SwitchCommand::do_process
 	}
 	error_messages.push_back(oss.str());
 	return error_messages;
+}
+
+bool
+SwitchCommand::does_support_placeholders() const
+{
+	return true;
 }
 
 }  // namespace swx
