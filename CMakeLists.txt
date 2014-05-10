@@ -60,6 +60,7 @@ set(
 	src/help_line.cpp
 	src/info.cpp
 	src/interval.cpp
+	src/placeholder.cpp
 	src/recording_command.cpp
 	src/reporting_command.cpp
 	src/resume_command.cpp

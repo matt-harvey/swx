@@ -36,14 +36,13 @@ The "switch" command
 --------------------
 
 Suppose you start working on the activity of "answering emails". You would come
-up with a name for this activity, say ``answering emails``. When you first start
+up with a name for this activity, say ``answering-emails``. When you first start
 working on this activity, you would enter the following at the command line::
 
-    swx switch -c answering emails
+    swx switch -c answering-emails
 
-The activity name can be any number of words strung together, and is
-case-sensitive. You can use the alias ``s`` if you don't want to type
-``switch``.
+Note the activity name is case-sensitive case-sensitive. You can use the alias
+``s`` if you don't want to type ``switch``.
 
 The ``-c`` option tells the ``switch`` command that this is the first time you
 are working on this activity. On subsequent occasions, when you switch back to
@@ -89,6 +88,22 @@ regular expression (of the POSIX extended variety), and a switch will be
 recorded to the most recent activity the name of which matches that regular
 expression. This is exactly equivalent to invoking ``swx switch`` with the
 ``-r`` option.
+
+Complex activities
+------------------
+
+Activities are often divided conceptually into sub-activities,
+sub-sub-activities and so forth. ``swx`` tries to capture this with the
+concept of simple and compound activities. A simple activity is specified
+using a single word, not containing whitespace, e.g. ``email``.
+A compound activity is specified as multiple words separated by whitespace,
+e.g. ``email customer-service``.
+
+When passing the name of a compound activity to a ``swx`` command, it can
+just be passed directly as multiple arguments to the command, without
+enclosing it in quotes. ``swx`` will treat it as single, compound activity.
+E.g., entering ``swx switch email customer-service`` is exactly equivalent
+to entering ``swx switch 'email customer-service'``.
 
 Reporting commands
 ------------------
@@ -143,6 +158,39 @@ which their activity name matches this regular expression.
 By default, the number of hours shown is rounded to the nearest quarter of
 an hour. This rounding behaviour can be changed in the Configuration_.
 
+Placeholders
+------------
+
+When entering a series of whitespace-separated "activity components" at the
+command line (e.g. ``email customer-service``), there are certain "placeholders"
+that can stand in for one or more such components, and are expanded accordingly
+before the command line is properly processed.
+
+- ``_`` expands into  the (name of the) current activity, or, if there is no
+  current activity, into the most recently active activity. In our
+  example, if the current activity were ``email customer service``, then
+  ``_`` would expand into ``email customer-service``.
+
+- ``__`` expands into the "parent" of the current activity. In our current
+  example, this would expand into ``email``.
+
+- ``___`` expands into the parent of the parent of the current activity. In our
+  current example, since the parent (``email``) has no parent itself, this would
+  simply expand into the empty string.
+
+In general, any number of underscores can be entered (with obviously limited
+usefulness) to traverse up the "activity tree" by a corresponding number of
+"generations".
+
+These placeholders can be inserted anywhere among the command-line arguments
+where one or more activity "components" are expected, and will be expanded
+accordingly. This can save some typing when switching between closely related
+activities, or generating a report on the current activity or related
+activities. E.g., if we are currently active on ``email customer-service
+enquiries`` and want to record a switch to ``email customer-service
+complaints``, then we can enter simply ``swx s __ complaints``, rather than
+having to enter ``sw sw email customer-service complaints``.
+
 Manually editing the time log
 -----------------------------
 
@@ -155,6 +203,10 @@ format, and to leave a space between the timestamp and the activity name
 of activity.) Also, the time log must be such that the timestamps appear in
 ascending order (or at least, non-descending order). Be sure to preserve this
 order if you edit the file manually.
+
+You can enter future-dated entries in the time log, but most ``swx`` commands
+may behave unexpectedly if there are still "future" entries in the log when they
+are run.
 
 Help
 ----

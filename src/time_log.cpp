@@ -81,16 +81,12 @@ TimeLog::TimeLog(string const& p_filepath):
 }
 
 void
-TimeLog::append_entry
-(	string const& p_activity,
-	TimePoint const& p_time_point
-)
+TimeLog::append_entry(string const& p_activity)
 {
 	// TODO Make this atomic?
 	mark_cache_as_stale();
 	ofstream outfile(m_filepath.c_str(), ios::app);
-	outfile << time_point_to_stamp(p_time_point)
-	        << ' ' << p_activity << endl;
+	outfile << time_point_to_stamp(now()) << ' ' << p_activity << endl;
 	return;
 }
 
@@ -194,17 +190,14 @@ TimeLog::last_activities(size_t p_num)
 }
 
 bool
-TimeLog::is_active_at(TimePoint const& p_time_point)
+TimeLog::is_active()
 {
 	load();
-	auto const entry_it = find_entry_just_before(p_time_point);
-	if (entry_it == m_entries.end())
+	if (m_entries.empty())
 	{
 		return false;
 	}
-	assert (entry_it != m_entries.end());
-	auto const& activity = id_to_activity(entry_it->activity_id);
-	return !activity.empty();
+	return !id_to_activity(m_entries.back().activity_id).empty();
 }
 
 bool

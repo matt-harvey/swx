@@ -49,9 +49,12 @@ public:
 protected:
 	
 	/**
-	 * Pass non-null pointers to filter by activity name and/or date
+	 * Pass non-null pointers to filter by activity and/or date
 	 * range, or pass null pointers to ignore a particular filter.
 	 * Caller retains ownership of pointed-to memory.
+	 *
+	 * Any placeholders in *p_activity will be expanded before
+	 * further processing.
 	 */
 	std::ostream& print_report
 	(	std::ostream& p_os,

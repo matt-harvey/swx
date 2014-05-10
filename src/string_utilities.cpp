@@ -16,9 +16,14 @@
 
 #include "string_utilities.hpp"
 #include <cassert>
+#include <sstream>
 #include <string>
+#include <vector>
 
+using std::getline;
 using std::string;
+using std::stringstream;
+using std::vector;
 
 namespace swx
 {
@@ -42,5 +47,14 @@ trim(string const& p_string)
 	return ret;
 }
 
+vector<string>
+split(string const& p_str, char p_delimiter)
+{
+	vector<string> ret;
+	stringstream ss(p_str);
+	string word;
+	while (getline(ss, word, p_delimiter)) ret.push_back(word);
+	return ret;
+}
 
 }  // namespace swx

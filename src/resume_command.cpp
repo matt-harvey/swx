@@ -17,6 +17,7 @@
 #include "resume_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
+#include "placeholder.hpp"
 #include "recording_command.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
@@ -74,12 +75,12 @@ ResumeCommand::do_process
 )
 {
 	ErrorMessages ret;
-	Arguments const args = p_args.ordinary_args();
-	auto const n = now();
+	Arguments const args =
+		expand_placeholders(p_args.ordinary_args(), time_log());
+	bool const is_active = time_log().is_active();
 	if (args.empty())
 	{
 		auto const last_activities = time_log().last_activities(2);
-		bool const is_active = time_log().is_active_at(n);
 		if (last_activities.empty())
 		{
 			ret.push_back("No activity has yet been recorded.");
@@ -87,7 +88,7 @@ ResumeCommand::do_process
 		else if (!is_active)
 		{
 			auto const activity = last_activities[0];
-			time_log().append_entry(activity, n);
+			time_log().append_entry(activity);
 			p_ordinary_ostream << "Resumed: " << activity << endl;
 		}
 		else if (last_activities.size() == 1)
@@ -100,7 +101,7 @@ ResumeCommand::do_process
 			assert (is_active);
 			assert (last_activities.size() == 2);
 			auto const activity = last_activities[1];
-			time_log().append_entry(activity, n);
+			time_log().append_entry(activity);
 			p_ordinary_ostream << "Resumed: " << activity << endl;
 		}
 	}
@@ -116,7 +117,18 @@ ResumeCommand::do_process
 		}
 		else
 		{
-			time_log().append_entry(activity, n);
+			if (is_active)
+			{
+				assert (!time_log().last_activities(1).empty());
+				if (activity == time_log().last_activities(1).at(0))
+				{
+					ostringstream oss;
+					oss << "Already active: " << activity;
+					ret.push_back(oss.str());
+					return ret;
+				}
+			}
+			time_log().append_entry(activity);
 			p_ordinary_ostream << "Resumed: " << activity << endl;
 		}
 	}

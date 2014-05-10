@@ -17,13 +17,17 @@
 #include "reporting_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
+#include "placeholder.hpp"
+#include "string_utilities.hpp"
 #include "time_log.hpp"
+#include <memory>
 #include <ostream>
 #include <string>
 #include <vector>
 
 using std::ostream;
 using std::string;
+using std::unique_ptr;
 using std::vector;
 
 namespace swx
@@ -89,9 +93,20 @@ ReportingCommand::print_report
 			break;
 		}
 	}
+	// TODO MEDIUM PRIORITY Activity args and squished and expanded multiple
+	// times on the way to being processed. This is completely unnecessary.
+	unique_ptr<string> activity_ptr;
+	if (p_activity)
+	{
+		vector<string> const expanded =
+			expand_placeholders(split(*p_activity, ' '), m_time_log);
+		activity_ptr.reset
+		(	new string(squish(expanded.begin(), expanded.end()))
+		);
+	}
 	return print_stints_report
 	(	p_os,
-		m_time_log.get_stints(p_activity, p_begin, p_end, use_regex),
+		m_time_log.get_stints(activity_ptr.get(), p_begin, p_end, use_regex),
 		summary,
 		detail
 	);

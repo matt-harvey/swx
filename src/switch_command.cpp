@@ -17,6 +17,7 @@
 #include "switch_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
+#include "placeholder.hpp"
 #include "recording_command.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
@@ -98,8 +99,9 @@ SwitchCommand::do_process
 {
 	// TODO LOW PRIORITY Tidy this.
 	ErrorMessages error_messages;
-	Arguments const args = p_args.ordinary_args();
-	TimePoint const time_point = now();
+	Arguments const args =
+		expand_placeholders(p_args.ordinary_args(), time_log());
+	TimePoint const n = now();
 	string activity(squish(args.begin(), args.end()));
 	if (p_args.has_flag(regex_flag()))
 	{
@@ -119,12 +121,12 @@ SwitchCommand::do_process
 			return error_messages;
 		}
 	}
-	if (activity.empty() && !time_log().is_active_at(time_point))
+	if (activity.empty() && !time_log().is_active())
 	{
 		error_messages.push_back("Already inactive.");
 		return error_messages;
 	}
-	if (!activity.empty() && time_log().is_active_at(time_point))
+	if (!activity.empty() && time_log().is_active())
 	{
 		vector<string> const vec = time_log().last_activities(1);
 		assert (!vec.empty());
@@ -143,7 +145,7 @@ SwitchCommand::do_process
 		activity.empty()
 	)
 	{
-		time_log().append_entry(activity, time_point);
+		time_log().append_entry(activity);
 		if (activity.empty())
 		{
 			p_ordinary_ostream << "Activity ceased." << endl;
@@ -172,7 +174,7 @@ SwitchCommand::do_process
 		oss << "Non-existent activity: " << activity
 		    << "\nUse -c option to create and switch to a new activity.";
 	}
-	if (time_log().is_active_at(time_point))
+	if (time_log().is_active())
 	{
 		oss << "\nCurrent activity remains: "
 		    << time_log().last_activities(1).at(0);

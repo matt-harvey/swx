@@ -19,6 +19,7 @@
 
 #include <sstream>
 #include <string>
+#include <vector>
 
 namespace swx
 {
@@ -30,21 +31,23 @@ namespace swx
 std::string trim(std::string const& p_string);
 
 template <typename StringIter>
-std::string squish(StringIter beg, StringIter const& end);
+std::string squish(StringIter p_beg, StringIter const& p_end);
+
+std::vector<std::string> split(std::string const& p_str, char p_delimiter);
 
 // TEMPLATE IMPLEMENTATIONS
 
 template <typename StringIter>
 std::string
-squish(StringIter beg, StringIter const& end)
+squish(StringIter p_beg, StringIter const& p_end)
 {
 	std::ostringstream oss;
-	if (beg != end)
+	if (p_beg != p_end)
 	{
-		oss << trim(*beg);
-		for (++beg; beg != end; ++beg)
+		oss << trim(*p_beg);
+		for (++p_beg; p_beg != p_end; ++p_beg)
 		{
-			oss << ' ' << trim(*beg);
+			oss << ' ' << trim(*p_beg);
 		}
 	}
 	return oss.str();

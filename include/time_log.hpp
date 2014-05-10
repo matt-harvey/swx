@@ -67,12 +67,9 @@ public:
 
 	/**
 	 * Push a new record onto the log. The new record will be immediately
-	 * persisted to file.
+	 * persisted to file, with a date of "now".
 	 */
-	void append_entry
-	(	std::string const& p_activity,
-		TimePoint const& p_time_point
-	);
+	void append_entry(std::string const& p_activity);
 
 	/**
 	 * Pass non-null pointers to filter by activity name and/or date
@@ -115,10 +112,16 @@ public:
 	std::vector<std::string> last_activities(std::size_t p_num);
 
 	/**
-	 * @return \e true if and only if there is an activity recorded in the log
+	 * @returns \e true if and only if there is an activity recorded in the log
 	 * that is ongoing as at \e p_time_point.
 	 */
 	bool is_active_at(TimePoint const& p_time_point);
+
+	/**
+	 * @returns \e true if and only if the TimeLog is active at the most recent
+	 * recorded point (which might possibly be in the future).
+	 */
+	bool is_active();
 
 	/**
 	 * @returns \e true if and only if p_activity has already been recorded
