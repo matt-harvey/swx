@@ -77,7 +77,6 @@ namespace
 		assert (it != line.end());
 		string second(it + 1, line.end());
 		p_out.first = trim(first);
-		
 		p_out.second = trim(second);
 		return LineType::entry;
 	}

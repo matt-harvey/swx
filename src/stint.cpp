@@ -140,9 +140,7 @@ print_stints_report
 			if (p_print_summary)
 			{
 				accum_hours += hours;
-				auto const jt = accum_map.find(activity);
-				if (jt == accum_map.end()) accum_map[activity] = hours;
-				else jt->second += hours;
+				accum_map[activity] += hours;
 			}
 			if (p_print_list)
 			{

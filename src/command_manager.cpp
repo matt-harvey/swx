@@ -180,17 +180,8 @@ CommandManager::help_information() const
 	map<Category, set<shared_ptr<Command>>> grouped_commands;
 	for (auto const& pair: m_command_map)
 	{
-		shared_ptr<Command> command_ptr = pair.second;
-		Category const category = command_ptr->category();
-		auto const group_iter = grouped_commands.find(category);
-		if (group_iter == grouped_commands.end())
-		{
-			grouped_commands[category] = set<shared_ptr<Command>>{command_ptr};
-		}
-		else
-		{
-			group_iter->second.insert(command_ptr);
-		}
+		shared_ptr<Command> const& command_ptr = pair.second;
+		grouped_commands[command_ptr->category()].insert(command_ptr);
 	}
 	ostringstream oss;
 	oss << "Usage: " << Info::application_name() << " <COMMAND> [ARGS...]\n";
