@@ -44,6 +44,11 @@ namespace
 		return 'c';
 	}
 
+	char regex_flag()
+	{
+		return 'r';
+	}
+
 }  // end anonymous namespace
 
 SwitchCommand::SwitchCommand
@@ -74,6 +79,11 @@ SwitchCommand::SwitchCommand
 		"Create a new activity named ACTIVITY, and start accruing time to it; "
 			"raise an error if an activity with this name already exists"
 	);
+	add_boolean_option
+	(	regex_flag(),
+		"Switch to the most recent activity to match ACTIVITY, considered as "
+			"a (POSIX extended) regular expression"
+	);
 }
 
 SwitchCommand::~SwitchCommand()
@@ -90,7 +100,25 @@ SwitchCommand::do_process
 	ErrorMessages error_messages;
 	Arguments const args = p_args.ordinary_args();
 	TimePoint const time_point = now();
-	string const activity(squish(args.begin(), args.end()));
+	string activity(squish(args.begin(), args.end()));
+	if (p_args.has_flag(regex_flag()))
+	{
+		if (activity.empty())
+		{
+			error_messages.push_back("Empty regex not allowed");
+			return error_messages;
+		}
+		assert (activity.size() >= 1);
+		string const reg = activity;
+		activity = time_log().last_activity_to_match(reg);
+		if (activity.empty())
+		{
+			ostringstream oss;
+			oss << "No activity matches regex: " << reg;
+			error_messages.push_back(oss.str());
+			return error_messages;
+		}
+	}
 	if (activity.empty() && !time_log().is_active_at(time_point))
 	{
 		error_messages.push_back("Already inactive.");

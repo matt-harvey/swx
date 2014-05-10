@@ -143,6 +143,28 @@ TimeLog::get_stints
 	return ret;	
 }
 
+string
+TimeLog::last_activity_to_match(string const& p_regex)
+{
+	load();
+	regex const reg(p_regex, regex::extended);
+	typedef decltype(m_entries)::const_reverse_iterator RevIter;
+	ActivityId const empty_activity_id = register_activity("");
+	for (RevIter rit = m_entries.rbegin(); rit != m_entries.rend(); ++rit)
+	{
+		ActivityId const id = rit->activity_id;
+		if (id != empty_activity_id)
+		{
+			string const& activity = id_to_activity(id);
+			if (regex_search(activity, reg, match_posix))
+			{
+				return activity;
+			}
+		}
+	}
+	return string();
+}
+
 vector<string>
 TimeLog::last_activities(size_t p_num)
 {

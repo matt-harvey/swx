@@ -61,6 +61,12 @@ recording), then you would record this cessation by entering simply::
     
     swx switch
 
+If you pass the ``-r`` option to ``swx switch``, then the activity argument will
+be considered as a regular expression (of the POSIX extended variety), rather
+than an exact activity name. A switch will then be recorded to the most recently
+active activity the name of which matches that regular expression. This can save
+a fair bit of typing when switching back to a recently used activity.
+
 The "resume" command
 --------------------
 

@@ -93,6 +93,13 @@ public:
 	);
 
 	/**
+	 * @return the most recent activity to match \e p_regex, considered as a
+	 * regular expression of POSIX extended variety; or return the
+	 * empty string if none match.
+	 */
+	std::string last_activity_to_match(std::string const& p_regex);
+
+	/**
 	 * @returns a vector containing the last \e p_num Activities in the log
 	 * (not counting the empty, "inactive activity"). The last activity
 	 * is listed at the front of the vector, then the penultimate activity,
