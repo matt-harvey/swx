@@ -76,11 +76,11 @@ the activity that was active just before the current one. This is useful for
 when you are working on one activity, are briefly interrupted by another
 activity, and then want to resume work on the original activity.
 
-Printing activity summaries
----------------------------
+Reporting commands
+------------------
 
 To output a summary of the time you have spent on your various activities,
-various "printing commands" are available::
+various "reporting commands" are available::
 
     swx print
     swx since
@@ -108,23 +108,23 @@ the data file, *without* retroactively reformatting the timestamps that are
 already stored - with resulting parsing errors unless you are prepared to
 reformat manually all your already-entered timestamps to the new format.)
 
-By default, only a summary of activity is printed. This comprises an
+By default, only a summary of activities is printed. This comprises an
 alphabetically ordered list of activities with the total amount of time spent
 for each activity, during the period in question, shown in terms of digital
 hours.
 
-If you pass the ``-l`` option to the reporting command, then then instead
-a list of individual activity stints will be shown, in the following format:
+If you pass the ``-l`` option to the reporting command, then instead a list of
+individual activity stints will be shown, in the following format:
 
     start-time  end-time  hours-spent-in-digital-format  activity-name
 
 If you pass the ``-v`` option, then both the detailed list and the summary will
 be printed.
 
-If you pass the ``-r`` option, then the activity string you pass will be treated
-as a regular expression (of the POSIX extended variety), rather than an exact
-activity name. Any activities will then be shown for which their activity name
-matches this regular expression.
+If you pass the ``-r`` option, then the activity string you enter will be
+treated as a regular expression (of the POSIX extended variety), rather than an
+exact activity name. Any activities will then be included in the report for
+which their activity name matches this regular expression.
 
 By default, the number of hours shown is rounded to the nearest quarter of
 an hour. This rounding behaviour can be changed in the Configuration_.
