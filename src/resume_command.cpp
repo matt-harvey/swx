@@ -120,7 +120,7 @@ ResumeCommand::do_process
 			if (is_active)
 			{
 				assert (!time_log().last_activities(1).empty());
-				if (activity == time_log().last_activities(1).at(0))
+				if (activity == time_log().last_activities(1).front())
 				{
 					ostringstream oss;
 					oss << "Already active: " << activity;

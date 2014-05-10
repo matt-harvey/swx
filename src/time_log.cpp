@@ -87,6 +87,7 @@ TimeLog::append_entry(string const& p_activity)
 	mark_cache_as_stale();
 	ofstream outfile(m_filepath.c_str(), ios::app);
 	outfile << time_point_to_stamp(now()) << ' ' << p_activity << endl;
+	mark_cache_as_stale();
 	return;
 }
 
@@ -213,6 +214,7 @@ TimeLog::clear_cache()
 	m_entries.clear();
 	m_activities.clear();
 	m_activity_map.clear();
+	mark_cache_as_stale();
 	return;
 }
 

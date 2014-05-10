@@ -176,8 +176,9 @@ SwitchCommand::do_process
 	}
 	if (time_log().is_active())
 	{
+		assert (!time_log().last_activities(1).empty());
 		oss << "\nCurrent activity remains: "
-		    << time_log().last_activities(1).at(0);
+		    << time_log().last_activities(1).front();
 	}
 	else
 	{
