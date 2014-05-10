@@ -166,8 +166,8 @@ command line (e.g. ``email customer-service``), there are certain "placeholders"
 that can stand in for one or more such components, and are expanded accordingly
 before the command line is properly processed.
 
-- ``_`` expands into  the (name of the) current activity. In our example, if
-  the current activity were ``email customer service``, then ``_`` would expand
+- ``_`` expands into the (name of the) current activity. In our example, if
+  the current activity were ``email customer-service``, then ``_`` would expand
   into ``email customer-service``.
 
 - ``__`` expands into the "parent" of the current activity. In our current
@@ -176,7 +176,6 @@ before the command line is properly processed.
 - ``___`` expands into the parent of the parent of the current activity. In our
   current example, since the parent (``email``) has no parent itself, this would
   simply expand into the empty string.
-
 
 In general, any number of underscores can be entered (with obviously limited
 usefulness) to traverse up the "activity tree" by a corresponding number of
