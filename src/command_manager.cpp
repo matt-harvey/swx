@@ -177,8 +177,6 @@ CommandManager::help_information(string const& p_command) const
 string
 CommandManager::help_information() const
 {
-	// TODO Print help re. placeholders.
-
 	typedef string Category;
 	map<Category, set<shared_ptr<Command>>> grouped_commands;
 	for (auto const& pair: m_command_map)
