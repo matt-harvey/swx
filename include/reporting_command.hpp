@@ -49,17 +49,21 @@ public:
 protected:
 	
 	/**
-	 * Pass non-null pointers to filter by activity and/or date
-	 * range, or pass null pointers to ignore a particular filter.
+	 * Pass non-null pointers to \e p_begin and \e p_end to filter by
+	 * date range, or pass null pointers to ignore a particular filter.
 	 * Caller retains ownership of pointed-to memory.
 	 *
-	 * Any placeholders in *p_activity will be expanded before
+	 * Pass a non-empty vector to \e p_activity_args to filter by
+	 * activity. This parameter will have any placeholders expanded before
 	 * further processing.
+	 *
+	 * Pass a string of single-character command-line options to \e p_options.
 	 */
 	std::ostream& print_report
 	(	std::ostream& p_os,
 		std::string const& p_options,
-		std::string const* p_activity = nullptr,
+		std::vector<std::string> const& p_activity_args =
+			std::vector<std::string>(),
 		TimePoint const* p_begin = nullptr,
 		TimePoint const* p_end = nullptr
 	);

@@ -59,22 +59,12 @@ PrintCommand::do_process
 	ostream& p_ordinary_ostream
 )
 {
-	ErrorMessages ret;
-	Arguments const args = p_args.ordinary_args();
-	if (args.empty())
-	{
-		print_report(p_ordinary_ostream, p_args.single_character_flags());
-	}
-	else
-	{
-		string const activity = squish(args.begin(), args.end());
-		print_report
-		(	p_ordinary_ostream,
-			p_args.single_character_flags(),
-			&activity
-		);
-	}
-	return ret;
+	print_report
+	(	p_ordinary_ostream,
+		p_args.single_character_flags(),
+		p_args.ordinary_args()
+	);
+	return ErrorMessages();
 }
 
 }  // namespace swx

@@ -20,6 +20,7 @@
 #include "reporting_command.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
+#include <cassert>
 #include <memory>
 #include <ostream>
 #include <sstream>
@@ -72,11 +73,10 @@ SinceCommand::do_process
 	ostream& p_ordinary_ostream
 )
 {
-	ErrorMessages ret;
-	Arguments const args = p_args.ordinary_args();
-	if (args.empty())
+	Arguments const oargs = p_args.ordinary_args();
+	if (oargs.empty())
 	{
-		ret.push_back("Too few arguments passed to this command.");
+		return ErrorMessages{"Too few arguments passed to this command."};
 	}
 	else
 	{
@@ -84,37 +84,24 @@ SinceCommand::do_process
 		try
 		{
 			time_point_ptr.reset
-			(	new TimePoint(time_stamp_to_point(args[0]))
+			(	new TimePoint(time_stamp_to_point(oargs[0]))
 			);
 		}
 		catch (runtime_error&)
 		{
 			ostringstream oss;
-			oss << "Could not parse timestamp: " << args[0];
-			ret.push_back(oss.str());
-			return ret;
+			oss << "Could not parse timestamp: " << oargs[0];
+			return ErrorMessages{oss.str()};
 		}
-		if (args.size() == 1)
-		{
-			print_report
-			(	p_ordinary_ostream,
-				p_args.single_character_flags(),
-				nullptr,
-				time_point_ptr.get()
-			);
-		}
-		else
-		{
-			string const activity = squish(args.begin() + 1, args.end());
-			print_report
-			(	p_ordinary_ostream,
-				p_args.single_character_flags(),
-				&activity,
-				time_point_ptr.get()
-			);
-		}
+		assert (oargs.size() >= 1);
+		print_report
+		(	p_ordinary_ostream,
+			p_args.single_character_flags(),
+			vector<string>(oargs.begin() + 1, oargs.end()),
+			time_point_ptr.get()
+		);
 	}
-	return ret;
+	return ErrorMessages();
 }
 
 }  // namespace swx

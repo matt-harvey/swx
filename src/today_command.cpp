@@ -62,32 +62,17 @@ TodayCommand::do_process
 	std::ostream& p_ordinary_ostream
 )
 {
-	Arguments const args = p_args.ordinary_args();
 	ErrorMessages ret;
 	TimePoint const n = now();
 	auto const b = day_begin(n);
 	auto const e = day_end(n);
-	if (args.empty())
-	{
-		print_report
-		(	p_ordinary_ostream,
-			p_args.single_character_flags(),
-			nullptr,
-			&b,
-			&e
-		);
-	}
-	else
-	{
-		auto const activity = squish(args.begin(), args.end());
-		print_report
-		(	p_ordinary_ostream,
-			p_args.single_character_flags(),
-			&activity,
-			&b,
-			&e
-		);
-	}
+	print_report
+	(	p_ordinary_ostream,
+		p_args.single_character_flags(),
+		p_args.ordinary_args(),
+		&b,
+		&e
+	);
 	return ret;
 }
 

@@ -68,7 +68,7 @@ ostream&
 ReportingCommand::print_report
 (	ostream& p_os,
 	string const& p_options,
-	string const* p_activity,
+	vector<string> const& p_activity_components,
 	TimePoint const* p_begin,
 	TimePoint const* p_end
 )
@@ -93,13 +93,11 @@ ReportingCommand::print_report
 			break;
 		}
 	}
-	// TODO MEDIUM PRIORITY Activity args and squished and expanded multiple
-	// times on the way to being processed. This is completely unnecessary.
 	unique_ptr<string> activity_ptr;
-	if (p_activity)
+	if (!p_activity_components.empty())
 	{
 		vector<string> const expanded =
-			expand_placeholders(split(*p_activity, ' '), m_time_log);
+			expand_placeholders(p_activity_components, m_time_log);
 		activity_ptr.reset
 		(	new string(squish(expanded.begin(), expanded.end()))
 		);
