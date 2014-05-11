@@ -213,6 +213,17 @@ are run.
 As a convenience, ``swx`` provides the command ``swx edit``, which you can use
 to open the log directly in your default text editor.
 
+Configuration
+-------------
+
+Configuration options are stored in your home directory in the file named
+``.swxrc``, which will be created the first time you run the program. The
+contents of this file should be reasonably self-explanatory.
+
+The command ``swx config`` will output a summary of your configuration settings.
+Passing ``-e`` to this command wil cause the configuration file to be opened
+in your default text editor.
+
 Help and other commands
 -----------------------
 
@@ -220,15 +231,6 @@ Enter ``swx help`` to see a summary of usage, or ``swx help <COMMAND>`` to
 see a summary of usage for a particular command.
 
 Enter ``swx version`` to see version information.
-
-Enter ``swx config`` for configuration information.
-
-Configuration
-=============
-
-Configuration options are stored in your home directory in the file named
-``.swxrc``, which will be created the first time you run the program. The
-contents of this file should be reasonably self-explanatory.
 
 Building and installing
 =======================
