@@ -89,22 +89,6 @@ recorded to the most recent activity the name of which matches that regular
 expression. This is exactly equivalent to invoking ``swx switch`` with the
 ``-r`` option.
 
-Complex activities
-------------------
-
-Activities are often divided conceptually into sub-activities,
-sub-sub-activities and so forth. ``swx`` tries to capture this with the
-concept of simple and compound activities. A simple activity is specified
-using a single word, not containing whitespace, e.g. ``email``.
-A compound activity is specified as multiple words separated by whitespace,
-e.g. ``email customer-service``.
-
-When passing the name of a compound activity to a ``swx`` command, it can
-just be passed directly as multiple arguments to the command, without
-enclosing it in quotes. ``swx`` will treat it as single, compound activity.
-E.g., entering ``swx switch email customer-service`` is exactly equivalent
-to entering ``swx switch 'email customer-service'``.
-
 Reporting commands
 ------------------
 
@@ -157,6 +141,22 @@ which their activity name matches this regular expression.
 
 By default, the number of hours shown is rounded to the nearest quarter of
 an hour. This rounding behaviour can be changed in the Configuration_.
+
+Complex activities
+------------------
+
+Activities are often divided conceptually into sub-activities,
+sub-sub-activities and so forth. ``swx`` tries to capture this with the
+concept of simple and compound activities. A simple activity is specified
+using a single word, not containing whitespace, e.g. ``email``.
+A compound activity is specified as multiple words separated by whitespace,
+e.g. ``email customer-service``.
+
+When passing the name of a compound activity to a ``swx`` command, it can
+just be passed directly as multiple arguments to the command, without
+enclosing it in quotes. ``swx`` will treat it as single, compound activity.
+E.g., entering ``swx switch email customer-service`` is exactly equivalent
+to entering ``swx switch 'email customer-service'``.
 
 Placeholders
 ------------
