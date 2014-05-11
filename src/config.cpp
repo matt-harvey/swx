@@ -164,9 +164,14 @@ Config::path_to_log()
 	return instance().get_option_value<string>("path_to_log");
 }
 
-Config::Config():
-	m_is_loaded(false),
-	m_filepath(Info::home_dir() + "/.swxrc")  // non-portable
+string
+Config::filepath()
+{
+	static string const ret = Info::home_dir() + "/.swxrc";  // non-portable
+	return ret;
+}
+
+Config::Config(): m_is_loaded(false)
 {
 	assert (m_map.empty());
 }
@@ -220,20 +225,17 @@ Config::load()
 	if (!m_is_loaded)
 	{
 		set_defaults();
-		do_load_from(m_filepath);
+		do_load();
 		m_is_loaded = true;
 	}
 	return;
 }
 
 void
-Config::do_load_from(string const& p_filepath)
+Config::do_load()
 {
-	ifstream infile(p_filepath.c_str());
-	if (!infile)
-	{
-		initialize_config_file(p_filepath);
-	}
+	ifstream infile(filepath().c_str());
+	if (!infile) initialize_config_file();
 	string line;
 	size_t line_number = 1;
 	while (getline(infile, line))
@@ -244,7 +246,7 @@ Config::do_load_from(string const& p_filepath)
 		{
 			ostringstream oss;
 			oss << "Parsing error in config file at "
-			    << p_filepath
+			    << filepath()
 				<< ", line "
 				<< line_number;
 			throw runtime_error(oss.str());
@@ -321,7 +323,7 @@ Config::set_defaults()
 	(	"path_to_log",
 		OptionData
 		(	Info::home_dir() + "/" + stem + ".swx",
-			"Path to file from in which time log is recorded."
+			"Path to file in which time log is recorded."
 		)
 	);
 
@@ -329,10 +331,10 @@ Config::set_defaults()
 }
 
 void
-Config::initialize_config_file(string const& p_filepath)
+Config::initialize_config_file()
 {
 	// TODO Make this atomic?
-	ofstream outfile(p_filepath.c_str());
+	ofstream outfile(filepath().c_str());
 	ostringstream oss;
 	oss << "Configuation options for " << Info::application_name()
 	    << " can be set in this file.\n"

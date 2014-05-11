@@ -55,6 +55,7 @@ public:
 	static std::string format_string();
 	static unsigned int formatted_buf_len();
 	static std::string path_to_log();
+	static std::string filepath();
 
 // special member functions
 private:
@@ -65,7 +66,7 @@ private:
 	Config& operator=(Config&& rhs) = delete;
 	~Config();
 
-// accessors
+// ordinary member functions
 private:
 	void set_option_value(std::string const& p_key, std::string const& p_value);
 
@@ -79,17 +80,15 @@ private:
 
 	std::string get_raw_option_value(std::string const& p_key);
 
-// helper functions
 private:
 	void load();
-	void do_load_from(std::string const& p_filepath);
+	void do_load();
 	void set_defaults();
-	void initialize_config_file(std::string const& p_filepath);
+	void initialize_config_file();
 
 // member variables
 private:
 	bool m_is_loaded;
-	std::string m_filepath;
 	std::map<std::string, OptionData> m_map;
 
 };  // class Config
