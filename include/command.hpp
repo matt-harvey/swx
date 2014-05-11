@@ -47,7 +47,7 @@ protected:
 	public:
 		friend class Command;
 	private:
-		// TODO This is a bit messy.
+		// TODO MEDIUM PRIORITY This is messy.
 		ParsedArguments
 		(	std::vector<std::string> const& p_raw_args,
 			bool p_recognize_double_dash,
