@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#include "version_command.hpp"
+#include "config_command.hpp"
 #include "command.hpp"
+#include "config.hpp"
 #include "help_line.hpp"
-#include "info.hpp"
 #include <iostream>
 #include <ostream>
 #include <string>
@@ -31,43 +31,54 @@ using std::vector;
 namespace swx
 {
 
-VersionCommand::VersionCommand
+namespace
+{
+	char filepath_flag()
+	{
+		return 'f';
+	}
+}
+
+ConfigCommand::ConfigCommand
 (	string const& p_command_word,
 	vector<string> const& p_aliases
 ):
 	Command
 	(	p_command_word,
 		p_aliases,
-		"Print version information",
-		vector<HelpLine>{ HelpLine("Print version information") },
+		"Print configuration information",
+		vector<HelpLine>
+		{	HelpLine("Print summary of all configuration settings")
+		},
 		false
 	)
 {
+	add_boolean_option
+	(	filepath_flag(),
+		"Instead of printing configuration settings, print the location of the "
+			"configuration file"
+	);
 }
 
-VersionCommand::~VersionCommand()
+ConfigCommand::~ConfigCommand()
 {
 }
 
 Command::ErrorMessages
-VersionCommand::do_process
+ConfigCommand::do_process
 (	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
-	ErrorMessages error_messages;
-	if (!p_args.ordinary_args().empty())
+	if (p_args.has_flag(filepath_flag()))
 	{
-		error_messages.push_back("Too many arguments passed to this command.");
+		p_ordinary_ostream << Config::filepath() << endl;
 	}
 	else
 	{
-		p_ordinary_ostream << Info::application_name()
-						   << " version "
-						   << Info::version()
-						   << endl;
+		p_ordinary_ostream << Config::summary();
 	}
-	return error_messages;
+	return ErrorMessages();
 }
 
 }  // namespace swx

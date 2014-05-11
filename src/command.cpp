@@ -66,10 +66,11 @@ namespace
 
 Command::ParsedArguments::ParsedArguments
 (	vector<string> const& p_raw_args,
-	bool p_recognize_double_dash
+	bool p_recognize_double_dash,
+	bool p_accept_ordinary_args
 )
 {
-	if (!p_recognize_double_dash)
+	if (p_accept_ordinary_args && !p_recognize_double_dash)
 	{
 		m_ordinary_args = p_raw_args;
 		return;
@@ -80,7 +81,7 @@ Command::ParsedArguments::ParsedArguments
 	for (auto it = p_raw_args.begin(); it != p_raw_args.end(); ++it)
 	{
 		auto const& arg = *it;
-		if (arg == double_dash)
+		if (p_recognize_double_dash && (arg == double_dash))
 		{
 			copy(it + 1, p_raw_args.end(), back_inserter(m_ordinary_args));
 			break;
@@ -132,8 +133,10 @@ Command::Command
 (	string const& p_command_word,
 	vector<string> const& p_aliases,
 	string const& p_usage_summary,
-	vector<HelpLine> const& p_help_lines
+	vector<HelpLine> const& p_help_lines,
+	bool p_accept_ordinary_args
 ):
+	m_accept_ordinary_args(p_accept_ordinary_args),
 	m_command_word(p_command_word),
 	m_usage_summary(p_usage_summary),
 	m_aliases(p_aliases),
@@ -156,8 +159,11 @@ Command::add_boolean_option(char p_flag, string const& p_description)
 		throw runtime_error(oss.str());
 	}
 	m_boolean_options[p_flag] = p_description;
-	pair<char, string> const double_dash = double_dash_option();
-	m_boolean_options[double_dash.first] = double_dash.second;
+	if (m_accept_ordinary_args)
+	{
+		pair<char, string> const double_dash = double_dash_option();
+		m_boolean_options[double_dash.first] = double_dash.second;
+	}
 	return;
 }
 
@@ -180,10 +186,18 @@ Command::process
 	ostream& p_error_ostream
 )
 {
-	ParsedArguments const parsed_args(p_args, !m_boolean_options.empty());
+	ParsedArguments const parsed_args
+	(	p_args,
+		has_boolean_option(double_dash_option().first),
+		m_accept_ordinary_args
+	);
+	if (!m_accept_ordinary_args && !parsed_args.ordinary_args().empty())
+	{
+		p_error_ostream << "Too many arguments.\nAborted" << endl;
+		return 1;
+	}
 	auto const flags = parsed_args.single_character_flags();
 	assert (!m_boolean_options.empty() || flags.empty());
-	assert (has_boolean_option(double_dash_option().first) || flags.empty());
 	bool has_unrecognized_option = false;
 	for (auto c: flags)
 	{
@@ -235,19 +249,19 @@ Command::usage_descriptor() const
 	}
 	left_col_width += app_name.length() + 1 + m_command_word.length() + 2;
 	ostringstream oss;
-	oss << "Usage:\n\n";
+	oss << "Usage:\n";
 	for (auto const& line: m_help_lines)
 	{
 		StreamFlagGuard guard(oss);
-		oss << "  " << setw(left_col_width) << left
+		oss << "\n  " << setw(left_col_width) << left
 		    << (app_name + ' ' + m_command_word + ' ' + line.args_descriptor())
 			<< "  ";
 		guard.reset();
-		oss << line.usage_descriptor() << '\n';
+		oss << line.usage_descriptor();
 	}
 	if (!m_aliases.empty())
 	{
-		oss << "\nAliased as: ";
+		oss << "\n\nAliased as: ";
 		auto it = m_aliases.begin();
 		oss << *it;
 		for (++it; it != m_aliases.end(); ++it) oss << ", " << *it;

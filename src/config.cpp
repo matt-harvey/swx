@@ -171,6 +171,17 @@ Config::filepath()
 	return ret;
 }
 
+string
+Config::summary()
+{
+	ostringstream oss;
+	for (auto const& entry: instance().m_map)
+	{
+		oss << entry.first << '=' <<  entry.second.value << '\n';
+	}
+	return oss.str();
+}
+
 Config::Config(): m_is_loaded(false)
 {
 	assert (m_map.empty());

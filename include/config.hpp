@@ -57,6 +57,11 @@ public:
 	static std::string path_to_log();
 	static std::string filepath();
 
+	/**
+	 * @returns a printable summary of configuration settings.
+	 */
+	static std::string summary();
+
 // special member functions
 private:
 	Config();
@@ -79,8 +84,6 @@ private:
 	Value get_option_value(std::string const& p_key);
 
 	std::string get_raw_option_value(std::string const& p_key);
-
-private:
 	void load();
 	void do_load();
 	void set_defaults();

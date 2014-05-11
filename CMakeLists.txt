@@ -56,6 +56,7 @@ set(
 	src/command.cpp
 	src/command_manager.cpp
 	src/config.cpp
+	src/config_command.cpp
 	src/help_command.cpp
 	src/help_line.cpp
 	src/info.cpp

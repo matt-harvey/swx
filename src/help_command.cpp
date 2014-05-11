@@ -48,8 +48,8 @@ HelpCommand::HelpCommand
 		p_aliases,
 		"Print usage information",
 		vector<HelpLine>
-		{	HelpLine("Print general help information"),
-			HelpLine("Print help information for COMMAND", "COMMAND")
+		{	HelpLine("Print general usage information"),
+			HelpLine("Print usage information for COMMAND", "COMMAND")
 		}
 	),
 	m_command_manager(p_command_manager)

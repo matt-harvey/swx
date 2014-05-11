@@ -27,12 +27,6 @@
 namespace swx
 {
 
-// begin forward declarations
-
-class ParsedArguments;
-
-// end forward declarations
-
 /**
  * Represents a command that processes arguments received from
  * the command line.
@@ -51,10 +45,15 @@ protected:
 	class ParsedArguments
 	{
 	public:
+		friend class Command;
+	private:
+		// TODO This is a bit messy.
 		ParsedArguments
 		(	std::vector<std::string> const& p_raw_args,
-			bool p_recognize_double_dash
+			bool p_recognize_double_dash,
+			bool p_accept_ordinary_args
 		);
+	public:
 		std::vector<std::string> ordinary_args() const;
 		std::string single_character_flags() const;
 		bool has_flag(char c) const;
@@ -69,7 +68,8 @@ protected:
 	(	std::string const& p_command_word,
 		std::vector<std::string> const& p_aliases,
 		std::string const& p_usage_summary,
-		std::vector<HelpLine> const& p_help_lines
+		std::vector<HelpLine> const& p_help_lines,
+		bool p_accept_ordinary_args = true
 	);
 public:
 	Command(Command const& rhs) = delete;
@@ -118,6 +118,7 @@ private:
 
 // member variables
 private:
+	bool m_accept_ordinary_args;
 	std::string const m_command_word;
 	std::string const m_usage_summary;
 	std::vector<std::string> const m_aliases;
