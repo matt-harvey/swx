@@ -41,7 +41,7 @@ PrintCommand::PrintCommand
 		p_aliases,
 		"Print summary of activities",
 		vector<HelpLine>
-		{	HelpLine("Print summary of time spent on all activities."),
+		{	HelpLine("Print summary of time spent on all activities"),
 			HelpLine("Print summary of time spent on ACTIVITY", "ACTIVITY")
 		},
 		p_time_log
