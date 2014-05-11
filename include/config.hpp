@@ -54,6 +54,7 @@ public:
 	static unsigned int output_width();
 	static std::string format_string();
 	static unsigned int formatted_buf_len();
+	static std::string editor();
 	static std::string path_to_log();
 	static std::string filepath();
 

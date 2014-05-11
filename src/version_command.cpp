@@ -55,19 +55,12 @@ VersionCommand::do_process
 	ostream& p_ordinary_ostream
 )
 {
-	ErrorMessages error_messages;
-	if (!p_args.ordinary_args().empty())
-	{
-		error_messages.push_back("Too many arguments passed to this command.");
-	}
-	else
-	{
-		p_ordinary_ostream << Info::application_name()
-						   << " version "
-						   << Info::version()
-						   << endl;
-	}
-	return error_messages;
+	(void)p_args;  // suppress warning re. unused param.
+	p_ordinary_ostream << Info::application_name()
+					   << " version "
+					   << Info::version()
+					   << endl;
+	return ErrorMessages();
 }
 
 }  // namespace swx

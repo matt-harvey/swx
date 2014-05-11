@@ -20,6 +20,7 @@
 #include <unistd.h>
 #include <algorithm>
 #include <cassert>
+#include <cstdlib>
 #include <iostream>
 #include <fstream>
 #include <map>
@@ -30,6 +31,7 @@
 
 using std::endl;
 using std::find;
+using std::getenv;
 using std::getline;
 using std::ifstream;
 using std::map;
@@ -156,6 +158,12 @@ unsigned int
 Config::formatted_buf_len()
 {
 	return instance().get_option_value<unsigned int>("formatted_buf_len");
+}
+
+string
+Config::editor()
+{
+	return instance().get_option_value<string>("editor");
 }
 
 string
@@ -324,6 +332,15 @@ Config::set_defaults()
 			"Should be set to a value that is at least one greater than the\n"
 			"length of the longest string expected to be printed as a result\n"
 			"of formatting a time point using format_string."
+		)
+	);
+	char const* env_editor = getenv("EDITOR");  // non-portable
+	unchecked_set_option
+	(	"editor",
+		OptionData
+		(	(env_editor? env_editor: "vi"),  // non-portable
+			"Editor to be invoked by file editing commands. Must be callable\n"
+			"by name from the command line, with filepath as argument."
 		)
 	);
 

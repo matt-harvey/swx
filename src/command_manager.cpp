@@ -18,6 +18,7 @@
 #include "between_command.hpp"
 #include "command.hpp"
 #include "config_command.hpp"
+#include "edit_command.hpp"
 #include "help_command.hpp"
 #include "info.hpp"
 #include "placeholder.hpp"
@@ -99,6 +100,11 @@ CommandManager::populate_command_map()
 	(	new ConfigCommand("config", {})
 	);
 	create_command(config_command);
+
+	shared_ptr<Command> edit_command
+	(	new EditCommand("edit", {})
+	);
+	create_command(edit_command);
 
 	shared_ptr<Command> switch_command
 	(	new SwitchCommand("switch", {"s"}, m_time_log)

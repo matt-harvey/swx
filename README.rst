@@ -210,13 +210,18 @@ You can enter future-dated entries in the time log, but most ``swx`` commands
 may behave unexpectedly if there are still "future" entries in the log when they
 are run.
 
-Help
-----
+As a convenience, ``swx`` provides the command ``swx edit``, which you can use
+to open the log directly in your default text editor.
+
+Help and other commands
+-----------------------
 
 Enter ``swx help`` to see a summary of usage, or ``swx help <COMMAND>`` to
 see a summary of usage for a particular command.
 
 Enter ``swx version`` to see version information.
+
+Enter ``swx config`` for configuration information.
 
 Configuration
 =============

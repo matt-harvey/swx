@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "config_command.hpp"
+#include "edit_command.hpp"
 #include "command.hpp"
 #include "config.hpp"
 #include "help_line.hpp"
@@ -35,68 +35,52 @@ namespace swx
 
 namespace
 {
-	char editing_flag()
+	char config_file_flag()
 	{
-		return 'e';
-	}
-
-	char filepath_flag()
-	{
-		return 'f';
+		return 'c';
 	}
 }
 
-ConfigCommand::ConfigCommand
+EditCommand::EditCommand
 (	string const& p_command_word,
 	vector<string> const& p_aliases
 ):
 	Command
 	(	p_command_word,
 		p_aliases,
-		"Print configuration information",
+		"Open the activity log or configuration file in a text editor",
 		vector<HelpLine>
-		{	HelpLine("Print summary of all configuration settings")
+		{	HelpLine
+			(	"Open the activity log in a text editor; the editor used is "
+					"determined by the \"editor\" configuration setting"
+			)
 		},
 		false
 	)
 {
 	add_boolean_option
-	(	editing_flag(),
-		"Instead of printing configuration settings, open the configuration "
-			"file using the text editor determined by the \"editor\" "
-			"configuration setting"
-	);
-	add_boolean_option
-	(	filepath_flag(),
-		"Instead of printing configuration settings, print the location of the "
-			"configuration file"
+	(	config_file_flag(),
+		"Instead of opening the activity log, open the configuration file"
 	);
 }
 
-ConfigCommand::~ConfigCommand()
+EditCommand::~EditCommand()
 {
 }
 
 Command::ErrorMessages
-ConfigCommand::do_process
+EditCommand::do_process
 (	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
-	if (p_args.has_flag(editing_flag()))
-	{
-		string const editor_invokation =
-			Config::editor() + " " + Config::filepath();
-		system(editor_invokation.c_str());
-	}
-	else if (p_args.has_flag(filepath_flag()))
-	{
-		p_ordinary_ostream << Config::filepath() << endl;
-	}
-	else
-	{
-		p_ordinary_ostream << Config::summary();
-	}
+	string const filepath =
+	(	p_args.has_flag(config_file_flag())?
+		Config::filepath():
+		Config::path_to_log()
+	);
+	string const editor_invokation = Config::editor() + " " + filepath;
+	system(editor_invokation.c_str());
 	return ErrorMessages();
 }
 
