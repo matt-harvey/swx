@@ -148,6 +148,7 @@ Command::~Command()
 void
 Command::add_boolean_option(char p_flag, string const& p_description)
 {
+	// TODO MEDIUM PRIORITY Make this atomic.
 	if (has_boolean_option(p_flag))
 	{
 		ostringstream oss;
