@@ -29,11 +29,22 @@ namespace swx
 {
 
 /**
+ * Clients must specialize this for T to use AtomicWriter for
+ * their record type.
+ */
+template <typename T>
+void write_record(FILE& p_outfile, T const& p_record);
+
+/**
  * Supports atomic write operations to plain text files. Append one or
  * more records of type \e T, then call \e commit() to write those
  * records atomically to \e p_filepath.
  *
  * @todo Deploy this for use with both Config and TimeLog.
+ *
+ * @todo We could move the swapfile creation process into the
+ * constructor, hold an open FILE* to the swapfile, and the append
+ * operation could simply call write_record directly.
  */
 template <typename T>
 class AtomicWriter
@@ -63,7 +74,6 @@ private:
 	std::vector<T> m_records;
 
 };  // class AtomicWriter
-
 
 // MEMBER FUNCTION IMPLEMENTATIONS
 
@@ -103,42 +113,21 @@ template <typename T>
 void
 AtomicWriter<T>::commit()
 {
-	// NOTE tmpname has race condition - but see below.
-	// Could use POSIX function mkstemp, but that gives us a FILE*, so
-	// would need to rework the below accordingly.
-	std::string const swap_filepath(std::tmpnam(nullptr));
-
-	// Clobber on open here will thwart any malicious exploiter of race
-	// condition - and frustrate any unlucky receiver of the same
-	// filename. The worst that can happen to us is that we can't open
-	// the file because it's already open.
-	std::ofstream out(swap_filepath);
-
-	// TODO Ensure this throws if out already has error condition.
-	out.exceptions(std::ios::failbit | std::ios::badbit);
-
-	// TODO MEDIUM PRIORITY Would be much faster if in and out streams were
-	// created in std::ios::binary mode. But then we want to keep the stream
-	// open (don't want to close for fear of race condition), to write our
-	// records to it in non-binary mode. Is there a solution to this?
-	ifstream in(p_source_filepath.c_str());
-	in.exceptions(ios::badbit | ios::failbit);
-	out << in.rdbuf();  // TODO Does this work if non-binary?
-
-	std::copy
-	(	m_records.begin(),
-		m_records.end(),
-		std::ostream_iterator<T>(out, m_record_separator)
-	);
-	// TODO Could another process modify the contents of the swap file
-	// before we do the rename?
-
-	// TODO Do we need newline at end?
-	if (std::rename(swap_filepath.c_str(), m_filepath.c_str()) != 0)
+	char [] swap_filepath = "tmp/file_XXXXXXXX";
+	FILE* tempfile = mkstemp(swap_filepath);  // non-portable, but safest
+	if (tempfile == -1) throw std::runtime_error("Error opening swap file.");
+	FILE* infile = std::fopen(m_filepath.c_str(), "r");
+	if (infile == nullptr) throw std::runtime_error("Error opening file to read.");
+	std::size_t const buf_size = 4096;
+	char buf[buf_size];
+	for (std::size_t sz; ; sz = std::fread(buf, 1, buf_size, infile))
 	{
-		// TODO Could use std::strerror to get more specific error
-		// message. Should probably also put name of both swap file and
-		// destination file into message.
+		if (std::feof(infile)) break;
+		if (sz != buf_size) throw std::runtime_error("Error reading from file.");
+	}
+	for (auto const& record: m_records) write_record(*outfile, m_record);
+	if (std::rename(swap_filepath, m_filepath.c_str()) != 0)
+	{
 		throw std::runtime_error("Error renaming swap file.");
 	}
 	m_records.clear();
