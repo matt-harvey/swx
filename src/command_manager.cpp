@@ -112,7 +112,7 @@ CommandManager::populate_command_map()
 	create_command(switch_command);
 
 	shared_ptr<Command> resume_command
-	(	new ResumeCommand("resume", {"r"}, m_time_log)
+	(	new ResumeCommand("resume", {}, m_time_log)
 	);
 	create_command(resume_command);
 

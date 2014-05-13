@@ -48,8 +48,6 @@ private:
 		std::ostream& p_ordinary_ostream
 	) override;
 
-	virtual bool does_support_placeholders() const override;
-
 };  // class ResumeCommand
 
 }  // namespace swx

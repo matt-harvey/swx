@@ -32,9 +32,16 @@ RecordingCommand::RecordingCommand
 	vector<string> const& p_aliases,
 	string const& p_usage_summary,
 	vector<HelpLine> const& p_help_line,
+	bool p_accept_ordinary_args,
 	TimeLog& p_time_log
 ):
-	Command(p_command_word, p_aliases, p_usage_summary, p_help_line),
+	Command
+	(	p_command_word,
+		p_aliases,
+		p_usage_summary,
+		p_help_line,
+		p_accept_ordinary_args
+	),
 	m_time_log(p_time_log)
 {
 }
