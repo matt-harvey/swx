@@ -32,8 +32,6 @@ namespace swx
  * Supports atomic write operations to plain text files. Append one or
  * more strings, then call \e commit() to write those strings atomically to
  * \e p_filepath.
- *
- * @todo Deploy this for use with both Config and TimeLog.
  */
 class AtomicWriter
 {

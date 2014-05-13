@@ -15,6 +15,7 @@
  */
 
 #include "time_log.hpp"
+#include "atomic_writer.hpp"
 #include "stint.hpp"
 #include "string_utilities.hpp"
 #include "time_point.hpp"
@@ -83,10 +84,13 @@ TimeLog::TimeLog(string const& p_filepath):
 void
 TimeLog::append_entry(string const& p_activity)
 {
-	// TODO Make this atomic?
+	AtomicWriter writer(m_filepath);
 	mark_cache_as_stale();
-	ofstream outfile(m_filepath.c_str(), ios::app);
-	outfile << time_point_to_stamp(now()) << ' ' << p_activity << endl;
+	writer.append(time_point_to_stamp(now()));
+	writer.append(" ");
+	writer.append(p_activity);
+	writer.append("\n");
+	writer.commit();
 	mark_cache_as_stale();
 	return;
 }
