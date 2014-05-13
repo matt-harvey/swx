@@ -72,6 +72,7 @@ SwitchCommand::SwitchCommand
 				"ACTIVITY"
 			)
 		},
+		true,
 		p_time_log
 	)
 {

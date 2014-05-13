@@ -52,13 +52,9 @@ ResumeCommand::ResumeCommand
 			(	"If currently inactive, start accruing time to the most recent "
 				"activity; or if already active, switch to the activity that "
 				"was last active before the current one"
-			),
-			HelpLine
-			(	"Switch to the most recent activity matching REGEX, treated as "
-					"a (POSIX extended) regular expression",
-				"REGEX"
 			)
 		},
+		false,
 		p_time_log
 	)
 {
@@ -76,70 +72,32 @@ ResumeCommand::do_process
 {
 	// TODO MEDIUM PRIORITY Tidy this.
 	ErrorMessages ret;
-	Arguments const args =
-		expand_placeholders(p_args.ordinary_args(), time_log());
 	bool const is_active = time_log().is_active();
-	if (args.empty())
+	auto const last_activities = time_log().last_activities(2);
+	if (last_activities.empty())
 	{
-		auto const last_activities = time_log().last_activities(2);
-		if (last_activities.empty())
-		{
-			ret.push_back("No activity has yet been recorded.");
-		}
-		else if (!is_active)
-		{
-			auto const activity = last_activities[0];
-			time_log().append_entry(activity);
-			p_ordinary_ostream << "Resumed: " << activity << endl;
-		}
-		else if (last_activities.size() == 1)
-		{
-			assert (is_active);
-			ret.push_back("No prior activity to resume.");
-		}
-		else
-		{
-			assert (is_active);
-			assert (last_activities.size() == 2);
-			auto const activity = last_activities[1];
-			time_log().append_entry(activity);
-			p_ordinary_ostream << "Resumed: " << activity << endl;
-		}
+		ret.push_back("No activity has yet been recorded.");
+	}
+	else if (!is_active)
+	{
+		auto const activity = last_activities[0];
+		time_log().append_entry(activity);
+		p_ordinary_ostream << "Resumed: " << activity << endl;
+	}
+	else if (last_activities.size() == 1)
+	{
+		assert (is_active);
+		ret.push_back("No prior activity to resume.");
 	}
 	else
 	{
-		string const reg = squish(args.begin(), args.end());
-		string const activity = time_log().last_activity_to_match(reg);
-		if (activity.empty())
-		{
-			ostringstream oss;
-			oss << "No activity matches regex: " << reg;
-			ret.push_back(oss.str());
-		}
-		else
-		{
-			if (is_active)
-			{
-				assert (!time_log().last_activities(1).empty());
-				if (activity == time_log().last_activities(1).front())
-				{
-					ostringstream oss;
-					oss << "Already active: " << activity;
-					ret.push_back(oss.str());
-					return ret;
-				}
-			}
-			time_log().append_entry(activity);
-			p_ordinary_ostream << "Resumed: " << activity << endl;
-		}
+		assert (is_active);
+		assert (last_activities.size() == 2);
+		auto const activity = last_activities[1];
+		time_log().append_entry(activity);
+		p_ordinary_ostream << "Resumed: " << activity << endl;
 	}
 	return ret;
-}
-
-bool
-ResumeCommand::does_support_placeholders() const
-{
-	return true;
 }
 
 }  // namespace swx

@@ -35,6 +35,7 @@ public:
 		std::vector<std::string> const& p_aliases,
 		std::string const& p_usage_summary,
 		std::vector<HelpLine> const& p_help_lines,
+		bool p_accept_ordinary_args,
 		TimeLog& p_time_log
 	);
 	RecordingCommand(RecordingCommand const& rhs) = delete;
