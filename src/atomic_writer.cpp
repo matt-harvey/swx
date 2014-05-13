@@ -22,13 +22,16 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <unistd.h>
 
 using std::feof;
 using std::fopen;
+using std::fputs;
 using std::fread;
 using std::rename;
 using std::runtime_error;
 using std::size_t;
+using std::FILE;
 using std::string;
 using std::vector;
 
@@ -57,12 +60,12 @@ namespace
 	};
 }
 
-// TODO Make a simple class to handle FILE* closing via RAII.
-
 AtomicWriter::AtomicWriter(string const& p_filepath):
 	m_swapfile(nullptr),
 	m_orig_filepath(p_filepath)
 {
+	// TODO MEDIUM PRIORITY Break this up into separate functions.
+
 	// TODO Need to ensure umask is set appropriately. See docs for
 	// mkstemp.
 
@@ -87,30 +90,44 @@ AtomicWriter::AtomicWriter(string const& p_filepath):
 	{
 		throw runtime_error("Error opening stream to swap file.");
 	}
-	FILE* infile = fopen(m_orig_filepath.c_str(), "r");
-	if (!infile)
+
+	// check if original file exists
+	// TODO Improve this / double check against official documentation
+	// for access / <unistd.h>. Do I need std::errno? Etc..
+	bool orig_file_exists = true;
+	int const res = access(m_orig_filepath.c_str(), R_OK);
+	if ((res < 0) && (errno = ENOENT))
 	{
-		throw runtime_error("Error opening file to read.");
+		orig_file_exists = false;
 	}
-	FileStreamGuard infile_guard(infile);
-	size_t const buf_size = 4096;
-	char buf[buf_size];
-	size_t sz;
-	bool reached_end = false;
-	while (!reached_end)
+
+	if (orig_file_exists)
 	{
-		sz = fread(buf, 1, buf_size, infile);
-		if (feof(infile))
+		FILE* infile = fopen(m_orig_filepath.c_str(), "r");
+		if (!infile)
 		{
-			reached_end = true;
+			throw runtime_error("Error opening file to read.");
 		}
-		if ((sz != buf_size) && !reached_end)
+		FileStreamGuard infile_guard(infile);
+		size_t const buf_size = 4096;
+		char buf[buf_size];
+		size_t sz;
+		bool reached_end = false;
+		while (!reached_end)
 		{
-			throw runtime_error("Error reading from file.");
-		}
-		if (fwrite (buf, 1, sz, m_swapfile) != sz)
-		{
-			throw runtime_error("Error writing to file.");
+			sz = fread(buf, 1, buf_size, infile);
+			if (feof(infile))
+			{
+				reached_end = true;
+			}
+			if ((sz != buf_size) && !reached_end)
+			{
+				throw runtime_error("Error reading from file.");
+			}
+			if (fwrite (buf, 1, sz, m_swapfile) != sz)
+			{
+				throw runtime_error("Error writing to file.");
+			}
 		}
 	}
 	return;
@@ -132,11 +149,25 @@ AtomicWriter::~AtomicWriter()
 void
 AtomicWriter::append(string const& p_str)
 {
-	auto const result = fprintf(m_swapfile, p_str.c_str());
-	if (result != p_str.size())
+	if (fputs(p_str.c_str(), m_swapfile) < 0)
 	{
 		throw runtime_error("Error appending to file.");	
 	}
+	return;
+}
+
+void
+AtomicWriter::append_line(string const& p_str)
+{
+	append(p_str);
+	append("\n");
+	return;
+}
+
+void
+AtomicWriter::append_line()
+{
+	append("\n");
 	return;
 }
 

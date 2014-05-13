@@ -15,6 +15,7 @@
  */
 
 #include "config.hpp"
+#include "atomic_writer.hpp"
 #include "info.hpp"
 #include "string_utilities.hpp"
 #include <unistd.h>
@@ -361,8 +362,8 @@ Config::set_defaults()
 void
 Config::initialize_config_file()
 {
-	// TODO Make this atomic?
-	ofstream outfile(filepath().c_str());
+	// TODO This is raising an error.
+	AtomicWriter writer(filepath());
 	ostringstream oss;
 	oss << "Configuation options for " << Info::application_name()
 	    << " can be set in this file.\n"
@@ -373,21 +374,25 @@ Config::initialize_config_file()
 		<< "\tDo NOT place quotes around value.\n"
 		<< "\tvalue may contain whitespace.\n"
 		<< "\tComments must occupy a line to themselves beginning with '"
-		<< commenting_char() << "'.\n";
-	outfile << comment_out(oss.str()) << string(80, commenting_char());
+		<< commenting_char() << "'.";
+	writer.append_line(comment_out(oss.str()));
+	writer.append_line(string(80, commenting_char()));
 	for (auto const& entry: m_map)
 	{
-		outfile << '\n' << endl;
 		OptionData const data = entry.second;
-		outfile << comment_out(data.description) << '\n'
-		        << comment_out("Default: " + data.value) << '\n'
-				<< comment_out
-				   (	"To customize, uncomment and edit the following "
-				   		"line accordingly."
-				   )
-				<< '\n'
-				<< comment_out(entry.first + separator() + data.value);
+		writer.append_line();
+		writer.append_line(comment_out(data.description));
+		writer.append_line(comment_out("Default: " + data.value));
+		writer.append_line
+		(	comment_out
+			(	"To customize, uncomment and edit the following line "
+					"accordingly."
+			)
+		);
+		writer.append_line(comment_out(entry.first + separator() + data.value));
 	}
+	writer.commit();
+	return;
 }
 
 }  // namespace swx

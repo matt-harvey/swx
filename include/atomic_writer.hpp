@@ -47,11 +47,13 @@ public:
 // ordinary member functions
 public:
 	void append(std::string const& p_str);
+	void append_line(std::string const& p_str);
+	void append_line();
 	void commit();
 
 // member variables
 private:
-	FILE* m_swapfile;
+	std::FILE* m_swapfile;
 	std::string const m_orig_filepath;
 	std::string m_swap_filepath;
 
