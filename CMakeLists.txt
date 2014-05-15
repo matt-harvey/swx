@@ -51,7 +51,7 @@ include_directories(include ${Boost_INCLUDE_DIRS})
 set(libraries ${Boost_LIBRARIES} pthread dl)
 set(
 	common_sources
-	src/today_command.cpp
+	src/atomic_writer.cpp
 	src/print_command.cpp
 	src/between_command.cpp
 	src/command.cpp
@@ -73,6 +73,7 @@ set(
 	src/stream_flag_guard.cpp
 	src/string_utilities.cpp
 	src/switch_command.cpp
+	src/today_command.cpp
 	src/time_point.cpp
 	src/time_log.cpp
 	src/until_command.cpp
