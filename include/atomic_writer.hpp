@@ -53,9 +53,9 @@ public:
 
 // member variables
 private:
-	std::FILE* m_swapfile;
+	std::FILE* m_tempfile;
 	std::string const m_orig_filepath;
-	std::string m_swap_filepath;
+	std::string m_temp_filepath;
 
 };  // class AtomicWriter
 

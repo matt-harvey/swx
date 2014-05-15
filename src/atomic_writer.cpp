@@ -17,6 +17,7 @@
 #include "atomic_writer.hpp"
 #include "info.hpp"
 #include <cassert>
+#include <cerrno>
 #include <cstddef>
 #include <cstdio>
 #include <stdexcept>
@@ -61,49 +62,37 @@ namespace
 }
 
 AtomicWriter::AtomicWriter(string const& p_filepath):
-	m_swapfile(nullptr),
+	m_tempfile(nullptr),
 	m_orig_filepath(p_filepath)
 {
-	// TODO MEDIUM PRIORITY Break this up into separate functions.
-
 	// TODO Need to ensure umask is set appropriately. See docs for
 	// mkstemp.
 
-	// On construction, we immediately copy the orig file to a newly created
-	// swap file.
+	// On construction, we immediately copy the original file to a newly created
+	// temp file.
 
 	// NOTE There's a bunch of non-portable stuff in here. POSIX is assumed.
 	// This is done consciously: there is no intention of supporting this
 	// application for non-POSIX platforms.
-	string const sf_template_str = Info::home_dir() + "/.swx_swap_XXXXXX";
+	string const sf_template_str = Info::home_dir() + "/.swx_temp_XXXXXX";
 	vector<char> vec(sf_template_str.begin(), sf_template_str.end());
 	vec.push_back(0);
-	char* const swap_filepath = &vec[0];
-	int const swapfile_descriptor = mkstemp(swap_filepath);
-	if (swapfile_descriptor == -1)
+	char* const temp_filepath = &vec[0];
+	int const tempfile_descriptor = mkstemp(temp_filepath);
+	if (tempfile_descriptor == -1)
 	{
-		throw runtime_error("Error opening swap file.");
+		throw runtime_error("Error opening temp file.");
 	}
-	m_swap_filepath = swap_filepath;
-	m_swapfile = fdopen(swapfile_descriptor, "w+");  
-	if (!m_swapfile)
+	m_temp_filepath = temp_filepath;
+	m_tempfile = fdopen(tempfile_descriptor, "w+");  
+	if (!m_tempfile)
 	{
-		throw runtime_error("Error opening stream to swap file.");
+		throw runtime_error("Error opening stream to temp file.");
 	}
-
-	// check if original file exists
-	// TODO Improve this / double check against official documentation
-	// for access / <unistd.h>. Do I need std::errno? Etc..
-	bool orig_file_exists = true;
-	int const res = access(m_orig_filepath.c_str(), R_OK);
-	if ((res < 0) && (errno = ENOENT))
+	if ((access(m_orig_filepath.c_str(), R_OK) == 0) || (errno != ENOENT))
 	{
-		orig_file_exists = false;
-	}
-
-	if (orig_file_exists)
-	{
-		FILE* infile = fopen(m_orig_filepath.c_str(), "r");
+		// then the original file exists, and we copy it to the tempfile
+		FILE* const infile = fopen(m_orig_filepath.c_str(), "r");
 		if (!infile)
 		{
 			throw runtime_error("Error opening file to read.");
@@ -111,20 +100,16 @@ AtomicWriter::AtomicWriter(string const& p_filepath):
 		FileStreamGuard infile_guard(infile);
 		size_t const buf_size = 4096;
 		char buf[buf_size];
-		size_t sz;
-		bool reached_end = false;
-		while (!reached_end)
+		while (!feof(infile))
 		{
-			sz = fread(buf, 1, buf_size, infile);
-			if (feof(infile))
-			{
-				reached_end = true;
-			}
-			if ((sz != buf_size) && !reached_end)
+			size_t const sz = fread(buf, 1, buf_size, infile);
+			if (ferror(infile))
 			{
 				throw runtime_error("Error reading from file.");
 			}
-			if (fwrite (buf, 1, sz, m_swapfile) != sz)
+			assert ((sz == buf_size) || feof(infile));
+			fwrite(buf, 1, sz, m_tempfile);
+			if (ferror(m_tempfile))
 			{
 				throw runtime_error("Error writing to file.");
 			}
@@ -135,21 +120,21 @@ AtomicWriter::AtomicWriter(string const& p_filepath):
 
 AtomicWriter::~AtomicWriter()
 {
-	// TODO Somehow respond if there was an error closing and deleting the swap
+	// TODO Somehow respond if there was an error closing and deleting the temp
 	// file; but don't throw from destructor.
-	if (m_swapfile)
+	if (m_tempfile)
 	{
-		fclose(m_swapfile);
+		fclose(m_tempfile);
 	}
 	
-	// Might fail if m_swapfile wasn't created - or for other reasons.
-	remove(m_swap_filepath.c_str());
+	// Might fail if m_tempfile wasn't created - or for other reasons.
+	remove(m_temp_filepath.c_str());
 }
 
 void
 AtomicWriter::append(string const& p_str)
 {
-	if (fputs(p_str.c_str(), m_swapfile) < 0)
+	if (fputs(p_str.c_str(), m_tempfile) < 0)
 	{
 		throw runtime_error("Error appending to file.");	
 	}
@@ -174,9 +159,9 @@ AtomicWriter::append_line()
 void
 AtomicWriter::commit()
 {
-	if (rename(m_swap_filepath.c_str(), m_orig_filepath.c_str()))
+	if (rename(m_temp_filepath.c_str(), m_orig_filepath.c_str()))
 	{
-		throw runtime_error("Error renaming swap file.");
+		throw runtime_error("Error renaming temp file.");
 	}
 	return;
 }
