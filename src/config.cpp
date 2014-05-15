@@ -91,6 +91,7 @@ namespace
 			return s;
 		}
 		ostringstream oss;
+		enable_exceptions(oss);
 		oss << commenting_char() << ' ';
 		string::size_type const sz = s.size();
 		for (string::size_type i = 0; i != sz; ++i)
@@ -184,6 +185,7 @@ string
 Config::summary()
 {
 	ostringstream oss;
+	enable_exceptions(oss);
 	for (auto const& entry: instance().m_map)
 	{
 		oss << entry.first << '=' <<  entry.second.value << '\n';
@@ -207,6 +209,7 @@ Config::set_option_value(string const& p_key, string const& p_value)
 	if (it == m_map.end())
 	{
 		ostringstream oss;
+		enable_exceptions(oss);
 		oss << "Unrecognized configuration key: " << p_key;
 		throw runtime_error(oss.str());
 	}
@@ -232,6 +235,7 @@ Config::get_raw_option_value(std::string const& p_key)
 	if (it == m_map.end())
 	{
 		ostringstream oss;
+		enable_exceptions(oss);
 		oss << "Could not find configuration key: " << p_key;
 		throw std::runtime_error(oss.str());
 	}
@@ -255,6 +259,7 @@ void
 Config::do_load()
 {
 	ifstream infile(filepath().c_str());
+	enable_exceptions(infile);
 	if (!infile) initialize_config_file();
 	string line;
 	size_t line_number = 1;
@@ -265,6 +270,7 @@ Config::do_load()
 		if (line_type == LineType::error)
 		{
 			ostringstream oss;
+			enable_exceptions(oss);
 			oss << "Parsing error in config file at "
 			    << filepath()
 				<< ", line "
@@ -365,6 +371,7 @@ Config::initialize_config_file()
 	// TODO This is raising an error.
 	AtomicWriter writer(filepath());
 	ostringstream oss;
+	enable_exceptions(oss);
 	oss << "Configuation options for " << Info::application_name()
 	    << " can be set in this file.\n"
 		<< "\n"

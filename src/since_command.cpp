@@ -18,6 +18,7 @@
 #include "command.hpp"
 #include "help_line.hpp"
 #include "reporting_command.hpp"
+#include "stream_utilities.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
 #include <cassert>
@@ -90,6 +91,7 @@ SinceCommand::do_process
 		catch (runtime_error&)
 		{
 			ostringstream oss;
+			enable_exceptions(oss);
 			oss << "Could not parse timestamp: " << oargs[0];
 			return ErrorMessages{oss.str()};
 		}

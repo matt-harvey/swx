@@ -52,6 +52,7 @@ split(string const& p_str, char p_delimiter)
 {
 	vector<string> ret;
 	stringstream ss(p_str);
+	enable_exceptions(ss);
 	string word;
 	while (getline(ss, word, p_delimiter)) ret.push_back(word);
 	return ret;

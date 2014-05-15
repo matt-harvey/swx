@@ -19,6 +19,7 @@
 #include "command.hpp"
 #include "command_manager.hpp"
 #include "info.hpp"
+#include "stream_utilities.hpp"
 #include <cassert>
 #include <iostream>
 #include <ostream>
@@ -81,10 +82,9 @@ HelpCommand::do_process
 		}
 		catch (runtime_error&)
 		{
-			ostringstream oss;
-			oss << CommandManager::
-					  error_message_for_unrecognized_command(args[0]);
-			ret.push_back(oss.str());
+			ret.push_back
+			(	CommandManager::error_message_for_unrecognized_command(args[0])
+			);
 		}
 	}
 	else

@@ -17,6 +17,7 @@
 #include "time_log.hpp"
 #include "atomic_writer.hpp"
 #include "stint.hpp"
+#include "stream_utilities.hpp"
 #include "string_utilities.hpp"
 #include "time_point.hpp"
 #include <algorithm>
@@ -235,6 +236,7 @@ TimeLog::load()
 	{
 		clear_cache();
 		ifstream infile(m_filepath.c_str());
+		enable_exceptions(infile);
 		string line;
 		size_t line_number = 1;
 		while (getline(infile, line))
@@ -275,6 +277,7 @@ TimeLog::load_entry(string const& p_entry_string, size_t p_line_number)
 	if (p_entry_string.size() < expected_time_stamp_length())
 	{
 		ostringstream oss;
+		enable_exceptions(oss);
 		oss << "TimeLog parsing error at line "
 		    << p_line_number << '.';
 		throw runtime_error(oss.str());
@@ -292,6 +295,7 @@ TimeLog::load_entry(string const& p_entry_string, size_t p_line_number)
 		if (entry.time_point < last_time_point)
 		{		
 			ostringstream oss;
+			enable_exceptions(oss);
 			oss << "TimeLog entries out of order at line "
 			    << p_line_number << '.'; 
 			throw runtime_error(oss.str());

@@ -19,6 +19,7 @@
 #include "help_line.hpp"
 #include "placeholder.hpp"
 #include "recording_command.hpp"
+#include "stream_utilities.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
@@ -117,6 +118,7 @@ SwitchCommand::do_process
 		if (activity.empty())
 		{
 			ostringstream oss;
+			enable_exceptions(oss);
 			oss << "No activity matches regex: " << reg;
 			error_messages.push_back(oss.str());
 			return error_messages;
@@ -134,6 +136,7 @@ SwitchCommand::do_process
 		if (vec[0] == activity)
 		{
 			ostringstream oss;
+			enable_exceptions(oss);
 			oss << "Already active: " << activity;
 			error_messages.push_back(oss.str());
 			return error_messages;
@@ -163,6 +166,7 @@ SwitchCommand::do_process
 		return error_messages;
 	}
 	ostringstream oss;
+	enable_exceptions(oss);
 	if (p_args.has_flag(acf))
 	{
 		assert (time_log().has_activity(activity));

@@ -25,6 +25,7 @@
 #include "print_command.hpp"
 #include "resume_command.hpp"
 #include "since_command.hpp"
+#include "stream_utilities.hpp"
 #include "switch_command.hpp"
 #include "today_command.hpp"
 #include "time_log.hpp"
@@ -175,7 +176,6 @@ CommandManager::process_command
 string
 CommandManager::help_information(string const& p_command) const
 {
-	ostringstream oss;
 	auto const it = m_command_map.find(p_command);
 	if (it == m_command_map.end())
 	{
@@ -197,6 +197,7 @@ CommandManager::help_information() const
 		grouped_commands[command_ptr->category()].insert(command_ptr);
 	}
 	ostringstream oss;
+	enable_exceptions(oss);
 	oss << "Usage: " << Info::application_name() << " <COMMAND> [ARGS...]\n";
 	string::size_type width = 0;
 	for (auto const& pair: grouped_commands)
@@ -225,6 +226,7 @@ CommandManager::help_information() const
 			auto const& command = *command_ptr;
 			StreamFlagGuard guard(oss);
 			ostringstream oss2;
+			enable_exceptions(oss2);
 			oss2 << command.command_word();
 			for (auto const& alias: command.aliases())
 			{
@@ -245,6 +247,7 @@ string
 CommandManager::directions_to_get_help()
 {
 	ostringstream oss;
+	enable_exceptions(oss);
 	oss << "For usage information, enter '"
 	    << Info::application_name()
 		<< ' '
@@ -257,6 +260,7 @@ string
 CommandManager::directions_to_get_help(string const& p_command)
 {
 	ostringstream oss;
+	enable_exceptions(oss);
 	oss << "For usage information, enter '"
 	    << Info::application_name()
 		<< ' '
@@ -317,6 +321,7 @@ CommandManager::register_command_word
 	if (m_command_map.find(p_word) != m_command_map.end())
 	{
 		ostringstream oss;
+		enable_exceptions(oss);
 		oss << "Command word \""
 		    << p_word
 			<< "\" has already been registered.";

@@ -17,6 +17,7 @@
 #ifndef GUARD_string_utilities_hpp_7073320819564779
 #define GUARD_string_utilities_hpp_7073320819564779
 
+#include "stream_utilities.hpp"
 #include <sstream>
 #include <string>
 #include <vector>
@@ -42,6 +43,7 @@ std::string
 squish(StringIter p_beg, StringIter const& p_end)
 {
 	std::ostringstream oss;
+	enable_exceptions(oss);
 	if (p_beg != p_end)
 	{
 		oss << trim(*p_beg);

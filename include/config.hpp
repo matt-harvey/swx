@@ -17,6 +17,7 @@
 #ifndef GUARD_config_hpp_32019735189163934
 #define GUARD_config_hpp_32019735189163934
 
+#include "stream_utilities.hpp"
 #include <cassert>
 #include <map>
 #include <sstream>
@@ -108,10 +109,13 @@ Config::get_option_value(std::string const& p_key)
 	Value ret;
 	auto const raw_value = get_raw_option_value(p_key);
 	std::stringstream ss(raw_value);
+	enable_exceptions(ss);
+	ss.clear();
 	ss >> ret;
 	if (!ss)
 	{
 		std::ostringstream oss;
+		enable_exceptions(oss);
 		oss << "Could not parse value for configuration key \"" << p_key
 		    << "\" from value string \"" << raw_value << "\"";
 		throw std::runtime_error(oss.str());

@@ -92,6 +92,7 @@ BetweenCommand::do_process
 		catch (runtime_error&)
 		{
 			ostringstream oss;
+			enable_exceptions(oss);
 			oss << "Could not parse timestamp: " << oargs[0];
 			return ErrorMessages{oss.str()};
 		}
@@ -104,6 +105,7 @@ BetweenCommand::do_process
 		catch (runtime_error&)
 		{
 			ostringstream oss;
+			enable_exceptions(oss);
 			oss << "Could not parse timestamp: " << oargs[1];
 			return ErrorMessages{oss.str()};
 		}

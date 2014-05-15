@@ -19,6 +19,7 @@
 #include "info.hpp"
 #include "placeholder.hpp"
 #include "stream_flag_guard.hpp"
+#include "stream_utilities.hpp"
 #include <cassert>
 #include <iomanip>
 #include <iostream>
@@ -76,6 +77,7 @@ Command::ParsedArguments::ParsedArguments
 		return;
 	}
 	ostringstream oss;
+	enable_exceptions(oss);
 	oss << flag_prefix() << double_dash_option().first;
 	string const double_dash = oss.str();
 	for (auto it = p_raw_args.begin(); it != p_raw_args.end(); ++it)
@@ -155,6 +157,7 @@ Command::add_boolean_option(char p_flag, string const& p_description)
 	if (has_boolean_option(p_flag))
 	{
 		ostringstream oss;
+		enable_exceptions(oss);
 		oss << "Flag already enabled for this Command: " << p_flag;
 		throw runtime_error(oss.str());
 	}
@@ -249,6 +252,7 @@ Command::usage_descriptor() const
 	}
 	left_col_width += app_name.length() + 1 + m_command_word.length() + 2;
 	ostringstream oss;
+	enable_exceptions(oss);
 	oss << "Usage:\n";
 	for (auto const& line: m_help_lines)
 	{

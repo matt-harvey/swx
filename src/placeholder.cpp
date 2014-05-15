@@ -15,6 +15,7 @@
  */
 
 #include "placeholder.hpp"
+#include "stream_utilities.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
 #include <algorithm>
@@ -116,6 +117,7 @@ placeholder_help(string::size_type p_left_column_width)
 	for (string::size_type i = 1; i <= num_lines; ++i)
 	{
 		ostringstream oss;
+		enable_exceptions(oss);
 		oss << string(i, tree_traversal_char())
 		    << string(p_left_column_width - i, ' ');
 		switch (i)

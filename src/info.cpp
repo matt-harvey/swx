@@ -15,6 +15,7 @@
  */
 
 #include "info.hpp"
+#include "stream_utilities.hpp"
 #include <cstdlib>
 #include <sstream>
 #include <stdexcept>
@@ -39,6 +40,7 @@ Info::version()
 {
 #	ifdef SWX_RELEASE
 		ostringstream oss;
+		enable_exceptions(oss);
 		oss << SWX_VERSION_MAJOR << '.'
 			<< SWX_VERSION_MINOR << '.'
 			<< SWX_VERSION_PATCH;

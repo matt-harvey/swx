@@ -16,6 +16,7 @@
 
 #include "command_manager.hpp"
 #include "config.hpp"
+#include "stream_utilities.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
 #include <cassert>
@@ -28,6 +29,7 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::vector;
+using swx::enable_exceptions;
 using swx::CommandManager;
 using swx::Config;
 using swx::TimeLog;
@@ -45,6 +47,7 @@ int main(int argc, char** argv)
 {
 	try
 	{
+		enable_exceptions(std::cout);
 		if (argc < 2)
 		{
 			cerr << "Command not provided." << endl;
