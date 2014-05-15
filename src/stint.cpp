@@ -67,8 +67,8 @@ namespace
 	{
 		StreamFlagGuard guard(p_os);
 		p_os << fixed << setprecision(p_precision) << right
-		    << setw(p_width)
-		    << round(p_hours, p_rounding_num, p_rounding_den);
+		     << setw(p_width)
+		     << round(p_hours, p_rounding_num, p_rounding_den);
 		return p_os;
 	}
 
@@ -163,17 +163,18 @@ print_stints_report
 			auto const length = activity.length();
 			if (length > max_name_width) max_name_width = length;
 		}
+		string::size_type const left_col_width = max_name_width + 2;
 		for (auto const& pair: accum_map)
 		{
 			string const& activity = pair.first;
 			double const hours = pair.second;
-			print_activity(p_os, activity, max_name_width);
+			print_activity(p_os, activity, left_col_width);
 			print_hours(p_os, hours, rounding_num, rounding_den, prec, w);
 			if (live_activity == activity) p_os << '*';
 			p_os << endl;
 		}
 		p_os << endl;
-		print_activity(p_os, "TOTAL", max_name_width);
+		print_activity(p_os, "TOTAL", left_col_width);
 		print_hours(p_os, accum_hours, rounding_num, rounding_den, prec, w);
 		p_os << endl;
 	}
