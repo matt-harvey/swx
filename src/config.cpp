@@ -29,6 +29,7 @@
 #include <stdexcept>
 #include <string>
 #include <utility>
+#include <unistd.h>
 
 using std::endl;
 using std::find;
@@ -258,13 +259,21 @@ Config::load()
 void
 Config::do_load()
 {
+	// non-portable, but more rigorous than just checking boolean
+	// value of infile
+	if ((access(filepath().c_str(), R_OK) != 0) && (errno == ENOENT))
+	{
+		// then config file doesn't exist yet
+		initialize_config_file();
+		return;
+	}
 	ifstream infile(filepath().c_str());
 	enable_exceptions(infile);
-	if (!infile) initialize_config_file();
 	string line;
 	size_t line_number = 1;
-	while (getline(infile, line))
+	while (infile.peek() != EOF)
 	{
+		getline(infile, line);	
 		pair<string, string> pair;
 		auto const line_type =  parse_line(line, pair);
 		if (line_type == LineType::error)
@@ -368,11 +377,10 @@ Config::set_defaults()
 void
 Config::initialize_config_file()
 {
-	// TODO This is raising an error.
 	AtomicWriter writer(filepath());
 	ostringstream oss;
 	enable_exceptions(oss);
-	oss << "Configuation options for " << Info::application_name()
+	oss << "Configuration options for " << Info::application_name()
 	    << " can be set in this file.\n"
 		<< "\n"
 		<< "SYNTAX:\n"

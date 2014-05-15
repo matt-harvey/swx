@@ -54,7 +54,11 @@ split(string const& p_str, char p_delimiter)
 	stringstream ss(p_str);
 	enable_exceptions(ss);
 	string word;
-	while (getline(ss, word, p_delimiter)) ret.push_back(word);
+	while (!ss.eof())
+	{
+		getline(ss, word, p_delimiter);
+		ret.push_back(word);
+	}
 	return ret;
 }
 

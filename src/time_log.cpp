@@ -239,8 +239,9 @@ TimeLog::load()
 		enable_exceptions(infile);
 		string line;
 		size_t line_number = 1;
-		while (getline(infile, line))
+		while (infile.peek() != EOF)
 		{
+			getline(infile, line);
 			load_entry(line, line_number);
 			++line_number;
 		}
