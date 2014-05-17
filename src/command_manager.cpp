@@ -66,10 +66,7 @@ namespace swx
 
 namespace
 {
-	string help_command_string()
-	{
-		return "help";
-	}
+	string const k_help_command_string("help");
 
 }  // end anonymous namespace
 
@@ -93,7 +90,7 @@ CommandManager::populate_command_map()
 	create_command(version_command);	
 	
 	shared_ptr<Command> help_command
-	(	new HelpCommand(help_command_string(), {"h"}, *this)
+	(	new HelpCommand(k_help_command_string, {"h"}, *this)
 	);
 	create_command(help_command);
 
@@ -239,7 +236,7 @@ CommandManager::help_information() const
 	}
 	oss << "\nFor more information on a particular command, enter '"
 	    << Info::application_name() << ' '
-		<< help_command_string() << " <COMMAND>'.\n";
+		<< k_help_command_string << " <COMMAND>'.\n";
 	return oss.str();
 }
 
@@ -251,7 +248,7 @@ CommandManager::directions_to_get_help()
 	oss << "For usage information, enter '"
 	    << Info::application_name()
 		<< ' '
-		<< help_command_string()
+		<< k_help_command_string
 		<< "'.";
 	return oss.str();
 }
@@ -264,7 +261,7 @@ CommandManager::directions_to_get_help(string const& p_command)
 	oss << "For usage information, enter '"
 	    << Info::application_name()
 		<< ' '
-		<< help_command_string()
+		<< k_help_command_string
 		<< ' '
 		<< p_command
 		<< "'.";

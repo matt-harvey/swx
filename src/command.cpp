@@ -50,19 +50,14 @@ namespace swx
 namespace
 {
 	
-	char flag_prefix()
-	{
-		return '-';
-	}
+	char const k_flag_prefix = '-';
 
-	pair<char, string> double_dash_option()
-	{
-		return make_pair
+	pair<char, string> const k_double_dash_option =
+		make_pair
 		(	'-',
 			"Treat any dash-prefixed arguments after this flag as "
 				"ordinary arguments, rather than flags"
 		);
-	}
 
 }  // end anonymous namespace
 
@@ -79,7 +74,7 @@ Command::ParsedArguments::ParsedArguments
 	}
 	ostringstream oss;
 	enable_exceptions(oss);
-	oss << flag_prefix() << double_dash_option().first;
+	oss << k_flag_prefix << k_double_dash_option.first;
 	string const double_dash = oss.str();
 	for (auto it = p_raw_args.begin(); it != p_raw_args.end(); ++it)
 	{
@@ -89,7 +84,7 @@ Command::ParsedArguments::ParsedArguments
 			copy(it + 1, p_raw_args.end(), back_inserter(m_ordinary_args));
 			break;
 		}
-		else if (!arg.empty() && (arg[0] == flag_prefix()))
+		else if (!arg.empty() && (arg[0] == k_flag_prefix))
 		{
 			m_single_character_flags.insert(arg.begin() + 1, arg.end());
 		}
@@ -166,7 +161,7 @@ Command::add_boolean_option(char p_flag, string const& p_description)
 	{
 		try
 		{
-			m_boolean_options.insert(double_dash_option());
+			m_boolean_options.insert(k_double_dash_option);
 		}
 		catch (...)
 		{
@@ -198,7 +193,7 @@ Command::process
 {
 	ParsedArguments const parsed_args
 	(	p_args,
-		has_boolean_option(double_dash_option().first),
+		has_boolean_option(k_double_dash_option.first),
 		m_accept_ordinary_args
 	);
 	if (!m_accept_ordinary_args && !parsed_args.ordinary_args().empty())

@@ -41,15 +41,8 @@ namespace swx
 
 namespace
 {
-	char activity_creation_flag()
-	{
-		return 'c';
-	}
-
-	char regex_flag()
-	{
-		return 'r';
-	}
+	char const k_creation_flag = 'c';
+	char const k_regex_flag = 'r';
 
 }  // end anonymous namespace
 
@@ -78,12 +71,12 @@ SwitchCommand::SwitchCommand
 	)
 {
 	add_boolean_option
-	(	activity_creation_flag(),
+	(	k_creation_flag,
 		"Create a new activity named ACTIVITY, and start accruing time to it; "
 			"raise an error if an activity with this name already exists"
 	);
 	add_boolean_option
-	(	regex_flag(),
+	(	k_regex_flag,
 		"Switch to the most recent activity to match ACTIVITY, considered as "
 			"a (POSIX extended) regular expression"
 	);
@@ -104,7 +97,7 @@ SwitchCommand::do_process
 	Arguments const args =
 		expand_placeholders(p_args.ordinary_args(), time_log());
 	string activity(squish(args.begin(), args.end()));
-	if (p_args.has_flag(regex_flag()))
+	if (p_args.has_flag(k_regex_flag))
 	{
 		if (activity.empty())
 		{
@@ -141,11 +134,12 @@ SwitchCommand::do_process
 			return error_messages;
 		}
 	}
-	char const acf = activity_creation_flag();
+	bool const has_creation_flag = p_args.has_flag(k_creation_flag);
+	bool const has_activity = time_log().has_activity(activity);
 	if
-	(	(p_args.has_flag(acf) && !time_log().has_activity(activity)) ||
-		(!p_args.has_flag(acf) && time_log().has_activity(activity)) ||
-		activity.empty()
+	(	(has_creation_flag && !has_activity) ||
+		(!has_creation_flag && has_activity) ||
+		(activity.empty())
 	)
 	{
 		time_log().append_entry(activity);
@@ -153,7 +147,7 @@ SwitchCommand::do_process
 		{
 			p_ordinary_ostream << "Activity ceased." << endl;
 		}
-		else if (p_args.has_flag(acf))
+		else if (p_args.has_flag(k_creation_flag))
 		{
 			p_ordinary_ostream << "Created and switched to new activity: "
 			                   << activity << endl;
@@ -166,14 +160,14 @@ SwitchCommand::do_process
 	}
 	ostringstream oss;
 	enable_exceptions(oss);
-	if (p_args.has_flag(acf))
+	if (p_args.has_flag(k_creation_flag))
 	{
 		assert (time_log().has_activity(activity));
 		oss << "Activity already exists: " << activity;
 	}
 	else
 	{
-		assert (!p_args.has_flag(acf));
+		assert (!p_args.has_flag(k_creation_flag));
 		assert (!time_log().has_activity(activity));
 		oss << "Non-existent activity: " << activity
 		    << "\nUse -c option to create and switch to a new activity.";

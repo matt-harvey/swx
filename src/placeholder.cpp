@@ -38,11 +38,7 @@ namespace swx
 
 namespace
 {
-
-	char tree_traversal_char()
-	{
-		return '_';
-	}
+	char const k_tree_traversal_char = '_';
 
 	/**
 	 * @returns \e true if p_str successfully expands into an
@@ -65,7 +61,7 @@ namespace
 		}
 		for (char c: p_str)
 		{
-			if (c == tree_traversal_char()) ++depth;
+			if (c == k_tree_traversal_char) ++depth;
 			else return false;
 		}
 		if (p_time_log.is_active())
@@ -118,7 +114,7 @@ placeholder_help(string::size_type p_left_column_width)
 	{
 		ostringstream oss;
 		enable_exceptions(oss);
-		oss << string(i, tree_traversal_char())
+		oss << string(i, k_tree_traversal_char)
 		    << string(p_left_column_width - i, ' ');
 		switch (i)
 		{
