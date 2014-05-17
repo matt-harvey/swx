@@ -41,8 +41,8 @@ working on this activity, you would enter the following at the command line::
 
     swx switch -c answering-emails
 
-Note the activity name is case-sensitive case-sensitive. You can use the alias
-``s`` if you don't want to type ``switch``.
+Note the activity name is case-sensitive. You can use the alias ``s`` if you
+don't want to type ``switch``.
 
 The ``-c`` option tells the ``switch`` command that this is the first time you
 are working on this activity. On subsequent occasions, when you switch back to
