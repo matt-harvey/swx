@@ -16,6 +16,7 @@
 
 #include "atomic_writer.hpp"
 #include "info.hpp"
+#include "file_utilities.hpp"
 #include <cassert>
 #include <cerrno>
 #include <cstddef>
@@ -97,7 +98,7 @@ AtomicWriter::AtomicWriter(string const& p_filepath):
 	{
 		throw runtime_error("Error opening stream to temp file.");
 	}
-	if ((access(m_orig_filepath.c_str(), R_OK) == 0) || (errno != ENOENT))
+	if (file_exists_at(m_orig_filepath))
 	{
 		// then the original file exists, and we copy it to the tempfile
 		FILE* const infile = fopen(m_orig_filepath.c_str(), "r");
@@ -139,7 +140,7 @@ AtomicWriter::~AtomicWriter()
 		m_tempfile = nullptr;
 	}
 	// non-portable
-	if ((access(m_temp_filepath.c_str(), R_OK) == 0) || (errno != ENOENT))
+	if (file_exists_at(m_temp_filepath))
 	{
 		// then temp file still exists
 		if (remove(m_temp_filepath.c_str()) != 0)

@@ -17,8 +17,8 @@
 #include "config.hpp"
 #include "atomic_writer.hpp"
 #include "info.hpp"
+#include "file_utilities.hpp"
 #include "string_utilities.hpp"
-#include <unistd.h>
 #include <algorithm>
 #include <cassert>
 #include <cstdlib>
@@ -267,9 +267,7 @@ Config::load()
 void
 Config::do_load()
 {
-	// non-portable, but more rigorous than just checking boolean
-	// value of infile
-	if ((access(filepath().c_str(), R_OK) != 0) && (errno == ENOENT))
+	if (!file_exists_at(filepath()))
 	{
 		// then config file doesn't exist yet
 		initialize_config_file();

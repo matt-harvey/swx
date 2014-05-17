@@ -16,6 +16,7 @@
 
 #include "time_log.hpp"
 #include "atomic_writer.hpp"
+#include "file_utilities.hpp"
 #include "stint.hpp"
 #include "stream_utilities.hpp"
 #include "string_utilities.hpp"
@@ -235,19 +236,19 @@ TimeLog::load()
 	if (!m_is_loaded)
 	{
 		clear_cache();
-		ifstream infile(m_filepath.c_str());
-		enable_exceptions(infile);
-		string line;
-		size_t line_number = 1;
-		while (infile.peek() != EOF)
+		if (file_exists_at(m_filepath))
 		{
-			getline(infile, line);
-			load_entry(line, line_number);
-			++line_number;
-		}
-		if (!m_entries.empty())
-		{
-			if (m_entries.back().time_point > now())
+			ifstream infile(m_filepath.c_str());
+			enable_exceptions(infile);
+			string line;
+			size_t line_number = 1;
+			while (infile.peek() != EOF)
+			{
+				getline(infile, line);
+				load_entry(line, line_number);
+				++line_number;
+			}
+			if (!m_entries.empty() && (m_entries.back().time_point > now()))
 			{
 				ostringstream oss;
 				enable_exceptions(oss);
