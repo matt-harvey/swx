@@ -245,6 +245,17 @@ TimeLog::load()
 			load_entry(line, line_number);
 			++line_number;
 		}
+		if (!m_entries.empty())
+		{
+			if (m_entries.back().time_point > now())
+			{
+				ostringstream oss;
+				enable_exceptions(oss);
+				oss << "The final entry in the time log is future-dated. "
+					<< "Future dated entries are not supported.";
+				throw runtime_error(oss.str());
+			}
+		}
 		m_is_loaded = true;
 	}
 	return;
@@ -279,7 +290,7 @@ TimeLog::load_entry(string const& p_entry_string, size_t p_line_number)
 	{
 		ostringstream oss;
 		enable_exceptions(oss);
-		oss << "TimeLog parsing error at line "
+		oss << "Error parsing the time log at line "
 		    << p_line_number << '.';
 		throw runtime_error(oss.str());
 	}
@@ -297,7 +308,7 @@ TimeLog::load_entry(string const& p_entry_string, size_t p_line_number)
 		{		
 			ostringstream oss;
 			enable_exceptions(oss);
-			oss << "TimeLog entries out of order at line "
+			oss << "Time log entries out of order at line "
 			    << p_line_number << '.'; 
 			throw runtime_error(oss.str());
 		}

@@ -40,9 +40,6 @@ using swx::TimeLog;
 // TODO LOW PRIORITY Make it so that the regex feature is simply disabled if
 // Boost regex library not found, rather than not being able to compile at all.
 
-// TODO HIGH PRIORITY Properly handle the case where there are future dated
-// entries in the log.
-
 int main(int argc, char** argv)
 {
 	try

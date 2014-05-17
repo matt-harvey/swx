@@ -197,9 +197,8 @@ of activity.) Also, the time log must be such that the timestamps appear in
 ascending order (or at least, non-descending order). Be sure to preserve this
 order if you edit the file manually.
 
-You can enter future-dated entries in the time log, but most ``swx`` commands
-may behave unexpectedly if there are still "future" entries in the log when they
-are run.
+You should not enter future-dated entries; the application will raise an error
+if it reads a future-date entry in the log.
 
 As a convenience, ``swx`` provides the command ``swx edit``, which you can use
 to open the log directly in your default text editor.
