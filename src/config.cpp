@@ -1,12 +1,12 @@
 /*
  * Copyright 2014 Matthew Harvey
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -59,7 +59,7 @@ namespace
 	{
 		return '#';
 	}
-	
+
 	char separator()
 	{
 		return '=';
@@ -93,15 +93,23 @@ namespace
 		}
 		ostringstream oss;
 		enable_exceptions(oss);
-		oss << commenting_char() << ' ';
+		oss << commenting_char();
 		string::size_type const sz = s.size();
+		if (!((sz == 0) || (s == "\n")))
+		{
+			oss << ' ';
+		}
 		for (string::size_type i = 0; i != sz; ++i)
 		{
 			auto const c = s[i];
 		 	oss << c;
 			if ((c == '\n') && (i + 1 != sz))
 			{
-				oss << commenting_char() << ' ';
+				oss << commenting_char();
+				if (s[i + 1] != '\n')
+				{
+					oss << ' ';
+				}
 			}
 		}
 		return oss.str();
@@ -121,7 +129,7 @@ Config::OptionData::OptionData
 Config&
 Config::instance()
 {
-	static Config ret;	
+	static Config ret;
 	return ret;
 }
 
@@ -273,7 +281,7 @@ Config::do_load()
 	size_t line_number = 1;
 	while (infile.peek() != EOF)
 	{
-		getline(infile, line);	
+		getline(infile, line);
 		pair<string, string> pair;
 		auto const line_type =  parse_line(line, pair);
 		if (line_type == LineType::error)
@@ -300,7 +308,7 @@ Config::set_defaults()
 {
 	string const rounding_explanation
 	(	"output_rounding_numerator and output_rounding_denominator together\n"
-		"determine rounding behaviour when printing a duration figure. For \n"
+		"determine rounding behaviour when printing a duration figure.\n"
 		"For example, if output_rounding_numerator is 1 and\n"
 		"output_rounding_denominator is 4, and the output duration is\n"
 		"measured in hours, then the output will be rounded to the nearest\n"
