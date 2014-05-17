@@ -269,7 +269,6 @@ Config::do_load()
 {
 	if (!file_exists_at(filepath()))
 	{
-		// then config file doesn't exist yet
 		initialize_config_file();
 		return;
 	}

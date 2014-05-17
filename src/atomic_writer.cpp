@@ -44,6 +44,8 @@ using std::string;
 using std::terminate;
 using std::vector;
 
+// NOTE There's a bunch of non-portable stuff in here. POSIX is assumed.
+
 namespace swx
 {
 
@@ -77,13 +79,10 @@ AtomicWriter::AtomicWriter(string const& p_filepath):
 	m_tempfile(nullptr),
 	m_orig_filepath(p_filepath)
 {
-	// On construction, we immediately copy the original file to a newly created
-	// temp file.
-
-	// NOTE There's a bunch of non-portable stuff in here. POSIX is assumed.
+	// create temp file
 	string const sf_template_str = Info::home_dir() + "/.swx_temp_XXXXXX";
 	vector<char> vec(sf_template_str.begin(), sf_template_str.end());
-	vec.push_back(0);
+	vec.push_back('\0');
 	char* const temp_filepath = &vec[0];
 	auto const orig_umask = umask(S_IWGRP | S_IWOTH);
 	int const tempfile_descriptor = mkstemp(temp_filepath);
@@ -100,7 +99,7 @@ AtomicWriter::AtomicWriter(string const& p_filepath):
 	}
 	if (file_exists_at(m_orig_filepath))
 	{
-		// then the original file exists, and we copy it to the tempfile
+		// copy contents of original file to temp file
 		FILE* const infile = fopen(m_orig_filepath.c_str(), "r");
 		if (!infile)
 		{
@@ -139,10 +138,8 @@ AtomicWriter::~AtomicWriter()
 		}
 		m_tempfile = nullptr;
 	}
-	// non-portable
 	if (file_exists_at(m_temp_filepath))
 	{
-		// then temp file still exists
 		if (remove(m_temp_filepath.c_str()) != 0)
 		{
 			perror("");
