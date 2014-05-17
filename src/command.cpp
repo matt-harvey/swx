@@ -36,6 +36,7 @@ using std::left;
 using std::make_pair;
 using std::ostream;
 using std::ostringstream;
+using std::make_pair;
 using std::pair;
 using std::runtime_error;
 using std::set;
@@ -153,7 +154,6 @@ Command::~Command()
 void
 Command::add_boolean_option(char p_flag, string const& p_description)
 {
-	// TODO MEDIUM PRIORITY Make this atomic.
 	if (has_boolean_option(p_flag))
 	{
 		ostringstream oss;
@@ -161,11 +161,18 @@ Command::add_boolean_option(char p_flag, string const& p_description)
 		oss << "Flag already enabled for this Command: " << p_flag;
 		throw runtime_error(oss.str());
 	}
-	m_boolean_options[p_flag] = p_description;
+	m_boolean_options.insert(make_pair(p_flag, p_description));
 	if (m_accept_ordinary_args)
 	{
-		pair<char, string> const double_dash = double_dash_option();
-		m_boolean_options[double_dash.first] = double_dash.second;
+		try
+		{
+			m_boolean_options.insert(double_dash_option());
+		}
+		catch (...)
+		{
+			m_boolean_options.erase(p_flag);
+			throw;
+		}
 	}
 	return;
 }
