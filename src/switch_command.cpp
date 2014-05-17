@@ -103,7 +103,6 @@ SwitchCommand::do_process
 	ErrorMessages error_messages;
 	Arguments const args =
 		expand_placeholders(p_args.ordinary_args(), time_log());
-	TimePoint const n = now();
 	string activity(squish(args.begin(), args.end()));
 	if (p_args.has_flag(regex_flag()))
 	{

@@ -74,6 +74,7 @@ EditCommand::do_process
 	ostream& p_ordinary_ostream
 )
 {
+	(void)p_ordinary_ostream;  // suppress compiler warning re. unused param.
 	string const filepath =
 	(	p_args.has_flag(config_file_flag())?
 		Config::filepath():
