@@ -58,6 +58,7 @@ set(
 	src/command_manager.cpp
 	src/config.cpp
 	src/config_command.cpp
+	src/csv_utilities.cpp
 	src/edit_command.cpp
 	src/file_utilities.cpp
 	src/help_command.cpp
