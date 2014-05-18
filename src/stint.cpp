@@ -102,7 +102,7 @@ Stint::interval() const
 ostream&
 print_stints_report
 (	ostream& p_os,
-	vector<Stint> const& p_container,
+	vector<Stint> const& p_stints,
 	bool p_print_summary,
 	bool p_print_list
 )
@@ -117,13 +117,9 @@ print_stints_report
 	auto const w = Config::output_width();
 	auto const prec = Config::output_precision();
 	bool last_activity_empty = true;
-	for
-	(	vector<Stint>::const_iterator it = p_container.begin();
-		it != p_container.end();
-		++it
-	)
+	for (auto const& stint: p_stints)
 	{
-		string const activity = it->activity();
+		string const activity = stint.activity();
 		if (activity.empty())
 		{
 			if (p_print_list && !last_activity_empty)
@@ -135,7 +131,7 @@ print_stints_report
 		else
 		{
 			last_activity_empty = false;
-			auto const interval = it->interval();
+			auto const interval = stint.interval();
 			double hours = interval.duration().count() / 60.0 / 60.0;
 			if (p_print_summary)
 			{

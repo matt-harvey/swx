@@ -83,7 +83,7 @@ public:
 	 * 
 	 */
 	std::vector<Stint> get_stints
-	(	std::string const* p_activity,
+	(	std::string const* p_sought_activity,
 		TimePoint const* p_begin,
 		TimePoint const* p_end,
 		bool p_use_regex = false

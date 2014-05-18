@@ -99,7 +99,7 @@ TimeLog::append_entry(string const& p_activity)
 
 vector<Stint>
 TimeLog::get_stints
-(	string const* p_activity,
+(	string const* p_sought_activity,
 	TimePoint const* p_begin,
 	TimePoint const* p_end,
 	bool p_use_regex
@@ -107,40 +107,40 @@ TimeLog::get_stints
 {
 	load();	
 	regex reg;
-	if (!p_activity) p_use_regex = false;
+	if (!p_sought_activity) p_use_regex = false;
 	if (p_use_regex)
 	{
-		assert (p_activity);
-		reg = regex(*p_activity, regex::extended);
+		assert (p_sought_activity);
+		reg = regex(*p_sought_activity, regex::extended);
 	}
 	vector<Stint> ret;
 	auto const e = m_entries.end();
 	auto it = (p_begin? find_entry_just_before(*p_begin): m_entries.begin());
 	auto const n = now();
-	ActivityId const sought_activity_id =
-		(p_activity? register_activity(*p_activity): 0);
+	auto const sought_id =
+		(p_sought_activity? register_activity(*p_sought_activity): 0);
 	for ( ; (it != e) && (!p_end || (it->time_point < *p_end)); ++it)
 	{
-		ActivityId const current_activity_id = it->activity_id;
-		if (!p_activity || (sought_activity_id == current_activity_id) || p_use_regex)
+		ActivityId const activity_id = it->activity_id;
+		if (!p_sought_activity || (sought_id == activity_id) || p_use_regex)
 		{
-			string const& current_activity = id_to_activity(current_activity_id);
-			if (p_use_regex && !regex_search(current_activity, reg, match_posix))
+			auto const& activity = id_to_activity(activity_id);
+			if (!p_use_regex || regex_search(activity, reg, match_posix))
 			{
-				continue;
+				auto tp = it->time_point;
+				if (p_begin && (tp < *p_begin)) tp = *p_begin;
+				auto const next_it = it + 1;
+				auto const done = (next_it == e);
+				auto next_tp = (done? (n > tp? n: tp): next_it->time_point);
+				if (p_end && (next_tp > *p_end)) next_tp = *p_end;
+				assert (next_tp >= tp);
+				assert (!p_begin || (tp >= *p_begin));
+				assert (!p_end || (next_tp <= *p_end));
+				auto const duration = next_tp - tp;
+				auto const seconds = chrono::duration_cast<Seconds>(duration);
+				Interval const interval(tp, seconds, done);
+				ret.push_back(Stint(activity, interval));
 			}
-			auto tp = it->time_point;
-			if (p_begin && (tp < *p_begin)) tp = *p_begin;
-			auto const next_it = it + 1;
-			auto const done = (next_it == e);
-			auto next_tp = (done? (n > tp? n: tp): next_it->time_point);
-			if (p_end && (next_tp > *p_end)) next_tp = *p_end;
-			assert (next_tp >= tp);
-			assert (!p_begin || (tp >= *p_begin));
-			assert (!p_end || (next_tp <= *p_end));
-			auto const seconds = chrono::duration_cast<Seconds>(next_tp - tp);
-			Interval const interval(tp, seconds, done);
-			ret.push_back(Stint(current_activity, interval));
 		}
 	}
 	return ret;	

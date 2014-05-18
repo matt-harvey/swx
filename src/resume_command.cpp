@@ -72,7 +72,6 @@ ResumeCommand::do_process
 {
 	(void)p_args;  // suppress compiler warning re. unused param.
 
-	// TODO MEDIUM PRIORITY Tidy this.
 	ErrorMessages ret;
 	bool const is_active = time_log().is_active();
 	auto const last_activities = time_log().last_activities(2);
