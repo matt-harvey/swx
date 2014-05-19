@@ -67,6 +67,7 @@ set(
 	src/interval.cpp
 	src/placeholder.cpp
 	src/recording_command.cpp
+	src/report_writer.cpp
 	src/reporting_command.cpp
 	src/resume_command.cpp
 	src/round.cpp

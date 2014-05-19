@@ -53,13 +53,6 @@ private:
 
 };  // class Stint
 
-std::ostream& print_stints_report
-(	std::ostream& p_os,
-	std::vector<Stint> const& p_container,
-	bool p_print_summary = true,
-	bool p_print_list = false
-);
-
 }  // namespace swx
 
 #endif  // GUARD_stint_hpp_7450393879530204

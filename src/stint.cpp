@@ -43,6 +43,10 @@ using std::vector;
 namespace swx
 {
 
+// TODO This stuff to be moved into ReportWriter classes.
+
+#if 0
+
 namespace
 {
 	ostream& print_activity
@@ -180,5 +184,7 @@ print_stints_report
 	}
 	return p_os;
 }
+
+#endif
 
 }  // namespace swx
