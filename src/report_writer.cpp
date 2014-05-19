@@ -15,6 +15,9 @@
  */
 
 #include "report_writer.hpp"
+#include "config.hpp"
+#include "interval.hpp"
+#include "round.hpp"
 #include "stint.hpp"
 #include <ostream>
 #include <vector>
@@ -25,23 +28,30 @@ using std::vector;
 namespace swx
 {
 
-ReportWriter::ReportWriter()
+ReportWriter::ReportWriter():
+	m_output_rounding_numerator(Config::output_rounding_numerator()),
+	m_output_rounding_denominator(Config::output_rounding_denominator())
 {
 }
 
-ReportWriter::~ReportWriter()
-{
-}
+ReportWriter::~ReportWriter() = default;
 
 void
 ReportWriter::write(ostream& p_os, vector<Stint> const& p_stints)
 {
 		do_pre_write(p_os, p_stints);
-		for (auto const& stint: p_stint)
-		{
-			do_write(p_os, stint);
-		}
+		for (auto const& stint: p_stints) do_write(p_os, stint);
 		do_post_write(p_os, p_stints);
+}
+
+double
+ReportWriter::round_hours(Interval const& p_interval) const
+{
+	return round
+	(	p_interval.duration().count() / 60.0 / 60.0,
+		m_output_rounding_numerator,
+		m_output_rounding_denominator
+	);
 }
 
 void

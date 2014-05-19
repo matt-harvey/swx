@@ -17,12 +17,18 @@
 #ifndef GUARD_report_writer_hpp_6461996848910114
 #define GUARD_report_writer_hpp_6461996848910114
 
-#include "stint.hpp"
 #include <ostream>
 #include <vector>
 
 namespace swx
 {
+
+// begin forward declarations
+
+class Interval;
+class Stint;
+
+// end forward declarations
 
 class ReportWriter
 {
@@ -39,6 +45,14 @@ protected:
 public:
 	void write(std::ostream& p_os, std::vector<Stint> const& p_stints);
 
+protected:
+
+	/**
+	 * @returns duration of \e p_interval rounded according to the rounding
+	 * behaviour specified in the configuration file.
+	 */
+	double round_hours(Interval const& p_interval) const;
+
 // virtual member functions
 private:
 	virtual void
@@ -49,6 +63,11 @@ private:
 
 	virtual void
 		do_post_write(std::ostream& p_os, std::vector<Stint> const& p_stints);
+
+// member variables
+private:
+	unsigned int m_output_rounding_numerator;
+	unsigned int m_output_rounding_denominator;
 
 };  // class ReportWriter
 

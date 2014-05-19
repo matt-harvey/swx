@@ -58,6 +58,7 @@ set(
 	src/command_manager.cpp
 	src/config.cpp
 	src/config_command.cpp
+	src/csv_list_report_writer.cpp
 	src/csv_utilities.cpp
 	src/edit_command.cpp
 	src/file_utilities.cpp
@@ -65,6 +66,7 @@ set(
 	src/help_line.cpp
 	src/info.cpp
 	src/interval.cpp
+	src/list_report_writer.cpp
 	src/placeholder.cpp
 	src/recording_command.cpp
 	src/report_writer.cpp
