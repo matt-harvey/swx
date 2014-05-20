@@ -77,6 +77,7 @@ set(
 	src/stint.cpp
 	src/stream_flag_guard.cpp
 	src/string_utilities.cpp
+	src/summary_report_writer.cpp
 	src/switch_command.cpp
 	src/today_command.cpp
 	src/time_point.cpp
