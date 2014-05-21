@@ -19,6 +19,7 @@
 
 #include <ostream>
 #include <vector>
+#include "stint.hpp"
 
 namespace swx
 {
@@ -26,7 +27,6 @@ namespace swx
 // begin forward declarations
 
 class Interval;
-class Stint;
 
 // end forward declarations
 
@@ -34,7 +34,7 @@ class ReportWriter
 {
 // special member functions
 protected:
-	ReportWriter();
+	explicit ReportWriter(std::vector<Stint> const& p_stints);
 	ReportWriter(ReportWriter const& rhs) = delete;
 	ReportWriter(ReportWriter&& rhs) = delete;
 	ReportWriter& operator=(ReportWriter const& rhs) = delete;
@@ -43,7 +43,7 @@ protected:
 
 // ordinary member functions
 public:
-	void write(std::ostream& p_os, std::vector<Stint> const& p_stints);
+	void write(std::ostream& p_os);
 
 protected:
 
@@ -75,6 +75,7 @@ private:
 private:
 	unsigned int m_output_rounding_numerator;
 	unsigned int m_output_rounding_denominator;
+	std::vector<Stint> const& m_stints;
 
 };  // class ReportWriter
 

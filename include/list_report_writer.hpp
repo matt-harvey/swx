@@ -18,6 +18,8 @@
 #define GUARD_list_report_writer_hpp_6743347196254575
 
 #include "report_writer.hpp"
+#include "stint.hpp"
+#include <vector>
 
 namespace swx
 {
@@ -26,7 +28,7 @@ class ListReportWriter: public ReportWriter
 {
 // special member functions
 public:
-	ListReportWriter();
+	explicit ListReportWriter(std::vector<Stint> const& p_stints);
 	ListReportWriter(ListReportWriter const& rhs) = delete;
 	ListReportWriter(ListReportWriter&& rhs) = delete;
 	ListReportWriter& operator=(ListReportWriter const& rhs) = delete;

@@ -51,7 +51,10 @@ namespace
 
 }  // end anonymous namespace
 
-SummaryReportWriter::SummaryReportWriter() = default;
+SummaryReportWriter::SummaryReportWriter(vector<Stint> const& p_stints):
+	ReportWriter(p_stints)
+{
+}
 
 SummaryReportWriter::~SummaryReportWriter() = default;
 
@@ -76,7 +79,7 @@ SummaryReportWriter::do_post_write(ostream& p_os, vector<Stint> const& p_stints)
 			{
 				ostringstream oss;
 				enable_exceptions(oss);
-				oss << "Time spent on activity \"" << activity <<
+				oss << "Time spent on activity \"" << activity
 					<< "\" is too great to be totalled correctly.";
 				throw runtime_error(oss.str());
 			}

@@ -19,23 +19,19 @@
 
 #include "report_writer.hpp"
 #include "seconds.hpp"
+#include "stint.hpp"
+#include <map>
 #include <ostream>
 #include <vector>
 
 namespace swx
 {
 
-// begin forward declarations
-
-class Stint;
-
-// end forward declarations
-
 class SummaryReportWriter: public ReportWriter
 {
 // special member functions
 public:
-	SummaryReportWriter();
+	explicit SummaryReportWriter(std::vector<Stint> const& p_stints);
 	SummaryReportWriter(SummaryReportWriter const& rhs) = delete;
 	SummaryReportWriter(SummaryReportWriter&& rhs) = delete;
 	SummaryReportWriter& operator=(SummaryReportWriter const& rhs) = delete;

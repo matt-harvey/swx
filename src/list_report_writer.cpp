@@ -16,11 +16,18 @@
 
 #include "list_report_writer.hpp"
 #include "report_writer.hpp"
+#include "stint.hpp"
+#include <vector>
+
+using std::vector;
 
 namespace swx
 {
 
-ListReportWriter::ListReportWriter() = default;
+ListReportWriter::ListReportWriter(vector<Stint> const& p_stints):
+	ReportWriter(p_stints)
+{
+}
 
 ListReportWriter::~ListReportWriter() = default;
 

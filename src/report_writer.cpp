@@ -28,20 +28,21 @@ using std::vector;
 namespace swx
 {
 
-ReportWriter::ReportWriter():
+ReportWriter::ReportWriter(vector<Stint> const& p_stints):
 	m_output_rounding_numerator(Config::output_rounding_numerator()),
-	m_output_rounding_denominator(Config::output_rounding_denominator())
+	m_output_rounding_denominator(Config::output_rounding_denominator()),
+	m_stints(p_stints)
 {
 }
 
 ReportWriter::~ReportWriter() = default;
 
 void
-ReportWriter::write(ostream& p_os, vector<Stint> const& p_stints)
+ReportWriter::write(ostream& p_os)
 {
-		do_pre_write(p_os, p_stints);
-		for (auto const& stint: p_stints) do_write(p_os, stint);
-		do_post_write(p_os, p_stints);
+		do_pre_write(p_os, m_stints);
+		for (auto const& stint: m_stints) do_write(p_os, stint);
+		do_post_write(p_os, m_stints);
 }
 
 double

@@ -19,13 +19,18 @@
 #include "stint.hpp"
 #include "time_point.hpp"
 #include <ostream>
+#include <vector>
 
 using std::ostream;
+using std::vector;
 
 namespace swx
 {
 
-CsvListReportWriter::CsvListReportWriter() = default;
+CsvListReportWriter::CsvListReportWriter(vector<Stint> const& p_stints):
+	ListReportWriter(p_stints)
+{
+}
 
 CsvListReportWriter::~CsvListReportWriter() = default;
 

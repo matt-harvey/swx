@@ -18,13 +18,9 @@
 #define GUARD_csv_list_report_writer_hpp_7141246202933251
 
 #include "list_report_writer.hpp"
+#include "stint.hpp"
 #include <ostream>
-
-// begin forward declarations
-
-class Stint;
-
-// end forward declarations
+#include <vector>
 
 namespace swx
 {
@@ -33,7 +29,7 @@ class CsvListReportWriter: public ListReportWriter
 {
 // special member functions
 public:
-	CsvListReportWriter();
+	explicit CsvListReportWriter(std::vector<Stint> const& p_stints);
 	CsvListReportWriter(CsvListReportWriter const& rhs) = delete;
 	CsvListReportWriter(CsvListReportWriter&& rhs) = delete;
 	CsvListReportWriter& operator=(CsvListReportWriter const& rhs) = delete;
