@@ -66,7 +66,7 @@ private:
 		do_pre_write(std::ostream& p_os, std::vector<Stint> const& p_stints);
 	
 	virtual void
-		do_write(std::ostream& p_os, Stint const& p_stint) = 0;
+		do_write(std::ostream& p_os, Stint const& p_stint);
 
 	virtual void
 		do_post_write(std::ostream& p_os, std::vector<Stint> const& p_stints);

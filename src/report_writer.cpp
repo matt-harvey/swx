@@ -52,7 +52,7 @@ ReportWriter::round_hours(Interval const& p_interval) const
 }
 
 double
-ReportWriter::seconds_to_rounded_hours(unsigned long long p_seconds)
+ReportWriter::seconds_to_rounded_hours(unsigned long long p_seconds) const
 {
 	return round
 	(	p_seconds / 60.0 / 60.0,
