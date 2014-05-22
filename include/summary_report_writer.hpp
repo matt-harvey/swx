@@ -19,7 +19,6 @@
 
 #include "report_writer.hpp"
 #include "seconds.hpp"
-#include <map>
 #include <ostream>
 #include <vector>
 
@@ -45,14 +44,16 @@ public:
 
 // inherited virtual member functions
 private:
-	virtual void do_pre_write
+	virtual void do_post_write
 	(	std::ostream& p_os,
 		std::vector<Stint> const& p_stints
 	) override;
 
-// member variables
-private:
-	std::map<std::string, unsigned long long> m_activity_seconds_map;
+	virtual void do_write_activity_hours
+	(	std::ostream& p_os,
+		std::string const& p_activity,
+		double p_rounded_hours
+	) = 0;
 
 };  // class SummaryReportWriter
 

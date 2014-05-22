@@ -47,8 +47,14 @@ ReportWriter::write(ostream& p_os, vector<Stint> const& p_stints)
 double
 ReportWriter::round_hours(Interval const& p_interval) const
 {
+	return seconds_to_rounded_hours(p_interval.duration().count());
+}
+
+double
+ReportWriter::seconds_to_rounded_hours(unsigned long long p_seconds)
+{
 	return round
-	(	p_interval.duration().count() / 60.0 / 60.0,
+	(	p_seconds / 60.0 / 60.0,
 		m_output_rounding_numerator,
 		m_output_rounding_denominator
 	);

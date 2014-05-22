@@ -53,6 +53,13 @@ protected:
 	 */
 	double round_hours(Interval const& p_interval) const;
 
+	/**
+	 * Converts a number of seconds to a double representing the number
+	 * of hours, rounded according to the rounding behaviour specified in
+	 * the configuration file.
+	 */
+	double seconds_to_rounded_hours(unsigned long long p_seconds) const;
+
 // virtual member functions
 private:
 	virtual void

@@ -24,12 +24,15 @@
 #include <ostream>
 #include <sstream>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
+using std::map;
 using std::numeric_limits;
 using std::ostringstream;
 using std::ostream;
 using std::runtime_error;
+using std::string;
 using std::vector;
 
 namespace swx
@@ -53,36 +56,41 @@ SummaryReportWriter::SummaryReportWriter() = default;
 SummaryReportWriter::~SummaryReportWriter() = default;
 
 void
-SummaryReportWriter::do_pre_write(ostream& p_os, vector<Stint> const& p_stints)
+SummaryReportWriter::do_post_write(ostream& p_os, vector<Stint> const& p_stints)
 {
-	(void)p_os;  // silence compiler warning re. unused parameter
-	if (m_activity_seconds_map.empty())
+	map<string, unsigned long long> activity_seconds_map;
+	for (auto const& stint: p_stints)
 	{
-		for (auto const& stint: p_stints)
+		unsigned long long const seconds =
+			stint.interval().duration().count();
+		auto const& activity = stint.activity();
+		auto const it = activity_seconds_map.find(activity);
+		if (it == activity_seconds_map.end())
 		{
-			unsigned long long const seconds =
-				stint.interval().duration().count();
-			auto const& activity = stint.activity();
-			auto const it = m_activity_seconds_map.find(activity);
-			if (it == m_activity_seconds_map.end())
-			{
-				m_activity_seconds_map.insert(make_pair(activity, seconds));
-			}
-			else
-			{
-				auto& accum = it->second;
-				if (!addition_is_safe(accum, seconds))
-				{
-					ostringstream oss;
-					enable_exceptions(oss);
-					oss << "Time spent on activity \"" << activity <<
-					    << "\" is too great to be totalled correctly.";
-					throw runtime_error(oss.str());
-				}
-				assert (addition_is_safe(accum, seconds));
-				accum += seconds;
-			}
+			activity_seconds_map.insert(make_pair(activity, seconds));
 		}
+		else
+		{
+			auto& accum = it->second;
+			if (!addition_is_safe(accum, seconds))
+			{
+				ostringstream oss;
+				enable_exceptions(oss);
+				oss << "Time spent on activity \"" << activity <<
+					<< "\" is too great to be totalled correctly.";
+				throw runtime_error(oss.str());
+			}
+			assert (addition_is_safe(accum, seconds));
+			accum += seconds;
+		}
+	}
+	for (auto const& pair: activity_seconds_map)
+	{
+		do_write_activity_hours
+		(	p_os,
+			pair.first,
+			seconds_to_rounded_hours(pair.second)
+		);
 	}
 	return;
 }
