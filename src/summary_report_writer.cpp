@@ -59,7 +59,7 @@ SummaryReportWriter::SummaryReportWriter(vector<Stint> const& p_stints):
 SummaryReportWriter::~SummaryReportWriter() = default;
 
 void
-SummaryReportWriter::do_post_write(ostream& p_os, vector<Stint> const& p_stints)
+SummaryReportWriter::do_postprocess_stints(ostream& p_os, vector<Stint> const& p_stints)
 {
 	map<string, unsigned long long> activity_seconds_map;
 	for (auto const& stint: p_stints)

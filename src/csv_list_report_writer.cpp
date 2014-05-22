@@ -35,7 +35,7 @@ CsvListReportWriter::CsvListReportWriter(vector<Stint> const& p_stints):
 CsvListReportWriter::~CsvListReportWriter() = default;
 
 void
-CsvListReportWriter::do_write(ostream& p_os, Stint const& p_stint)
+CsvListReportWriter::do_process_stint(ostream& p_os, Stint const& p_stint)
 {
 	auto const interval = p_stint.interval();
 	output_csv_row

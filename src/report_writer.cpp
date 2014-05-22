@@ -40,9 +40,9 @@ ReportWriter::~ReportWriter() = default;
 void
 ReportWriter::write(ostream& p_os)
 {
-		do_pre_write(p_os, m_stints);
-		for (auto const& stint: m_stints) do_write(p_os, stint);
-		do_post_write(p_os, m_stints);
+		do_preprocess_stints(p_os, m_stints);
+		for (auto const& stint: m_stints) do_process_stint(p_os, stint);
+		do_postprocess_stints(p_os, m_stints);
 }
 
 double
@@ -62,14 +62,14 @@ ReportWriter::seconds_to_rounded_hours(unsigned long long p_seconds) const
 }
 
 void
-ReportWriter::do_pre_write(ostream& p_os, vector<Stint> const& p_stints)
+ReportWriter::do_preprocess_stints(ostream& p_os, vector<Stint> const& p_stints)
 {
 	(void)p_os; (void)p_stints;  // silence compiler re. unused param.
 	return;
 }
 
 void
-ReportWriter::do_post_write(ostream& p_os, vector<Stint> const& p_stints)
+ReportWriter::do_postprocess_stints(ostream& p_os, vector<Stint> const& p_stints)
 {
 	(void)p_os; (void)p_stints;  // silence compiler re. unused param.
 	return;

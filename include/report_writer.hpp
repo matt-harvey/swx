@@ -62,14 +62,17 @@ protected:
 
 // virtual member functions
 private:
-	virtual void
-		do_pre_write(std::ostream& p_os, std::vector<Stint> const& p_stints);
+	virtual void do_preprocess_stints
+	(	std::ostream& p_os,
+		std::vector<Stint> const& p_stints
+	);
 	
-	virtual void
-		do_write(std::ostream& p_os, Stint const& p_stint);
+	virtual void do_process_stint(std::ostream& p_os, Stint const& p_stint);
 
-	virtual void
-		do_post_write(std::ostream& p_os, std::vector<Stint> const& p_stints);
+	virtual void do_postprocess_stints
+	(	std::ostream& p_os,
+		std::vector<Stint> const& p_stints
+	);
 
 // member variables
 private:
