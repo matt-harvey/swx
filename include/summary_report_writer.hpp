@@ -18,7 +18,6 @@
 #define GUARD_summary_report_writer_hpp_7957524563166092
 
 #include "report_writer.hpp"
-#include "seconds.hpp"
 #include "stint.hpp"
 #include <map>
 #include <ostream>
@@ -40,16 +39,32 @@ public:
 
 // inherited virtual member functions
 private:
+	virtual void do_preprocess_stints
+	(	std::ostream& p_os,
+		std::vector<Stint> const& p_stints
+	) override;
+
+	virtual void do_process_stint
+	(	std::ostream& p_os,
+		Stint const& p_stint
+	) override;
+
 	virtual void do_postprocess_stints
 	(	std::ostream& p_os,
 		std::vector<Stint> const& p_stints
 	) override;
 
+// other virtual member functions
+private:
 	virtual void do_write_activity_hours
 	(	std::ostream& p_os,
 		std::string const& p_activity,
 		double p_rounded_hours
 	) = 0;
+
+// member variables
+private:
+	std::map<std::string, unsigned long long> m_activity_seconds_map;
 
 };  // class SummaryReportWriter
 

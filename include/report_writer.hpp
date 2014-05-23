@@ -67,7 +67,7 @@ private:
 		std::vector<Stint> const& p_stints
 	);
 	
-	virtual void do_process_stint(std::ostream& p_os, Stint const& p_stint);
+	virtual void do_process_stint(std::ostream& p_os, Stint const& p_stint) = 0;
 
 	virtual void do_postprocess_stints
 	(	std::ostream& p_os,

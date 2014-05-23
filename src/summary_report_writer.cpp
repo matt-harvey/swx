@@ -25,8 +25,10 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
+using std::make_pair;
 using std::map;
 using std::numeric_limits;
 using std::ostringstream;
@@ -54,46 +56,62 @@ namespace
 SummaryReportWriter::SummaryReportWriter(vector<Stint> const& p_stints):
 	ReportWriter(p_stints)
 {
+	assert (m_activity_seconds_map.empty());
 }
 
 SummaryReportWriter::~SummaryReportWriter() = default;
 
+
 void
-SummaryReportWriter::do_postprocess_stints(ostream& p_os, vector<Stint> const& p_stints)
+SummaryReportWriter::do_preprocess_stints
+(	ostream& p_os,
+	vector<Stint> const& p_stints
+)
 {
-	map<string, unsigned long long> activity_seconds_map;
-	for (auto const& stint: p_stints)
+	(void)p_os; (void)p_stints;  // silence compiler warnings re. unused params.
+	m_activity_seconds_map.empty();
+	return;
+}
+
+void
+SummaryReportWriter::do_process_stint(std::ostream& p_os, Stint const& p_stint)
+{
+	(void)p_os;  // silence compiler warning re. unused param.
+	unsigned long long const seconds = p_stint.interval().duration().count();
+	auto const& activity = p_stint.activity();
+	auto const it = m_activity_seconds_map.find(activity);
+	if (it == m_activity_seconds_map.end())
 	{
-		unsigned long long const seconds =
-			stint.interval().duration().count();
-		auto const& activity = stint.activity();
-		auto const it = activity_seconds_map.find(activity);
-		if (it == activity_seconds_map.end())
-		{
-			activity_seconds_map.insert(make_pair(activity, seconds));
-		}
-		else
-		{
-			auto& accum = it->second;
-			if (!addition_is_safe(accum, seconds))
-			{
-				ostringstream oss;
-				enable_exceptions(oss);
-				oss << "Time spent on activity \"" << activity
-					<< "\" is too great to be totalled correctly.";
-				throw runtime_error(oss.str());
-			}
-			assert (addition_is_safe(accum, seconds));
-			accum += seconds;
-		}
+		m_activity_seconds_map.insert(make_pair(activity, seconds));
 	}
-	for (auto const& pair: activity_seconds_map)
+	else
 	{
-		do_write_activity_hours
-		(	p_os,
-			pair.first,
-			seconds_to_rounded_hours(pair.second)
-		);
+		auto& accum = it->second;
+		if (!addition_is_safe(accum, seconds))
+		{
+			ostringstream oss;
+			enable_exceptions(oss);
+			oss << "Time spent on activity \"" << activity
+				<< "\" is too great to be totalled correctly.";
+			throw runtime_error(oss.str());
+		}
+		assert (addition_is_safe(accum, seconds));
+		accum += seconds;
+	}
+	return;
+}
+
+void
+SummaryReportWriter::do_postprocess_stints
+(	ostream& p_os,
+	vector<Stint> const& p_stints
+)
+{
+	(void)p_stints;  // silence compiler warning re. unused param.
+	for (auto const& pair: m_activity_seconds_map)
+	{
+		double const rounded_hours = seconds_to_rounded_hours(pair.second);
+		do_write_activity_hours(p_os, pair.first, rounded_hours);
 	}
 	return;
 }
