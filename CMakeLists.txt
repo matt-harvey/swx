@@ -59,6 +59,7 @@ set(
 	src/config.cpp
 	src/config_command.cpp
 	src/csv_list_report_writer.cpp
+	src/csv_summary_report_writer.cpp
 	src/csv_utilities.cpp
 	src/edit_command.cpp
 	src/file_utilities.cpp
