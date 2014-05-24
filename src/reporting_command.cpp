@@ -16,9 +16,15 @@
 
 #include "reporting_command.hpp"
 #include "command.hpp"
+#include "csv_list_report_writer.hpp"
+#include "csv_summary_report_writer.hpp"
 #include "help_line.hpp"
+#include "human_list_report_writer.hpp"
+#include "human_summary_report_writer.hpp"
+#include "list_report_writer.hpp"
 #include "placeholder.hpp"
 #include "string_utilities.hpp"
+#include "summary_report_writer.hpp"
 #include "time_log.hpp"
 #include <memory>
 #include <ostream>
@@ -43,6 +49,10 @@ ReportingCommand::ReportingCommand
 	Command(p_command_word, p_aliases, p_usage_summary, p_help_line),
 	m_time_log(p_time_log)
 {
+	add_boolean_option
+	(	'c',
+		"Output in CSV format"
+	);
 	add_boolean_option
 	(	'l',
 		"Instead of printing a summary, print a list of individual "
@@ -73,6 +83,7 @@ ReportingCommand::print_report
 	TimePoint const* p_end
 )
 {
+	bool csv = false;
 	bool detail = false;
 	bool summary = true;
 	bool use_regex = false;
@@ -80,6 +91,9 @@ ReportingCommand::print_report
 	{
 		switch (c)
 		{
+		case 'c':
+			csv = true;
+			break;
 		case 'l':
 			detail = true;
 			summary = false;
@@ -102,12 +116,24 @@ ReportingCommand::print_report
 		(	new string(squish(expanded.begin(), expanded.end()))
 		);
 	}
-	return print_stints_report
-	(	p_os,
-		m_time_log.get_stints(activity_ptr.get(), p_begin, p_end, use_regex),
-		summary,
-		detail
-	);
+	vector<Stint> const stints =
+		m_time_log.get_stints(activity_ptr.get(), p_begin, p_end);
+	unique_ptr<ListReportWriter> list_writer;
+	unique_ptr<SummaryReportWriter> summary_writer;
+	if (detail)
+	{
+		if (csv) list_writer.reset(new CsvListReportWriter(stints));
+		else list_writer.reset(new HumanListReportWriter(stints));
+	}
+	if (summary)
+	{
+		if (csv) summary_writer.reset(new CsvSummaryReportWriter(stints));
+		else summary_writer.reset(new HumanSummaryReportWriter(stints));
+	}
+	if (list_writer) list_writer->write(p_os);
+	if (list_writer && summary_writer) p_os << endl;
+	if (summary_writer) summary_writer->write(p_os);
+	return p_os;	
 }
 
 string
