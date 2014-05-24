@@ -130,6 +130,9 @@ treated as a regular expression (of the POSIX extended variety), rather than an
 exact activity name. Any activities will then be included in the report for
 which their activity name matches this regular expression.
 
+If you pass the ``-c`` option to a reporting command, then the results will
+be output in CSV format.
+
 By default, the number of hours shown is rounded to the nearest quarter of
 an hour. This rounding behaviour can be changed in the Configuration_.
 
