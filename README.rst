@@ -185,7 +185,7 @@ activities, or generating a report on the current activity or related
 activities. E.g., if we are currently active on ``email customer-service
 enquiries`` and want to record a switch to ``email customer-service
 complaints``, then we can enter simply ``swx s __ complaints``, rather than
-having to enter ``sw sw email customer-service complaints``.
+having to enter ``swx s email customer-service complaints``.
 
 Manually editing the time log
 -----------------------------
