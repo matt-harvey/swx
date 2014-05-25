@@ -19,7 +19,7 @@
 #include "csv_list_report_writer.hpp"
 #include "csv_summary_report_writer.hpp"
 #include "help_line.hpp"
-// #include "human_list_report_writer.hpp"     // TODO
+#include "human_list_report_writer.hpp"
 // #include "human_summary_report_writer.hpp"  // TODO
 #include "list_report_writer.hpp"
 #include "placeholder.hpp"
@@ -130,7 +130,7 @@ ReportingCommand::print_report
 		}
 		else
 		{
-			// list_writer.reset(new HumanListReportWriter(stints));  // TODO
+			list_writer.reset(new HumanListReportWriter(stints));
 		}
 	}
 	if (summary)

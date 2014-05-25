@@ -14,45 +14,62 @@
  * limitations under the License.
  */
 
-#include "csv_list_report_writer.hpp"
-#include "csv_utilities.hpp"
+#include "human_list_report_writer.hpp"
+#include "interval.hpp"
 #include "stint.hpp"
 #include "stream_flag_guard.hpp"
 #include "time_point.hpp"
 #include <iomanip>
+#include <iostream>
 #include <ostream>
+#include <string>
 #include <vector>
 
-using std::setprecision;
+using std::endl;
+using std::fixed;
 using std::ostream;
+using std::right;
+using std::setprecision;
+using std::setw;
+using std::string;
 using std::vector;
 
 namespace swx
 {
 
-CsvListReportWriter::CsvListReportWriter(vector<Stint> const& p_stints):
+HumanListReportWriter::HumanListReportWriter(vector<Stint> const& p_stints):
 	ListReportWriter(p_stints)
 {
 }
 
-CsvListReportWriter::~CsvListReportWriter() = default;
+HumanListReportWriter::~HumanListReportWriter()
+{
+}
 
 void
-CsvListReportWriter::do_process_stint(ostream& p_os, Stint const& p_stint)
+HumanListReportWriter::do_process_stint(ostream& p_os, Stint const& p_stint)
 {
-	if (!p_stint.activity().empty())
+	auto const activity = p_stint.activity();
+	if (activity.empty())
 	{
-		auto const interval = p_stint.interval();
-		StreamFlagGuard guard(p_os);
-		p_os << setprecision(output_precision());
-		output_csv_row
-		(	p_os,
-			time_point_to_stamp(interval.beginning()),
-			time_point_to_stamp(interval.ending()),
-			round_hours(interval),
-			p_stint.activity()
-		);
+		p_os << endl;
 	}
+	else
+	{
+		StreamFlagGuard guard(p_os);
+		auto const interval = p_stint.interval();
+		p_os << time_point_to_stamp(interval.beginning()) << "  ";
+		p_os << time_point_to_stamp(interval.ending()) << "  ";
+		p_os << fixed
+		     << setprecision(output_precision())
+			 << right
+		     << setw(output_width())
+			 << round_hours(interval)
+			 << "  ";
+		guard.reset();
+		p_os << p_stint.activity() << endl;
+	}
+	return;
 }
 
 }  // namespace swx

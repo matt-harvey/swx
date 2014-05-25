@@ -31,6 +31,8 @@ namespace swx
 ReportWriter::ReportWriter(vector<Stint> const& p_stints):
 	m_output_rounding_numerator(Config::output_rounding_numerator()),
 	m_output_rounding_denominator(Config::output_rounding_denominator()),
+	m_output_precision(Config::output_precision()),
+	m_output_width(Config::output_width()),
 	m_stints(p_stints)
 {
 }
@@ -59,6 +61,18 @@ ReportWriter::seconds_to_rounded_hours(unsigned long long p_seconds) const
 		m_output_rounding_numerator,
 		m_output_rounding_denominator
 	);
+}
+
+unsigned int
+ReportWriter::output_precision() const
+{
+	return m_output_precision;
+}
+
+unsigned int
+ReportWriter::output_width() const
+{
+	return m_output_width;
 }
 
 void

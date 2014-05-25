@@ -60,6 +60,9 @@ protected:
 	 */
 	double seconds_to_rounded_hours(unsigned long long p_seconds) const;
 
+	unsigned int output_precision() const;
+	unsigned int output_width() const;
+
 // virtual member functions
 private:
 	virtual void do_preprocess_stints
@@ -78,6 +81,8 @@ private:
 private:
 	unsigned int m_output_rounding_numerator;
 	unsigned int m_output_rounding_denominator;
+	unsigned int m_output_precision;
+	unsigned int m_output_width;
 	std::vector<Stint> const& m_stints;
 
 };  // class ReportWriter
