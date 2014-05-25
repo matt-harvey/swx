@@ -18,10 +18,12 @@
 #include "csv_utilities.hpp"
 #include "stint.hpp"
 #include "summary_report_writer.hpp"
+#include <map>
 #include <ostream>
 #include <string>
 #include <vector>
 
+using std::map;
 using std::ostream;
 using std::string;
 using std::vector;
@@ -39,13 +41,17 @@ CsvSummaryReportWriter::~CsvSummaryReportWriter()
 }
 
 void
-CsvSummaryReportWriter::do_write_activity_hours
+CsvSummaryReportWriter::do_write_summary
 (	ostream& p_os,
-	string const& p_activity,
-	double p_rounded_hours
+	map<string, unsigned long long> const& p_activity_seconds_map
 )
 {
-	output_csv_row(p_os, p_activity, p_rounded_hours);
+	for (auto const& pair: p_activity_seconds_map)
+	{
+		string const& activity = pair.first;
+		unsigned long long const seconds = pair.second;
+		output_csv_row(p_os, activity, seconds_to_rounded_hours(seconds));
+	}
 	return;
 }
 

@@ -66,6 +66,7 @@ set(
 	src/help_command.cpp
 	src/help_line.cpp
 	src/human_list_report_writer.cpp
+	src/human_summary_report_writer.cpp
 	src/info.cpp
 	src/interval.cpp
 	src/list_report_writer.cpp

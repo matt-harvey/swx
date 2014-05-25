@@ -61,7 +61,6 @@ SummaryReportWriter::SummaryReportWriter(vector<Stint> const& p_stints):
 
 SummaryReportWriter::~SummaryReportWriter() = default;
 
-
 void
 SummaryReportWriter::do_preprocess_stints
 (	ostream& p_os,
@@ -111,11 +110,7 @@ SummaryReportWriter::do_postprocess_stints
 )
 {
 	(void)p_stints;  // silence compiler warning re. unused param.
-	for (auto const& pair: m_activity_seconds_map)
-	{
-		double const rounded_hours = seconds_to_rounded_hours(pair.second);
-		do_write_activity_hours(p_os, pair.first, rounded_hours);
-	}
+	do_write_summary(p_os, m_activity_seconds_map);
 	return;
 }
 

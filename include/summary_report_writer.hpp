@@ -56,10 +56,9 @@ private:
 
 // other virtual member functions
 private:
-	virtual void do_write_activity_hours
+	virtual void do_write_summary
 	(	std::ostream& p_os,
-		std::string const& p_activity,
-		double p_rounded_hours
+		std::map<std::string, unsigned long long> const& p_activity_seconds_map
 	) = 0;
 
 // member variables
