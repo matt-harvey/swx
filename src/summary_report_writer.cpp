@@ -79,24 +79,27 @@ SummaryReportWriter::do_process_stint(std::ostream& p_os, Stint const& p_stint)
 	(void)p_os;  // silence compiler warning re. unused param.
 	unsigned long long const seconds = p_stint.interval().duration().count();
 	auto const& activity = p_stint.activity();
-	auto const it = m_activity_seconds_map.find(activity);
-	if (it == m_activity_seconds_map.end())
+	if (!activity.empty())
 	{
-		m_activity_seconds_map.insert(make_pair(activity, seconds));
-	}
-	else
-	{
-		auto& accum = it->second;
-		if (!addition_is_safe(accum, seconds))
+		auto const it = m_activity_seconds_map.find(activity);
+		if (it == m_activity_seconds_map.end())
 		{
-			ostringstream oss;
-			enable_exceptions(oss);
-			oss << "Time spent on activity \"" << activity
-				<< "\" is too great to be totalled correctly.";
-			throw runtime_error(oss.str());
+			m_activity_seconds_map.insert(make_pair(activity, seconds));
 		}
-		assert (addition_is_safe(accum, seconds));
-		accum += seconds;
+		else
+		{
+			auto& accum = it->second;
+			if (!addition_is_safe(accum, seconds))
+			{
+				ostringstream oss;
+				enable_exceptions(oss);
+				oss << "Time spent on activity \"" << activity
+					<< "\" is too great to be totalled correctly.";
+				throw runtime_error(oss.str());
+			}
+			assert (addition_is_safe(accum, seconds));
+			accum += seconds;
+		}
 	}
 	return;
 }

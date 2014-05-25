@@ -85,6 +85,8 @@ namespace
 
 }  // end anonymous namespace
 
+#endif
+
 Stint::Stint(string const& p_activity, Interval const& p_interval):
 	m_activity(p_activity),
 	m_interval(p_interval)
@@ -102,6 +104,8 @@ Stint::interval() const
 {
 	return m_interval;
 }
+
+#if 0
 
 ostream&
 print_stints_report

@@ -42,7 +42,7 @@ private:
 	(	std::ostream& p_os,
 		std::string const& p_activity,
 		double p_rounded_hours
-	) = 0;
+	);
 
 };  // class CsvSummaryReportWriter
 

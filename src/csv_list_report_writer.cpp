@@ -37,14 +37,17 @@ CsvListReportWriter::~CsvListReportWriter() = default;
 void
 CsvListReportWriter::do_process_stint(ostream& p_os, Stint const& p_stint)
 {
-	auto const interval = p_stint.interval();
-	output_csv_row
-	(	p_os,
-		time_point_to_stamp(interval.beginning()),
-		time_point_to_stamp(interval.ending()),
-		round_hours(interval),
-		p_stint.activity()
-	);
+	if (!p_stint.activity().empty())
+	{
+		auto const interval = p_stint.interval();
+		output_csv_row
+		(	p_os,
+			time_point_to_stamp(interval.beginning()),
+			time_point_to_stamp(interval.ending()),
+			round_hours(interval),
+			p_stint.activity()
+		);
+	}
 }
 
 }  // namespace swx

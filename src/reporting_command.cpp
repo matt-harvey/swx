@@ -19,18 +19,20 @@
 #include "csv_list_report_writer.hpp"
 #include "csv_summary_report_writer.hpp"
 #include "help_line.hpp"
-#include "human_list_report_writer.hpp"
-#include "human_summary_report_writer.hpp"
+// #include "human_list_report_writer.hpp"     // TODO
+// #include "human_summary_report_writer.hpp"  // TODO
 #include "list_report_writer.hpp"
 #include "placeholder.hpp"
 #include "string_utilities.hpp"
 #include "summary_report_writer.hpp"
 #include "time_log.hpp"
+#include <iostream>
 #include <memory>
 #include <ostream>
 #include <string>
 #include <vector>
 
+using std::endl;
 using std::ostream;
 using std::string;
 using std::unique_ptr;
@@ -117,18 +119,30 @@ ReportingCommand::print_report
 		);
 	}
 	vector<Stint> const stints =
-		m_time_log.get_stints(activity_ptr.get(), p_begin, p_end);
+		m_time_log.get_stints(activity_ptr.get(), p_begin, p_end, use_regex);
 	unique_ptr<ListReportWriter> list_writer;
 	unique_ptr<SummaryReportWriter> summary_writer;
 	if (detail)
 	{
-		if (csv) list_writer.reset(new CsvListReportWriter(stints));
-		else list_writer.reset(new HumanListReportWriter(stints));
+		if (csv)
+		{
+			list_writer.reset(new CsvListReportWriter(stints));
+		}
+		else
+		{
+			// list_writer.reset(new HumanListReportWriter(stints));  // TODO
+		}
 	}
 	if (summary)
 	{
-		if (csv) summary_writer.reset(new CsvSummaryReportWriter(stints));
-		else summary_writer.reset(new HumanSummaryReportWriter(stints));
+		if (csv)
+		{
+			summary_writer.reset(new CsvSummaryReportWriter(stints));
+		}
+		else
+		{
+			// summary_writer.reset(new HumanSummaryReportWriter(stints));  // TODO
+		}
 	}
 	if (list_writer) list_writer->write(p_os);
 	if (list_writer && summary_writer) p_os << endl;
