@@ -89,8 +89,11 @@ TimeLog::append_entry(string const& p_activity)
 	AtomicWriter writer(m_filepath);
 	mark_cache_as_stale();
 	writer.append(time_point_to_stamp(now()));
-	writer.append(" ");
-	writer.append(p_activity);
+	if (!p_activity.empty())
+	{
+		writer.append(" ");
+		writer.append(p_activity);
+	}
 	writer.append("\n");
 	writer.commit();
 	mark_cache_as_stale();
