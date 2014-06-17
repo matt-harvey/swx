@@ -253,11 +253,10 @@ TimeLog::load()
 			}
 			if (!m_entries.empty() && (m_entries.back().time_point > now()))
 			{
-				ostringstream oss;
-				enable_exceptions(oss);
-				oss << "The final entry in the time log is future-dated. "
-					<< "Future dated entries are not supported.";
-				throw runtime_error(oss.str());
+				throw runtime_error
+				(	"The final entry in the time log is future-dated. "
+				    "Future dated entries are not supported."
+				);
 			}
 		}
 		m_is_loaded = true;
