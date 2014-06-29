@@ -23,6 +23,7 @@
 #include <cstddef>
 #include <string>
 #include <map>
+#include <unordered_set>
 #include <vector>
 
 namespace swx
@@ -37,9 +38,8 @@ class TimeLog
 // nested types and typedefs
 private:
 
-	typedef std::vector<std::string> Activities;
-	typedef Activities::size_type ActivityId;
-	typedef std::map<std::string, ActivityId> ActivityMap;
+	typedef std::string const* ActivityId;
+	typedef std::unordered_set<std::string> Activities;
 
 	/**
 	 * Represents a single record in the log.
@@ -152,7 +152,6 @@ private:
 	std::string m_filepath;
 	std::vector<Entry> m_entries;
 	Activities m_activities;
-	ActivityMap m_activity_map;
 
 };  // class TimeLog
 

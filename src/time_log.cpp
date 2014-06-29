@@ -80,7 +80,6 @@ TimeLog::TimeLog(string const& p_filepath):
 {
 	assert (m_entries.empty());
 	assert (m_activities.empty());
-	assert (m_activity_map.empty());
 }
 
 void
@@ -214,7 +213,7 @@ bool
 TimeLog::has_activity(string const& p_activity)
 {
 	load();
-	return m_activity_map.find(p_activity) != m_activity_map.end();
+	return m_activities.find(p_activity) != m_activities.end();
 }
 
 void
@@ -222,7 +221,6 @@ TimeLog::clear_cache()
 {
 	m_entries.clear();
 	m_activities.clear();
-	m_activity_map.clear();
 	mark_cache_as_stale();
 	return;
 }
@@ -267,23 +265,7 @@ TimeLog::load()
 TimeLog::ActivityId
 TimeLog::register_activity(string const& p_activity)
 {
-	auto const it = m_activity_map.find(p_activity);
-	if (it == m_activity_map.end())
-	{
-		auto const ret = m_activities.size();
-		m_activities.push_back(p_activity);
-		try
-		{
-			m_activity_map.insert(ActivityMap::value_type(p_activity, ret));
-		}
-		catch (...)
-		{
-			m_activities.pop_back();
-			throw;
-		}
-		return ret;
-	}
-	return it->second;
+	return &*(m_activities.insert(p_activity).first);
 }
 
 void
@@ -324,7 +306,7 @@ string const&
 TimeLog::id_to_activity(ActivityId p_activity_id)
 {
 	load();
-	return m_activities.at(p_activity_id);
+	return *p_activity_id;
 }
 
 vector<TimeLog::Entry>::const_iterator
