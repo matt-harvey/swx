@@ -109,10 +109,8 @@ SwitchCommand::do_process
 		activity = time_log().last_activity_to_match(reg);
 		if (activity.empty())
 		{
-			ostringstream oss;
-			enable_exceptions(oss);
-			oss << "No activity matches regex: " << reg;
-			error_messages.push_back(oss.str());
+			string const errmsg = "No activity matches regex: " + reg;
+			error_messages.push_back(errmsg);
 			return error_messages;
 		}
 	}
@@ -127,10 +125,8 @@ SwitchCommand::do_process
 		assert (!vec.empty());
 		if (vec[0] == activity)
 		{
-			ostringstream oss;
-			enable_exceptions(oss);
-			oss << "Already active: " << activity;
-			error_messages.push_back(oss.str());
+			string const errmsg = "Already active: " + activity;
+			error_messages.push_back(errmsg);
 			return error_messages;
 		}
 	}

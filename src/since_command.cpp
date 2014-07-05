@@ -92,7 +92,7 @@ SinceCommand::do_process
 		{
 			ostringstream oss;
 			enable_exceptions(oss);
-			oss << "Could not parse timestamp: " << oargs[0];
+			string const errmsg = "Could not parse timestamp: " + oargs[0];
 			return ErrorMessages{oss.str()};
 		}
 		assert (oargs.size() >= 1);

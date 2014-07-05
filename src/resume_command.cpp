@@ -25,13 +25,11 @@
 #include <cassert>
 #include <iostream>
 #include <ostream>
-#include <sstream>
 #include <string>
 #include <vector>
 
 using std::endl;
 using std::ostream;
-using std::ostringstream;
 using std::string;
 using std::vector;
 

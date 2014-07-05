@@ -217,10 +217,8 @@ Config::set_option_value(string const& p_key, string const& p_value)
 	auto const it = m_map.find(p_key);
 	if (it == m_map.end())
 	{
-		ostringstream oss;
-		enable_exceptions(oss);
-		oss << "Unrecognized configuration key: " << p_key;
-		throw runtime_error(oss.str());
+		string const errmsg = "Unrecognized configuration key: " + p_key;
+		throw runtime_error(errmsg);
 	}
 	it->second.value = p_value;
 	return;
@@ -243,10 +241,8 @@ Config::get_raw_option_value(std::string const& p_key)
 	auto const it = m_map.find(p_key);
 	if (it == m_map.end())
 	{
-		ostringstream oss;
-		enable_exceptions(oss);
-		oss << "Could not find configuration key: " << p_key;
-		throw std::runtime_error(oss.str());
+		string const errmsg = "Could not find configuration key: " + p_key;
+		throw runtime_error(errmsg);
 	}
 	assert (it != m_map.end());
 	return it->second.value;

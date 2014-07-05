@@ -23,7 +23,6 @@
 #include <cassert>
 #include <iostream>
 #include <ostream>
-#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -31,7 +30,6 @@
 
 using std::endl;
 using std::ostream;
-using std::ostringstream;
 using std::runtime_error;
 using std::string;
 using std::vector;
