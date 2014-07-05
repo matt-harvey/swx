@@ -101,7 +101,7 @@ SwitchCommand::do_process
 	{
 		if (activity.empty())
 		{
-			error_messages.push_back("Empty regex not allowed");
+			error_messages.push_back("Empty regex not allowed.");
 			return error_messages;
 		}
 		assert (activity.size() >= 1);
