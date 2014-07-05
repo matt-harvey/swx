@@ -92,93 +92,111 @@ SwitchCommand::do_process
 	ostream& p_ordinary_ostream
 )
 {
-	// TODO MEDIUM PRIORITY Tidy this.
 	ErrorMessages error_messages;
+
+	// interpret arguments
+	bool const using_regex = p_args.has_flag(k_regex_flag);
+	bool const creating_activity = p_args.has_flag(k_creation_flag);
 	Arguments const args =
 		expand_placeholders(p_args.ordinary_args(), time_log());
-	string activity(squish(args.begin(), args.end()));
-	if (p_args.has_flag(k_regex_flag))
+
+	// find the activity that we want to switch to
+	string const activity_input(squish(args.begin(), args.end()));
+	string activity;
+	if (using_regex)
 	{
+		if (activity_input.empty())
+		{
+			return {"Empty regex not allowed."};
+		}
+		activity = time_log().last_activity_to_match(activity_input);
 		if (activity.empty())
 		{
-			error_messages.push_back("Empty regex not allowed.");
-			return error_messages;
+			return {"No activity matches regex:" + activity_input};
 		}
-		assert (activity.size() >= 1);
-		string const reg = activity;
-		activity = time_log().last_activity_to_match(reg);
-		if (activity.empty())
+	}
+	else
+	{
+		activity = activity_input;
+	}
+
+	// capture state of time log
+	bool const log_active = time_log().is_active();
+	bool const activity_exists = time_log().has_activity(activity);
+
+	// prevent pointless switch
+	if (activity.empty())
+	{
+		if (!log_active)
 		{
-			string const errmsg = "No activity matches regex: " + reg;
-			error_messages.push_back(errmsg);
-			return error_messages;
+			return {"Already inactive."};
 		}
 	}
-	if (activity.empty() && !time_log().is_active())
+	else
 	{
-		error_messages.push_back("Already inactive.");
-		return error_messages;
-	}
-	if (!activity.empty() && time_log().is_active())
-	{
-		vector<string> const vec = time_log().last_activities(1);
-		assert (!vec.empty());
-		if (vec[0] == activity)
+		if (log_active)
 		{
-			string const errmsg = "Already active: " + activity;
-			error_messages.push_back(errmsg);
-			return error_messages;
+			vector<string> const vec = time_log().last_activities(1);
+			assert (!vec.empty());
+			if (vec[0] == activity)
+			{
+				return {"Already active: " + activity};
+			}
 		}
 	}
-	bool const has_creation_flag = p_args.has_flag(k_creation_flag);
-	bool const has_activity = time_log().has_activity(activity);
-	if
-	(	(has_creation_flag && !has_activity) ||
-		(!has_creation_flag && has_activity) ||
-		(activity.empty())
-	)
+
+	// process switch
+	if ((creating_activity != activity_exists) || activity.empty())
 	{
+		// we can switch
 		time_log().append_entry(activity);
 		if (activity.empty())
 		{
 			p_ordinary_ostream << "Activity ceased." << endl;
 		}
-		else if (p_args.has_flag(k_creation_flag))
+		else if (creating_activity)
 		{
 			p_ordinary_ostream << "Created and switched to new activity: "
 			                   << activity << endl;
 		}
 		else
 		{
+			assert (activity_exists);
 			p_ordinary_ostream << "Switched to: " << activity << endl;
 		}
-		return error_messages;
-	}
-	ostringstream oss;
-	enable_exceptions(oss);
-	if (p_args.has_flag(k_creation_flag))
-	{
-		assert (time_log().has_activity(activity));
-		oss << "Activity already exists: " << activity;
 	}
 	else
 	{
-		assert (!p_args.has_flag(k_creation_flag));
-		assert (!time_log().has_activity(activity));
-		oss << "Non-existent activity: " << activity
-		    << "\nUse -c option to create and switch to a new activity.";
+		// we can't switch
+
+		// say why not
+		ostringstream oss;
+		enable_exceptions(oss);
+		if (creating_activity)
+		{
+			assert (activity_exists);
+			oss << "Activity already exists: " << activity;
+		}
+		else
+		{
+			assert (!activity_exists);
+			oss << "Non-existent activity: " << activity
+				<< "\nUse -c option to create and switch to a new activity.";
+		}
+
+		// report time log state
+		if (log_active)
+		{
+			assert (!time_log().last_activities(1).empty());
+			oss << "\nCurrent activity remains: "
+				<< time_log().last_activities(1).front();
+		}
+		else
+		{
+			oss << "\nRemaining inactive." << endl;
+		}
+		error_messages.push_back(oss.str());
 	}
-	if (time_log().is_active())
-	{
-		assert (!time_log().last_activities(1).empty());
-		oss << "\nCurrent activity remains: "
-		    << time_log().last_activities(1).front();
-	}
-	else
-	{
-		oss << "\nRemaining inactive." << endl;
-	}
-	error_messages.push_back(oss.str());
 	return error_messages;
 }
 

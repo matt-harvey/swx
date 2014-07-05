@@ -77,7 +77,7 @@ BetweenCommand::do_process
 	Arguments const oargs = p_args.ordinary_args();
 	if (oargs.size() < 2)
 	{
-		return ErrorMessages{"Too few arguments passed to this command."};
+		return {"Too few arguments passed to this command."};
 	}
 	else
 	{
@@ -94,7 +94,7 @@ BetweenCommand::do_process
 			ostringstream oss;
 			enable_exceptions(oss);
 			oss << "Could not parse timestamp: " << oargs[0];
-			return ErrorMessages{oss.str()};
+			return {oss.str()};
 		}
 		try
 		{
@@ -107,7 +107,7 @@ BetweenCommand::do_process
 			ostringstream oss;
 			enable_exceptions(oss);
 			oss << "Could not parse timestamp: " << oargs[1];
-			return ErrorMessages{oss.str()};
+			return {oss.str()};
 		}
 		assert (oargs.size() >= 2);
 		print_report

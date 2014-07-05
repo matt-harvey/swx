@@ -77,7 +77,7 @@ SinceCommand::do_process
 	Arguments const oargs = p_args.ordinary_args();
 	if (oargs.empty())
 	{
-		return ErrorMessages{"Too few arguments passed to this command."};
+		return {"Too few arguments passed to this command."};
 	}
 	else
 	{
@@ -93,7 +93,7 @@ SinceCommand::do_process
 			ostringstream oss;
 			enable_exceptions(oss);
 			string const errmsg = "Could not parse timestamp: " + oargs[0];
-			return ErrorMessages{oss.str()};
+			return {oss.str()};
 		}
 		assert (oargs.size() >= 1);
 		print_report
