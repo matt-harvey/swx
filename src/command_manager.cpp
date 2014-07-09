@@ -195,7 +195,9 @@ CommandManager::help_information() const
 	}
 	ostringstream oss;
 	enable_exceptions(oss);
-	oss << "Usage: " << Info::application_name() << " <COMMAND> [ARGS...]\n";
+	oss << "Usage: "
+	    << Info::application_name()
+	    << " <COMMAND> [OPTIONS...] [ARGUMENTS...] [OPTIONS...]\n";
 	string::size_type width = 0;
 	for (auto const& pair: grouped_commands)
 	{
