@@ -44,7 +44,7 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		enable_exceptions(std::cout);
+		enable_exceptions(cout);
 		if (argc < 2)
 		{
 			cerr << "Command not provided." << endl;
@@ -61,6 +61,11 @@ int main(int argc, char** argv)
 		TimeLog time_log(Config::path_to_log());
 		CommandManager manager(time_log);
 		manager.process_command(argv[1], args);
+	}
+	catch (std::runtime_error& e)
+	{
+		cerr << "Error: " << e.what() << endl;
+		return 1;
 	}
 	catch (...)
 	{

@@ -96,7 +96,8 @@ time_stamp_to_point(string const& p_time_stamp)
 
 	if (parse_error)
 	{
-		throw runtime_error("Could not parse timestamp.");
+		string const errmsg = "Could not parse timestamp: " + p_time_stamp;
+		throw runtime_error(errmsg);
 	}
 	return chrono::system_clock::from_time_t(mktime(&tm));
 }
