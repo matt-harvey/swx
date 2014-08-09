@@ -44,19 +44,21 @@ now()
 }
 
 TimePoint
-day_begin(TimePoint const& p_time_point)
+day_begin(TimePoint const& p_time_point, int p_days_diff)
 {
 	tm time_tm = time_point_to_tm(p_time_point);
-	time_tm.tm_hour = time_tm.tm_min = time_tm.tm_sec = 0;
+	time_tm.tm_hour = p_days_diff * 24;
+	time_tm.tm_min = time_tm.tm_sec = 0;
 	time_tm.tm_isdst = -1;
 	return tm_to_time_point(time_tm);
 }
 
 TimePoint
-day_end(TimePoint const& p_time_point)
+day_end(TimePoint const& p_time_point, int p_days_diff)
 {
 	tm time_tm = time_point_to_tm(p_time_point);
-	time_tm.tm_hour = time_tm.tm_min = time_tm.tm_sec = 0;
+	time_tm.tm_hour = p_days_diff * 24;
+	time_tm.tm_min = time_tm.tm_sec = 0;
 	++time_tm.tm_mday;
 	return tm_to_time_point(time_tm);
 }

@@ -94,6 +94,7 @@ various "reporting commands" are available::
     swx between
     swx until
     swx today
+    swx yesterday
 
 Enter ``swx help <COMMAND>`` for detailed usage information in regards to
 each of these. They all follow a similar pattern, and allow you to enter an
@@ -101,6 +102,8 @@ optional activity name, if you want to see only time spent on a given activity,
 or to omit the activity name, if you want to see time spent on all activities.
 
 ``swx today`` prints a summary of only the current day's activities.
+
+``swx yesterday`` prints a summary of only the previous day's activities.
 
 ``swx print`` prints a summary of activity that is not filtered by time at all.
 

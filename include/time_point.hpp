@@ -29,14 +29,23 @@ typedef std::chrono::time_point<std::chrono::system_clock> TimePoint;
 TimePoint now();
 
 /**
- * The first TimePoint of the day on which p_time_point falls.
+ * The first TimePoint of the day on which \e p_time_point falls; or, if
+ * \e p_days_diff is passed a positive integer \e n, the first TimePoint of the
+ * day \e n days after the day on which \e p_time_point falls; or, if \e
+ * p_days_diff is passed a negative integer, \e n, the first TimePoint of the
+ * day \e n days before the day on which \e p_time_point falls.
  */
-TimePoint day_begin(TimePoint const& p_time_point);
+TimePoint day_begin(TimePoint const& p_time_point, int p_days_diff = 0);
 
 /**
- * One TimePoint past the last TimePoint of the day on which p_time_point falls.
+ * One TimePoint past the last TimePoint of the day on which \e p_time_point
+ * falls; or, if \e p_days_diff is passed a positive integer \e n, one
+ * TimePoint past the last TimePoint of the day \e n days after the day on
+ * which \e p_time_point falls; or, if \e p_days_diff is passed a negative
+ * integer, \e n, one TimePoint past the last Time Point of the day \e n days
+ * before the day on which \e p_time_point falls.
  */
-TimePoint day_end(TimePoint const& p_time_point);
+TimePoint day_end(TimePoint const& p_time_point, int p_days_diff = 0);
 
 std::tm time_point_to_tm(TimePoint const& p_time_point);
 TimePoint tm_to_time_point(std::tm const& p_tm);

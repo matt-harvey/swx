@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "yesterday_command.hpp"
 #include "today_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
@@ -30,7 +31,7 @@ using std::vector;
 namespace swx
 {
 
-TodayCommand::TodayCommand
+YesterdayCommand::YesterdayCommand
 (	string const& p_command_word,
 	vector<string> const& p_aliases,
 	TimeLog& p_time_log
@@ -38,11 +39,11 @@ TodayCommand::TodayCommand
 	ReportingCommand
 	(	p_command_word,
 		p_aliases,
-		"Print summary of today's activities",
+		"Print summary of yesterday's activities",
 		vector<HelpLine>
-		{	HelpLine("Print summary of time spent on all activities today"),
+		{	HelpLine("Print summary of time spent of all activities yesterday"),
 			HelpLine
-			(	"Print summary of time spent on ACTIVITY today",
+			(	"Print summary of time spent on ACTIVITY yesterday",
 				"ACTIVITY"
 			)
 		},
@@ -51,20 +52,20 @@ TodayCommand::TodayCommand
 {
 }
 
-TodayCommand::~TodayCommand()
+YesterdayCommand::~YesterdayCommand()
 {
 }
 
 Command::ErrorMessages
-TodayCommand::do_process
+YesterdayCommand::do_process
 (	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
 	ErrorMessages ret;
 	TimePoint const n = now();
-	auto const b = day_begin(n);
-	auto const e = day_end(n);
+	auto const b = day_begin(n, -1);
+	auto const e = day_end(n, -1);
 	print_report
 	(	p_ordinary_ostream,
 		p_args.single_character_flags(),

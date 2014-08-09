@@ -87,6 +87,7 @@ set(
 	src/time_log.cpp
 	src/until_command.cpp
 	src/version_command.cpp
+	src/yesterday_command.cpp
 )
 add_library(swx_common ${common_sources})
 
