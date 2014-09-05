@@ -112,7 +112,7 @@ SwitchCommand::do_process
 		activity = time_log().last_activity_to_match(activity_input);
 		if (activity.empty())
 		{
-			return {"No activity matches regex:" + activity_input};
+			return {"No activity matches regex: " + activity_input};
 		}
 	}
 	else
