@@ -91,19 +91,38 @@ DayCommand::do_process
 	TimePoint const n = now();
 
 	int days_ago = 0;
+	bool digit_flag_encountered = false;
+
 	for (int i = 1; i <= k_max_days_ago; ++i)
 	{
-		if (p_args.has_flag(static_cast<char>(i + '0'))) days_ago = i;
+		if (p_args.has_flag(static_cast<char>(i + '0')))
+		{
+			if (digit_flag_encountered)
+			{
+				ret.push_back
+				(	"Only a single digit numeric option can be passed "
+					"to this command"
+				);
+			}
+			else
+			{
+				days_ago = i;
+				digit_flag_encountered = true;
+			}
+		}
 	}
-	auto const b = day_begin(n, -days_ago);
-	auto const e = day_end(n, -days_ago);
-	print_report
-	(	p_ordinary_ostream,
-		p_args.single_character_flags(),
-		p_args.ordinary_args(),
-		&b,
-		&e
-	);
+	if (ret.empty())
+	{
+		auto const b = day_begin(n, -days_ago);
+		auto const e = day_end(n, -days_ago);
+		print_report
+		(	p_ordinary_ostream,
+			p_args.single_character_flags(),
+			p_args.ordinary_args(),
+			&b,
+			&e
+		);
+	}
 	return ret;
 }
 
