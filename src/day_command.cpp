@@ -56,7 +56,7 @@ DayCommand::DayCommand
 	ReportingCommand
 	(	p_command_word,
 		p_aliases,
-		"Print summary of today's activities",
+		"Print summary of a single day's activities",
 		vector<HelpLine>
 		{	HelpLine("Print summary of time spent on all activities today"),
 			HelpLine
