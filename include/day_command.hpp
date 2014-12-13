@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef GUARD_yesterday_command_hpp_3429149679573788
-#define GUARD_yesterday_command_hpp_3429149679573788
+#ifndef GUARD_day_command_hpp_01995176124384243
+#define GUARD_day_command_hpp_01995176124384243
 
 #include "reporting_command.hpp"
 #include "time_log.hpp"
@@ -25,20 +25,20 @@
 namespace swx
 {
 
-class YesterdayCommand: public ReportingCommand
+class DayCommand: public ReportingCommand
 {
 // special member functions
 public:
-	YesterdayCommand
+	DayCommand
 	(	std::string const& p_command_word,
 		std::vector<std::string> const& p_aliases,
 		TimeLog& p_time_log
 	);
-	YesterdayCommand(YesterdayCommand const& rhs) = delete;
-	YesterdayCommand(YesterdayCommand&& rhs) = delete;
-	YesterdayCommand& operator=(YesterdayCommand const& rhs) = delete;
-	YesterdayCommand& operator=(YesterdayCommand&& rhs) = delete;
-	virtual ~YesterdayCommand();
+	DayCommand(DayCommand const& rhs) = delete;
+	DayCommand(DayCommand&& rhs) = delete;
+	DayCommand& operator=(DayCommand const& rhs) = delete;
+	DayCommand& operator=(DayCommand&& rhs) = delete;
+	virtual ~DayCommand();
 
 // inherited virtual functions
 private:
@@ -47,8 +47,8 @@ private:
 		std::ostream& p_ordinary_ostream
 	) override;
 
-};  // class YesterdayCommand
+};  // class DayCommand
 
 }  // namespace swx
 
-#endif  // GUARD_yesterday_command_hpp_3429149679573788
+#endif  // GUARD_day_command_hpp_01995176124384243

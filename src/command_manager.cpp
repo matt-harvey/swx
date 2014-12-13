@@ -18,6 +18,7 @@
 #include "between_command.hpp"
 #include "command.hpp"
 #include "config_command.hpp"
+#include "day_command.hpp"
 #include "edit_command.hpp"
 #include "help_command.hpp"
 #include "info.hpp"
@@ -27,8 +28,6 @@
 #include "since_command.hpp"
 #include "stream_utilities.hpp"
 #include "switch_command.hpp"
-#include "today_command.hpp"
-#include "yesterday_command.hpp"
 #include "time_log.hpp"
 #include "until_command.hpp"
 #include "version_command.hpp"
@@ -120,15 +119,10 @@ CommandManager::populate_command_map()
 	);
 	create_command(print_command);
 
-	shared_ptr<Command> today_command
-	(	new TodayCommand("today", {"t"}, m_time_log)
+	shared_ptr<Command> day_command
+	(	new DayCommand("day", {"d"}, m_time_log)
 	);
-	create_command(today_command);
-
-	shared_ptr<Command> yesterday_command
-	(	new YesterdayCommand("yesterday", {}, m_time_log)
-	);
-	create_command(yesterday_command);
+	create_command(day_command);
 
 	shared_ptr<Command> since_command
 	(	new SinceCommand("since", {}, m_time_log)

@@ -14,24 +14,41 @@
  * limitations under the License.
  */
 
-#include "yesterday_command.hpp"
-#include "today_command.hpp"
+#include "day_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
 #include "reporting_command.hpp"
 #include "time_point.hpp"
 #include <ostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
 using std::ostream;
+using std::ostringstream;
 using std::string;
 using std::vector;
 
 namespace swx
 {
 
-YesterdayCommand::YesterdayCommand
+namespace
+{
+	int const k_max_days_ago = 9;
+	
+	string days_ago_pluralized(int days)
+	{
+		if (days == 1)
+		{
+			return "yesterday";
+		}
+		ostringstream oss;
+		oss << days << " days ago";
+		return oss.str();
+	}
+}
+
+DayCommand::DayCommand
 (	string const& p_command_word,
 	vector<string> const& p_aliases,
 	TimeLog& p_time_log
@@ -39,33 +56,47 @@ YesterdayCommand::YesterdayCommand
 	ReportingCommand
 	(	p_command_word,
 		p_aliases,
-		"Print summary of yesterday's activities",
+		"Print summary of today's activities",
 		vector<HelpLine>
-		{	HelpLine("Print summary of time spent of all activities yesterday"),
+		{	HelpLine("Print summary of time spent on all activities today"),
 			HelpLine
-			(	"Print summary of time spent on ACTIVITY yesterday",
+			(	"Print summary of time spent on ACTIVITY today",
 				"ACTIVITY"
 			)
 		},
 		p_time_log
 	)
 {
+	string const s("Instead of today's activities, print the activities from ");
+	for (int i = 1; i <= k_max_days_ago; ++i)
+	{
+		add_boolean_option
+		(	static_cast<char>(i + '0'),
+			s + days_ago_pluralized(i)
+		);
+	}
 }
 
-YesterdayCommand::~YesterdayCommand()
+DayCommand::~DayCommand()
 {
 }
 
 Command::ErrorMessages
-YesterdayCommand::do_process
+DayCommand::do_process
 (	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
 	ErrorMessages ret;
 	TimePoint const n = now();
-	auto const b = day_begin(n, -1);
-	auto const e = day_end(n, -1);
+
+	int days_ago = 0;
+	for (int i = 1; i <= k_max_days_ago; ++i)
+	{
+		if (p_args.has_flag(static_cast<char>(i + '0'))) days_ago = i;
+	}
+	auto const b = day_begin(n, -days_ago);
+	auto const e = day_end(n, -days_ago);
 	print_report
 	(	p_ordinary_ostream,
 		p_args.single_character_flags(),
