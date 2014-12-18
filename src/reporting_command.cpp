@@ -57,12 +57,12 @@ ReportingCommand::ReportingCommand
 	);
 	add_boolean_option
 	(	'l',
-		"Instead of printing a summary, print a list of individual "
-			"activity stints during the relevant period"
+		"Instead of printing a summary, print a date-ordered list of "
+			"individual activity stints during the relevant period"
 	);
 	add_boolean_option
 	(	'v',
-		"Print both a list of individual activity stints, and a "
+		"Print both a date-ordered list of individual activity stints, and a "
 			"summary of the time spent on each activity"
 	);
 	add_boolean_option
