@@ -58,9 +58,7 @@ ResumeCommand::ResumeCommand
 {
 }
 
-ResumeCommand::~ResumeCommand()
-{
-}
+ResumeCommand::~ResumeCommand() = default;
 
 Command::ErrorMessages
 ResumeCommand::do_process

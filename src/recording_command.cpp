@@ -46,9 +46,7 @@ RecordingCommand::RecordingCommand
 {
 }
 
-RecordingCommand::~RecordingCommand()
-{
-}
+RecordingCommand::~RecordingCommand() = default;
 
 TimeLog&
 RecordingCommand::time_log()

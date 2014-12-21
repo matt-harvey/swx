@@ -36,9 +36,7 @@ CsvSummaryReportWriter::CsvSummaryReportWriter(vector<Stint> const& p_stints):
 {
 }
 
-CsvSummaryReportWriter::~CsvSummaryReportWriter()
-{
-}
+CsvSummaryReportWriter::~CsvSummaryReportWriter() = default;
 
 void
 CsvSummaryReportWriter::do_write_summary

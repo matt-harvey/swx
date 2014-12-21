@@ -64,9 +64,7 @@ SinceCommand::SinceCommand
 {
 }
 
-SinceCommand::~SinceCommand()
-{
-}
+SinceCommand::~SinceCommand() = default;
 
 Command::ErrorMessages
 SinceCommand::do_process

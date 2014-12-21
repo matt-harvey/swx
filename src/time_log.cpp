@@ -82,6 +82,8 @@ TimeLog::TimeLog(string const& p_filepath):
 	assert (m_activities.empty());
 }
 
+TimeLog::~TimeLog() = default;
+
 void
 TimeLog::append_entry(string const& p_activity)
 {

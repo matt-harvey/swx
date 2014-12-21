@@ -63,9 +63,7 @@ UntilCommand::UntilCommand
 {
 }
 
-UntilCommand::~UntilCommand()
-{
-}
+UntilCommand::~UntilCommand() = default;
 
 Command::ErrorMessages
 UntilCommand::do_process

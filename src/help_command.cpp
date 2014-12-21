@@ -55,9 +55,7 @@ HelpCommand::HelpCommand
 {
 }
 
-HelpCommand::~HelpCommand()
-{
-}
+HelpCommand::~HelpCommand() = default;
 
 Command::ErrorMessages
 HelpCommand::do_process

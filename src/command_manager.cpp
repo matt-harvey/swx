@@ -81,6 +81,8 @@ CommandManager::CommandManager(TimeLog& p_time_log): m_time_log(p_time_log)
 #	endif
 }
 
+CommandManager::~CommandManager() = default;
+
 void
 CommandManager::populate_command_map()
 {

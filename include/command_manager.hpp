@@ -52,7 +52,7 @@ public:
 	CommandManager(CommandManager&& rhs) = delete;
 	CommandManager& operator=(CommandManager const& rhs) = delete;
 	CommandManager& operator=(CommandManager&& rhs) = delete;
-	~CommandManager() = default;
+	~CommandManager();
 
 // ordinary and static member functions
 private:

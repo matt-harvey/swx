@@ -42,9 +42,7 @@ HumanListReportWriter::HumanListReportWriter(vector<Stint> const& p_stints):
 {
 }
 
-HumanListReportWriter::~HumanListReportWriter()
-{
-}
+HumanListReportWriter::~HumanListReportWriter() = default;
 
 void
 HumanListReportWriter::do_process_stint(ostream& p_os, Stint const& p_stint)

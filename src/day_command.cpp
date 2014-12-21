@@ -77,9 +77,7 @@ DayCommand::DayCommand
 	}
 }
 
-DayCommand::~DayCommand()
-{
-}
+DayCommand::~DayCommand() = default;
 
 Command::ErrorMessages
 DayCommand::do_process

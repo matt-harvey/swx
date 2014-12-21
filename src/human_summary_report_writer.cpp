@@ -64,9 +64,7 @@ HumanSummaryReportWriter::HumanSummaryReportWriter(vector<Stint> const& p_stints
 {
 }
 
-HumanSummaryReportWriter::~HumanSummaryReportWriter()
-{
-}
+HumanSummaryReportWriter::~HumanSummaryReportWriter() = default;
 
 void
 HumanSummaryReportWriter::do_write_summary

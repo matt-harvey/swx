@@ -35,10 +35,7 @@ namespace swx
 
 namespace
 {
-	char config_file_flag()
-	{
-		return 'c';
-	}
+	char const k_config_file_flag = 'c';
 }
 
 EditCommand::EditCommand
@@ -59,14 +56,12 @@ EditCommand::EditCommand
 	)
 {
 	add_boolean_option
-	(	config_file_flag(),
+	(	k_config_file_flag,
 		"Instead of opening the activity log, open the configuration file"
 	);
 }
 
-EditCommand::~EditCommand()
-{
-}
+EditCommand::~EditCommand() = default;
 
 Command::ErrorMessages
 EditCommand::do_process
@@ -76,7 +71,7 @@ EditCommand::do_process
 {
 	(void)p_ordinary_ostream;  // suppress compiler warning re. unused param.
 	string const filepath =
-	(	p_args.has_flag(config_file_flag())?
+	(	p_args.has_flag(k_config_file_flag)?
 		Config::filepath():
 		Config::path_to_log()
 	);

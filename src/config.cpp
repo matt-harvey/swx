@@ -55,24 +55,17 @@ namespace
 		error
 	};
 
-	char commenting_char()
-	{
-		return '#';
-	}
-
-	char separator()
-	{
-		return '=';
-	}
+	char const k_commenting_char = '#';
+	char const k_separator = '=';
 
 	LineType parse_line(string const& p_line, pair<string, string>& p_out)
 	{
 		string const line = trim(p_line);
-		if (line.empty() || line[0] == commenting_char())
+		if (line.empty() || line[0] == k_commenting_char)
 		{
 			return LineType::blank;
 		}
-		auto const it = find(line.begin(), line.end(), separator());
+		auto const it = find(line.begin(), line.end(), k_separator);
 		if (it == line.end() || it == line.begin())
 		{
 			return LineType::error;
@@ -93,7 +86,7 @@ namespace
 		}
 		ostringstream oss;
 		enable_exceptions(oss);
-		oss << commenting_char();
+		oss << k_commenting_char;
 		string::size_type const sz = s.size();
 		if (!((sz == 0) || (s == "\n")))
 		{
@@ -105,7 +98,7 @@ namespace
 		 	oss << c;
 			if ((c == '\n') && (i + 1 != sz))
 			{
-				oss << commenting_char();
+				oss << k_commenting_char;
 				if (s[i + 1] != '\n')
 				{
 					oss << ' ';
@@ -207,9 +200,7 @@ Config::Config(): m_is_loaded(false)
 	assert (m_map.empty());
 }
 
-Config::~Config()
-{
-}
+Config::~Config() = default;
 
 void
 Config::set_option_value(string const& p_key, string const& p_value)
@@ -385,14 +376,14 @@ Config::initialize_config_file()
 	    << " can be set in this file.\n"
 		<< "\n"
 		<< "SYNTAX:\n"
-		<< "\tkey" << separator() << "value\n"
+		<< "\tkey" << k_separator << "value\n"
 		<< "\tBlank lines are permitted.\n"
 		<< "\tDo NOT place quotes around value.\n"
 		<< "\tvalue may contain whitespace.\n"
 		<< "\tComments must occupy a line to themselves beginning with '"
-		<< commenting_char() << "'.";
+		<< k_commenting_char << "'.";
 	writer.append_line(comment_out(oss.str()));
-	writer.append_line(string(80, commenting_char()));
+	writer.append_line(string(80, k_commenting_char));
 	for (auto const& entry: m_map)
 	{
 		OptionData const data = entry.second;
@@ -405,7 +396,7 @@ Config::initialize_config_file()
 					"accordingly."
 			)
 		);
-		writer.append_line(comment_out(entry.first + separator() + data.value));
+		writer.append_line(comment_out(entry.first + k_separator + data.value));
 	}
 	writer.commit();
 	return;

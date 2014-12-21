@@ -142,9 +142,7 @@ Command::Command
 {
 }
 
-Command::~Command()
-{
-}
+Command::~Command() = default;
 
 void
 Command::add_boolean_option(char p_flag, string const& p_description)

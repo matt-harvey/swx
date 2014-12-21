@@ -49,9 +49,7 @@ PrintCommand::PrintCommand
 {
 }
 
-PrintCommand::~PrintCommand()
-{
-}
+PrintCommand::~PrintCommand() = default;
 
 Command::ErrorMessages
 PrintCommand::do_process

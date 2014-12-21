@@ -45,9 +45,7 @@ VersionCommand::VersionCommand
 {
 }
 
-VersionCommand::~VersionCommand()
-{
-}
+VersionCommand::~VersionCommand() = default;
 
 Command::ErrorMessages
 VersionCommand::do_process

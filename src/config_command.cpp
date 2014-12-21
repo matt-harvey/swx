@@ -35,15 +35,8 @@ namespace swx
 
 namespace
 {
-	char editing_flag()
-	{
-		return 'e';
-	}
-
-	char filepath_flag()
-	{
-		return 'f';
-	}
+	char const k_editing_flag = 'e';
+	char const k_filepath_flag = 'f';
 }
 
 ConfigCommand::ConfigCommand
@@ -61,21 +54,19 @@ ConfigCommand::ConfigCommand
 	)
 {
 	add_boolean_option
-	(	editing_flag(),
+	(	k_editing_flag,
 		"Instead of printing configuration settings, open the configuration "
 			"file using the text editor determined by the \"editor\" "
 			"configuration setting"
 	);
 	add_boolean_option
-	(	filepath_flag(),
+	(	k_filepath_flag,
 		"Instead of printing configuration settings, print the location of the "
 			"configuration file"
 	);
 }
 
-ConfigCommand::~ConfigCommand()
-{
-}
+ConfigCommand::~ConfigCommand() = default;
 
 Command::ErrorMessages
 ConfigCommand::do_process
@@ -83,13 +74,13 @@ ConfigCommand::do_process
 	ostream& p_ordinary_ostream
 )
 {
-	if (p_args.has_flag(editing_flag()))
+	if (p_args.has_flag(k_editing_flag))
 	{
 		string const editor_invokation =
 			Config::editor() + " " + Config::filepath();
 		system(editor_invokation.c_str());
 	}
-	else if (p_args.has_flag(filepath_flag()))
+	else if (p_args.has_flag(k_filepath_flag))
 	{
 		p_ordinary_ostream << Config::filepath() << endl;
 	}

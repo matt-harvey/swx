@@ -82,9 +82,7 @@ SwitchCommand::SwitchCommand
 	);
 }
 
-SwitchCommand::~SwitchCommand()
-{
-}
+SwitchCommand::~SwitchCommand() = default;
 
 Command::ErrorMessages
 SwitchCommand::do_process

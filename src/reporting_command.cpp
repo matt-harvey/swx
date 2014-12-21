@@ -41,6 +41,14 @@ using std::vector;
 namespace swx
 {
 
+namespace
+{
+	char const k_csv_flag = 'c';
+	char const k_list_flag = 'l';
+	char const k_verbose_flag = 'v';
+	char const k_regex_flag = 'r';
+}
+
 ReportingCommand::ReportingCommand
 (	string const& p_command_word,
 	vector<string> const& p_aliases,
@@ -52,29 +60,27 @@ ReportingCommand::ReportingCommand
 	m_time_log(p_time_log)
 {
 	add_boolean_option
-	(	'c',
+	(	k_csv_flag,
 		"Output in CSV format"
 	);
 	add_boolean_option
-	(	'l',
+	(	k_list_flag,
 		"Instead of printing a summary, print a date-ordered list of "
 			"individual activity stints during the relevant period"
 	);
 	add_boolean_option
-	(	'v',
+	(	k_verbose_flag,
 		"Print both a date-ordered list of individual activity stints, and a "
 			"summary of the time spent on each activity"
 	);
 	add_boolean_option
-	(	'r',
+	(	k_regex_flag,
 		"Treat ACTIVITY as a (POSIX extended) regular expression, and include "
 			"all activities that match it"
 	);
 }
 
-ReportingCommand::~ReportingCommand()
-{
-}
+ReportingCommand::~ReportingCommand() = default;
 
 ostream&
 ReportingCommand::print_report
@@ -93,17 +99,17 @@ ReportingCommand::print_report
 	{
 		switch (c)
 		{
-		case 'c':
+		case k_csv_flag:
 			csv = true;
 			break;
-		case 'l':
+		case k_list_flag:
 			detail = true;
 			summary = false;
 			break;
-		case 'r':
+		case k_regex_flag:
 			use_regex = true;
 			break;
-		case 'v':
+		case k_verbose_flag:
 			detail = true;
 			summary = true;
 			break;

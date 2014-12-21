@@ -64,9 +64,7 @@ BetweenCommand::BetweenCommand
 {
 }
 
-BetweenCommand::~BetweenCommand()
-{
-}
+BetweenCommand::~BetweenCommand() = default;
 
 Command::ErrorMessages
 BetweenCommand::do_process

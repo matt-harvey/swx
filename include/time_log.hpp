@@ -60,7 +60,7 @@ public:
 	TimeLog(TimeLog&& rhs) = delete;
 	TimeLog& operator=(TimeLog const& rhs) = delete;
 	TimeLog& operator=(TimeLog&& rhs) = delete;
-	~TimeLog() = default;
+	~TimeLog();
 
 // ordinary member functions
 public:
