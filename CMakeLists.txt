@@ -51,6 +51,7 @@ include_directories(include ${Boost_INCLUDE_DIRS})
 set(libraries ${Boost_LIBRARIES} pthread dl)
 set(
 	common_sources
+	src/arithmetic.cpp
 	src/atomic_writer.cpp
 	src/print_command.cpp
 	src/between_command.cpp
@@ -75,7 +76,6 @@ set(
 	src/report_writer.cpp
 	src/reporting_command.cpp
 	src/resume_command.cpp
-	src/round.cpp
 	src/since_command.cpp
 	src/stint.cpp
 	src/stream_flag_guard.cpp

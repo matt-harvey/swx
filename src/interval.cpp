@@ -15,8 +15,8 @@
  */
 
 #include "interval.hpp"
+#include "arithmetic.hpp"
 #include "config.hpp"
-#include "round.hpp"
 #include "seconds.hpp"
 #include "stream_flag_guard.hpp"
 #include "time_point.hpp"

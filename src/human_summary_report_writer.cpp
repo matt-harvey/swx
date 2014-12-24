@@ -15,13 +15,13 @@
  */
 
 #include "human_summary_report_writer.hpp"
+#include "arithmetic.hpp"
 #include "stint.hpp"
 #include "stream_flag_guard.hpp"
 #include "summary_report_writer.hpp"
 #include <cassert>
 #include <iomanip>
 #include <iostream>
-#include <limits>
 #include <map>
 #include <ostream>
 #include <stdexcept>
@@ -32,7 +32,6 @@ using std::endl;
 using std::fixed;
 using std::left;
 using std::map;
-using std::numeric_limits;
 using std::ostream;
 using std::right;
 using std::runtime_error;
@@ -43,21 +42,6 @@ using std::vector;
 
 namespace swx
 {
-
-namespace
-{
-	// TODO MEDIUM PRIORITY Code duplicated in SummaryReportWriter.
-
-	template <typename T>
-	bool addition_is_safe(T p_x, T p_y);
-
-	template <>
-	bool addition_is_safe(unsigned long long p_x, unsigned long long p_y)
-	{
-		return p_x <= numeric_limits<unsigned long long>::max() - p_y;
-	}
-
-}  // end anonymous namespace
 
 HumanSummaryReportWriter::HumanSummaryReportWriter(vector<Stint> const& p_stints):
 	SummaryReportWriter(p_stints)

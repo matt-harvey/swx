@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-#include "round.hpp"
+#include "arithmetic.hpp"
 #include <cmath>
+#include <limits>
 
 using std::ceil;
 using std::floor;
+using std::numeric_limits;
 
 namespace swx
 {
@@ -33,6 +35,12 @@ namespace
 	}
 
 }  // end anonymous namespace
+
+template <>
+bool addition_is_safe(unsigned long long p_x, unsigned long long p_y)
+{
+	return p_x <= numeric_limits<unsigned long long>::max() - p_y;
+}
 
 double
 round(double x, int num, int den)

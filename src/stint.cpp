@@ -15,9 +15,9 @@
  */
 
 #include "stint.hpp"
+#include "arithmetic.hpp"
 #include "config.hpp"
 #include "interval.hpp"
-#include "round.hpp"
 #include "stream_flag_guard.hpp"
 #include <cassert>
 #include <iomanip>

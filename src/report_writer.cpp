@@ -15,9 +15,9 @@
  */
 
 #include "report_writer.hpp"
+#include "arithmetic.hpp"
 #include "config.hpp"
 #include "interval.hpp"
-#include "round.hpp"
 #include "stint.hpp"
 #include <ostream>
 #include <vector>

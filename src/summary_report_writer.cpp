@@ -15,11 +15,11 @@
  */
 
 #include "summary_report_writer.hpp"
+#include "arithmetic.hpp"
 #include "seconds.hpp"
 #include "stint.hpp"
 #include "stream_utilities.hpp"
 #include <cassert>
-#include <limits>
 #include <map>
 #include <ostream>
 #include <sstream>
@@ -30,7 +30,6 @@
 
 using std::make_pair;
 using std::map;
-using std::numeric_limits;
 using std::ostringstream;
 using std::ostream;
 using std::runtime_error;
@@ -39,19 +38,6 @@ using std::vector;
 
 namespace swx
 {
-
-namespace
-{
-	template <typename T>
-	bool addition_is_safe(T p_x, T p_y);
-
-	template <>
-	bool addition_is_safe(unsigned long long p_x, unsigned long long p_y)
-	{
-		return p_x <= numeric_limits<unsigned long long>::max() - p_y;
-	}
-
-}  // end anonymous namespace
 
 SummaryReportWriter::SummaryReportWriter(vector<Stint> const& p_stints):
 	ReportWriter(p_stints)

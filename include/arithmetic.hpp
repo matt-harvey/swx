@@ -14,17 +14,28 @@
  * limitations under the License.
  */
 
-#ifndef GUARD_round_hpp_5860378041798425
-#define GUARD_round_hpp_5860378041798425
+#ifndef GUARD_arithmetic_hpp_5860378041798425
+#define GUARD_arithmetic_hpp_5860378041798425
 
 namespace swx
 {
 
 /**
- * @round x to the nearest multiple of 1.0 * num / den.
+ * @returns \e true if it is "safe" to add \e p_x and \e p_y, i.e. it won't
+ * cause wraparound or overflow; otherwise, returns \e false.
+ *
+ * This function template is currently only instantiated for the type
+ * <em>unsigned long long</em>. Passing other types will cause compilation
+ * failure.
+ */
+template <typename T>
+bool addition_is_safe(T p_x, T p_y);
+
+/**
+ * rounds \e x to the nearest multiple of 1.0 * num / den.
  */
 double round(double x, int num, int den);
 
 }  // namespace swx
 
-#endif  // GUARD_round_hpp_5860378041798425
+#endif  // GUARD_arithmetic_hpp_5860378041798425
