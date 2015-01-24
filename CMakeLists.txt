@@ -62,6 +62,7 @@ set(
 	src/csv_list_report_writer.cpp
 	src/csv_summary_report_writer.cpp
 	src/csv_utilities.cpp
+	src/current_command.cpp
 	src/edit_command.cpp
 	src/file_utilities.cpp
 	src/help_command.cpp

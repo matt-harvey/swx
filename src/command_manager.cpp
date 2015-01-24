@@ -18,6 +18,7 @@
 #include "between_command.hpp"
 #include "command.hpp"
 #include "config_command.hpp"
+#include "current_command.hpp"
 #include "day_command.hpp"
 #include "edit_command.hpp"
 #include "help_command.hpp"
@@ -86,6 +87,11 @@ CommandManager::~CommandManager() = default;
 void
 CommandManager::populate_command_map()
 {
+	shared_ptr<Command> current_command
+	(	new CurrentCommand("current", {"c"}, m_time_log)
+	);
+	create_command(current_command);
+
 	shared_ptr<Command> version_command
 	(	new VersionCommand("version", {})
 	);
