@@ -18,8 +18,10 @@ limitations under the License.
 Overview
 ========
 
-``swx`` is simple command line application for keeping track of the amount of
+``swx`` is a command line application for keeping track of the amount of
 time you spend on different activities.
+
+The name "swx" stands for "stopwatch extended".
 
 Usage
 =====
@@ -32,7 +34,7 @@ entering ``swx help``. The basic pattern of usage is::
 
     swx <COMMAND> [OPTIONS...] [ARGUMENTS...] [OPTIONS...]
 
-Options to ``<COMMAND>`` can be entered either before or after
+Options to ``<COMMAND>`` can be entered indifferently either before or after
 ``[ARGUMENTS...]``, but cannot appear before ``<COMMAND>``.
 
 The "switch" command
@@ -145,10 +147,10 @@ any the other info, the latest time at which each activity was conducted during
 the period in question, will be printed next to each activity. (This does not
 apply when ouputting in "list" mode.)
 
-Note that if both ``-b`` and ``-e`` options are both provided, the output from
+Note that if ``-b`` and ``-e`` options are both provided, the output from
 the ``-e`` command is always printed to the right of that from the ``-b``
 command, regardless of the order in which the ``-b`` and ``-e`` options are
-passed.
+provided.
 
 If you pass the ``-c`` option to a reporting command, then the results will
 be output in CSV format.
