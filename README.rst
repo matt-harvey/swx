@@ -110,7 +110,7 @@ The other printing commands take one or two timestamps as arguments, to show
 only activity *since* a certain time, only activity *until* a certain time, or
 only activity *between* two times. The activity name (if any) is entered after
 the timestamp(s). By default, you must enter timestamps in ISO format
-("YYYY-MM-DDTHH:MM:SS") (without quotes). (You can customize this format in the
+("YYYY-MM-DDTHH:MM") (without quotes). (You can customize this format in the
 configuration file - see Configuration_ below - but note that changing this
 format will also change the format of timestamps as read from and written to
 the data file, *without* retroactively reformatting the timestamps that are
@@ -221,7 +221,7 @@ ascending order (or at least, non-descending order). Be sure to preserve this
 order if you edit the file manually.
 
 You should not enter future-dated entries; the application will raise an error
-if it reads a future-date entry in the log.
+if it reads a future-dated entry in the log.
 
 As a convenience, ``swx`` provides the command ``swx edit``, which you can use
 to open the log directly in your default text editor.

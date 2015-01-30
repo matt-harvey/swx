@@ -321,7 +321,7 @@ Config::set_defaults()
 	unchecked_set_option
 	(	"format_string",
 		OptionData
-		(	"%Y-%m-%dT%H:%M:%S",
+		(	"%Y-%m-%dT%H:%M",
 			"Determines the format used when parsing and printing timestamps.\n"
 			"See the documentation for the C function strftime for details.\n"
 			"If you change this, you should also review the formatted_buf_len\n"
