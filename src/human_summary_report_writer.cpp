@@ -19,6 +19,7 @@
 #include "stint.hpp"
 #include "stream_flag_guard.hpp"
 #include "summary_report_writer.hpp"
+#include "time_point.hpp"
 #include <cassert>
 #include <iomanip>
 #include <iostream>
@@ -43,8 +44,14 @@ using std::vector;
 namespace swx
 {
 
-HumanSummaryReportWriter::HumanSummaryReportWriter(vector<Stint> const& p_stints):
-	SummaryReportWriter(p_stints)
+HumanSummaryReportWriter::HumanSummaryReportWriter
+(	vector<Stint> const& p_stints,
+	bool p_include_beginning,
+	bool p_include_ending
+):
+	SummaryReportWriter(p_stints),
+	m_include_beginning(p_include_beginning),
+	m_include_ending(p_include_ending)
 {
 }
 
@@ -53,20 +60,22 @@ HumanSummaryReportWriter::~HumanSummaryReportWriter() = default;
 void
 HumanSummaryReportWriter::do_write_summary
 (	ostream& p_os,
-	map<string, unsigned long long> const& p_activity_seconds_map
+	map<string, ActivityInfo> const& p_activity_info_map
 )
 {
 	string::size_type left_col_width = 0;
-	for (auto const& pair: p_activity_seconds_map)
+	for (auto const& pair: p_activity_info_map)
 	{
-		string const& activity = pair.first;
+		auto const& activity = pair.first;
 		auto const activity_width = activity.length();
 		if (activity_width > left_col_width) left_col_width = activity_width;
 	}
 	unsigned long long total_seconds = 0;
-	for (auto const& pair: p_activity_seconds_map)
+	for (auto const& pair: p_activity_info_map)
 	{
-		unsigned long long const seconds = pair.second;
+		auto const& activity = pair.first;
+		auto const& info = pair.second;
+		auto const seconds = info.seconds;
 		if (!addition_is_safe(total_seconds, seconds))
 		{
 			throw runtime_error
@@ -76,11 +85,24 @@ HumanSummaryReportWriter::do_write_summary
 		}
 		assert (addition_is_safe(total_seconds, seconds));
 		total_seconds += seconds;
-		string const& activity = pair.first;
-		print_label_and_rounded_hours(p_os, activity, seconds, left_col_width);
+		print_label_and_rounded_hours
+		(	p_os,
+			activity,
+			seconds,
+			(m_include_beginning? &(info.beginning): nullptr),
+			(m_include_ending? &(info.ending): nullptr),
+			left_col_width
+		);
 	}
 	p_os << endl;
-	print_label_and_rounded_hours(p_os, "TOTAL", total_seconds, left_col_width);
+	print_label_and_rounded_hours
+	(	p_os,
+		"TOTAL",
+		total_seconds,
+		nullptr,
+		nullptr,
+		left_col_width
+	);
 	return;
 }
 
@@ -89,6 +111,8 @@ HumanSummaryReportWriter::print_label_and_rounded_hours
 (	ostream& p_os,
 	string const& p_label,
 	unsigned long long p_seconds,
+	TimePoint const* p_beginning,
+	TimePoint const* p_ending,
 	unsigned int p_left_col_width
 ) const
 {
@@ -98,8 +122,17 @@ HumanSummaryReportWriter::print_label_and_rounded_hours
 	     << setprecision(output_precision())
 		 << right
 		 << setw(output_width())
-		 << seconds_to_rounded_hours(p_seconds)
-		 << endl;
+		 << seconds_to_rounded_hours(p_seconds);
+	guard.reset();
+	if (p_beginning != nullptr)
+	{
+		p_os << "  " << time_point_to_stamp(*p_beginning);
+	}
+	if (p_ending != nullptr)
+	{
+		p_os << "  "<< time_point_to_stamp(*p_ending);
+	}
+	p_os << endl;
 	return;
 }
 

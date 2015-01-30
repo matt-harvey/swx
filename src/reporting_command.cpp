@@ -43,10 +43,12 @@ namespace swx
 
 namespace
 {
-	char const k_csv_flag = 'c';
-	char const k_list_flag = 'l';
-	char const k_verbose_flag = 'v';
 	char const k_regex_flag = 'r';
+	char const k_list_flag = 'l';
+	char const k_beginning_flag ='b';
+	char const k_ending_flag = 'e';
+	char const k_verbose_flag = 'v';
+	char const k_csv_flag = 'c';
 }
 
 ReportingCommand::ReportingCommand
@@ -60,8 +62,9 @@ ReportingCommand::ReportingCommand
 	m_time_log(p_time_log)
 {
 	add_boolean_option
-	(	k_csv_flag,
-		"Output in CSV format"
+	(	k_regex_flag,
+		"Treat ACTIVITY as a (POSIX extended) regular expression, and include "
+			"all activities that match it"
 	);
 	add_boolean_option
 	(	k_list_flag,
@@ -69,14 +72,25 @@ ReportingCommand::ReportingCommand
 			"individual activity stints during the relevant period"
 	);
 	add_boolean_option
+	(	k_beginning_flag,
+		"In addition to any other information, output the earliest time at "
+			"which each activity was conducted during relevant period (does "
+			"not apply in list mode)"
+	);
+	add_boolean_option
+	(	k_ending_flag,
+		"Output in a column to the right of any other info, the latest time at "
+			"which each activity was conducted during relevant period (does "
+			"not apply in list mode)"
+	);
+	add_boolean_option
 	(	k_verbose_flag,
 		"Print both a date-ordered list of individual activity stints, and a "
 			"summary of the time spent on each activity"
 	);
 	add_boolean_option
-	(	k_regex_flag,
-		"Treat ACTIVITY as a (POSIX extended) regular expression, and include "
-			"all activities that match it"
+	(	k_csv_flag,
+		"Output in CSV format"
 	);
 }
 
@@ -95,10 +109,18 @@ ReportingCommand::print_report
 	bool detail = false;
 	bool summary = true;
 	bool use_regex = false;
+	bool include_beginning = false;
+	bool include_ending = false;
 	for (char c: p_options)
 	{
 		switch (c)
 		{
+		case k_beginning_flag:
+			include_beginning = true;
+			break;
+		case k_ending_flag:
+			include_ending = true;
+			break;
 		case k_csv_flag:
 			csv = true;
 			break;
@@ -143,11 +165,23 @@ ReportingCommand::print_report
 	{
 		if (csv)
 		{
-			summary_writer.reset(new CsvSummaryReportWriter(stints));
+			summary_writer.reset
+			(	new CsvSummaryReportWriter
+				(	stints,
+					include_beginning,
+					include_ending
+				)
+			);
 		}
 		else
 		{
-			summary_writer.reset(new HumanSummaryReportWriter(stints));
+			summary_writer.reset
+			(	new HumanSummaryReportWriter
+				(	stints,
+					include_beginning,
+					include_ending
+				)
+			);
 		}
 	}
 	if (list_writer) list_writer->write(p_os);

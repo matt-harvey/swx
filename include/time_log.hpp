@@ -77,10 +77,11 @@ public:
 	 * Caller retains ownership of pointed-to memory.
 	 *
 	 * If \e p_use_regex is passed \e true, then, rather than retrieving only
-	 * stints with <em>*p_activity</em> as their activity, then function will
+	 * stints with <em>*p_activity</em> as their activity, the function will
 	 * retrieve stints for which their activity matches <em>*p_activity</em>,
 	 * treated as a POSIX extended regular expression.
 	 * 
+	 * The stints are ordered in ascending date order.
 	 */
 	std::vector<Stint> get_stints
 	(	std::string const* p_sought_activity,

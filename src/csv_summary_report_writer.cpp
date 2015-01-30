@@ -18,6 +18,7 @@
 #include "csv_utilities.hpp"
 #include "stint.hpp"
 #include "summary_report_writer.hpp"
+#include "time_point.hpp"
 #include <map>
 #include <ostream>
 #include <string>
@@ -31,8 +32,14 @@ using std::vector;
 namespace swx
 {
 
-CsvSummaryReportWriter::CsvSummaryReportWriter(vector<Stint> const& p_stints):
-	SummaryReportWriter(p_stints)
+CsvSummaryReportWriter::CsvSummaryReportWriter
+(	vector<Stint> const& p_stints,
+	bool p_include_beginning,
+	bool p_include_ending
+):
+	SummaryReportWriter(p_stints),
+	m_include_beginning(p_include_beginning),
+	m_include_ending(p_include_ending)
 {
 }
 
@@ -41,14 +48,49 @@ CsvSummaryReportWriter::~CsvSummaryReportWriter() = default;
 void
 CsvSummaryReportWriter::do_write_summary
 (	ostream& p_os,
-	map<string, unsigned long long> const& p_activity_seconds_map
+	map<string, ActivityInfo> const& p_activity_info_map
 )
 {
-	for (auto const& pair: p_activity_seconds_map)
+	for (auto const& pair: p_activity_info_map)
 	{
-		string const& activity = pair.first;
-		unsigned long long const seconds = pair.second;
-		output_csv_row(p_os, activity, seconds_to_rounded_hours(seconds));
+		auto const& activity = pair.first;
+		auto const& info = pair.second;
+		if (m_include_beginning && m_include_ending)
+		{
+			output_csv_row
+			(	p_os,
+				activity,
+				seconds_to_rounded_hours(info.seconds),
+				time_point_to_stamp(info.beginning),
+				time_point_to_stamp(info.ending)
+			);
+		}
+		else if (m_include_beginning)
+		{
+			output_csv_row
+			(	p_os,
+				activity,
+				seconds_to_rounded_hours(info.seconds),
+				time_point_to_stamp(info.beginning)
+			);
+		}
+		else if (m_include_ending)
+		{
+			output_csv_row
+			(	p_os,
+				activity,
+				seconds_to_rounded_hours(info.seconds),
+				time_point_to_stamp(info.ending)
+			);
+		}
+		else
+		{
+			output_csv_row
+			(	p_os,
+				activity,
+				seconds_to_rounded_hours(info.seconds)
+			);
+		}
 	}
 	return;
 }

@@ -19,6 +19,7 @@
 
 #include "report_writer.hpp"
 #include "stint.hpp"
+#include "time_point.hpp"
 #include <map>
 #include <ostream>
 #include <vector>
@@ -28,6 +29,20 @@ namespace swx
 
 class SummaryReportWriter: public ReportWriter
 {
+// nested types
+protected:
+	struct ActivityInfo
+	{
+		ActivityInfo
+		(	unsigned long long p_seconds,
+			TimePoint const& p_beginning,
+			TimePoint const& p_ending
+		);
+		unsigned long long seconds;
+		TimePoint beginning;
+		TimePoint ending;
+	};
+
 // special member functions
 public:
 	explicit SummaryReportWriter(std::vector<Stint> const& p_stints);
@@ -58,12 +73,12 @@ private:
 private:
 	virtual void do_write_summary
 	(	std::ostream& p_os,
-		std::map<std::string, unsigned long long> const& p_activity_seconds_map
+		std::map<std::string, ActivityInfo> const& p_activity_info_map
 	) = 0;
 
 // member variables
 private:
-	std::map<std::string, unsigned long long> m_activity_seconds_map;
+	std::map<std::string, ActivityInfo> m_activity_info_map;
 
 };  // class SummaryReportWriter
 

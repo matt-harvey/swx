@@ -18,6 +18,7 @@
 #define GUARD_human_summary_report_writer_hpp_5853136519833065
 
 #include "summary_report_writer.hpp"
+#include "time_point.hpp"
 #include <map>
 #include <ostream>
 #include <string>
@@ -36,7 +37,11 @@ class HumanSummaryReportWriter: public SummaryReportWriter
 {
 // special member functions
 public:
-	explicit HumanSummaryReportWriter(std::vector<Stint> const& p_stints);
+	explicit HumanSummaryReportWriter
+	(	std::vector<Stint> const& p_stints,
+		bool p_include_beginning,
+		bool p_include_ending
+	);
 	HumanSummaryReportWriter(HumanSummaryReportWriter const& rhs) = delete;
 	HumanSummaryReportWriter(HumanSummaryReportWriter&& rhs) = delete;
 	HumanSummaryReportWriter& operator=(HumanSummaryReportWriter const& rhs) = delete;
@@ -47,7 +52,7 @@ public:
 private:
 	virtual void do_write_summary
 	(	std::ostream& p_os,
-		std::map<std::string, unsigned long long> const& p_activity_seconds_map
+		std::map<std::string, ActivityInfo> const& p_activity_info_map
 	) override;
 
 // ordinary member functions
@@ -56,8 +61,15 @@ private:
 	(	std::ostream& p_os,
 		std::string const& p_label,
 		unsigned long long p_seconds,
+		TimePoint const* p_beginning,
+		TimePoint const* p_ending,
 		unsigned int p_left_col_width
 	) const;
+
+// member variables
+private:
+	bool const m_include_beginning;
+	bool const m_include_ending;
 
 };  // class HumanSummaryReportWriter
 

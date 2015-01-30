@@ -42,7 +42,7 @@ namespace swx
 SummaryReportWriter::SummaryReportWriter(vector<Stint> const& p_stints):
 	ReportWriter(p_stints)
 {
-	assert (m_activity_seconds_map.empty());
+	assert (m_activity_info_map.empty());
 }
 
 SummaryReportWriter::~SummaryReportWriter() = default;
@@ -54,7 +54,7 @@ SummaryReportWriter::do_preprocess_stints
 )
 {
 	(void)p_os; (void)p_stints;  // silence compiler warnings re. unused params.
-	m_activity_seconds_map.empty();
+	assert (m_activity_info_map.empty());
 	return;
 }
 
@@ -62,18 +62,25 @@ void
 SummaryReportWriter::do_process_stint(std::ostream& p_os, Stint const& p_stint)
 {
 	(void)p_os;  // silence compiler warning re. unused param.
-	unsigned long long const seconds = p_stint.interval().duration().count();
+	auto const interval = p_stint.interval();
+	unsigned long long const seconds = interval.duration().count();
 	auto const& activity = p_stint.activity();
 	if (!activity.empty())
 	{
-		auto const it = m_activity_seconds_map.find(activity);
-		if (it == m_activity_seconds_map.end())
+		auto const it = m_activity_info_map.find(activity);
+		if (it == m_activity_info_map.end())
 		{
-			m_activity_seconds_map.insert(make_pair(activity, seconds));
+			ActivityInfo const info
+			(	seconds,
+				interval.beginning(),
+				interval.ending()
+			);
+			m_activity_info_map.insert(make_pair(activity, info));
 		}
 		else
 		{
-			auto& accum = it->second;
+			auto& info = it->second;
+			auto& accum = info.seconds;
 			if (!addition_is_safe(accum, seconds))
 			{
 				ostringstream oss;
@@ -84,6 +91,9 @@ SummaryReportWriter::do_process_stint(std::ostream& p_os, Stint const& p_stint)
 			}
 			assert (addition_is_safe(accum, seconds));
 			accum += seconds;
+			assert (interval.beginning() >= info.beginning);
+			assert (interval.ending() >= info.ending);
+			info.ending = interval.ending();
 		}
 	}
 	return;
@@ -96,8 +106,20 @@ SummaryReportWriter::do_postprocess_stints
 )
 {
 	(void)p_stints;  // silence compiler warning re. unused param.
-	do_write_summary(p_os, m_activity_seconds_map);
+	do_write_summary(p_os, m_activity_info_map);
+	m_activity_info_map.clear();  // hygienic even if unnecessary
 	return;
+}
+
+SummaryReportWriter::ActivityInfo::ActivityInfo
+(	unsigned long long p_seconds,
+	TimePoint const& p_beginning,
+	TimePoint const& p_ending
+):
+	seconds(p_seconds),
+	beginning(p_beginning),
+	ending(p_ending)
+{
 }
 
 }  // namespace swx

@@ -135,6 +135,21 @@ treated as a regular expression (of the POSIX extended variety), rather than an
 exact activity name. Any activities will then be included in the report for
 which their activity name matches this regular expression.
 
+If you pass the ``-b`` option, then in addition to the other info, the
+earliest time at which each activity was conducted during the period
+in question, will be printed next to each activity. (This does not apply when
+outputting in "list" mode.)
+
+If you pass the ``-e`` option, then in addition to, and to the right of,
+any the other info, the latest time at which each activity was conducted during
+the period in question, will be printed next to each activity. (This does not
+apply when ouputting in "list" mode.)
+
+Note that if both ``-b`` and ``-e`` options are both provided, the output from
+the ``-e`` command is always printed to the right of that from the ``-b``
+command, regardless of the order in which the ``-b`` and ``-e`` options are
+passed.
+
 If you pass the ``-c`` option to a reporting command, then the results will
 be output in CSV format.
 
