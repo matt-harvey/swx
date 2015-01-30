@@ -51,11 +51,11 @@ UntilCommand::UntilCommand
 		{	HelpLine
 			(	"Print summary of time spent on all activities until "
 					"TIMESTAMP",
-				"TIMESTAMP"
+				"<TIMESTAMP>"
 			),
 			HelpLine
 			(	"Print summary of time spent on ACTIVITY until TIMESTAMP",
-				"TIMESTAMP ACTIVITY"
+				"<TIMESTAMP> <ACTIVITY>"
 			)
 		},
 		p_time_log

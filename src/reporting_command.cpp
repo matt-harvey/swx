@@ -74,13 +74,13 @@ ReportingCommand::ReportingCommand
 	add_boolean_option
 	(	k_beginning_flag,
 		"In addition to any other information, output the earliest time at "
-			"which each activity was conducted during relevant period (does "
+			"which each activity was conducted during the relevant period (does "
 			"not apply in list mode)"
 	);
 	add_boolean_option
 	(	k_ending_flag,
 		"Output in a column to the right of any other info, the latest time at "
-			"which each activity was conducted during relevant period (does "
+			"which each activity was conducted during the relevant period (does "
 			"not apply in list mode)"
 	);
 	add_boolean_option

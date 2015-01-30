@@ -51,12 +51,12 @@ BetweenCommand::BetweenCommand
 		{	HelpLine
 			(	"Print summary of time spent on all activities between "
 					"TIMESTAMP1 and TIMESTAMP2",
-				"TIMESTAMP1 TIMESTAMP2"
+				"<TIMESTAMP1> <TIMESTAMP2>"
 			),
 			HelpLine
 			(	"Print summary of time spent on ACTIVITY between "
 					"TIMESTAMP1 and TIMESTAMP2",
-				"TIMESTAMP1 TIMESTAMP2 ACTIVITY"
+				"<TIMESTAMP1> <TIMESTAMP2> <ACTIVITY>"
 			)
 		},
 		p_time_log

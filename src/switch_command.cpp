@@ -63,7 +63,7 @@ SwitchCommand::SwitchCommand
 			(	"Start accruing time to ACTIVITY, and stop accruing time to "
 					"the current activity (if any); raise an error if ACTIVITY "
 					"does not exist",
-				"ACTIVITY"
+				"<ACTIVITY>"
 			)
 		},
 		true,

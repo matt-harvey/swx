@@ -48,7 +48,7 @@ HelpCommand::HelpCommand
 		"Print usage information",
 		vector<HelpLine>
 		{	HelpLine("Print general usage information"),
-			HelpLine("Print usage information for COMMAND", "COMMAND")
+			HelpLine("Print usage information for COMMAND", "<COMMAND>")
 		}
 	),
 	m_command_manager(p_command_manager)

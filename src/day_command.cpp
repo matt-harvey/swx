@@ -61,7 +61,7 @@ DayCommand::DayCommand
 		{	HelpLine("Print summary of time spent on all activities today"),
 			HelpLine
 			(	"Print summary of time spent on ACTIVITY today",
-				"ACTIVITY"
+				"<ACTIVITY>"
 			)
 		},
 		p_time_log

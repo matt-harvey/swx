@@ -52,11 +52,11 @@ SinceCommand::SinceCommand
 		{	HelpLine
 			(	"Print summary of time spent on all activities since "
 					"TIMESTAMP",
-				"TIMESTAMP"
+				"<TIMESTAMP>"
 			),
 			HelpLine
 			(	"Print summary of time spent on ACTIVITY since TIMESTAMP",
-				"TIMESTAMP ACTIVITY"
+				"<TIMESTAMP> <ACTIVITY>"
 			)
 		},
 		p_time_log
