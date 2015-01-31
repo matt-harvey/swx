@@ -28,7 +28,7 @@ set(file_extension ".swx")
 project(${application_name})
 set(version_major 0)
 set(version_minor 9)
-set(version_patch 0)
+set(version_patch 1)
 
 
 # Definitions and flags to be passed to the compiler
@@ -39,7 +39,7 @@ add_definitions(
 	-DSWX_VERSION_MAJOR=${version_major}
 	-DSWX_VERSION_MINOR=${version_minor}
 	-DSWX_VERSION_PATCH=${version_patch}
-	-DSWX_RELEASE  # uncomment for release version
+	#-DSWX_RELEASE  # uncomment for release version
 )
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
