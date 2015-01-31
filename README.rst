@@ -270,29 +270,24 @@ work on Windows. To build it, you will need:
 These dependencies are commonly available via package managers such as
 Homebrew.
 
-To install ``swx``, download and unzip the source code, and ``cd`` into the project
-root. Then enter::
+Having obtained these dependencies, download and unzip the ``swx`` source code,
+and ``cd`` into the project root. 
 
-	cmake . && sudo make install
+To set up a default build, enter::
+       
+   cmake .
 
-To clean build
---------------
+If you want to adjust configuration options, such as the directory where
+``swx`` will be installed, you can instead enter ``cmake -i`` here and follow
+the prompts.
 
-Go to the project root and enter::
-	
-	make clean
+Then to build and install, enter::
 
-This will clean all build targets from the project root.
+    make install
 
-Note this will *not* cause the application to be uninstalled from the host
-system.
-
-To build without installing
----------------------------
-
-At the project root, enter::
-
-	make
+You may need to run this as root (e.g. by prefixing the above command with
+``sudo``), depending on your system and the installation directory that was
+configured via CMake.
 
 Uninstalling
 ============
