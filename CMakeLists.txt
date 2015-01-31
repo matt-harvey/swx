@@ -49,6 +49,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 find_package(Boost 1.53.0 COMPONENTS regex REQUIRED)
 include_directories(include ${Boost_INCLUDE_DIRS})
 set(libraries ${Boost_LIBRARIES} pthread dl)
+
+
+# Sources
+
 set(
 	common_sources
 	src/arithmetic.cpp
