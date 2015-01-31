@@ -56,8 +56,8 @@ an already-used activity, you should omit the ``-c`` option.
 
 Suppose you stop answering emails and restart work on a previous activity,
 "spreadsheeting". You can record a transition from one activity to another, by
-entering ``swx switch``, plus the name of the acitivity that you are switching
-*to*, in this case::
+entering ``swx switch`` (or ``swx s``) plus the name of the acitivity that you
+are switching *to*, in this case::
 
     swx switch spreadsheeting
 
@@ -105,11 +105,12 @@ each of these. They all follow a similar pattern, and allow you to enter an
 optional activity name, if you want to see only time spent on a given activity,
 or to omit the activity name, if you want to see time spent on all activities.
 
-``swx day`` prints a summary of only the current day's activities, or, if passed
-a single-digit option *n*, the activities of *n* days ago. For example,
-``swx day -1`` prints a summary of yesterday's activities.
+``swx day`` (or ``swx d``) prints a summary of only the current day's
+activities, or, if passed a single-digit option *n*, the activities of *n* days
+ago. For example, ``swx day -1`` prints a summary of yesterday's activities.
 
-``swx print`` prints a summary of activity that is not filtered by time at all.
+``swx print`` (or ``swx p``) prints a summary of activity that is not filtered
+by time at all.
 
 The other printing commands take one or two timestamps as arguments, to show
 only activity *since* a certain time, only activity *until* a certain time, or
@@ -250,7 +251,7 @@ see a summary of usage for a particular command.
 
 Enter ``swx version`` to see version information.
 
-Enter ``swx current`` or ``swx c`` to print just the name of the current
+Enter ``swx current`` (or ``swx c``) to print just the name of the current
 activity. If there is no current activity, this will print a blank line.
 
 Building and installing
