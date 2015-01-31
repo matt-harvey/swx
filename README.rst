@@ -46,8 +46,9 @@ working on this activity, you would enter the following at the command line::
 
     swx switch -c answering-emails
 
-Note the activity name is case-sensitive. You can use the alias ``s`` if you
-don't want to type ``switch``.
+You can use the alias ``s`` if you don't want to type ``switch``::
+
+    swx s -c answering-emails
 
 The ``-c`` option tells the ``switch`` command that this is the first time you
 are working on this activity. On subsequent occasions, when you switch back to
@@ -66,10 +67,12 @@ recording), then you would record this cessation by entering simply::
     swx switch
 
 If you pass the ``-r`` option to ``swx switch``, then the activity argument will
-be considered as a regular expression (of the POSIX extended variety), rather
+be treated as a regular expression (of the POSIX extended variety), rather
 than an exact activity name. A switch will then be recorded to the most recently
 active activity the name of which matches that regular expression. This can save
 a fair bit of typing when switching back to a recently used activity.
+
+Note activity names are case-sensitive.
 
 The "resume" command
 --------------------
@@ -236,7 +239,7 @@ Configuration options are stored in your home directory in the file named
 contents of this file should be reasonably self-explanatory.
 
 The command ``swx config`` will output a summary of your configuration settings.
-Passing ``-e`` to this command wil cause the configuration file to be opened
+Passing ``-e`` to this command will cause the configuration file to be opened
 in your default text editor.
 
 Help and other commands
@@ -318,7 +321,7 @@ remove each of the files in this list (of which there may well be only one).
 
 In addition, the first time you run ``swx``, it will create a configuration
 file called ``.swxrc``, in your home directory. Also, the first time you run
-``swx switch`` (or ``swx sw``), it will create a data file, in which your
+``swx switch`` (or ``swx s``), it will create a data file, in which your
 activity log will be stored. Unless you have specified otherwise in your
 configuration file, this data file will be stored in your home directory, and
 will be named ``<YOUR-USER-NAME>.swx``. You may or may not want to remove this
