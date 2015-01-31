@@ -263,35 +263,17 @@ work on Windows. To build it, you will need:
 
 - A reasonably conformant C++ compiler and standard library implementation
 
-- CMake (version 2.8.10 or later) (http://www.cmake.org)
+- CMake (http://www.cmake.org)
 
-- The Boost regex library (version 1.53 or later) (http://www.boost.org)
+- Boost (http://www.boost.org)
 
-Download and unzip the source code and ``cd`` into the source root.
+These dependencies are commonly available via package managers such as
+Homebrew.
 
-Enter::
+To install ``swx``, download and unzip the source code, and ``cd`` into the project
+root. Then enter::
 
-	cmake -i
-
-You will be prompted with ``Would you like to see the advanced options? [No]:``.
-Enter ``n``. Then follow the prompts.
-
-(If you run into trouble with the build or have atypical requirements, you can
-return to this step and answer ``y`` to configure more detailed build options.)
-
-If in doubt about a particular option, it is generally best just to hit enter
-and keep the default setting for the option.
-
-Depending on your compiler, you may need to set an option to build with
-C++11 support enabled.
-
-Once you have finished configuring the build with CMake, enter::
-
-	make install
-
-You may need to run this as root, i.e.::
-
-	sudo make install
+	cmake . && sudo make install
 
 To clean build
 --------------
