@@ -86,7 +86,7 @@ Command::ParsedArguments::ParsedArguments
 		}
 		else if (!arg.empty() && (arg[0] == k_flag_prefix))
 		{
-			m_single_character_flags.insert(arg.begin() + 1, arg.end());
+			m_flags.insert(arg.begin() + 1, arg.end());
 		}
 		else
 		{
@@ -95,36 +95,16 @@ Command::ParsedArguments::ParsedArguments
 	}
 }
 
-vector<string>
+vector<string> const&
 Command::ParsedArguments::ordinary_args() const
 {
 	return m_ordinary_args;
 }
 
-string
-Command::ParsedArguments::single_character_flags() const
+Command::Flags const&
+Command::ParsedArguments::flags() const
 {
-	string const ret
-	(	m_single_character_flags.begin(),
-		m_single_character_flags.end()
-	);
-#	ifndef NDEBUG
-		for (auto it = ret.begin(); it != ret.end(); ++it)
-		{
-			auto const next = it + 1;
-			if (next != ret.end())
-			{
-				assert (*it < *next);
-			}
-		}
-#	endif
-	return ret;
-}
-
-bool
-Command::ParsedArguments::has_flag(char c) const
-{
-	return m_single_character_flags.find(c) != m_single_character_flags.end();
+	return m_flags;
 }
 
 Command::Command
@@ -199,7 +179,7 @@ Command::process
 		p_error_ostream << "Too many arguments.\nAborted" << endl;
 		return 1;
 	}
-	auto const flags = parsed_args.single_character_flags();
+	auto const& flags = parsed_args.flags();
 	assert (!m_boolean_options.empty() || flags.empty());
 	bool has_unrecognized_option = false;
 	for (auto c: flags)

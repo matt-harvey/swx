@@ -99,44 +99,20 @@ ReportingCommand::~ReportingCommand() = default;
 ostream&
 ReportingCommand::print_report
 (	ostream& p_os,
-	string const& p_options,
+	Flags const& p_flags,
 	vector<string> const& p_activity_components,
 	TimePoint const* p_begin,
 	TimePoint const* p_end
 )
 {
-	bool csv = false;
-	bool detail = false;
-	bool summary = true;
-	bool use_regex = false;
-	bool include_beginning = false;
-	bool include_ending = false;
-	for (char c: p_options)
-	{
-		switch (c)
-		{
-		case k_beginning_flag:
-			include_beginning = true;
-			break;
-		case k_ending_flag:
-			include_ending = true;
-			break;
-		case k_csv_flag:
-			csv = true;
-			break;
-		case k_list_flag:
-			detail = true;
-			summary = false;
-			break;
-		case k_regex_flag:
-			use_regex = true;
-			break;
-		case k_verbose_flag:
-			detail = true;
-			summary = true;
-			break;
-		}
-	}
+	bool const csv = p_flags.count(k_csv_flag);
+	bool const use_regex = p_flags.count(k_regex_flag);
+	bool const show_beginning = p_flags.count(k_beginning_flag);
+	bool const show_end = p_flags.count(k_ending_flag);
+	bool const verbose = p_flags.count(k_verbose_flag);
+	bool const detail = (verbose || p_flags.count(k_list_flag));
+	bool const summary = (verbose || !p_flags.count(k_list_flag));
+
 	unique_ptr<string> activity_ptr;
 	if (!p_activity_components.empty())
 	{
@@ -152,35 +128,21 @@ ReportingCommand::print_report
 	unique_ptr<SummaryReportWriter> summary_writer;
 	if (detail)
 	{
-		if (csv)
-		{
-			list_writer.reset(new CsvListReportWriter(stints));
-		}
-		else
-		{
-			list_writer.reset(new HumanListReportWriter(stints));
-		}
+		if (csv) list_writer.reset(new CsvListReportWriter(stints));
+		else     list_writer.reset(new HumanListReportWriter(stints));
 	}
 	if (summary)
 	{
 		if (csv)
 		{
 			summary_writer.reset
-			(	new CsvSummaryReportWriter
-				(	stints,
-					include_beginning,
-					include_ending
-				)
+			(	new CsvSummaryReportWriter(stints, show_beginning, show_end)
 			);
 		}
 		else
 		{
 			summary_writer.reset
-			(	new HumanSummaryReportWriter
-				(	stints,
-					include_beginning,
-					include_ending
-				)
+			(	new HumanSummaryReportWriter(stints, show_beginning, show_end)
 			);
 		}
 	}

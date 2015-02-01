@@ -91,10 +91,11 @@ SwitchCommand::do_process
 )
 {
 	ErrorMessages error_messages;
+	auto const& flags = p_args.flags();
 
 	// interpret arguments
-	bool const using_regex = p_args.has_flag(k_regex_flag);
-	bool const creating_activity = p_args.has_flag(k_creation_flag);
+	bool const using_regex = flags.count(k_regex_flag);
+	bool const creating_activity = flags.count(k_creation_flag);
 	Arguments const args =
 		expand_placeholders(p_args.ordinary_args(), time_log());
 

@@ -110,7 +110,7 @@ BetweenCommand::do_process
 		assert (oargs.size() >= 2);
 		print_report
 		(	p_ordinary_ostream,
-			p_args.single_character_flags(),
+			p_args.flags(),
 			vector<string>(oargs.begin() + 2, oargs.end()),
 			time_point_since_ptr.get(),
 			time_point_until_ptr.get()

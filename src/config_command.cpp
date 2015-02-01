@@ -74,13 +74,14 @@ ConfigCommand::do_process
 	ostream& p_ordinary_ostream
 )
 {
-	if (p_args.has_flag(k_editing_flag))
+	auto const& flags = p_args.flags();
+	if (flags.count(k_editing_flag))
 	{
 		string const editor_invokation =
 			Config::editor() + " " + Config::filepath();
 		system(editor_invokation.c_str());
 	}
-	else if (p_args.has_flag(k_filepath_flag))
+	else if (flags.count(k_filepath_flag))
 	{
 		p_ordinary_ostream << Config::filepath() << endl;
 	}

@@ -96,7 +96,7 @@ SinceCommand::do_process
 		assert (oargs.size() >= 1);
 		print_report
 		(	p_ordinary_ostream,
-			p_args.single_character_flags(),
+			p_args.flags(),
 			vector<string>(oargs.begin() + 1, oargs.end()),
 			time_point_ptr.get()
 		);

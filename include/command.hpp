@@ -40,6 +40,7 @@ class Command
 protected:
 	typedef std::vector<std::string> Arguments;
 	typedef std::vector<std::string> ErrorMessages;
+	typedef std::set<char> Flags;
 
 protected:
 	class ParsedArguments
@@ -53,11 +54,10 @@ protected:
 			bool p_accept_ordinary_args
 		);
 	public:
-		std::vector<std::string> ordinary_args() const;
-		std::string single_character_flags() const;
-		bool has_flag(char c) const;
+		std::vector<std::string> const& ordinary_args() const;
+		Flags const& flags() const;
 	private:
-		std::set<char> m_single_character_flags;
+		Flags m_flags;
 		std::vector<std::string> m_ordinary_args;
 	};
 

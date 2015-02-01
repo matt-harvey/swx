@@ -57,11 +57,7 @@ PrintCommand::do_process
 	ostream& p_ordinary_ostream
 )
 {
-	print_report
-	(	p_ordinary_ostream,
-		p_args.single_character_flags(),
-		p_args.ordinary_args()
-	);
+	print_report(p_ordinary_ostream, p_args.flags(), p_args.ordinary_args());
 	return ErrorMessages();
 }
 

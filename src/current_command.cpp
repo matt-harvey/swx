@@ -69,8 +69,14 @@ CurrentCommand::do_process
 {
 	TimePoint const n = now();
 	auto const stints = m_time_log.get_stints(nullptr, &n, &n);
-	if (!stints.empty()) p_ordinary_ostream << stints[0].activity();
-	if (!p_args.has_flag(k_suppress_newline_flag)) p_ordinary_ostream << endl;
+	if (!stints.empty())
+	{
+		p_ordinary_ostream << stints[0].activity();
+	}
+	if (!p_args.flags().count(k_suppress_newline_flag))
+	{
+		p_ordinary_ostream << endl;
+	}
 	return ErrorMessages();
 }
 
