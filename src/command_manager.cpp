@@ -108,7 +108,7 @@ CommandManager::populate_command_map()
 	create_command(config_command);
 
 	shared_ptr<Command> edit_command
-	(	new EditCommand("edit", {})
+	(	new EditCommand("edit", {"e"})
 	);
 	create_command(edit_command);
 

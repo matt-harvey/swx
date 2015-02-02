@@ -218,19 +218,19 @@ Manually editing the time log
 
 ``swx`` stores a log of your activities in a plain text file, which by default
 is located in your home directory, and is named ``<YOUR-USER-NAME>.swx``.
-You are free to edit this file in a text editor if you want to change the
-times or activity names recorded. Be sure to preserve the prescribed timestamp
-format, and to leave a space between the timestamp and the activity name
-(if any) on any given line. (Lines without an activity name record a cessation
-of activity.) Also, the time log must be such that the timestamps appear in
-ascending order (or at least, non-descending order). Be sure to preserve this
-order if you edit the file manually.
+You are free to edit this file if you want to change the times or activity names
+recorded. The command ``swx edit``, or ``swx e``, will cause the log to be
+opened in your default text editor.
 
-You should not enter future-dated entries; the application will raise an error
+When editing the log, be sure to preserve the prescribed timestamp format, and
+to leave a space between the timestamp and the activity name (if any) on any
+given line. (Lines without an activity name record a cessation of activity.)
+Also, the time log must be such that the timestamps appear in ascending order
+(or at least, non-descending order). Be sure to preserve this order if you edit
+the file manually.
+
+You should not enter future-dated entries: the application will raise an error
 if it reads a future-dated entry in the log.
-
-As a convenience, ``swx`` provides the command ``swx edit``, which you can use
-to open the log directly in your default text editor.
 
 Configuration
 -------------
