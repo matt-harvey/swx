@@ -116,13 +116,13 @@ ReportingCommand::print_report
 	unique_ptr<string> activity_ptr;
 	if (!p_activity_components.empty())
 	{
-		vector<string> const expanded =
+		auto const expanded =
 			expand_placeholders(p_activity_components, m_time_log);
 		activity_ptr.reset
 		(	new string(squish(expanded.begin(), expanded.end()))
 		);
 	}
-	vector<Stint> const stints =
+	auto const stints =
 		m_time_log.get_stints(activity_ptr.get(), p_begin, p_end, use_regex);
 	unique_ptr<ListReportWriter> list_writer;
 	unique_ptr<SummaryReportWriter> summary_writer;

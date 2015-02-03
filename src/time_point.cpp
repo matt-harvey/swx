@@ -88,19 +88,14 @@ time_stamp_to_point(string const& p_time_stamp)
 	tm tm;
 	memset(&tm, 0, sizeof(tm));
 	tm.tm_isdst = -1;
-	bool parse_error = false;
 	
 	// non-portable
 	if (strptime(p_time_stamp.c_str(), format, &tm) == nullptr)
 	{
-		parse_error = true;
-	}
-
-	if (parse_error)
-	{
 		string const errmsg = "Could not parse timestamp: " + p_time_stamp;
 		throw runtime_error(errmsg);
 	}
+
 	return chrono::system_clock::from_time_t(mktime(&tm));
 }
 

@@ -156,13 +156,13 @@ TimeLog::last_activity_to_match(string const& p_regex)
 	load();
 	regex const reg(p_regex, regex::extended);
 	typedef decltype(m_entries)::const_reverse_iterator RevIter;
-	ActivityId const empty_activity_id = register_activity("");
+	auto const empty_activity_id = register_activity("");
 	for (RevIter rit = m_entries.rbegin(); rit != m_entries.rend(); ++rit)
 	{
-		ActivityId const id = rit->activity_id;
+		auto const id = rit->activity_id;
 		if (id != empty_activity_id)
 		{
-			string const& activity = id_to_activity(id);
+			auto const& activity = id_to_activity(id);
 			if (regex_search(activity, reg, match_posix))
 			{
 				return activity;
@@ -284,7 +284,7 @@ TimeLog::load_entry(string const& p_entry_string, size_t p_line_number)
 	auto it = p_entry_string.begin() + expected_time_stamp_length();
 	assert (it > p_entry_string.begin());
 	string const time_stamp(p_entry_string.begin(), it);
-	string const activity = trim(string(it, p_entry_string.end()));
+	auto const activity = trim(string(it, p_entry_string.end()));
 	auto const activity_id = register_activity(activity);
 	auto const time_point = time_stamp_to_point(time_stamp);
 	Entry entry(activity_id, time_point);
