@@ -24,8 +24,11 @@ using std::vector;
 namespace swx
 {
 
-ListReportWriter::ListReportWriter(vector<Stint> const& p_stints):
-	ReportWriter(p_stints)
+ListReportWriter::ListReportWriter
+(	vector<Stint> const& p_stints,
+	Options const& p_options
+):
+	ReportWriter(p_stints, p_options)
 {
 }
 

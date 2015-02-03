@@ -16,6 +16,7 @@
 
 #include "reporting_command.hpp"
 #include "command.hpp"
+#include "config.hpp"
 #include "csv_list_report_writer.hpp"
 #include "csv_summary_report_writer.hpp"
 #include "help_line.hpp"
@@ -126,23 +127,40 @@ ReportingCommand::print_report
 		m_time_log.get_stints(activity_ptr.get(), p_begin, p_end, use_regex);
 	unique_ptr<ListReportWriter> list_writer;
 	unique_ptr<SummaryReportWriter> summary_writer;
+	ReportWriter::Options const options
+	(	Config::output_rounding_numerator(),
+		Config::output_rounding_denominator(),
+		Config::output_precision(),
+		Config::output_width(),
+		Config::time_format()
+	);
 	if (detail)
 	{
-		if (csv) list_writer.reset(new CsvListReportWriter(stints));
-		else     list_writer.reset(new HumanListReportWriter(stints));
+		if (csv) list_writer.reset(new CsvListReportWriter(stints, options));
+		else     list_writer.reset(new HumanListReportWriter(stints, options));
 	}
 	if (summary)
 	{
 		if (csv)
 		{
 			summary_writer.reset
-			(	new CsvSummaryReportWriter(stints, show_beginning, show_end)
+			(	new CsvSummaryReportWriter
+				(	stints,
+					options,
+					show_beginning,
+					show_end
+				)
 			);
 		}
 		else
 		{
 			summary_writer.reset
-			(	new HumanSummaryReportWriter(stints, show_beginning, show_end)
+			(	new HumanSummaryReportWriter
+				(	stints,
+					options,
+					show_beginning,
+					show_end
+				)
 			);
 		}
 	}

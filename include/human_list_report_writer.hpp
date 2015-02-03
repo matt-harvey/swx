@@ -35,7 +35,10 @@ class HumanListReportWriter: public ListReportWriter
 {
 // special member functions
 public:
-	explicit HumanListReportWriter(std::vector<Stint> const& p_stints);
+	HumanListReportWriter
+	(	std::vector<Stint> const& p_stints,
+		Options const& p_options
+	);
 	HumanListReportWriter(HumanListReportWriter const& rhs) = delete;
 	HumanListReportWriter(HumanListReportWriter&& rhs) = delete;
 	HumanListReportWriter& operator=(HumanListReportWriter const& rhs) = delete;

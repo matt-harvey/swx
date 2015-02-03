@@ -58,7 +58,7 @@ int main(int argc, char** argv)
 			string const arg(argv[i]);
 			args.push_back(arg);
 		}
-		TimeLog time_log(Config::path_to_log());
+		TimeLog time_log(Config::path_to_log(), Config::time_format());
 		CommandManager manager(time_log);
 		manager.process_command(argv[1], args);
 	}

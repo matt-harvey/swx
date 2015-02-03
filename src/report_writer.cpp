@@ -20,31 +20,54 @@
 #include "interval.hpp"
 #include "stint.hpp"
 #include <ostream>
+#include <string>
 #include <vector>
 
 using std::ostream;
+using std::string;
 using std::vector;
 
 namespace swx
 {
 
-ReportWriter::ReportWriter(vector<Stint> const& p_stints):
-	m_output_rounding_numerator(Config::output_rounding_numerator()),
-	m_output_rounding_denominator(Config::output_rounding_denominator()),
-	m_output_precision(Config::output_precision()),
-	m_output_width(Config::output_width()),
+ReportWriter::ReportWriter
+(	vector<Stint> const& p_stints,
+	Options const& p_options
+):
+	m_options(p_options),
 	m_stints(p_stints)
 {
 }
 
 ReportWriter::~ReportWriter() = default;
 
-void
-ReportWriter::write(ostream& p_os)
+unsigned int
+ReportWriter::output_precision() const
 {
-		do_preprocess_stints(p_os, m_stints);
-		for (auto const& stint: m_stints) do_process_stint(p_os, stint);
-		do_postprocess_stints(p_os, m_stints);
+	return m_options.output_precision;
+}
+
+unsigned int
+ReportWriter::output_width() const
+{
+	return m_options.output_width;
+}
+
+string const&
+ReportWriter::time_format() const
+{
+	return m_options.time_format;
+}
+
+
+double
+ReportWriter::seconds_to_rounded_hours(unsigned long long p_seconds) const
+{
+	return round
+	(	p_seconds / 60.0 / 60.0,
+		m_options.output_rounding_numerator,
+		m_options.output_rounding_denominator
+	);
 }
 
 double
@@ -53,26 +76,12 @@ ReportWriter::round_hours(Interval const& p_interval) const
 	return seconds_to_rounded_hours(p_interval.duration().count());
 }
 
-double
-ReportWriter::seconds_to_rounded_hours(unsigned long long p_seconds) const
+void
+ReportWriter::write(ostream& p_os)
 {
-	return round
-	(	p_seconds / 60.0 / 60.0,
-		m_output_rounding_numerator,
-		m_output_rounding_denominator
-	);
-}
-
-unsigned int
-ReportWriter::output_precision() const
-{
-	return m_output_precision;
-}
-
-unsigned int
-ReportWriter::output_width() const
-{
-	return m_output_width;
+		do_preprocess_stints(p_os, m_stints);
+		for (auto const& stint: m_stints) do_process_stint(p_os, stint);
+		do_postprocess_stints(p_os, m_stints);
 }
 
 void
@@ -90,6 +99,21 @@ ReportWriter::do_postprocess_stints
 {
 	(void)p_os; (void)p_stints;  // silence compiler re. unused params.
 	return;
+}
+
+ReportWriter::Options::Options
+(	unsigned int p_output_rounding_numerator,
+	unsigned int p_output_rounding_denominator,
+	unsigned int p_output_precision,
+	unsigned int p_output_width,
+	string const& p_time_format
+):
+	output_rounding_numerator(p_output_rounding_numerator),
+	output_rounding_denominator(p_output_rounding_denominator),
+	output_precision(p_output_precision),
+	output_width(p_output_width),
+	time_format(p_time_format)
+{
 }
 
 }  // namespace swx

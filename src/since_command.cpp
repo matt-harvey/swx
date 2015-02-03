@@ -16,6 +16,7 @@
 
 #include "since_command.hpp"
 #include "command.hpp"
+#include "config.hpp"
 #include "help_line.hpp"
 #include "reporting_command.hpp"
 #include "stream_utilities.hpp"
@@ -82,8 +83,9 @@ SinceCommand::do_process
 		unique_ptr<TimePoint> time_point_ptr;
 		try
 		{
+			auto const time_format = Config::time_format();
 			time_point_ptr.reset
-			(	new TimePoint(time_stamp_to_point(oargs[0]))
+			(	new TimePoint(time_stamp_to_point(oargs[0], time_format))
 			);
 		}
 		catch (runtime_error&)

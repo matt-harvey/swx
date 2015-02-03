@@ -153,7 +153,7 @@ Config::output_width()
 }
 
 string
-Config::format_string()
+Config::time_format()
 {
 	return instance().get_option_value<string>("format_string");
 }
@@ -195,65 +195,9 @@ Config::summary()
 	return oss.str();
 }
 
-Config::Config(): m_is_loaded(false)
+Config::Config()
 {
-	assert (m_map.empty());
-}
-
-Config::~Config() = default;
-
-void
-Config::set_option_value(string const& p_key, string const& p_value)
-{
-	auto const it = m_map.find(p_key);
-	if (it == m_map.end())
-	{
-		string const errmsg = "Unrecognized configuration key: " + p_key;
-		throw runtime_error(errmsg);
-	}
-	it->second.value = p_value;
-	return;
-}
-
-void
-Config::unchecked_set_option
-(	string const& p_key,
-	OptionData const& p_option_data
-)
-{
-	m_map[p_key] = p_option_data;
-	return;
-}
-
-string
-Config::get_raw_option_value(std::string const& p_key)
-{
-	load();
-	auto const it = m_map.find(p_key);
-	if (it == m_map.end())
-	{
-		string const errmsg = "Could not find configuration key: " + p_key;
-		throw runtime_error(errmsg);
-	}
-	assert (it != m_map.end());
-	return it->second.value;
-}
-
-void
-Config::load()
-{
-	if (!m_is_loaded)
-	{
-		set_defaults();
-		do_load();
-		m_is_loaded = true;
-	}
-	return;
-}
-
-void
-Config::do_load()
-{
+	set_defaults();
 	if (!file_exists_at(filepath()))
 	{
 		initialize_config_file();
@@ -284,7 +228,44 @@ Config::do_load()
 		}
 		++line_number;
 	}
+}
+
+Config::~Config() = default;
+
+void
+Config::set_option_value(string const& p_key, string const& p_value)
+{
+	auto const it = m_map.find(p_key);
+	if (it == m_map.end())
+	{
+		string const errmsg = "Unrecognized configuration key: " + p_key;
+		throw runtime_error(errmsg);
+	}
+	it->second.value = p_value;
 	return;
+}
+
+void
+Config::unchecked_set_option
+(	string const& p_key,
+	OptionData const& p_option_data
+)
+{
+	m_map[p_key] = p_option_data;
+	return;
+}
+
+string
+Config::get_raw_option_value(std::string const& p_key)
+{
+	auto const it = m_map.find(p_key);
+	if (it == m_map.end())
+	{
+		string const errmsg = "Could not find configuration key: " + p_key;
+		throw runtime_error(errmsg);
+	}
+	assert (it != m_map.end());
+	return it->second.value;
 }
 
 void

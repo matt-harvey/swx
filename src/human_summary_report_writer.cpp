@@ -46,10 +46,11 @@ namespace swx
 
 HumanSummaryReportWriter::HumanSummaryReportWriter
 (	vector<Stint> const& p_stints,
+	Options const& p_options,
 	bool p_include_beginning,
 	bool p_include_ending
 ):
-	SummaryReportWriter(p_stints),
+	SummaryReportWriter(p_stints, p_options),
 	m_include_beginning(p_include_beginning),
 	m_include_ending(p_include_ending)
 {
@@ -126,11 +127,11 @@ HumanSummaryReportWriter::print_label_and_rounded_hours
 	guard.reset();
 	if (p_beginning != nullptr)
 	{
-		p_os << "  " << time_point_to_stamp(*p_beginning);
+		p_os << "  " << time_point_to_stamp(*p_beginning, time_format());
 	}
 	if (p_ending != nullptr)
 	{
-		p_os << "  "<< time_point_to_stamp(*p_ending);
+		p_os << "  "<< time_point_to_stamp(*p_ending, time_format());
 	}
 	p_os << endl;
 	return;

@@ -34,10 +34,11 @@ namespace swx
 
 CsvSummaryReportWriter::CsvSummaryReportWriter
 (	vector<Stint> const& p_stints,
+	Options const& p_options,
 	bool p_include_beginning,
 	bool p_include_ending
 ):
-	SummaryReportWriter(p_stints),
+	SummaryReportWriter(p_stints, p_options),
 	m_include_beginning(p_include_beginning),
 	m_include_ending(p_include_ending)
 {
@@ -61,8 +62,8 @@ CsvSummaryReportWriter::do_write_summary
 			(	p_os,
 				activity,
 				seconds_to_rounded_hours(info.seconds),
-				time_point_to_stamp(info.beginning),
-				time_point_to_stamp(info.ending)
+				time_point_to_stamp(info.beginning, time_format()),
+				time_point_to_stamp(info.ending, time_format())
 			);
 		}
 		else if (m_include_beginning)
@@ -71,7 +72,7 @@ CsvSummaryReportWriter::do_write_summary
 			(	p_os,
 				activity,
 				seconds_to_rounded_hours(info.seconds),
-				time_point_to_stamp(info.beginning)
+				time_point_to_stamp(info.beginning, time_format())
 			);
 		}
 		else if (m_include_ending)
@@ -80,7 +81,7 @@ CsvSummaryReportWriter::do_write_summary
 			(	p_os,
 				activity,
 				seconds_to_rounded_hours(info.seconds),
-				time_point_to_stamp(info.ending)
+				time_point_to_stamp(info.ending, time_format())
 			);
 		}
 		else

@@ -80,11 +80,10 @@ tm_to_time_point(tm const& p_tm)
 }
 
 TimePoint
-time_stamp_to_point(string const& p_time_stamp)
+time_stamp_to_point(string const& p_time_stamp, string const& p_format)
 {
 	// don't make this static - caused odd bug with strptime (?)
-	string const format_str = Config::format_string();
-	char const* format = format_str.c_str();
+	char const* format = p_format.c_str();
 	tm tm;
 	memset(&tm, 0, sizeof(tm));
 	tm.tm_isdst = -1;
@@ -100,11 +99,10 @@ time_stamp_to_point(string const& p_time_stamp)
 }
 
 string
-time_point_to_stamp(TimePoint const& p_time_point)
+time_point_to_stamp(TimePoint const& p_time_point, string const& p_format)
 {
 	// don't make this static - caused odd bug with strptime (?)
-	string const format_str = Config::format_string();
-	char const* format = format_str.c_str();
+	char const* format = p_format.c_str();
 	tm const time_tmp = time_point_to_tm(p_time_point);
 	auto const buf_len = Config::formatted_buf_len();
 	unique_ptr<char[]> buf(new char[buf_len]);

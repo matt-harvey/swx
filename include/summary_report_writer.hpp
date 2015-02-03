@@ -45,7 +45,10 @@ protected:
 
 // special member functions
 public:
-	explicit SummaryReportWriter(std::vector<Stint> const& p_stints);
+	SummaryReportWriter
+	(	std::vector<Stint> const& p_stints,
+		Options const& p_options
+	);
 	SummaryReportWriter(SummaryReportWriter const& rhs) = delete;
 	SummaryReportWriter(SummaryReportWriter&& rhs) = delete;
 	SummaryReportWriter& operator=(SummaryReportWriter const& rhs) = delete;

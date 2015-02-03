@@ -37,8 +37,9 @@ class HumanSummaryReportWriter: public SummaryReportWriter
 {
 // special member functions
 public:
-	explicit HumanSummaryReportWriter
+	HumanSummaryReportWriter
 	(	std::vector<Stint> const& p_stints,
+		Options const& p_options,
 		bool p_include_beginning,
 		bool p_include_ending
 	);

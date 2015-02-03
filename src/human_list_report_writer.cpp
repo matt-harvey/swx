@@ -15,6 +15,7 @@
  */
 
 #include "human_list_report_writer.hpp"
+#include "config.hpp"
 #include "interval.hpp"
 #include "stint.hpp"
 #include "stream_flag_guard.hpp"
@@ -37,8 +38,11 @@ using std::vector;
 namespace swx
 {
 
-HumanListReportWriter::HumanListReportWriter(vector<Stint> const& p_stints):
-	ListReportWriter(p_stints)
+HumanListReportWriter::HumanListReportWriter
+(	vector<Stint> const& p_stints,
+	Options const& p_options
+):
+	ListReportWriter(p_stints, p_options)
 {
 }
 
@@ -56,8 +60,8 @@ HumanListReportWriter::do_process_stint(ostream& p_os, Stint const& p_stint)
 	{
 		StreamFlagGuard guard(p_os);
 		auto const interval = p_stint.interval();
-		p_os << time_point_to_stamp(interval.beginning()) << "  ";
-		p_os << time_point_to_stamp(interval.ending()) << "  ";
+		p_os << time_point_to_stamp(interval.beginning(), time_format()) << "  ";
+		p_os << time_point_to_stamp(interval.ending(), time_format()) << "  ";
 		p_os << fixed
 		     << setprecision(output_precision())
 			 << right

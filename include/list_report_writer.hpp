@@ -28,7 +28,10 @@ class ListReportWriter: public ReportWriter
 {
 // special member functions
 public:
-	explicit ListReportWriter(std::vector<Stint> const& p_stints);
+	ListReportWriter
+	(	std::vector<Stint> const& p_stints,
+		Options const& p_options
+	);
 	ListReportWriter(ListReportWriter const& rhs) = delete;
 	ListReportWriter(ListReportWriter&& rhs) = delete;
 	ListReportWriter& operator=(ListReportWriter const& rhs) = delete;

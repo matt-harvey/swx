@@ -53,8 +53,10 @@ private:
 
 // special member functions
 public:
-	explicit TimeLog(std::string const& p_filepath);
-
+	TimeLog
+	(	std::string const& p_filepath,
+		std::string const& p_time_format
+	);
 	TimeLog() = delete;
 	TimeLog(TimeLog const& rhs) = delete;
 	TimeLog(TimeLog&& rhs) = delete;
@@ -153,6 +155,7 @@ private:
 	std::string m_filepath;
 	std::vector<Entry> m_entries;
 	Activities m_activities;
+	std::string const m_time_format;
 
 };  // class TimeLog
 

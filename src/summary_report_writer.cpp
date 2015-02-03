@@ -39,8 +39,11 @@ using std::vector;
 namespace swx
 {
 
-SummaryReportWriter::SummaryReportWriter(vector<Stint> const& p_stints):
-	ReportWriter(p_stints)
+SummaryReportWriter::SummaryReportWriter
+(	vector<Stint> const& p_stints,
+	Options const& p_options
+):
+	ReportWriter(p_stints, p_options)
 {
 	assert (m_activity_info_map.empty());
 }

@@ -53,7 +53,7 @@ public:
 	static unsigned int output_rounding_denominator();
 	static unsigned int output_precision();
 	static unsigned int output_width();
-	static std::string format_string();
+	static std::string time_format();
 	static unsigned int formatted_buf_len();
 	static std::string editor();
 	static std::string path_to_log();
@@ -86,14 +86,11 @@ private:
 	Value get_option_value(std::string const& p_key);
 
 	std::string get_raw_option_value(std::string const& p_key);
-	void load();
-	void do_load();
 	void set_defaults();
 	void initialize_config_file();
 
 // member variables
 private:
-	bool m_is_loaded;
 	std::map<std::string, OptionData> m_map;
 
 };  // class Config
@@ -105,7 +102,6 @@ template <typename Value>
 Value
 Config::get_option_value(std::string const& p_key)
 {
-	load();
 	Value ret;
 	auto const raw_value = get_raw_option_value(p_key);
 	std::stringstream ss(raw_value);
@@ -128,7 +124,6 @@ inline
 std::string
 Config::get_option_value<std::string>(std::string const& p_key)
 {
-	load();
 	return get_raw_option_value(p_key);
 }
 

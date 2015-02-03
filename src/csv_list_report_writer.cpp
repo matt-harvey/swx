@@ -30,8 +30,11 @@ using std::vector;
 namespace swx
 {
 
-CsvListReportWriter::CsvListReportWriter(vector<Stint> const& p_stints):
-	ListReportWriter(p_stints)
+CsvListReportWriter::CsvListReportWriter
+(	vector<Stint> const& p_stints,
+	Options const& p_options
+):
+	ListReportWriter(p_stints, p_options)
 {
 }
 
@@ -47,8 +50,8 @@ CsvListReportWriter::do_process_stint(ostream& p_os, Stint const& p_stint)
 		p_os << setprecision(output_precision());
 		output_csv_row
 		(	p_os,
-			time_point_to_stamp(interval.beginning()),
-			time_point_to_stamp(interval.ending()),
+			time_point_to_stamp(interval.beginning(), time_format()),
+			time_point_to_stamp(interval.ending(), time_format()),
 			round_hours(interval),
 			p_stint.activity()
 		);

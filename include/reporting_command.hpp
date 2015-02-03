@@ -68,6 +68,8 @@ protected:
 		TimePoint const* p_end = nullptr
 	);
 
+	std::string const& time_format() const;
+
 // inherited virtual functions
 private:
 	virtual std::string do_get_category() const override;

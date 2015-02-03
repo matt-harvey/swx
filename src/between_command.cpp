@@ -16,6 +16,7 @@
 
 #include "between_command.hpp"
 #include "command.hpp"
+#include "config.hpp"
 #include "help_line.hpp"
 #include "reporting_command.hpp"
 #include "string_utilities.hpp"
@@ -81,10 +82,11 @@ BetweenCommand::do_process
 	{
 		unique_ptr<TimePoint> time_point_since_ptr;
 		unique_ptr<TimePoint> time_point_until_ptr;
+		auto const time_format = Config::time_format();
 		try
 		{
 			time_point_since_ptr.reset
-			(	new TimePoint(time_stamp_to_point(oargs[0]))
+			(	new TimePoint(time_stamp_to_point(oargs[0], time_format))
 			);
 		}
 		catch (runtime_error&)
@@ -97,7 +99,7 @@ BetweenCommand::do_process
 		try
 		{
 			time_point_until_ptr.reset
-			(	new TimePoint(time_stamp_to_point(oargs[1]))
+			(	new TimePoint(time_stamp_to_point(oargs[1], time_format))
 			);
 		}
 		catch (runtime_error&)

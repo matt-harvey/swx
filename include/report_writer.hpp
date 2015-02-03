@@ -18,6 +18,7 @@
 #define GUARD_report_writer_hpp_6461996848910114
 
 #include <ostream>
+#include <string>
 #include <vector>
 #include "stint.hpp"
 
@@ -32,9 +33,33 @@ class Interval;
 
 class ReportWriter
 {
+// nested types
+public:
+	struct Options
+	{
+		/* Holds various options for use by ReportWriter.
+		 * Options have the same meaning as for Config class.
+		 */
+		Options
+		(	unsigned int p_output_rounding_numerator,
+			unsigned int p_output_rounding_denominator,
+			unsigned int p_output_precision,
+			unsigned int p_output_width,
+			std::string const& p_time_format
+		);
+		unsigned int const output_rounding_numerator;
+		unsigned int const output_rounding_denominator;
+		unsigned int const output_precision;
+		unsigned int const output_width;
+		std::string const time_format;
+	};
+
 // special member functions
 protected:
-	explicit ReportWriter(std::vector<Stint> const& p_stints);
+	ReportWriter
+	(	std::vector<Stint> const& p_stints,
+		Options const& p_options
+	);
 	ReportWriter(ReportWriter const& rhs) = delete;
 	ReportWriter(ReportWriter&& rhs) = delete;
 	ReportWriter& operator=(ReportWriter const& rhs) = delete;
@@ -47,21 +72,23 @@ public:
 
 protected:
 
-	/**
-	 * @returns duration of \e p_interval rounded according to the rounding
-	 * behaviour specified in the configuration file.
-	 */
-	double round_hours(Interval const& p_interval) const;
+	unsigned int output_precision() const;
+	unsigned int output_width() const;
+	std::string const& time_format() const;
 
 	/**
-	 * Converts a number of seconds to a double representing the number
-	 * of hours, rounded according to the rounding behaviour specified in
-	 * the configuration file.
+	 * Converts a number of seconds to a double representing a number
+	 * of hours, rounded according to the rounding behaviour specified
+	 * in the options passed to the constructor.
 	 */
 	double seconds_to_rounded_hours(unsigned long long p_seconds) const;
 
-	unsigned int output_precision() const;
-	unsigned int output_width() const;
+	/**
+	 * @returns duration of \e p_interval rounded according to the rounding
+	 * behaviour specified in the options passed to the constructor.
+	 */
+	double round_hours(Interval const& p_interval) const;
+
 
 // virtual member functions
 private:
@@ -79,10 +106,7 @@ private:
 
 // member variables
 private:
-	unsigned int m_output_rounding_numerator;
-	unsigned int m_output_rounding_denominator;
-	unsigned int m_output_precision;
-	unsigned int m_output_width;
+	Options const m_options;
 	std::vector<Stint> const& m_stints;
 
 };  // class ReportWriter

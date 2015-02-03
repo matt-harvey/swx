@@ -29,7 +29,10 @@ class CsvListReportWriter: public ListReportWriter
 {
 // special member functions
 public:
-	explicit CsvListReportWriter(std::vector<Stint> const& p_stints);
+	CsvListReportWriter
+	(	std::vector<Stint> const& p_stints,
+		Options const& p_options
+	);
 	CsvListReportWriter(CsvListReportWriter const& rhs) = delete;
 	CsvListReportWriter(CsvListReportWriter&& rhs) = delete;
 	CsvListReportWriter& operator=(CsvListReportWriter const& rhs) = delete;
