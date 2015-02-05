@@ -261,14 +261,11 @@ Building and installing
 to be built and run on Unix-like systems only (Linux, OSX, BSD), and will not
 work on Windows. To build it, you will need:
 
-- A reasonably conformant C++ compiler and standard library implementation
+- A reasonably conformant C++ compiler and standard library implementation (note
+  if you are using GCC, you will need at least version 4.9)
 
-- CMake (http://www.cmake.org)
-
-- Boost (http://www.boost.org)
-
-These dependencies are commonly available via package managers such as
-Homebrew.
+- CMake (http://www.cmake.org) (commonly available via package managers such
+  as Homebrew)
 
 Having obtained these dependencies, download and unzip the ``swx`` source code,
 and ``cd`` into the project root. 

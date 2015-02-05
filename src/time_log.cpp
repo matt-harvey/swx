@@ -31,16 +31,13 @@
 #include <iomanip>
 #include <ios>
 #include <iostream>
+#include <regex>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
-#include <boost/regex.hpp>
 
-using boost::match_posix;
-using boost::regex;
-using boost::regex_search;
 using std::cerr;
 using std::endl;
 using std::getline;
@@ -50,6 +47,8 @@ using std::ios;
 using std::move;
 using std::ofstream;
 using std::ostringstream;
+using std::regex;
+using std::regex_search;
 using std::remove;
 using std::runtime_error;
 using std::size_t;
@@ -117,7 +116,7 @@ TimeLog::get_stints
 	if (p_use_regex)
 	{
 		assert (p_sought_activity);
-		reg = regex(*p_sought_activity, regex::extended);
+		reg = regex(*p_sought_activity, regex::extended | regex::optimize);
 	}
 	vector<Stint> ret;
 	auto const e = m_entries.end();
@@ -131,7 +130,7 @@ TimeLog::get_stints
 		if (!p_sought_activity || (sought_id == activity_id) || p_use_regex)
 		{
 			auto const& activity = id_to_activity(activity_id);
-			if (!p_use_regex || regex_search(activity, reg, match_posix))
+			if (!p_use_regex || regex_search(activity, reg))
 			{
 				auto tp = it->time_point;
 				if (p_begin && (tp < *p_begin)) tp = *p_begin;
@@ -156,7 +155,7 @@ string
 TimeLog::last_activity_to_match(string const& p_regex)
 {
 	load();
-	regex const reg(p_regex, regex::extended);
+	regex const reg(p_regex, regex::extended | regex::optimize);
 	typedef decltype(m_entries)::const_reverse_iterator RevIter;
 	auto const empty_activity_id = register_activity("");
 	for (RevIter rit = m_entries.rbegin(); rit != m_entries.rend(); ++rit)
@@ -165,7 +164,7 @@ TimeLog::last_activity_to_match(string const& p_regex)
 		if (id != empty_activity_id)
 		{
 			auto const& activity = id_to_activity(id);
-			if (regex_search(activity, reg, match_posix))
+			if (regex_search(activity, reg))
 			{
 				return activity;
 			}

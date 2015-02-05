@@ -34,12 +34,6 @@ using swx::CommandManager;
 using swx::Config;
 using swx::TimeLog;
 
-// TODO LOW PRIORITY Use <regex> instead of Boost regex once it becomes more
-// widely supported. (Apparently GCC only supports it as of version 4.9.)
-
-// TODO LOW PRIORITY Make it so that the regex feature is simply disabled if
-// Boost regex library not found, rather than not being able to compile at all.
-
 int main(int argc, char** argv)
 {
 	try

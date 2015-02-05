@@ -46,9 +46,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # Dependencies
 
-find_package(Boost 1.53.0 COMPONENTS regex REQUIRED)
-include_directories(include ${Boost_INCLUDE_DIRS})
-set(libraries ${Boost_LIBRARIES} pthread dl)
+set(min_gcc "4.9")
+if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS ${min_gcc})
+	# versions less than 4.9 do not support regex
+	message(FATAL_ERROR "GCC version >= ${gcc_version_required} required")
+endif()
+include_directories(include)
+set(libraries pthread dl)
 
 
 # Sources
