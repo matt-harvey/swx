@@ -270,21 +270,17 @@ work on Windows. To build it, you will need:
 Having obtained these dependencies, download and unzip the ``swx`` source code,
 and ``cd`` into the project root. 
 
-To set up a default build, enter::
+To configure an optimized build, enter::
        
-   cmake .
+   cmake -D CMAKE_BUILD_TYPE=Release .
 
-If you want to adjust configuration options, such as the directory where
-``swx`` will be installed, you can instead enter ``cmake -i`` here and follow
-the prompts.
-
-Then to build and install, enter::
+(For other build options, see the CMake documentation.) Then to build and
+install, enter::
 
     make install
 
 You may need to run this as root (e.g. by prefixing the above command with
-``sudo``), depending on your system and the installation directory that was
-configured via CMake.
+``sudo``), depending on your system and the installation directory.
 
 Uninstalling
 ============
