@@ -46,12 +46,7 @@ int main(int argc, char** argv)
 			return 1;
 		}
 		assert (argc >= 2);
-		vector<string> args;
-		for (int i = 2; i != argc; ++i)
-		{
-			string const arg(argv[i]);
-			args.push_back(arg);
-		}
+		vector<string> args(argv + 2, argv + argc);
 		TimeLog time_log(Config::path_to_log(), Config::time_format());
 		CommandManager manager(time_log);
 		manager.process_command(argv[1], args);
