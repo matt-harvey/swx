@@ -16,6 +16,7 @@
 
 #include "current_command.hpp"
 #include "command.hpp"
+#include "config.hpp"
 #include "help_line.hpp"
 #include "time_log.hpp"
 #include <iostream>
@@ -63,10 +64,12 @@ CurrentCommand::~CurrentCommand() = default;
 
 Command::ErrorMessages
 CurrentCommand::do_process
-(	ParsedArguments const& p_args,
+(	Config const& p_config,
+	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
+	(void)p_config;  // silence compiler re. unused param
 	TimePoint const n = now();
 	auto const stints = m_time_log.get_stints(nullptr, &n, &n);
 	if (!stints.empty())

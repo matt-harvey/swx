@@ -62,8 +62,8 @@ CsvSummaryReportWriter::do_write_summary
 			(	p_os,
 				activity,
 				seconds_to_rounded_hours(info.seconds),
-				time_point_to_stamp(info.beginning, time_format()),
-				time_point_to_stamp(info.ending, time_format())
+				time_point_to_stamp(info.beginning, time_format(), formatted_buf_len()),
+				time_point_to_stamp(info.ending, time_format(), formatted_buf_len())
 			);
 		}
 		else if (m_include_beginning)
@@ -72,7 +72,7 @@ CsvSummaryReportWriter::do_write_summary
 			(	p_os,
 				activity,
 				seconds_to_rounded_hours(info.seconds),
-				time_point_to_stamp(info.beginning, time_format())
+				time_point_to_stamp(info.beginning, time_format(), formatted_buf_len())
 			);
 		}
 		else if (m_include_ending)
@@ -81,7 +81,7 @@ CsvSummaryReportWriter::do_write_summary
 			(	p_os,
 				activity,
 				seconds_to_rounded_hours(info.seconds),
-				time_point_to_stamp(info.ending, time_format())
+				time_point_to_stamp(info.ending, time_format(), formatted_buf_len())
 			);
 		}
 		else

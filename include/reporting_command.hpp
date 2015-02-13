@@ -28,6 +28,12 @@
 namespace swx
 {
 
+// begin forward declarations
+
+class Config;
+
+// end forward declarations
+
 class ReportingCommand: public Command
 {
 // special member functions
@@ -61,6 +67,7 @@ protected:
 	 */
 	std::ostream& print_report
 	(	std::ostream& p_os,
+		Config const& p_config,
 		Flags const& p_flags,
 		std::vector<std::string> const& p_activity_args =
 			std::vector<std::string>(),

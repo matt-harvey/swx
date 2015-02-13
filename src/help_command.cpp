@@ -18,6 +18,7 @@
 #include "help_line.hpp"
 #include "command.hpp"
 #include "command_manager.hpp"
+#include "config.hpp"
 #include "info.hpp"
 #include "stream_utilities.hpp"
 #include <cassert>
@@ -59,10 +60,12 @@ HelpCommand::~HelpCommand() = default;
 
 Command::ErrorMessages
 HelpCommand::do_process
-(	ParsedArguments const& p_args,
+(	Config const& p_config,
+	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
+	(void)p_config;  // silence compiler re. unused param
 	ErrorMessages ret;
 	Arguments const args = p_args.ordinary_args();
 	if (args.empty())

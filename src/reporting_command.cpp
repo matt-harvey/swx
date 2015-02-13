@@ -100,6 +100,7 @@ ReportingCommand::~ReportingCommand() = default;
 ostream&
 ReportingCommand::print_report
 (	ostream& p_os,
+	Config const& p_config,
 	Flags const& p_flags,
 	vector<string> const& p_activity_components,
 	TimePoint const* p_begin,
@@ -128,11 +129,12 @@ ReportingCommand::print_report
 	unique_ptr<ListReportWriter> list_writer;
 	unique_ptr<SummaryReportWriter> summary_writer;
 	ReportWriter::Options const options
-	(	Config::output_rounding_numerator(),
-		Config::output_rounding_denominator(),
-		Config::output_precision(),
-		Config::output_width(),
-		Config::time_format()
+	(	p_config.output_rounding_numerator(),
+		p_config.output_rounding_denominator(),
+		p_config.output_precision(),
+		p_config.output_width(),
+		p_config.formatted_buf_len(),
+		p_config.time_format()
 	);
 	if (detail)
 	{

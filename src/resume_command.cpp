@@ -16,6 +16,7 @@
 
 #include "resume_command.hpp"
 #include "command.hpp"
+#include "config.hpp"
 #include "help_line.hpp"
 #include "placeholder.hpp"
 #include "recording_command.hpp"
@@ -62,11 +63,12 @@ ResumeCommand::~ResumeCommand() = default;
 
 Command::ErrorMessages
 ResumeCommand::do_process
-(	ParsedArguments const& p_args,
+(	Config const& p_config,
+	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
-	(void)p_args;  // suppress compiler warning re. unused param.
+	(void)p_args; (void)p_config;  // silence compiler re. unused params
 
 	ErrorMessages ret;
 	bool const is_active = time_log().is_active();

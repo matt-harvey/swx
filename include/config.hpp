@@ -45,28 +45,9 @@ private:
 		std::string description;
 	};
 
-// static accessors
-private:
-	static Config& instance();
-public:
-	static unsigned int output_rounding_numerator();
-	static unsigned int output_rounding_denominator();
-	static unsigned int output_precision();
-	static unsigned int output_width();
-	static std::string time_format();
-	static unsigned int formatted_buf_len();
-	static std::string editor();
-	static std::string path_to_log();
-	static std::string filepath();
-
-	/**
-	 * @returns a printable summary of configuration settings.
-	 */
-	static std::string summary();
-
 // special member functions
-private:
-	Config();
+public:
+	explicit Config(std::string const& p_filepath);
 	Config(Config const& rhs) = delete;
 	Config(Config&& rhs) = delete;
 	Config& operator=(Config const& rhs) = delete;
@@ -74,6 +55,22 @@ private:
 	~Config();
 
 // ordinary member functions
+public:
+	std::string filepath() const;
+	unsigned int output_rounding_numerator() const;
+	unsigned int output_rounding_denominator() const;
+	unsigned int output_precision() const;
+	unsigned int output_width() const;
+	std::string time_format() const;
+	unsigned int formatted_buf_len() const;
+	std::string editor() const;
+	std::string path_to_log() const;
+
+	/**
+	 * @returns a printable summary of configuration settings.
+	 */
+	std::string summary() const;
+
 private:
 	void set_option_value(std::string const& p_key, std::string const& p_value);
 
@@ -83,14 +80,15 @@ private:
 	);
 
 	template <typename Value>
-	Value get_option_value(std::string const& p_key);
+	Value get_option_value(std::string const& p_key) const;
 
-	std::string get_raw_option_value(std::string const& p_key);
+	std::string get_raw_option_value(std::string const& p_key) const;
 	void set_defaults();
 	void initialize_config_file();
 
 // member variables
 private:
+	std::string m_filepath;
 	std::map<std::string, OptionData> m_map;
 
 };  // class Config
@@ -100,7 +98,7 @@ private:
 
 template <typename Value>
 Value
-Config::get_option_value(std::string const& p_key)
+Config::get_option_value(std::string const& p_key) const
 {
 	Value ret;
 	auto const raw_value = get_raw_option_value(p_key);
@@ -122,7 +120,7 @@ Config::get_option_value(std::string const& p_key)
 template <>
 inline
 std::string
-Config::get_option_value<std::string>(std::string const& p_key)
+Config::get_option_value<std::string>(std::string const& p_key) const
 {
 	return get_raw_option_value(p_key);
 }

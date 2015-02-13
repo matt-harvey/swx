@@ -15,6 +15,7 @@
  */
 
 #include "command.hpp"
+#include "config.hpp"
 #include "help_line.hpp"
 #include "info.hpp"
 #include "placeholder.hpp"
@@ -164,7 +165,8 @@ Command::has_boolean_option(char p_flag) const
 
 int
 Command::process
-(	Arguments const& p_args,
+(	Config const& p_config,
+	Arguments const& p_args,
 	ostream& p_ordinary_ostream,
 	ostream& p_error_ostream
 )
@@ -195,7 +197,8 @@ Command::process
 		p_error_ostream << "Aborted" << endl;
 		return 1;
 	}
-	auto const error_messages = do_process(parsed_args, p_ordinary_ostream);
+	auto const error_messages =
+		do_process(p_config, parsed_args, p_ordinary_ostream);
 	for (auto const& message: error_messages)
 	{
 		p_error_ostream << message << endl;

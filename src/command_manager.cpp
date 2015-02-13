@@ -17,6 +17,7 @@
 #include "command_manager.hpp"
 #include "between_command.hpp"
 #include "command.hpp"
+#include "config.hpp"
 #include "config_command.hpp"
 #include "current_command.hpp"
 #include "day_command.hpp"
@@ -152,7 +153,8 @@ CommandManager::populate_command_map()
 
 int
 CommandManager::process_command
-(	string const& p_command,
+(	Config const& p_config,
+	string const& p_command,
 	vector<string> const& p_args
 ) const
 {
@@ -166,7 +168,8 @@ CommandManager::process_command
 		assert (it->second);
 		auto const command_ptr = it->second;
 		int const ret = command_ptr->process
-		(	p_args,
+		(	p_config,
+			p_args,
 			ordinary_ostream(),
 			error_ostream()
 		);

@@ -16,6 +16,7 @@
 
 #include "version_command.hpp"
 #include "command.hpp"
+#include "config.hpp"
 #include "help_line.hpp"
 #include "info.hpp"
 #include <iostream>
@@ -49,7 +50,8 @@ VersionCommand::~VersionCommand() = default;
 
 Command::ErrorMessages
 VersionCommand::do_process
-(	ParsedArguments const& p_args,
+(	Config const& p_config,
+	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {

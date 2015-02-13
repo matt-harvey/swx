@@ -86,10 +86,13 @@ SwitchCommand::~SwitchCommand() = default;
 
 Command::ErrorMessages
 SwitchCommand::do_process
-(	ParsedArguments const& p_args,
+(	Config const& p_config,
+	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
+	(void)p_config;  // silence compiler re. unused param.
+
 	ErrorMessages error_messages;
 	auto const& flags = p_args.flags();
 

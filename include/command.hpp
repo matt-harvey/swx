@@ -17,6 +17,7 @@
 #ifndef GUARD_command_hpp_08439188501070807
 #define GUARD_command_hpp_08439188501070807
 
+#include "config.hpp"
 #include "help_line.hpp"
 #include <map>
 #include <ostream>
@@ -90,7 +91,8 @@ public:
 	bool has_boolean_option(char p_flag) const;
 
 	int process
-	(	Arguments const& p_args,
+	(	Config const& p_config,
+		Arguments const& p_args,
 		std::ostream& p_ordinary_ostream,
 		std::ostream& p_error_ostream
 	);
@@ -105,7 +107,8 @@ private:
 	virtual std::string do_get_category() const;
 
 	virtual ErrorMessages do_process
-	(	ParsedArguments const& p_args,
+	(	Config const& p_config,
+		ParsedArguments const& p_args,
 		std::ostream& p_ordinary_ostream
 	) = 0;
 

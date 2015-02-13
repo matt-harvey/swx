@@ -25,6 +25,12 @@
 namespace swx
 {
 
+// begin forward declarations
+
+class Config;
+
+// end forward declarations
+
 class UntilCommand: public ReportingCommand
 {
 // special member functions
@@ -43,7 +49,8 @@ public:
 // inherited virtual functions
 private:
 	virtual ErrorMessages do_process
-	(	ParsedArguments const& p_args,
+	(	Config const& p_config,
+		ParsedArguments const& p_args,
 		std::ostream& p_ordinary_ostream
 	) override;
 

@@ -18,6 +18,7 @@
 #define GUARD_command_manager_hpp_6901861572126794
 
 #include "command.hpp"
+#include "config.hpp"
 #include "stream_flag_guard.hpp"
 #include "time_log.hpp"
 #include <memory>
@@ -61,7 +62,8 @@ private:
 public:
 
 	int process_command
-	(	std::string const& p_command,
+	(	Config const& p_config,
+		std::string const& p_command,
 		std::vector<std::string> const& p_args
 	) const;
 

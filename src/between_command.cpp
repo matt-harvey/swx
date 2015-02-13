@@ -69,11 +69,13 @@ BetweenCommand::~BetweenCommand() = default;
 
 Command::ErrorMessages
 BetweenCommand::do_process
-(	ParsedArguments const& p_args,
+(	Config const& p_config,
+	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
 	Arguments const oargs = p_args.ordinary_args();
+	auto const fbl = p_config.formatted_buf_len();
 	if (oargs.size() < 2)
 	{
 		return {"Too few arguments passed to this command."};
@@ -82,7 +84,7 @@ BetweenCommand::do_process
 	{
 		unique_ptr<TimePoint> time_point_since_ptr;
 		unique_ptr<TimePoint> time_point_until_ptr;
-		auto const time_format = Config::time_format();
+		auto const time_format = p_config.time_format();
 		try
 		{
 			time_point_since_ptr.reset
@@ -112,6 +114,7 @@ BetweenCommand::do_process
 		assert (oargs.size() >= 2);
 		print_report
 		(	p_ordinary_ostream,
+			p_config,
 			p_args.flags(),
 			vector<string>(oargs.begin() + 2, oargs.end()),
 			time_point_since_ptr.get(),

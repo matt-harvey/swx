@@ -59,6 +59,11 @@ ReportWriter::time_format() const
 	return m_options.time_format;
 }
 
+unsigned int
+ReportWriter::formatted_buf_len() const
+{
+	return m_options.formatted_buf_len;
+}
 
 double
 ReportWriter::seconds_to_rounded_hours(unsigned long long p_seconds) const
@@ -106,12 +111,14 @@ ReportWriter::Options::Options
 	unsigned int p_output_rounding_denominator,
 	unsigned int p_output_precision,
 	unsigned int p_output_width,
+	unsigned int p_formatted_buf_len,
 	string const& p_time_format
 ):
 	output_rounding_numerator(p_output_rounding_numerator),
 	output_rounding_denominator(p_output_rounding_denominator),
 	output_precision(p_output_precision),
 	output_width(p_output_width),
+	formatted_buf_len(p_formatted_buf_len),
 	time_format(p_time_format)
 {
 }

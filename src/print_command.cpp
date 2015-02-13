@@ -16,6 +16,7 @@
 
 #include "print_command.hpp"
 #include "command.hpp"
+#include "config.hpp"
 #include "help_line.hpp"
 #include "reporting_command.hpp"
 #include "string_utilities.hpp"
@@ -53,11 +54,17 @@ PrintCommand::~PrintCommand() = default;
 
 Command::ErrorMessages
 PrintCommand::do_process
-(	ParsedArguments const& p_args,
+(	Config const& p_config,
+	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
-	print_report(p_ordinary_ostream, p_args.flags(), p_args.ordinary_args());
+	print_report
+	(	p_ordinary_ostream,
+		p_config,
+		p_args.flags(),
+		p_args.ordinary_args()
+	);
 	return ErrorMessages();
 }
 

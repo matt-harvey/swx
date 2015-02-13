@@ -99,14 +99,17 @@ time_stamp_to_point(string const& p_time_stamp, string const& p_format)
 }
 
 string
-time_point_to_stamp(TimePoint const& p_time_point, string const& p_format)
+time_point_to_stamp
+(	TimePoint const& p_time_point,
+	string const& p_format,
+	unsigned int p_formatted_buf_len
+)
 {
 	// don't make this static - caused odd bug with strptime (?)
 	char const* format = p_format.c_str();
 	tm const time_tmp = time_point_to_tm(p_time_point);
-	auto const buf_len = Config::formatted_buf_len();
-	unique_ptr<char[]> buf(new char[buf_len]);
-	if (strftime(buf.get(), buf_len, format, &time_tmp) == 0)
+	unique_ptr<char[]> buf(new char[p_formatted_buf_len]);
+	if (strftime(buf.get(), p_formatted_buf_len, format, &time_tmp) == 0)
 	{
 		throw runtime_error("Error formatting TimePoint.");
 	}

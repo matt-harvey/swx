@@ -55,7 +55,8 @@ private:
 public:
 	TimeLog
 	(	std::string const& p_filepath,
-		std::string const& p_time_format
+		std::string const& p_time_format,
+		unsigned int p_formatted_buf_len
 	);
 	TimeLog() = delete;
 	TimeLog(TimeLog const& rhs) = delete;
@@ -152,6 +153,7 @@ private:
 // member variables
 private:
 	bool m_is_loaded;
+	unsigned int m_formatted_buf_len;
 	std::string m_filepath;
 	std::vector<Entry> m_entries;
 	Activities m_activities;

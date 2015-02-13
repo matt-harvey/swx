@@ -119,91 +119,81 @@ Config::OptionData::OptionData
 {
 }
 
-Config&
-Config::instance()
+string
+Config::filepath() const
 {
-	static Config ret;
-	return ret;
+	return m_filepath;
 }
 
 unsigned int
-Config::output_rounding_numerator()
+Config::output_rounding_numerator() const
 {
-	return instance().
-		get_option_value<unsigned int>("output_rounding_numerator");
+	return get_option_value<unsigned int>("output_rounding_numerator");
 }
 
 unsigned int
-Config::output_rounding_denominator()
+Config::output_rounding_denominator() const
 {
-	return instance().
-		get_option_value<unsigned int>("output_rounding_denominator");
+	return get_option_value<unsigned int>("output_rounding_denominator");
 }
 
 unsigned int
-Config::output_precision()
+Config::output_precision() const
 {
-	return instance().get_option_value<unsigned int>("output_precision");
+	return get_option_value<unsigned int>("output_precision");
 }
 
 unsigned int
-Config::output_width()
+Config::output_width() const
 {
-	return instance().get_option_value<unsigned int>("output_width");
+	return get_option_value<unsigned int>("output_width");
 }
 
 string
-Config::time_format()
+Config::time_format() const
 {
-	return instance().get_option_value<string>("format_string");
+	return get_option_value<string>("format_string");
 }
 
 unsigned int
-Config::formatted_buf_len()
+Config::formatted_buf_len() const
 {
-	return instance().get_option_value<unsigned int>("formatted_buf_len");
+	return get_option_value<unsigned int>("formatted_buf_len");
 }
 
 string
-Config::editor()
+Config::editor() const
 {
-	return instance().get_option_value<string>("editor");
+	return get_option_value<string>("editor");
 }
 
 string
-Config::path_to_log()
+Config::path_to_log() const
 {
-	return instance().get_option_value<string>("path_to_log");
+	return get_option_value<string>("path_to_log");
 }
 
 string
-Config::filepath()
-{
-	static string const ret = Info::home_dir() + "/.swxrc";  // non-portable
-	return ret;
-}
-
-string
-Config::summary()
+Config::summary() const
 {
 	ostringstream oss;
 	enable_exceptions(oss);
-	for (auto const& entry: instance().m_map)
+	for (auto const& entry: m_map)
 	{
 		oss << entry.first << '=' <<  entry.second.value << '\n';
 	}
 	return oss.str();
 }
 
-Config::Config()
+Config::Config(string const& p_filepath): m_filepath(p_filepath)
 {
 	set_defaults();
-	if (!file_exists_at(filepath()))
+	if (!file_exists_at(m_filepath))
 	{
 		initialize_config_file();
 		return;
 	}
-	ifstream infile(filepath().c_str());
+	ifstream infile(m_filepath.c_str());
 	enable_exceptions(infile);
 	string line;
 	size_t line_number = 1;
@@ -217,7 +207,7 @@ Config::Config()
 			ostringstream oss;
 			enable_exceptions(oss);
 			oss << "Parsing error in config file at "
-			    << filepath()
+			    << m_filepath
 				<< ", line "
 				<< line_number;
 			throw runtime_error(oss.str());
@@ -256,7 +246,7 @@ Config::unchecked_set_option
 }
 
 string
-Config::get_raw_option_value(std::string const& p_key)
+Config::get_raw_option_value(std::string const& p_key) const
 {
 	auto const it = m_map.find(p_key);
 	if (it == m_map.end())
@@ -350,7 +340,7 @@ Config::set_defaults()
 void
 Config::initialize_config_file()
 {
-	AtomicWriter writer(filepath());
+	AtomicWriter writer(m_filepath);
 	ostringstream oss;
 	enable_exceptions(oss);
 	oss << "Configuration options for " << Info::application_name()

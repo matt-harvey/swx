@@ -65,17 +65,18 @@ EditCommand::~EditCommand() = default;
 
 Command::ErrorMessages
 EditCommand::do_process
-(	ParsedArguments const& p_args,
+(	Config const& p_config,
+	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
 	(void)p_ordinary_ostream;  // suppress compiler warning re. unused param.
 	string const filepath =
 	(	p_args.flags().count(k_config_file_flag)?
-		Config::filepath():
-		Config::path_to_log()
+		p_config.filepath():
+		p_config.path_to_log()
 	);
-	string const editor_invokation = Config::editor() + " " + filepath;
+	string const editor_invokation = p_config.editor() + " " + filepath;
 	system(editor_invokation.c_str());
 	return ErrorMessages();
 }

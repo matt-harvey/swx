@@ -65,17 +65,25 @@ namespace swx
 
 namespace
 {
-	string::size_type expected_time_stamp_length(string const& p_time_format)
+	string::size_type expected_time_stamp_length
+	(	string const& p_time_format,
+		unsigned int p_formatted_buf_len
+	)
 	{
 		static string const time_format =
-			time_point_to_stamp(now(), p_time_format);
+			time_point_to_stamp(now(), p_time_format, p_formatted_buf_len);
 		return time_format.length();
 	}
 
 }  // end anonymous namespace
 
-TimeLog::TimeLog(string const& p_filepath, string const& p_time_format):
+TimeLog::TimeLog
+(	string const& p_filepath,
+	string const& p_time_format,
+	unsigned int p_formatted_buf_len
+):
 	m_is_loaded(false),
+	m_formatted_buf_len(p_formatted_buf_len),
 	m_filepath(p_filepath),
 	m_time_format(p_time_format)
 {
@@ -90,7 +98,7 @@ TimeLog::append_entry(string const& p_activity)
 {
 	AtomicWriter writer(m_filepath);
 	mark_cache_as_stale();
-	writer.append(time_point_to_stamp(now(), m_time_format));
+	writer.append(time_point_to_stamp(now(), m_time_format, m_formatted_buf_len));
 	if (!p_activity.empty())
 	{
 		writer.append(" ");
@@ -274,7 +282,7 @@ TimeLog::register_activity(string const& p_activity)
 void
 TimeLog::load_entry(string const& p_entry_string, size_t p_line_number)
 {
-	if (p_entry_string.size() < expected_time_stamp_length(m_time_format))
+	if (p_entry_string.size() < expected_time_stamp_length(m_time_format, m_formatted_buf_len))
 	{
 		ostringstream oss;
 		enable_exceptions(oss);
@@ -282,7 +290,7 @@ TimeLog::load_entry(string const& p_entry_string, size_t p_line_number)
 		    << p_line_number << '.';
 		throw runtime_error(oss.str());
 	}
-	auto it = p_entry_string.begin() + expected_time_stamp_length(m_time_format);
+	auto it = p_entry_string.begin() + expected_time_stamp_length(m_time_format, m_formatted_buf_len);
 	assert (it > p_entry_string.begin());
 	string const time_stamp(p_entry_string.begin(), it);
 	auto const activity = trim(string(it, p_entry_string.end()));

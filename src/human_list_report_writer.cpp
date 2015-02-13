@@ -60,8 +60,8 @@ HumanListReportWriter::do_process_stint(ostream& p_os, Stint const& p_stint)
 	{
 		StreamFlagGuard guard(p_os);
 		auto const interval = p_stint.interval();
-		p_os << time_point_to_stamp(interval.beginning(), time_format()) << "  ";
-		p_os << time_point_to_stamp(interval.ending(), time_format()) << "  ";
+		p_os << time_point_to_stamp(interval.beginning(), time_format(), formatted_buf_len()) << "  ";
+		p_os << time_point_to_stamp(interval.ending(), time_format(), formatted_buf_len()) << "  ";
 		p_os << fixed
 		     << setprecision(output_precision())
 			 << right

@@ -16,6 +16,7 @@
 
 #include "day_command.hpp"
 #include "command.hpp"
+#include "config.hpp"
 #include "help_line.hpp"
 #include "reporting_command.hpp"
 #include "time_point.hpp"
@@ -81,7 +82,8 @@ DayCommand::~DayCommand() = default;
 
 Command::ErrorMessages
 DayCommand::do_process
-(	ParsedArguments const& p_args,
+(	Config const& p_config,
+	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
@@ -114,7 +116,14 @@ DayCommand::do_process
 	{
 		auto const b = day_begin(n, -days_ago);
 		auto const e = day_end(n, -days_ago);
-		print_report(p_ordinary_ostream, flags, p_args.ordinary_args(), &b, &e);
+		print_report
+		(	p_ordinary_ostream,
+			p_config,
+			flags,
+			p_args.ordinary_args(),
+			&b,
+			&e
+		);
 	}
 	return ret;
 }

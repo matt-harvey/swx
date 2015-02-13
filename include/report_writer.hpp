@@ -39,18 +39,23 @@ public:
 	{
 		/* Holds various options for use by ReportWriter.
 		 * Options have the same meaning as for Config class.
+		 *
+		 * @todo MEDIUM PRIORITY Do we really need this when we already have
+		 * Config?
 		 */
 		Options
 		(	unsigned int p_output_rounding_numerator,
 			unsigned int p_output_rounding_denominator,
 			unsigned int p_output_precision,
 			unsigned int p_output_width,
+			unsigned int p_formatted_buf_len,
 			std::string const& p_time_format
 		);
 		unsigned int const output_rounding_numerator;
 		unsigned int const output_rounding_denominator;
 		unsigned int const output_precision;
 		unsigned int const output_width;
+		unsigned int const formatted_buf_len;
 		std::string const time_format;
 	};
 
@@ -75,6 +80,7 @@ protected:
 	unsigned int output_precision() const;
 	unsigned int output_width() const;
 	std::string const& time_format() const;
+	unsigned int formatted_buf_len() const;
 
 	/**
 	 * Converts a number of seconds to a double representing a number

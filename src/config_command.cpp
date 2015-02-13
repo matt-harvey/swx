@@ -70,7 +70,8 @@ ConfigCommand::~ConfigCommand() = default;
 
 Command::ErrorMessages
 ConfigCommand::do_process
-(	ParsedArguments const& p_args,
+(	Config const& p_config,
+	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
@@ -78,16 +79,16 @@ ConfigCommand::do_process
 	if (flags.count(k_editing_flag))
 	{
 		string const editor_invokation =
-			Config::editor() + " " + Config::filepath();
+			p_config.editor() + " " + p_config.filepath();
 		system(editor_invokation.c_str());
 	}
 	else if (flags.count(k_filepath_flag))
 	{
-		p_ordinary_ostream << Config::filepath() << endl;
+		p_ordinary_ostream << p_config.filepath() << endl;
 	}
 	else
 	{
-		p_ordinary_ostream << Config::summary();
+		p_ordinary_ostream << p_config.summary();
 	}
 	return ErrorMessages();
 }

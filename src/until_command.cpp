@@ -68,7 +68,8 @@ UntilCommand::~UntilCommand() = default;
 
 Command::ErrorMessages
 UntilCommand::do_process
-(	ParsedArguments const& p_args,
+(	Config const& p_config,
+	ParsedArguments const& p_args,
 	ostream& p_ordinary_ostream
 )
 {
@@ -82,7 +83,8 @@ UntilCommand::do_process
 		unique_ptr<TimePoint> time_point_ptr;
 		try
 		{
-			auto const time_format = Config::time_format();
+			auto const time_format = p_config.time_format();
+			auto const fbl = p_config.formatted_buf_len();
 			time_point_ptr.reset
 			(	new TimePoint(time_stamp_to_point(oargs[0], time_format))
 			);
@@ -97,6 +99,7 @@ UntilCommand::do_process
 		assert (oargs.size() >= 1);
 		print_report
 		(	p_ordinary_ostream,
+			p_config,
 			p_args.flags(),
 			vector<string>(oargs.begin() + 1, oargs.end()),
 			nullptr,

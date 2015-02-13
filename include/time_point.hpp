@@ -58,7 +58,8 @@ TimePoint time_stamp_to_point
 
 std::string time_point_to_stamp
 (	TimePoint const& p_time_point,
-	std::string const& p_format
+	std::string const& p_format,
+	unsigned int p_formatted_buf_len
 );
 
 }  // namespace swx

@@ -50,8 +50,8 @@ CsvListReportWriter::do_process_stint(ostream& p_os, Stint const& p_stint)
 		p_os << setprecision(output_precision());
 		output_csv_row
 		(	p_os,
-			time_point_to_stamp(interval.beginning(), time_format()),
-			time_point_to_stamp(interval.ending(), time_format()),
+			time_point_to_stamp(interval.beginning(), time_format(), formatted_buf_len()),
+			time_point_to_stamp(interval.ending(), time_format(), formatted_buf_len()),
 			round_hours(interval),
 			p_stint.activity()
 		);

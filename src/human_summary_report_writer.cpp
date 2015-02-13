@@ -127,11 +127,11 @@ HumanSummaryReportWriter::print_label_and_rounded_hours
 	guard.reset();
 	if (p_beginning != nullptr)
 	{
-		p_os << "  " << time_point_to_stamp(*p_beginning, time_format());
+		p_os << "  " << time_point_to_stamp(*p_beginning, time_format(), formatted_buf_len());
 	}
 	if (p_ending != nullptr)
 	{
-		p_os << "  "<< time_point_to_stamp(*p_ending, time_format());
+		p_os << "  "<< time_point_to_stamp(*p_ending, time_format(), formatted_buf_len());
 	}
 	p_os << endl;
 	return;

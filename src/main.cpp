@@ -16,6 +16,7 @@
 
 #include "command_manager.hpp"
 #include "config.hpp"
+#include "info.hpp"
 #include "stream_utilities.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
@@ -30,9 +31,14 @@ using std::endl;
 using std::string;
 using std::vector;
 using swx::enable_exceptions;
+using swx::Info;
 using swx::CommandManager;
 using swx::Config;
 using swx::TimeLog;
+
+// TODO MEDIUM PRIORITY Some of the stuff that's provided to TimeLog
+// constructor is also in Config. And then we provide both TimeLog
+// instance and Config instance to CommandManager. Seems messy.
 
 int main(int argc, char** argv)
 {
@@ -47,9 +53,15 @@ int main(int argc, char** argv)
 		}
 		assert (argc >= 2);
 		vector<string> args(argv + 2, argv + argc);
-		TimeLog time_log(Config::path_to_log(), Config::time_format());
+		auto const config_path = Info::home_dir() + "/.swxrc";  // non-portable
+		Config const config(config_path);
+		TimeLog time_log
+		(	config.path_to_log(),
+			config.time_format(),
+			config.formatted_buf_len()
+		);
 		CommandManager manager(time_log);
-		manager.process_command(argv[1], args);
+		manager.process_command(config, argv[1], args);
 	}
 	catch (std::runtime_error& e)
 	{
