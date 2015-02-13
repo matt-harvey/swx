@@ -5,6 +5,7 @@ Makefile
 CMakeCache.txt
 CMakeFiles/
 libswx_common.a
+test_driver
 time_log.swx
 install_manifest.txt
 cmake_install.cmake

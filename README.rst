@@ -277,6 +277,11 @@ work on Windows. To build it, you will need:
 
 - CMake (http://www.cmake.org) (commonly available via package managers such
   as Homebrew)
+ 
+In addition, if you want to build and run the test suite, you will need the Boost
+unit test framework (version 1.53.0 or greater), which is available at
+http://www.boost.org. This is also commonly available via package managers such as
+Homebrew.
 
 Having obtained these dependencies, download and unzip the ``swx`` source code,
 and ``cd`` into the project root.
@@ -292,6 +297,14 @@ Then to build and install, enter::
 
 You may need to run this as root (e.g. by prefixing the above command with
 ``sudo``), depending on your system and the installation directory.
+
+To build the application without installing it, enter::
+
+    make
+
+To build and run the test suite, enter::
+
+    make run_tests
 
 Uninstalling
 ============

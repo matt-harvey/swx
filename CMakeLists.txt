@@ -46,6 +46,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # Dependencies
 
+find_package(Boost 1.53.0 COMPONENTS unit_test_framework)
 set(min_gcc "4.9")
 if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS ${min_gcc})
 	# versions less than 4.9 do not support regex
@@ -55,7 +56,8 @@ include_directories(include)
 set(libraries pthread dl)
 
 
-# Sources
+# Building the swx_common library, which contains code used both by the main
+# executable, and the test suite.
 
 set(
 	common_sources
@@ -98,6 +100,32 @@ set(
 	src/version_command.cpp
 )
 add_library(swx_common ${common_sources})
+target_link_libraries (${executable_stem} swx_common ${libraries})
+
+
+# Build the tests
+
+set(
+	test_sources
+	test/dummy.cpp
+	test/test.cpp
+)
+add_executable(
+	test_driver EXCLUDE_FROM_ALL
+	${test_sources}
+)
+target_link_libraries(
+	test_driver
+	swx_common
+	${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+	${libraries}
+)
+set(test_execution_command "${PROJECT_SOURCE_DIR}/test_driver")
+add_custom_target(
+	run_tests
+	COMMAND "${test_execution_command}"
+	DEPENDS test_driver
+)
 
 
 # Build the main executable
