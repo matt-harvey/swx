@@ -63,12 +63,12 @@ You can use the alias ``s`` if you don't want to type ``switch``::
     swx s answering-emails -c
 
 The ``-c`` option tells the ``switch`` command that this is the first time you
-are working on this activity (it will protest if you try to "open" a new activity
-without this option; this guards against error in case you're trying to enter an
-activity that has already been opened, but misspell it). On subsequent occasions,
-when you switch back to an already-used activity, you would omit the ``-c`` (and
-again ``swx`` will helpfully protest in case you think you are reusing an
-existing activity, but aren't.)
+are working on this activity: it will protest if you try to create a new activity
+without this option. This guards against error in case you're think you're creating
+a new activity, but accidentally give it the same name as an existing one. On
+subsequent occasions, when you switch back to an already-used activity, you
+would omit the ``-c`` - and again ``swx`` will helpfully protest in case you
+think you're reusing to an existing activity, but aren't.
 
 Like all options in ``swx``, the ``-c`` can be entered either before or after
 the other arguments.
