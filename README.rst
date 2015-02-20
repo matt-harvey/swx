@@ -1,7 +1,7 @@
 Legal
 =====
 
-Copyright 2014 Matthew Harvey
+Copyright 2014, 2015 Matthew Harvey
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +21,10 @@ Overview
 ``swx`` is a command line application for keeping track of the amount of
 time you spend on different activities.
 
-The name "swx" stands for "stopwatch extended".
+The name "swx" stands for "stopwatch extended", reflecting that it works
+essentially like a stopwatch that has been extended with various additional
+features to support fine-grained recording and reporting on activities
+conducted over a period time.
 
 Usage
 =====
@@ -29,8 +32,17 @@ Usage
 Basic usage
 -----------
 
-``swx`` provides a series of commands, of which you can see a list by
-entering ``swx help``. The basic pattern of usage is::
+To use ``swx``, you enter a brief "switching" command each time you start an
+activity, end an activity, or switch from one activity to another. ``swx``
+makes a timestamped record of each such "transition" in a plain text file - which
+you are free to peruse and edit. Then when you want a summary of how you have
+spent your time, enter one of the reporting commands - which provide various
+filtering and output options - and ``swx`` will analyze the text file and
+output the requested information.
+
+Like ``git`` and various other command-line programs, ``swx`` comes with a range
+of subcommands. You can see a list of these by entering ``swx help``. The basic
+pattern of usage is::
 
     swx <COMMAND> [OPTIONS...] [ARGUMENTS...] [OPTIONS...]
 
@@ -44,27 +56,34 @@ Suppose you start working on the activity of "answering emails". You would come
 up with a name for this activity, say ``answering-emails``. When you first start
 working on this activity, you would enter the following at the command line::
 
-    swx switch -c answering-emails
+    swx switch answering-emails -c
 
 You can use the alias ``s`` if you don't want to type ``switch``::
 
-    swx s -c answering-emails
+    swx s answering-emails -c
 
 The ``-c`` option tells the ``switch`` command that this is the first time you
-are working on this activity. On subsequent occasions, when you switch back to
-an already-used activity, you should omit the ``-c`` option.
+are working on this activity (it will protest if you try to "open" a new activity
+without this option; this guards against error in case you're trying to enter an
+activity that has already been opened, but misspell it). On subsequent occasions,
+when you switch back to an already-used activity, you would omit the ``-c`` (and
+again ``swx`` will helpfully protest in case you think you are reusing an
+existing activity, but aren't.)
 
-Suppose you stop answering emails and restart work on a previous activity,
-"spreadsheeting". You can record a transition from one activity to another, by
-entering ``swx switch`` (or ``swx s``) plus the name of the acitivity that you
+Like all options in ``swx``, the ``-c`` can be entered either before or after
+the other arguments.
+
+Suppose you stop answering emails and restart work on a previous activity, say
+"spreadsheeting". You record a transition from one activity to another, by
+entering ``swx switch`` (or ``swx s``) plus the name of the activity that you
 are switching *to*, in this case::
 
-    swx switch spreadsheeting
+    swx s spreadsheeting
 
 If you cease doing any activity at all (or at least, any activity you care about
-recording), then you would record this cessation by entering simply::
-    
-    swx switch
+recording), you record this cessation by simply entering::
+
+    swx s
 
 If you pass the ``-r`` option to ``swx switch``, then the activity argument will
 be treated as a regular expression (of the POSIX extended variety), rather
@@ -131,7 +150,9 @@ hours.
 If you pass the ``-l`` option to the reporting command, then instead a list of
 individual activity stints will be shown, in the following format:
 
+    ----------  --------  -----------------------------  -------------
     start-time  end-time  hours-spent-in-digital-format  activity-name
+    ----------  --------  -----------------------------  -------------
 
 If you pass the ``-v`` option, then both the detailed list and the summary will
 be printed.
@@ -268,14 +289,14 @@ work on Windows. To build it, you will need:
   as Homebrew)
 
 Having obtained these dependencies, download and unzip the ``swx`` source code,
-and ``cd`` into the project root. 
+and ``cd`` into the project root.
 
 To configure an optimized build, enter::
-       
+
    cmake -D CMAKE_BUILD_TYPE=Release .
 
-(For other build options, see the CMake documentation.) Then to build and
-install, enter::
+(Note the dot at the end.) (For other build options, see the CMake documentation.)
+Then to build and install, enter::
 
     make install
 
