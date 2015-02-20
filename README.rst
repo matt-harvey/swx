@@ -64,7 +64,7 @@ You can use the alias ``s`` if you don't want to type ``switch``::
 
 The ``-c`` option tells the ``switch`` command that this is the first time you
 are working on this activity: it will protest if you try to create a new activity
-without this option. This guards against error in case you're think you're creating
+without this option. This guards against error in case you think you're creating
 a new activity, but accidentally give it the same name as an existing one. On
 subsequent occasions, when you switch back to an already-used activity, you
 would omit the ``-c`` - and again ``swx`` will helpfully protest in case you
@@ -131,16 +131,12 @@ ago. For example, ``swx day -1`` prints a summary of yesterday's activities.
 ``swx print`` (or ``swx p``) prints a summary of activity that is not filtered
 by time at all.
 
-The other printing commands take one or two timestamps as arguments, to show
+The other reporting commands take one or two timestamps as arguments, to show
 only activity *since* a certain time, only activity *until* a certain time, or
 only activity *between* two times. The activity name (if any) is entered after
 the timestamp(s). By default, you must enter timestamps in ISO format
-("YYYY-MM-DDTHH:MM") (without quotes). (You can customize this format in the
-configuration file - see Configuration_ below - but note that changing this
-format will also change the format of timestamps as read from and written to
-the data file, *without* retroactively reformatting the timestamps that are
-already stored - with resulting parsing errors unless you are prepared to
-reformat manually all your already-entered timestamps to the new format.)
+(YYYY-MM-DDTHH:MM). (You can customize this format in the configuration file -
+see Configuration_ below.)
 
 By default, only a summary of activities is printed. This comprises an
 alphabetically ordered list of activities with the total amount of time spent
@@ -261,6 +257,12 @@ contents of this file should be reasonably self-explanatory.
 The command ``swx config`` will output a summary of your configuration settings.
 Passing ``-e`` to this command will cause the configuration file to be opened
 in your default text editor.
+
+Note that if you change the timestamp format, then this will will change the
+format of timestamps as read from and written to the data file, *without*
+retroactively reformatting the timestamps that are already stored. This will
+result in parsing errors, unless you are prepared to reformat manually all your
+already-entered timestamps to the new format.
 
 Help and other commands
 -----------------------
