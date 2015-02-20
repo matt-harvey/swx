@@ -148,11 +148,9 @@ for each activity, during the period in question, shown in terms of digital
 hours.
 
 If you pass the ``-l`` option to the reporting command, then instead a list of
-individual activity stints will be shown, in the following format:
+individual activity stints will be shown, in the following format::
 
-    ----------  --------  -----------------------------  -------------
-    start-time  end-time  hours-spent-in-digital-format  activity-name
-    ----------  --------  -----------------------------  -------------
+    <START-TIME> <END-TIME> <HOURS-SPENT-IN-DIGITAL-FORMAT> <ACTIVITY>
 
 If you pass the ``-v`` option, then both the detailed list and the summary will
 be printed.
