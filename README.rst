@@ -258,8 +258,8 @@ The command ``swx config`` will output a summary of your configuration settings.
 Passing ``-e`` to this command will cause the configuration file to be opened
 in your default text editor.
 
-Note that if you change the timestamp format, then this will will change the
-format of timestamps as read from and written to the data file, *without*
+Note that if you change the timestamp format, then this will change the format
+of timestamps as read from and written to the data file, *without*
 retroactively reformatting the timestamps that are already stored. This will
 result in parsing errors, unless you are prepared to reformat manually all your
 already-entered timestamps to the new format.
