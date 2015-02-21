@@ -34,10 +34,10 @@ Basic usage
 
 To use ``swx``, you enter a brief "switching" command each time you start an
 activity, end an activity, or switch from one activity to another. ``swx``
-makes a timestamped record of each such "transition" in a plain text file - which
+makes a timestamped record of each such "transition" in a plain text file—which
 you are free to peruse and edit. Then when you want a summary of how you have
-spent your time, enter one of the reporting commands - which provide various
-filtering and output options - and ``swx`` will analyze the text file and
+spent your time, enter one of the reporting commands—which provide various
+filtering and output options—and ``swx`` will analyze the text file and
 output the requested information.
 
 Like ``git`` and various other command-line programs, ``swx`` comes with a range
@@ -67,7 +67,7 @@ are working on this activity: it will protest if you try to create a new activit
 without this option. This guards against error in case you think you're creating
 a new activity, but accidentally give it the same name as an existing one. On
 subsequent occasions, when you switch back to an already-used activity, you
-would omit the ``-c`` - and again ``swx`` will helpfully protest in case you
+would omit the ``-c``—and again ``swx`` will helpfully protest in case you
 think you're reusing an existing activity, but aren't.
 
 Like all options in ``swx``, the ``-c`` can be entered either before or after
@@ -92,7 +92,7 @@ active activity the name of which matches that regular expression. This can save
 a fair bit of typing when switching back to a recently used activity.
 
 After switching to an activity, ``swx`` always displays a message confirming the
-full name of the activity switched to - or confirming that activity has ceased,
+full name of the activity switched to—or confirming that activity has ceased,
 as the case may be.
 
 Note activity names are case-sensitive.
@@ -100,7 +100,7 @@ Note activity names are case-sensitive.
 The "resume" command
 --------------------
 
-Suppose you are currently "inactive" - on a lunch break, let's say - and then
+Suppose you are currently "inactive"—on a lunch break, let's say—and then
 you return to work and want to resume the most recent activity you were working
 on before your break. Enter ``swx resume`` to record a resumption of the
 activity you were working on just before the break. This is equivalent to
@@ -142,8 +142,8 @@ The other reporting commands take one or two timestamps as arguments, to show
 only activity *since* a certain time, only activity *until* a certain time, or
 only activity *between* two times. The activity name (if any) is entered after
 the timestamp(s). By default, you must enter timestamps in ISO format
-(YYYY-MM-DDTHH:MM). (You can customize this format in the configuration file -
-see Configuration_ below.)
+(YYYY-MM-DDTHH:MM). (You can customize this format in the configuration file―see
+Configuration_ below.)
 
 By default, only a summary of activities is printed. This comprises an
 alphabetically ordered list of activities with the total amount of time spent

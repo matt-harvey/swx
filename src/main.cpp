@@ -40,9 +40,6 @@ using swx::TimeLog;
 // constructor is also in Config. And then we provide both TimeLog
 // instance and Config instance to CommandManager. Seems messy.
 
-// TODO MEDIUM PRIORITY Replace hyphens with em-dashes in README.rst
-// where appropriate.
-
 int main(int argc, char** argv)
 {
 	try
