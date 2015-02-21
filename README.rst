@@ -68,7 +68,7 @@ without this option. This guards against error in case you think you're creating
 a new activity, but accidentally give it the same name as an existing one. On
 subsequent occasions, when you switch back to an already-used activity, you
 would omit the ``-c`` - and again ``swx`` will helpfully protest in case you
-think you're reusing to an existing activity, but aren't.
+think you're reusing an existing activity, but aren't.
 
 Like all options in ``swx``, the ``-c`` can be entered either before or after
 the other arguments.
@@ -91,6 +91,10 @@ than an exact activity name. A switch will then be recorded to the most recently
 active activity the name of which matches that regular expression. This can save
 a fair bit of typing when switching back to a recently used activity.
 
+After switching to an activity, ``swx`` always displays a message confirming the
+full name of the activity switched to - or confirming that activity has ceased,
+as the case may be.
+
 Note activity names are case-sensitive.
 
 The "resume" command
@@ -107,6 +111,9 @@ the activity that was active just before the current one. This is useful for
 when you are working on one activity, are briefly interrupted by another
 activity, and then want to resume work on the original activity.
 
+After resuming an activity, ``swx`` always displays a message confirming the
+full name of the activity resumed.
+
 Reporting commands
 ------------------
 
@@ -121,8 +128,8 @@ various "reporting commands" are available::
 
 Enter ``swx help <COMMAND>`` for detailed usage information in regards to
 each of these. They all follow a similar pattern, and allow you to enter an
-optional activity name, if you want to see only time spent on a given activity,
-or to omit the activity name, if you want to see time spent on all activities.
+activity name, if you want to see only time spent on a given activity, or to
+omit the activity name, if you want to see time spent on all activities.
 
 ``swx day`` (or ``swx d``) prints a summary of only the current day's
 activities, or, if passed a single-digit option *n*, the activities of *n* days
@@ -140,7 +147,7 @@ see Configuration_ below.)
 
 By default, only a summary of activities is printed. This comprises an
 alphabetically ordered list of activities with the total amount of time spent
-for each activity, during the period in question, shown in terms of digital
+on each activity during the period in question shown in terms of digital
 hours.
 
 If you pass the ``-l`` option to the reporting command, then instead a list of
@@ -158,12 +165,12 @@ which their activity name matches this regular expression.
 
 If you pass the ``-b`` option, then in addition to the other info, the
 earliest time at which each activity was conducted during the period
-in question, will be printed next to each activity. (This does not apply when
+in question will be printed next to each activity. (This does not apply when
 outputting in "list" mode.)
 
 If you pass the ``-e`` option, then in addition to, and to the right of,
-any the other info, the latest time at which each activity was conducted during
-the period in question, will be printed next to each activity. (This does not
+any other info, the latest time at which each activity was conducted during
+the period in question will be printed next to each activity. (This does not
 apply when ouputting in "list" mode.)
 
 Note that if ``-b`` and ``-e`` options are both provided, the output from

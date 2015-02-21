@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Matthew Harvey
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -39,6 +39,9 @@ using swx::TimeLog;
 // TODO MEDIUM PRIORITY Some of the stuff that's provided to TimeLog
 // constructor is also in Config. And then we provide both TimeLog
 // instance and Config instance to CommandManager. Seems messy.
+
+// TODO MEDIUM PRIORITY Replace hyphens with em-dashes in README.rst
+// where appropriate.
 
 int main(int argc, char** argv)
 {
