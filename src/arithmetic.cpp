@@ -31,7 +31,14 @@ namespace
 	{
 		auto const c = ceil(x);
 		auto const f = floor(x);
-		return ((c - x) < (x - f))? c: f;
+		if (x < 0)
+		{
+			return ((c - x) < (x - f)) ? c : f;
+		}
+		else
+		{
+			return ((c - x) <= (x - f)) ? c : f;
+		}
 	}
 
 }  // end anonymous namespace
