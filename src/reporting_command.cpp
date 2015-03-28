@@ -50,6 +50,7 @@ namespace
 	char const k_ending_flag = 'e';
 	char const k_verbose_flag = 'v';
 	char const k_csv_flag = 'c';
+	char const k_tree_view_flag = 't';
 }
 
 ReportingCommand::ReportingCommand
@@ -93,6 +94,13 @@ ReportingCommand::ReportingCommand
 	(	k_csv_flag,
 		"Output in CSV format"
 	);
+	
+	// TODO Once the implementation has been tidied etc., document this option
+	// in the README.
+	add_boolean_option
+	(	k_tree_view_flag,
+		"Show hierarchical activity structure (ignored in list mode and in CSV format)"
+	);
 }
 
 ReportingCommand::~ReportingCommand() = default;
@@ -114,6 +122,7 @@ ReportingCommand::print_report
 	bool const verbose = p_flags.count(k_verbose_flag);
 	bool const detail = (verbose || p_flags.count(k_list_flag));
 	bool const summary = (verbose || !p_flags.count(k_list_flag));
+	bool const show_tree = p_flags.count(k_tree_view_flag);
 
 	unique_ptr<string> activity_ptr;
 	if (!p_activity_components.empty())
@@ -161,7 +170,8 @@ ReportingCommand::print_report
 				(	stints,
 					options,
 					show_beginning,
-					show_end
+					show_end,
+					show_tree
 				)
 			);
 		}

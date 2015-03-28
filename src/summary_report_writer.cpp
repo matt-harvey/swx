@@ -15,6 +15,7 @@
  */
 
 #include "summary_report_writer.hpp"
+#include "activity_node.hpp"
 #include "arithmetic.hpp"
 #include "seconds.hpp"
 #include "stint.hpp"
@@ -70,7 +71,8 @@ SummaryReportWriter::do_process_stint(std::ostream& p_os, Stint const& p_stint)
 	auto const& activity = p_stint.activity();
 	if (!activity.empty())
 	{
-		auto const it = m_activity_info_map.find(activity);
+		ActivityNode const activity_node(activity, 0);
+		auto const it = m_activity_info_map.find(activity_node);
 		if (it == m_activity_info_map.end())
 		{
 			ActivityInfo const info
@@ -78,7 +80,7 @@ SummaryReportWriter::do_process_stint(std::ostream& p_os, Stint const& p_stint)
 				interval.beginning(),
 				interval.ending()
 			);
-			m_activity_info_map.insert(make_pair(activity, info));
+			m_activity_info_map.insert(make_pair(activity_node, info));
 		}
 		else
 		{
@@ -117,9 +119,11 @@ SummaryReportWriter::do_postprocess_stints
 SummaryReportWriter::ActivityInfo::ActivityInfo
 (	unsigned long long p_seconds,
 	TimePoint const& p_beginning,
-	TimePoint const& p_ending
+	TimePoint const& p_ending,
+	unsigned int p_num_children
 ):
 	seconds(p_seconds),
+	num_children(p_num_children),
 	beginning(p_beginning),
 	ending(p_ending)
 {

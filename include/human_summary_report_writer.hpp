@@ -17,6 +17,7 @@
 #ifndef GUARD_human_summary_report_writer_hpp_5853136519833065
 #define GUARD_human_summary_report_writer_hpp_5853136519833065
 
+#include "activity_node.hpp"
 #include "summary_report_writer.hpp"
 #include "time_point.hpp"
 #include <map>
@@ -41,7 +42,8 @@ public:
 	(	std::vector<Stint> const& p_stints,
 		Options const& p_options,
 		bool p_include_beginning,
-		bool p_include_ending
+		bool p_include_ending,
+		bool p_show_tree
 	);
 	HumanSummaryReportWriter(HumanSummaryReportWriter const& rhs) = delete;
 	HumanSummaryReportWriter(HumanSummaryReportWriter&& rhs) = delete;
@@ -53,7 +55,7 @@ public:
 private:
 	virtual void do_write_summary
 	(	std::ostream& p_os,
-		std::map<std::string, ActivityInfo> const& p_activity_info_map
+		std::map<ActivityNode, ActivityInfo> const& p_activity_info_map
 	) override;
 
 // ordinary member functions
@@ -64,13 +66,15 @@ private:
 		unsigned long long p_seconds,
 		TimePoint const* p_beginning,
 		TimePoint const* p_ending,
-		unsigned int p_left_col_width
+		unsigned int p_left_col_width,
+		unsigned int p_activity_depth = 0
 	) const;
 
 // member variables
 private:
 	bool const m_include_beginning;
 	bool const m_include_ending;
+	bool const m_show_tree;
 
 };  // class HumanSummaryReportWriter
 

@@ -61,6 +61,7 @@ set(libraries pthread dl)
 
 set(
 	common_sources
+	src/activity_node.cpp
 	src/arithmetic.cpp
 	src/atomic_writer.cpp
 	src/print_command.cpp
