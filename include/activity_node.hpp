@@ -18,6 +18,7 @@
 #define GUARD_activity_node_hpp_591135825771436
 
 #include <string>
+#include <vector>
 
 namespace swx
 {
@@ -32,33 +33,44 @@ class ActivityNode
 // TODO Make sure the copy and assignment operations are exception-safe
 public:
 	ActivityNode(std::string const& p_activity, unsigned int p_level);
+private:
+	ActivityNode
+	(	std::vector<std::string>::const_iterator const& p_begin,
+		std::vector<std::string>::const_iterator const& p_end,
+		unsigned int p_level
+	);
+public:
 	ActivityNode(ActivityNode const& rhs) = default;
 	ActivityNode(ActivityNode&& rhs) = default;
 	ActivityNode& operator=(ActivityNode const& rhs) = default;
 	ActivityNode& operator=(ActivityNode&& rhs) = default;
 	~ActivityNode() = default;
 
+// operators
+public:
+	bool operator<(ActivityNode const& rhs) const;
+
 // ordinary member functions
 // TODO document these better
 public:
-	std::string const& activity() const;
+	std::string activity() const;
 	unsigned int level() const;
 	unsigned int num_components() const;
 	void set_num_components(unsigned int p_num_components);  // can only increase
 	ActivityNode parent() const;
 	std::string marginal_name() const;
+private:
+	static bool is_ancestor_descendant
+	(	ActivityNode const& lhs,
+		ActivityNode const& rhs
+	);
 
 // member variables
 private:
 	unsigned int const m_level;
-	std::string m_activity;
+	std::vector<std::string> m_components;
 
 };  // class ActivityNode
-
-
-// non-member functions
-
-bool operator<(ActivityNode const& lhs, ActivityNode const& rhs);
 
 }  // namespace swx
 

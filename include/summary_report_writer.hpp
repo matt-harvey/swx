@@ -45,6 +45,10 @@ protected:
 	 * reported period
 	 *
 	 * \b num_children number of children of node in activity tree
+	 *
+	 * @todo It feels wrong that num_children is held here. Should probably refactor
+	 * things so that each ActivityNode knows what its children are, and then
+	 * this wouldn't be required here.
 	 */
 	struct ActivityInfo
 	{

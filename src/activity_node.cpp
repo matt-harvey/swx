@@ -20,49 +20,44 @@
 #include <string>
 
 using std::string;
+using std::vector;
 
 namespace swx
 {
 
-namespace  // begin anonymous namespace
-{
-	bool
-	is_ancestor_descendant
-	(	ActivityNode const& lhs,
-		ActivityNode const& rhs
-	)
-	{
-		// TODO LOW PRIORITY This could be more efficient. We could probably
-		// cache the components vector or something.
-		auto const lhs_components = split(lhs.activity(), ' ');
-		auto const rhs_components = split(rhs.activity(), ' ');
-		decltype(lhs_components)::const_iterator lit = lhs_components.begin();
-		decltype(lhs_components)::const_iterator lend = lhs_components.end();
-		decltype(rhs_components)::const_iterator rit = rhs_components.begin();
-		decltype(rhs_components)::const_iterator rend = rhs_components.end();
-		for ( ; (lit != lend) && (rit != rend); ++lit, ++rit)
-		{
-			if (*lit != *rit)
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
-}  // end anonymous namespace
-
-
 ActivityNode::ActivityNode(string const& p_activity, unsigned int p_level):
 	m_level(p_level),
-	m_activity(p_activity)
+	m_components(split(p_activity, ' '))
 {
 }
 
-string const&
+ActivityNode::ActivityNode
+(	vector<string>::const_iterator const& p_begin,
+	vector<string>::const_iterator const& p_end,
+	unsigned int p_level
+):
+	m_level(p_level),
+	m_components(p_begin, p_end)
+{
+}
+
+bool
+ActivityNode::operator<(ActivityNode const& rhs) const
+{
+	if (is_ancestor_descendant(*this, rhs) && (level() != rhs.level()))
+	{
+		return level() > rhs.level();
+	}
+	else
+	{
+		return activity() < rhs.activity();  // TODO inefficient
+	}
+}
+
+string
 ActivityNode::activity() const
 {
-	return m_activity;
+	return squish(m_components.begin(), m_components.end());
 }
 
 unsigned int
@@ -74,20 +69,16 @@ ActivityNode::level() const
 unsigned int
 ActivityNode::num_components() const
 {
-	// TODO This is inefficient
-	return split(activity(), ' ').size();
+	return m_components.size();
 }
 
 void
 ActivityNode::set_num_components(unsigned int p_num_components)
 {
 	auto const old_num_components = num_components();
-	if (p_num_components > old_num_components)
+	while (num_components() < p_num_components)
 	{
-		for (unsigned int i = old_num_components; i != p_num_components; ++i)
-		{
-			m_activity += " .";  // TODO This is a brittle hack.
-		}
+		m_components.push_back(".");  // TODO This is a brittle hack.
 	}
 	return;
 }
@@ -95,38 +86,44 @@ ActivityNode::set_num_components(unsigned int p_num_components)
 ActivityNode
 ActivityNode::parent() const
 {
-	auto const components = split(activity(), ' ');
 	auto const parent_level = level() + 1;
-	if (components.size() == 0)
+	switch (num_components())
 	{
+	case 0:
 		return ActivityNode("", parent_level);
+	case 1:
+		return ActivityNode(m_components[0], parent_level);
+	default:	
+		assert (m_components.size() > 1);
+		return ActivityNode(m_components.begin(), m_components.end() - 1, parent_level);
 	}
-	if (components.size() == 1)
-	{
-		return ActivityNode(components[0], parent_level);
-	}
-	assert (components.size() > 1);
-	auto const parent_activity = squish(components.begin(), components.end() - 1);
-	return ActivityNode(parent_activity, parent_level);
 }
 
 string
 ActivityNode::marginal_name() const
 {
-	return split(activity(), ' ').back();
+	assert (m_components.size() > 0);  // TODO are we really guaranteed this?
+	return m_components.back();
 }
 
 bool
-operator<(ActivityNode const& lhs, ActivityNode const& rhs)
+ActivityNode::is_ancestor_descendant
+(	ActivityNode const& lhs,
+	ActivityNode const& rhs
+)
 {
-	if (is_ancestor_descendant(lhs, rhs) && (lhs.level() != rhs.level()))
+	auto lit = lhs.m_components.begin();
+	auto const lend = lhs.m_components.end();
+	auto rit = rhs.m_components.begin();
+	auto const rend = rhs.m_components.end();
+	for ( ; (lit != lend) && (rit != rend); ++lit, ++rit)
 	{
-		return lhs.level() > rhs.level();
+		if (*lit != *rit)
+		{
+			return false;
+		}
 	}
-	else
-	{
-		return lhs.activity() < rhs.activity();
-	}
+	return true;
 }
 
 }  // namespace swx
