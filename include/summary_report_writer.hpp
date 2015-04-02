@@ -17,7 +17,6 @@
 #ifndef GUARD_summary_report_writer_hpp_7957524563166092
 #define GUARD_summary_report_writer_hpp_7957524563166092
 
-#include "activity_node.hpp"
 #include "report_writer.hpp"
 #include "stint.hpp"
 #include "time_point.hpp"
@@ -98,12 +97,12 @@ private:
 private:
 	virtual void do_write_summary
 	(	std::ostream& p_os,
-		std::map<ActivityNode, ActivityInfo> const& p_activity_info_map
+		std::map<std::string, ActivityInfo> const& p_activity_info_map
 	) = 0;
 
 // member variables
 private:
-	std::map<ActivityNode, ActivityInfo> m_activity_info_map;
+	std::map<std::string, ActivityInfo> m_activity_info_map;
 
 };  // class SummaryReportWriter
 

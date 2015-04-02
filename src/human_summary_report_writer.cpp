@@ -73,34 +73,41 @@ HumanSummaryReportWriter::~HumanSummaryReportWriter() = default;
 void
 HumanSummaryReportWriter::do_write_summary
 (	ostream& p_os,
-	map<ActivityNode, ActivityInfo> const& p_activity_info_map
+	map<std::string, ActivityInfo> const& p_activity_info_map
 )
 {
+	// TODO Improve output if -b or -e options are passed together with -t.
+	
+	// TODO ActivityNode should be responsible for constructing the tree given
+	// a sequence of std::string (or of leaf level ActivityNode instances).
+	// Each ActivityNode should own the set of its own children. Then the
+	// ordering of ActivityNode with '<' shouldn't have to be as complex as we
+	// won't have to put all the different generations in the same map.
+
 	string::size_type left_col_width = 0;
 	map<ActivityNode, ActivityInfo> revised_map;
 
 	unsigned int max_num_components = 1;
-
-	// TODO Improve output if -b or -e options are passed.
 
 	if (m_show_tree) 
 	{
 		// Calculate the greatest number of components of any activity
 		for (auto const& pair: p_activity_info_map)
 		{
-			max_num_components = max(pair.first.num_components(), max_num_components);
+			auto const& activity = pair.first;
+			unsigned int const num_components = split(activity, ' ').size();
+			max_num_components = max(num_components, max_num_components);
 		}
 
 		// Make all the leaf activities have the same number of components
 		for (auto const& pair: p_activity_info_map)
 		{
-			auto node = pair.first;
-			auto info = pair.second;
+			auto const& activity = pair.first;
+			auto const& info = pair.second;
+			auto node = ActivityNode(activity, 0);
 			node.set_num_components(max_num_components);
 			revised_map.insert(make_pair(node, info));
 		}
-
-		// TODO MEDIUM PRIORITY tidy this. Split into separate functions.
 
 		// Go through each generation, starting with the leaves, and building
 		// the parent generation of each.
@@ -148,7 +155,13 @@ HumanSummaryReportWriter::do_write_summary
 	}
 	else
 	{
-		revised_map = p_activity_info_map;
+		revised_map;
+		for (auto const& pair: p_activity_info_map)
+		{
+			auto const& activity = pair.first;
+			auto const& info = pair.second;
+			revised_map.insert(make_pair(ActivityNode(activity, 0), info));
+		}
 	}
 	unsigned int max_level = 0;
 	for (auto const& pair: revised_map)
