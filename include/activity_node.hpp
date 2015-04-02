@@ -67,7 +67,7 @@ private:
 
 // member variables
 private:
-	unsigned int const m_level;
+	unsigned int m_level;
 	std::vector<std::string> m_components;
 
 };  // class ActivityNode
