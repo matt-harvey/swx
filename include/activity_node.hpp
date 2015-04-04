@@ -30,14 +30,12 @@ namespace swx
 class ActivityNode
 {
 // special member functions
-// TODO Make sure the copy and assignment operations are exception-safe
 public:
-	ActivityNode(std::string const& p_activity, unsigned int p_level);
+	explicit ActivityNode(std::string const& p_activity);
 private:
 	ActivityNode
 	(	std::vector<std::string>::const_iterator const& p_begin,
-		std::vector<std::string>::const_iterator const& p_end,
-		unsigned int p_level
+		std::vector<std::string>::const_iterator const& p_end
 	);
 public:
 	ActivityNode(ActivityNode const& rhs) = default;
@@ -54,11 +52,10 @@ public:
 // TODO document these better
 public:
 	std::string activity() const;
-	unsigned int level() const;
-	unsigned int num_components() const;
-	void set_num_components(unsigned int p_num_components);  // can only increase
-	ActivityNode parent() const;
 	std::string marginal_name() const;
+	unsigned int num_components() const;
+	ActivityNode parent() const;  // undefined behaviour if no parent
+	void set_num_components(unsigned int p_num_components);  // can only increase
 private:
 	static bool is_ancestor_descendant
 	(	ActivityNode const& lhs,
@@ -67,7 +64,6 @@ private:
 
 // member variables
 private:
-	unsigned int m_level;
 	std::vector<std::string> m_components;
 
 };  // class ActivityNode

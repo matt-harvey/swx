@@ -76,7 +76,7 @@ HumanSummaryReportWriter::do_write_summary
 	map<std::string, ActivityInfo> const& p_activity_info_map
 )
 {
-	// TODO Improve output if -b or -e options are passed together with -t.
+	// TODO MEDIUM PRIORITY Improve output if -b or -e options are passed together with -t.
 	
 	// TODO ActivityNode should be responsible for constructing the tree given
 	// a sequence of std::string (or of leaf level ActivityNode instances).
@@ -85,7 +85,7 @@ HumanSummaryReportWriter::do_write_summary
 	// won't have to put all the different generations in the same map.
 
 	string::size_type left_col_width = 0;
-	map<ActivityNode, ActivityInfo> revised_map;
+	map<ActivityNode, ActivityInfo> node_map;
 
 	unsigned int max_num_components = 1;
 
@@ -104,14 +104,14 @@ HumanSummaryReportWriter::do_write_summary
 		{
 			auto const& activity = pair.first;
 			auto const& info = pair.second;
-			auto node = ActivityNode(activity, 0);
+			auto node = ActivityNode(activity);
 			node.set_num_components(max_num_components);
-			revised_map.insert(make_pair(node, info));
+			node_map.insert(make_pair(node, info));
 		}
 
 		// Go through each generation, starting with the leaves, and building
 		// the parent generation of each.
-		auto current_generation = revised_map;
+		auto current_generation = node_map;
 		for (decltype(max_num_components) i = 1; i != max_num_components; ++i)
 		{
 			decltype(current_generation) parent_generation;
@@ -149,22 +149,18 @@ HumanSummaryReportWriter::do_write_summary
 					parent_info.ending = max(info.ending, parent_info.ending);
 				}
 			}
-			revised_map.insert(parent_generation.begin(), parent_generation.end());
+			node_map.insert(parent_generation.begin(), parent_generation.end());
 			current_generation = parent_generation;
 		}
 	}
 	else
 	{
-		revised_map;
 		for (auto const& pair: p_activity_info_map)
 		{
-			auto const& activity = pair.first;
-			auto const& info = pair.second;
-			revised_map.insert(make_pair(ActivityNode(activity, 0), info));
+			node_map.insert(make_pair(ActivityNode(pair.first), pair.second));
 		}
 	}
-	unsigned int max_level = 0;
-	for (auto const& pair: revised_map)
+	for (auto const& pair: node_map)
 	{
 		auto const& node = pair.first;
 		auto const activity_width =
@@ -173,51 +169,48 @@ HumanSummaryReportWriter::do_write_summary
 			node.activity().length()
 		);
 		if (activity_width > left_col_width) left_col_width = activity_width;
-		if (node.level() > max_level) max_level = node.level();
 	}
 	unsigned long long total_seconds = 0;
-	unsigned int last_level = 0;
-	for (auto const& pair: revised_map)
+	unsigned int last_num_components = max_num_components;
+	for (auto const& pair: node_map)
 	{
 		auto const& node = pair.first;
 		auto const& info = pair.second;
-		auto const seconds = info.seconds;
-		auto const level = node.level();
-		if (level == 0)
+		if (!m_show_tree || (node.num_components() == max_num_components))
 		{
-			if (!addition_is_safe(total_seconds, seconds))
+			if (!addition_is_safe(total_seconds, info.seconds))
 			{
 				throw runtime_error
 				(	"Time spent on activities is too great to be totalled safely."
 				);
 			}
-			assert (addition_is_safe(total_seconds, seconds));
-			total_seconds += seconds;
+			assert (addition_is_safe(total_seconds, info.seconds));
+			total_seconds += info.seconds;
 		}
-		auto const parent_iter = revised_map.find(node.parent());
-		if (parent_iter != revised_map.end())
+		auto const parent_iter = node_map.find(node.parent());
+		if (parent_iter != node_map.end())
 		{
 			auto const& parent_info = parent_iter->second;
 
-			// TODO brittle
-			// We don't want to show an "only child" if it has the same name as its parent,
-			// ignoring the "filler name" (".").
-			if ((parent_info.num_children == 1) && node.marginal_name() == ".")
+			if ((parent_info.num_children == 1) && node.marginal_name().empty())
 			{
 				continue;
 			}
 		}
-		if (level > last_level) p_os << endl;
+		if (m_show_tree && (node.num_components() < last_num_components))
+		{
+			p_os << endl;
+		}
 		print_label_and_rounded_hours
 		(	p_os,
 			(m_show_tree ? node.marginal_name() : node.activity()),
-			seconds,
+			info.seconds,
 			(m_include_beginning? &(info.beginning): nullptr),
 			(m_include_ending? &(info.ending): nullptr),
 			left_col_width,
-			(m_show_tree ? max_num_components - level - 1 : 0)
+			(m_show_tree ? node.num_components() - 1 : 0)
 		);
-		last_level = level;
+		last_num_components = node.num_components();
 	}
 	p_os << endl;
 	print_label_and_rounded_hours
