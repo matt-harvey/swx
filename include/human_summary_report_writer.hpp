@@ -69,6 +69,16 @@ private:
 		unsigned int p_activity_depth = 0
 	) const;
 
+	void write_flat_summary
+	(	std::ostream& p_os,
+		std::map<std::string, ActivityInfo> const& p_activity_info_map
+	);
+
+	void write_tree_summary
+	(	std::ostream& p_os,
+		std::map<std::string, ActivityInfo> const& p_activity_info_map
+	);
+
 // member variables
 private:
 	bool const m_include_beginning;

@@ -31,7 +31,7 @@ class ActivityNode
 {
 // special member functions
 public:
-	explicit ActivityNode(std::string const& p_activity);
+	ActivityNode(std::string const& p_activity);
 private:
 	ActivityNode
 	(	std::vector<std::string>::const_iterator const& p_begin,
