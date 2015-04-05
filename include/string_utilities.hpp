@@ -34,7 +34,7 @@ std::string trim(std::string const& p_string);
 template <typename StringIter>
 std::string squish(StringIter p_beg, StringIter const& p_end);
 
-std::vector<std::string> split(std::string const& p_str, char p_delimiter);
+std::vector<std::string> split(std::string const& p_str, char p_delimiter = ' ');
 
 // TEMPLATE IMPLEMENTATIONS
 
@@ -52,7 +52,7 @@ squish(StringIter p_beg, StringIter const& p_end)
 			oss << ' ' << trim(*p_beg);
 		}
 	}
-	return oss.str();
+	return trim(oss.str());
 }
 
 }  // namespace swx

@@ -16,6 +16,7 @@
 
 #include "string_utilities.hpp"
 #include <cassert>
+#include <iostream>  // DEBUG
 #include <sstream>
 #include <string>
 #include <vector>
@@ -50,6 +51,10 @@ trim(string const& p_string)
 vector<string>
 split(string const& p_str, char p_delimiter)
 {
+	if (p_str.empty())
+	{
+		return vector<string>{};
+	}
 	vector<string> ret;
 	stringstream ss(p_str);
 	enable_exceptions(ss);

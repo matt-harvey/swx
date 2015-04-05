@@ -32,23 +32,15 @@ namespace swx
  *
  * \b ending latest time at which activity was conducted during the
  * reported period
- *
- * \b num_children number of children of node in activity tree
- *
- * @todo It feels wrong that num_children is held here. Should probably refactor
- * things so that each ActivityNode knows what its children are, and then
- * this wouldn't be required here.
  */
 struct ActivityInfo
 {
 	explicit ActivityInfo
 	(	unsigned long long p_seconds = 0,
 		TimePoint const& p_beginning = TimePoint::max(),
-		TimePoint const& p_ending = TimePoint::min(),
-		unsigned int p_num_children = 0
+		TimePoint const& p_ending = TimePoint::min()
 	);
 	unsigned long long seconds;
-	unsigned int num_children;
 	TimePoint beginning;
 	TimePoint ending;
 

@@ -53,6 +53,18 @@ ReportWriter::output_width() const
 	return m_options.output_width;
 }
 
+unsigned int
+ReportWriter::output_rounding_numerator() const
+{
+	return m_options.output_rounding_numerator;
+}
+
+unsigned int
+ReportWriter::output_rounding_denominator() const
+{
+	return m_options.output_rounding_denominator;
+}
+
 string const&
 ReportWriter::time_format() const
 {

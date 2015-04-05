@@ -79,6 +79,8 @@ protected:
 
 	unsigned int output_precision() const;
 	unsigned int output_width() const;
+	unsigned int output_rounding_numerator() const;
+	unsigned int output_rounding_denominator() const;
 	std::string const& time_format() const;
 	unsigned int formatted_buf_len() const;
 

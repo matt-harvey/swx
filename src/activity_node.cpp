@@ -16,9 +16,18 @@
 
 #include "activity_node.hpp"
 #include "string_utilities.hpp"
+#include <algorithm>
 #include <cassert>
+#include <map>
 #include <string>
+#include <utility>
 
+using std::accumulate;
+using std::make_pair;
+using std::map;
+using std::max;
+using std::min;
+using std::pair;
 using std::string;
 using std::vector;
 
@@ -26,8 +35,14 @@ namespace swx
 {
 
 ActivityNode::ActivityNode(string const& p_activity):
-	m_components(split(p_activity, ' '))
+	m_components(split(p_activity))
 {
+}
+
+ActivityNode::ActivityNode(string const& p_activity, unsigned int p_depth):
+	m_components(split(p_activity))
+{
+	m_components.resize(p_depth);
 }
 
 ActivityNode::ActivityNode
@@ -41,14 +56,7 @@ ActivityNode::ActivityNode
 bool
 ActivityNode::operator<(ActivityNode const& rhs) const
 {
-	if (is_ancestor_descendant(*this, rhs) && (num_components() != rhs.num_components()))
-	{
-		return num_components() < rhs.num_components();
-	}
-	else
-	{
-		return m_components < rhs.m_components;
-	}
+	return m_components < rhs.m_components;
 }
 
 string
@@ -63,48 +71,11 @@ ActivityNode::marginal_name() const
 	return m_components.empty() ? "" : m_components.back();
 }
 
-unsigned int
-ActivityNode::num_components() const
-{
-	return m_components.size();
-}
-
 ActivityNode
 ActivityNode::parent() const
 {
 	assert (!m_components.empty());
 	return ActivityNode(m_components.begin(), m_components.end() - 1);
-}
-
-void
-ActivityNode::set_num_components(unsigned int p_num_components)
-{
-	auto const old_num_components = num_components();
-	while (num_components() < p_num_components)
-	{
-		m_components.push_back("");
-	}
-	return;
-}
-
-bool
-ActivityNode::is_ancestor_descendant
-(	ActivityNode const& lhs,
-	ActivityNode const& rhs
-)
-{
-	auto lit = lhs.m_components.begin();
-	auto const lend = lhs.m_components.end();
-	auto rit = rhs.m_components.begin();
-	auto const rend = rhs.m_components.end();
-	for ( ; (lit != lend) && (rit != rend); ++lit, ++rit)
-	{
-		if (*lit != *rit)
-		{
-			return false;
-		}
-	}
-	return true;
 }
 
 }  // namespace swx

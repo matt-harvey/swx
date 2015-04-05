@@ -17,6 +17,8 @@
 #ifndef GUARD_activity_node_hpp_591135825771436
 #define GUARD_activity_node_hpp_591135825771436
 
+#include "activity_info.hpp"
+#include <map>
 #include <string>
 #include <vector>
 
@@ -24,14 +26,14 @@ namespace swx
 {
 
 /**
- * Represents an activity in a tree structure. "Level" corresponds to
- * distance from leaf, with leaf nodes having a level of 0.
+ * Represents an activity in a tree structure.
  */
 class ActivityNode
 {
 // special member functions
 public:
-	ActivityNode(std::string const& p_activity);
+	explicit ActivityNode(std::string const& p_activity);
+	ActivityNode(std::string const& p_activity, unsigned int p_depth);
 private:
 	ActivityNode
 	(	std::vector<std::string>::const_iterator const& p_begin,
@@ -53,14 +55,7 @@ public:
 public:
 	std::string activity() const;
 	std::string marginal_name() const;
-	unsigned int num_components() const;
 	ActivityNode parent() const;  // undefined behaviour if no parent
-	void set_num_components(unsigned int p_num_components);  // can only increase
-private:
-	static bool is_ancestor_descendant
-	(	ActivityNode const& lhs,
-		ActivityNode const& rhs
-	);
 
 // member variables
 private:

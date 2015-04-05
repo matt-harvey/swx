@@ -69,7 +69,7 @@ namespace
 			auto const last_activities = p_time_log.last_activities(1);
 			assert (!last_activities.empty());
 			string const activity = last_activities.front();
-			auto const components = split(activity, ' ');
+			auto const components = split(activity);
 			assert (depth > 0);
 			--depth;
 			auto const b = components.begin();

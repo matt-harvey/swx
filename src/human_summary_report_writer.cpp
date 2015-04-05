@@ -17,6 +17,7 @@
 #include "human_summary_report_writer.hpp"
 #include "activity_info.hpp"
 #include "activity_node.hpp"
+#include "activity_tree.hpp"
 #include "arithmetic.hpp"
 #include "stint.hpp"
 #include "stream_flag_guard.hpp"
@@ -24,7 +25,6 @@
 #include "string_utilities.hpp"
 #include "summary_report_writer.hpp"
 #include "time_point.hpp"
-#include <algorithm>
 #include <cassert>
 #include <iomanip>
 #include <iostream>
@@ -40,8 +40,6 @@ using std::fixed;
 using std::left;
 using std::make_pair;
 using std::map;
-using std::min;
-using std::max;
 using std::ostream;
 using std::ostringstream;
 using std::pair;
@@ -131,23 +129,21 @@ HumanSummaryReportWriter::write_flat_summary
 )
 {
 	string::size_type left_col_width = 0;
-	map<ActivityNode, ActivityInfo> node_map;
-	node_map.insert(p_activity_info_map.begin(), p_activity_info_map.end());
-	for (auto const& pair: node_map)
+	for (auto const& pair: p_activity_info_map)
 	{
-		auto const& node = pair.first;
-		auto const activity_width = node.activity().length();
+		auto const& activity = pair.first;
+		auto const activity_width = activity.length();
 		if (activity_width > left_col_width) left_col_width = activity_width;
 	}
 	ActivityInfo total_info;
-	for (auto const& pair: node_map)
+	for (auto const& pair: p_activity_info_map)
 	{
-		auto const& node = pair.first;
+		auto const& activity = pair.first;
 		auto const& info = pair.second;
 		total_info += info;
 		print_label_and_rounded_hours
 		(	p_os,
-			node.activity(),
+			activity,
 			info.seconds,
 			(m_include_beginning? &(info.beginning): nullptr),
 			(m_include_ending? &(info.ending): nullptr),
@@ -172,114 +168,17 @@ HumanSummaryReportWriter::write_tree_summary
 	map<std::string, ActivityInfo> const& p_activity_info_map
 )
 {
-	// TODO MEDIUM PRIORITY Improve output if -b or -e options are passed together with -t.
+	ActivityTree const tree(p_activity_info_map);
 
-	// TODO ActivityNode should be responsible for constructing the tree given
-	// a sequence of std::string (or of leaf level ActivityNode instances).
-	// Each ActivityNode should own the set of its own children. Then the
-	// ordering of ActivityNode with '<' shouldn't have to be as complex as we
-	// won't have to put all the different generations in the same map.
-
-	string::size_type left_col_width = 0;
-	map<ActivityNode, ActivityInfo> node_map;
-
-	unsigned int max_num_components = 1;
-
-	// Calculate the greatest number of components of any activity
-	for (auto const& pair: p_activity_info_map)
-	{
-		auto const& activity = pair.first;
-		unsigned int const num_components = split(activity, ' ').size();
-		max_num_components = max(num_components, max_num_components);
-	}
-
-	// Make all the leaf activities have the same number of components
-	for (auto const& pair: p_activity_info_map)
-	{
-		auto const& activity = pair.first;
-		auto const& info = pair.second;
-		auto node = ActivityNode(activity);
-		node.set_num_components(max_num_components);
-		node_map.insert(make_pair(node, info));
-	}
-
-	// Go through each generation, starting with the leaves, and building
-	// the parent generation of each.
-	auto current_generation = node_map;
-	for (decltype(max_num_components) i = 1; i != max_num_components; ++i)
-	{
-		decltype(current_generation) parent_generation;
-
-		// Insert higher level activities into map
-		for (auto const& pair: current_generation)
-		{
-			auto const& node = pair.first;
-			auto const& info = pair.second;
-			auto const parent_node = node.parent();
-			auto const iter = parent_generation.find(parent_node);
-			if (iter == parent_generation.end())
-			{
-				// The parent activity is not already in the map, so insert it.
-				auto parent_info = info;
-				parent_info.num_children = 1;
-				parent_generation.insert(make_pair(parent_node, parent_info));
-			}
-			else
-			{
-				// The parent activity is in the map; just update it.
-				auto& parent_info = iter->second;
-				++parent_info.num_children;
-				parent_info += info;
-			}
-		}
-		node_map.insert(parent_generation.begin(), parent_generation.end());
-		current_generation = parent_generation;
-	}
-	for (auto const& pair: node_map)
-	{
-		auto const width = pair.first.marginal_name().length();
-		if (width > left_col_width) left_col_width = width;
-	}
-	ActivityInfo total_info;
-	unsigned int last_num_components = max_num_components;
-	for (auto const& pair: node_map)
-	{
-		auto const& node = pair.first;
-		auto const& info = pair.second;
-		if (node.num_components() == max_num_components) total_info += info;
-		auto const parent_iter = node_map.find(node.parent());
-		if (parent_iter != node_map.end())
-		{
-			auto const& parent_info = parent_iter->second;
-			if ((parent_info.num_children == 1) && node.marginal_name().empty())
-			{
-				continue;
-			}
-		}
-		if (node.num_components() < last_num_components)
-		{
-			p_os << endl;
-		}
-		print_label_and_rounded_hours
-		(	p_os,
-			node.marginal_name(),
-			info.seconds,
-			(m_include_beginning? &(info.beginning): nullptr),
-			(m_include_ending? &(info.ending): nullptr),
-			left_col_width,
-			node.num_components() - 1
-		);
-		last_num_components = node.num_components();
-	}
-	p_os << endl;
-	print_label_and_rounded_hours
+	// TODO Enable -b and -e options to be processed.
+	tree.print
 	(	p_os,
-		"TOTAL",
-		total_info.seconds,
-		(m_include_beginning? &(total_info.beginning): nullptr),
-		(m_include_ending? &(total_info.ending): nullptr),
-		left_col_width
+		output_precision(),
+		output_width(),
+		output_rounding_numerator(),
+		output_rounding_denominator()
 	);
+		
 	return;
 }
 

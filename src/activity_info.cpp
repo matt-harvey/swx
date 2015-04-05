@@ -30,11 +30,9 @@ namespace swx
 ActivityInfo::ActivityInfo
 (	unsigned long long p_seconds,
 	TimePoint const& p_beginning,
-	TimePoint const& p_ending,
-	unsigned int p_num_children
+	TimePoint const& p_ending
 ):
 	seconds(p_seconds),
-	num_children(p_num_children),
 	beginning(p_beginning),
 	ending(p_ending)
 {
