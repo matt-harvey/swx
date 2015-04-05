@@ -18,6 +18,7 @@
 #define GUARD_human_summary_report_writer_hpp_5853136519833065
 
 #include "summary_report_writer.hpp"
+#include "activity_info.hpp"
 #include "time_point.hpp"
 #include <map>
 #include <ostream>

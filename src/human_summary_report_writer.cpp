@@ -15,6 +15,7 @@
  */
 
 #include "human_summary_report_writer.hpp"
+#include "activity_info.hpp"
 #include "activity_node.hpp"
 #include "arithmetic.hpp"
 #include "stint.hpp"
@@ -138,20 +139,12 @@ HumanSummaryReportWriter::write_flat_summary
 		auto const activity_width = node.activity().length();
 		if (activity_width > left_col_width) left_col_width = activity_width;
 	}
-	unsigned long long total_seconds = 0;
+	ActivityInfo total_info;
 	for (auto const& pair: node_map)
 	{
 		auto const& node = pair.first;
 		auto const& info = pair.second;
-
-		if (!addition_is_safe(total_seconds, info.seconds))
-		{
-			throw runtime_error
-			(	"Time spent on activities is too great to be totalled safely."
-			);
-		}
-		assert (addition_is_safe(total_seconds, info.seconds));
-		total_seconds += info.seconds;
+		total_info += info;
 		print_label_and_rounded_hours
 		(	p_os,
 			node.activity(),
@@ -165,9 +158,9 @@ HumanSummaryReportWriter::write_flat_summary
 	print_label_and_rounded_hours
 	(	p_os,
 		"TOTAL",
-		total_seconds,
-		nullptr,
-		nullptr,
+		total_info.seconds,
+		(m_include_beginning? &(total_info.beginning): nullptr),
+		(m_include_ending? &(total_info.ending): nullptr),
 		left_col_width
 	);
 	return;
@@ -235,19 +228,8 @@ HumanSummaryReportWriter::write_tree_summary
 			{
 				// The parent activity is in the map; just update it.
 				auto& parent_info = iter->second;
-				if (!addition_is_safe(parent_info.seconds, info.seconds))
-				{
-					ostringstream oss;
-					enable_exceptions(oss);
-					oss << "Time spent on activity \"" << node.activity()
-						<< "\" is too great to be totalled correctly.";
-					throw runtime_error(oss.str());
-				}
-				assert (addition_is_safe(parent_info.seconds, info.seconds));
-				parent_info.seconds += info.seconds;
-				parent_info.num_children++;
-				parent_info.beginning = min(info.beginning, parent_info.beginning);
-				parent_info.ending = max(info.ending, parent_info.ending);
+				++parent_info.num_children;
+				parent_info += info;
 			}
 		}
 		node_map.insert(parent_generation.begin(), parent_generation.end());
@@ -258,28 +240,17 @@ HumanSummaryReportWriter::write_tree_summary
 		auto const width = pair.first.marginal_name().length();
 		if (width > left_col_width) left_col_width = width;
 	}
-	unsigned long long total_seconds = 0;
+	ActivityInfo total_info;
 	unsigned int last_num_components = max_num_components;
 	for (auto const& pair: node_map)
 	{
 		auto const& node = pair.first;
 		auto const& info = pair.second;
-		if (node.num_components() == max_num_components)
-		{
-			if (!addition_is_safe(total_seconds, info.seconds))
-			{
-				throw runtime_error
-				(	"Time spent on activities is too great to be totalled safely."
-				);
-			}
-			assert (addition_is_safe(total_seconds, info.seconds));
-			total_seconds += info.seconds;
-		}
+		total_info += info;
 		auto const parent_iter = node_map.find(node.parent());
 		if (parent_iter != node_map.end())
 		{
 			auto const& parent_info = parent_iter->second;
-
 			if ((parent_info.num_children == 1) && node.marginal_name().empty())
 			{
 				continue;
@@ -304,9 +275,9 @@ HumanSummaryReportWriter::write_tree_summary
 	print_label_and_rounded_hours
 	(	p_os,
 		"TOTAL",
-		total_seconds,
-		nullptr,
-		nullptr,
+		total_info.seconds,
+		(m_include_beginning? &(total_info.beginning): nullptr),
+		(m_include_ending? &(total_info.ending): nullptr),
 		left_col_width
 	);
 	return;

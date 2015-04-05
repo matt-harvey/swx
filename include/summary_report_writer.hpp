@@ -17,6 +17,7 @@
 #ifndef GUARD_summary_report_writer_hpp_7957524563166092
 #define GUARD_summary_report_writer_hpp_7957524563166092
 
+#include "activity_info.hpp"
 #include "report_writer.hpp"
 #include "stint.hpp"
 #include "time_point.hpp"
@@ -29,40 +30,6 @@ namespace swx
 
 class SummaryReportWriter: public ReportWriter
 {
-// nested types
-protected:
-
-	/**
-	 * Holds information about an activity for use in report.
-	 * 
-	 * \b seconds number of seconds spent on the activity
-	 *
-	 * \b beginning earliest time at which the activity was conducted during
-	 * the reported period
-	 *
-	 * \b ending latest time at which activity was conducted during the
-	 * reported period
-	 *
-	 * \b num_children number of children of node in activity tree
-	 *
-	 * @todo It feels wrong that num_children is held here. Should probably refactor
-	 * things so that each ActivityNode knows what its children are, and then
-	 * this wouldn't be required here.
-	 */
-	struct ActivityInfo
-	{
-		ActivityInfo
-		(	unsigned long long p_seconds,
-			TimePoint const& p_beginning,
-			TimePoint const& p_ending,
-			unsigned int p_num_children = 0
-		);
-		unsigned long long seconds;
-		unsigned int num_children;
-		TimePoint beginning;
-		TimePoint ending;
-
-	};
 
 // special member functions
 public:

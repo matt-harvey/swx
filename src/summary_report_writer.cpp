@@ -15,6 +15,7 @@
  */
 
 #include "summary_report_writer.hpp"
+#include "activity_info.hpp"
 #include "arithmetic.hpp"
 #include "seconds.hpp"
 #include "stint.hpp"
@@ -71,32 +72,14 @@ SummaryReportWriter::do_process_stint(std::ostream& p_os, Stint const& p_stint)
 	if (!activity.empty())
 	{
 		auto const it = m_activity_info_map.find(activity);
+		ActivityInfo const info(seconds, interval.beginning(), interval.ending());
 		if (it == m_activity_info_map.end())
 		{
-			ActivityInfo const info
-			(	seconds,
-				interval.beginning(),
-				interval.ending()
-			);
 			m_activity_info_map.insert(make_pair(activity, info));
 		}
 		else
 		{
-			auto& info = it->second;
-			auto& accum = info.seconds;
-			if (!addition_is_safe(accum, seconds))
-			{
-				ostringstream oss;
-				enable_exceptions(oss);
-				oss << "Time spent on activity \"" << activity
-					<< "\" is too great to be totalled correctly.";
-				throw runtime_error(oss.str());
-			}
-			assert (addition_is_safe(accum, seconds));
-			accum += seconds;
-			assert (interval.beginning() >= info.beginning);
-			assert (interval.ending() >= info.ending);
-			info.ending = interval.ending();
+			it->second += info;
 		}
 	}
 	return;
@@ -112,19 +95,6 @@ SummaryReportWriter::do_postprocess_stints
 	do_write_summary(p_os, m_activity_info_map);
 	m_activity_info_map.clear();  // hygienic even if unnecessary
 	return;
-}
-
-SummaryReportWriter::ActivityInfo::ActivityInfo
-(	unsigned long long p_seconds,
-	TimePoint const& p_beginning,
-	TimePoint const& p_ending,
-	unsigned int p_num_children
-):
-	seconds(p_seconds),
-	num_children(p_num_children),
-	beginning(p_beginning),
-	ending(p_ending)
-{
 }
 
 }  // namespace swx

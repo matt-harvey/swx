@@ -17,6 +17,7 @@
 #ifndef GUARD_csv_summary_report_writer_hpp_5020698078452003
 #define GUARD_csv_summary_report_writer_hpp_5020698078452003
 
+#include "activity_info.hpp"
 #include "summary_report_writer.hpp"
 #include "stint.hpp"
 #include <map>

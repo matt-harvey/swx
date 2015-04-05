@@ -15,6 +15,7 @@
  */
 
 #include "csv_summary_report_writer.hpp"
+#include "activity_info.hpp"
 #include "csv_utilities.hpp"
 #include "stint.hpp"
 #include "summary_report_writer.hpp"
