@@ -1,12 +1,12 @@
 /*
  * Copyright 2014 Matthew Harvey
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -173,7 +173,7 @@ HumanSummaryReportWriter::write_tree_summary
 )
 {
 	// TODO MEDIUM PRIORITY Improve output if -b or -e options are passed together with -t.
-	
+
 	// TODO ActivityNode should be responsible for constructing the tree given
 	// a sequence of std::string (or of leaf level ActivityNode instances).
 	// Each ActivityNode should own the set of its own children. Then the
@@ -246,7 +246,7 @@ HumanSummaryReportWriter::write_tree_summary
 	{
 		auto const& node = pair.first;
 		auto const& info = pair.second;
-		total_info += info;
+		if (node.num_components() == max_num_components) total_info += info;
 		auto const parent_iter = node_map.find(node.parent());
 		if (parent_iter != node_map.end())
 		{
