@@ -75,14 +75,15 @@ ActivityTree::ActivityTree(map<string, ActivityInfo> const& p_info_map):
 	}
 
 	// Go through each generation, starting with the leaves, and building the parent
-	// generation of each.
-	auto current_generation = m_inheritance_map;
-	if (current_generation.empty())
+	// generation of each. But first, cover the case where there are no nodes. Even
+	// then, we want a root node.
+	if (m_inheritance_map.empty())
 	{
 		m_inheritance_map.insert(make_pair(m_root, set<ActivityNode>{}));
 		m_info_map.insert(make_pair(m_root, ActivityInfo()));
 	}
-	while (current_generation.size() > 1)  // until root node reached
+	auto current_generation = m_inheritance_map;
+	while (current_generation.size() != 1)  // until root node reached
 	{
 		decltype(current_generation) parent_generation;
 		for (auto const& pair: current_generation)

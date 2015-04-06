@@ -26,14 +26,24 @@ namespace swx
 {
 
 /**
- * Represents an activity in a tree structure.
+ * Represents an node in a tree structure of nested activities.
+ * Each ActivityNode has one or more components, corresponding to the
+ * single-space-separated components of an activity.
  */
 class ActivityNode
 {
 // special member functions
 public:
+
 	explicit ActivityNode(std::string const& p_activity);
+
+	/**
+	 * Initializes the node using \e p_activity then resizes it to
+	 * \e p_depth, either by adding empty components, or by deleting
+	 * components from the end, until \e p_depth is reached.
+	 */
 	ActivityNode(std::string const& p_activity, unsigned int p_depth);
+
 private:
 	ActivityNode
 	(	std::vector<std::string>::const_iterator const& p_begin,
@@ -53,11 +63,23 @@ public:
 	bool operator!=(ActivityNode const& rhs) const;
 
 // ordinary member functions
-// TODO document these better
 public:
+	/**
+	 * @returns the full name of the node's activity
+	 */
 	std::string activity() const;
+
+	/**
+	 * @returns the name of the last component of the activity.
+	 */
 	std::string marginal_name() const;
-	ActivityNode parent() const;  // undefined behaviour if no parent
+
+	/**
+	 * @returns an ActivityNode corresponding to the "parent" of the
+	 * activity. If there is no parent (which will be the case if and only
+	 * if the node has no components), behaviour is undefined.
+	 */
+	ActivityNode parent() const;
 
 // member variables
 private:

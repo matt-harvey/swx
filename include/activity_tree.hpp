@@ -37,17 +37,17 @@ class ActivityTree
 // special member functions
 public:
 	explicit ActivityTree(std::map<std::string, ActivityInfo> const& p_info_map);
-	ActivityTree(ActivityTree const& rhs) = default;
-	ActivityTree(ActivityTree&& rhs) = default;
-	ActivityTree& operator=(ActivityTree const& rhs) = default;
-	ActivityTree& operator=(ActivityTree&& rhs) = default;
+	ActivityTree(ActivityTree const& rhs) = delete;
+	ActivityTree(ActivityTree&& rhs) = delete;
+	ActivityTree& operator=(ActivityTree const& rhs) = delete;
+	ActivityTree& operator=(ActivityTree&& rhs) = delete;
 	~ActivityTree() = default;
 
 // ordinary member functions
 private:
 	std::set<ActivityNode> const& children(ActivityNode const& p_node) const;
 	ActivityInfo const& info(ActivityNode const& p_node) const;
-private:
+
 	// TODO MEDIUM PRIORITY params here are cumbersome
 	void print
 	(	std::ostream& p_os,
