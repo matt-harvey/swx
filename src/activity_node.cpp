@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <cassert>
 #include <map>
+#include <numeric>
 #include <string>
 #include <utility>
 
