@@ -159,7 +159,7 @@ ActivityTree::print
 		print
 		(	p_os,
 			child,
-			p_depth + 1,
+			p_depth + (p_concatenate_to_previous ? 0 : 1),
 			has_single_child,
 			p_precision,
 			p_width,
