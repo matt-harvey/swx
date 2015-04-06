@@ -77,7 +77,12 @@ ActivityTree::ActivityTree(map<string, ActivityInfo> const& p_info_map):
 	// Go through each generation, starting with the leaves, and building the parent
 	// generation of each.
 	auto current_generation = m_inheritance_map;
-	while (current_generation.size() != 1)  // until root node reached
+	if (current_generation.empty())
+	{
+		m_inheritance_map.insert(make_pair(m_root, set<ActivityNode>{}));
+		m_info_map.insert(make_pair(m_root, ActivityInfo()));
+	}
+	while (current_generation.size() > 1)  // until root node reached
 	{
 		decltype(current_generation) parent_generation;
 		for (auto const& pair: current_generation)
@@ -141,7 +146,8 @@ ActivityTree::print
 	{
 		StreamFlagGuard guard(p_os);
 		auto const seconds = info(p_node).seconds;
-		p_os << endl << string(p_depth * (p_width + 3), ' ') << '['
+		if (m_root != p_node) p_os << endl;
+		p_os << string(p_depth * (p_width + 3), ' ') << '['
 		     << fixed << setprecision(p_precision) << right << setw(p_width)
 			 << round(seconds / 60.0 / 60.0, p_rounding_numerator, p_rounding_denominator)
 			 << " ] " << left << p_node.marginal_name() << ' ';

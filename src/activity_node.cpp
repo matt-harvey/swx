@@ -60,6 +60,18 @@ ActivityNode::operator<(ActivityNode const& rhs) const
 	return m_components < rhs.m_components;
 }
 
+bool
+ActivityNode::operator==(ActivityNode const& rhs) const
+{
+	return m_components == rhs.m_components;
+}
+
+bool
+ActivityNode::operator!=(ActivityNode const& rhs) const
+{
+	return !(*this == rhs);
+}
+
 string
 ActivityNode::activity() const
 {

@@ -49,6 +49,8 @@ public:
 // operators
 public:
 	bool operator<(ActivityNode const& rhs) const;
+	bool operator==(ActivityNode const& rhs) const;
+	bool operator!=(ActivityNode const& rhs) const;
 
 // ordinary member functions
 // TODO document these better
