@@ -17,7 +17,7 @@
 #ifndef GUARD_csv_summary_report_writer_hpp_5020698078452003
 #define GUARD_csv_summary_report_writer_hpp_5020698078452003
 
-#include "activity_info.hpp"
+#include "activity_stats.hpp"
 #include "summary_report_writer.hpp"
 #include "stint.hpp"
 #include <map>
@@ -48,7 +48,7 @@ public:
 private:
 	virtual void do_write_summary
 	(	std::ostream& p_os,
-		std::map<std::string, ActivityInfo> const& p_activity_info_map
+		std::map<std::string, ActivityStats> const& p_activity_stats_map
 	) override;
 
 // member variables

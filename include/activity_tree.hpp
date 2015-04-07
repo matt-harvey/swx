@@ -28,7 +28,7 @@ namespace swx
 
 // begin forward declarations
 
-struct ActivityInfo;
+struct ActivityStats;
 
 // end forward declarations
 
@@ -36,7 +36,7 @@ class ActivityTree
 {
 // special member functions
 public:
-	explicit ActivityTree(std::map<std::string, ActivityInfo> const& p_info_map);
+	explicit ActivityTree(std::map<std::string, ActivityStats> const& p_info_map);
 	ActivityTree(ActivityTree const& rhs) = delete;
 	ActivityTree(ActivityTree&& rhs) = delete;
 	ActivityTree& operator=(ActivityTree const& rhs) = delete;
@@ -46,7 +46,7 @@ public:
 // ordinary member functions
 private:
 	std::set<ActivityNode> const& children(ActivityNode const& p_node) const;
-	ActivityInfo const& info(ActivityNode const& p_node) const;
+	ActivityStats const& info(ActivityNode const& p_node) const;
 
 	// TODO MEDIUM PRIORITY params here are cumbersome
 	void print
@@ -72,7 +72,7 @@ public:
 // member variables
 private:
 	ActivityNode m_root;
-	std::map<ActivityNode, ActivityInfo> m_info_map;
+	std::map<ActivityNode, ActivityStats> m_info_map;
 	std::map<ActivityNode, std::set<ActivityNode>> m_inheritance_map;
 
 };  // class ActivityTree

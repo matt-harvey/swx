@@ -18,7 +18,7 @@
 #define GUARD_human_summary_report_writer_hpp_5853136519833065
 
 #include "summary_report_writer.hpp"
-#include "activity_info.hpp"
+#include "activity_stats.hpp"
 #include "time_point.hpp"
 #include <map>
 #include <ostream>
@@ -55,7 +55,7 @@ public:
 private:
 	virtual void do_write_summary
 	(	std::ostream& p_os,
-		std::map<std::string, ActivityInfo> const& p_activity_info_map
+		std::map<std::string, ActivityStats> const& p_activity_stats_map
 	) override;
 
 // ordinary member functions
@@ -72,12 +72,12 @@ private:
 
 	void write_flat_summary
 	(	std::ostream& p_os,
-		std::map<std::string, ActivityInfo> const& p_activity_info_map
+		std::map<std::string, ActivityStats> const& p_activity_stats_map
 	);
 
 	void write_tree_summary
 	(	std::ostream& p_os,
-		std::map<std::string, ActivityInfo> const& p_activity_info_map
+		std::map<std::string, ActivityStats> const& p_activity_stats_map
 	);
 
 // member variables

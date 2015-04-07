@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef GUARD_activity_info_hpp_743408902428769
-#define GUARD_activity_info_hpp_743408902428769
+#ifndef GUARD_activity_stats_hpp_743408902428769
+#define GUARD_activity_stats_hpp_743408902428769
 
 #include "time_point.hpp"
 
@@ -23,7 +23,7 @@ namespace swx
 {
 
 /**
- * Holds information about an activity for use in report.
+ * Holds statistics about an activity for use in report.
  * 
  * \b seconds number of seconds spent on the activity
  *
@@ -33,9 +33,9 @@ namespace swx
  * \b ending latest time at which activity was conducted during the
  * reported period
  */
-struct ActivityInfo
+struct ActivityStats
 {
-	explicit ActivityInfo
+	explicit ActivityStats
 	(	unsigned long long p_seconds = 0,
 		TimePoint const& p_beginning = TimePoint::max(),
 		TimePoint const& p_ending = TimePoint::min()
@@ -44,14 +44,14 @@ struct ActivityInfo
 	TimePoint beginning;
 	TimePoint ending;
 
-};  // struct ActivityInfo
+};  // struct ActivityStats
 
-ActivityInfo&
-operator+=(ActivityInfo& lhs, ActivityInfo const& rhs);
+ActivityStats&
+operator+=(ActivityStats& lhs, ActivityStats const& rhs);
 
-ActivityInfo const
-operator+(ActivityInfo lhs, ActivityInfo const& rhs);
+ActivityStats const
+operator+(ActivityStats lhs, ActivityStats const& rhs);
 
 }  // namespace swx
 
-#endif  // GUARD_activity_info_hpp_743408902428769
+#endif  // GUARD_activity_stats_hpp_743408902428769

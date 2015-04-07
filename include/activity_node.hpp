@@ -17,7 +17,7 @@
 #ifndef GUARD_activity_node_hpp_591135825771436
 #define GUARD_activity_node_hpp_591135825771436
 
-#include "activity_info.hpp"
+#include "activity_stats.hpp"
 #include <map>
 #include <string>
 #include <vector>

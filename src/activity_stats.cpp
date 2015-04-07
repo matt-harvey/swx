@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "activity_info.hpp"
+#include "activity_stats.hpp"
 #include "arithmetic.hpp"
 #include "time_point.hpp"
 #include <algorithm>
@@ -27,7 +27,7 @@ using std::runtime_error;
 namespace swx
 {
 
-ActivityInfo::ActivityInfo
+ActivityStats::ActivityStats
 (	unsigned long long p_seconds,
 	TimePoint const& p_beginning,
 	TimePoint const& p_ending
@@ -38,8 +38,8 @@ ActivityInfo::ActivityInfo
 {
 }
 
-ActivityInfo&
-operator+=(ActivityInfo& lhs, ActivityInfo const& rhs)
+ActivityStats&
+operator+=(ActivityStats& lhs, ActivityStats const& rhs)
 {
 	if (!addition_is_safe(lhs.seconds, rhs.seconds))
 	{
@@ -51,8 +51,8 @@ operator+=(ActivityInfo& lhs, ActivityInfo const& rhs)
 	return lhs;
 }
 
-ActivityInfo const
-operator+(ActivityInfo lhs, ActivityInfo const& rhs)
+ActivityStats const
+operator+(ActivityStats lhs, ActivityStats const& rhs)
 {
 	return lhs += rhs;
 }

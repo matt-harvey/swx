@@ -15,7 +15,7 @@
  */
 
 #include "activity_tree.hpp"
-#include "activity_info.hpp"
+#include "activity_stats.hpp"
 #include "activity_node.hpp"
 #include "arithmetic.hpp"
 #include "stream_flag_guard.hpp"
@@ -50,7 +50,7 @@ using std::string;
 namespace swx
 {
 
-ActivityTree::ActivityTree(map<string, ActivityInfo> const& p_info_map):
+ActivityTree::ActivityTree(map<string, ActivityStats> const& p_info_map):
 	m_root(ActivityNode(""))
 {
 	// Calculate the greatest number of components of any activity
@@ -58,7 +58,7 @@ ActivityTree::ActivityTree(map<string, ActivityInfo> const& p_info_map):
 	(	p_info_map.begin(),
 		p_info_map.end(),
 		0,
-		[](size_t n, pair<string, ActivityInfo> const& p)
+		[](size_t n, pair<string, ActivityStats> const& p)
 		{
 			return max(n, split(p.first).size());
 		}
@@ -80,7 +80,7 @@ ActivityTree::ActivityTree(map<string, ActivityInfo> const& p_info_map):
 	if (m_inheritance_map.empty())
 	{
 		m_inheritance_map.insert(make_pair(m_root, set<ActivityNode>{}));
-		m_info_map.insert(make_pair(m_root, ActivityInfo()));
+		m_info_map.insert(make_pair(m_root, ActivityStats()));
 		return;
 	}
 	auto current_generation = m_inheritance_map;
@@ -122,7 +122,7 @@ ActivityTree::children(ActivityNode const& p_node) const
 	return iter->second;
 }
 
-ActivityInfo const&
+ActivityStats const&
 ActivityTree::info(ActivityNode const& p_node) const
 {
 	auto const iter = m_info_map.find(p_node);

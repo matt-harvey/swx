@@ -15,7 +15,7 @@
  */
 
 #include "human_summary_report_writer.hpp"
-#include "activity_info.hpp"
+#include "activity_stats.hpp"
 #include "activity_node.hpp"
 #include "activity_tree.hpp"
 #include "arithmetic.hpp"
@@ -72,11 +72,11 @@ HumanSummaryReportWriter::~HumanSummaryReportWriter() = default;
 void
 HumanSummaryReportWriter::do_write_summary
 (	ostream& p_os,
-	map<std::string, ActivityInfo> const& p_activity_info_map
+	map<std::string, ActivityStats> const& p_activity_stats_map
 )
 {
-	if (m_show_tree) write_tree_summary(p_os, p_activity_info_map);
-	else write_flat_summary(p_os, p_activity_info_map);
+	if (m_show_tree) write_tree_summary(p_os, p_activity_stats_map);
+	else write_flat_summary(p_os, p_activity_stats_map);
 	return;
 }
 
@@ -125,18 +125,18 @@ HumanSummaryReportWriter::print_label_and_rounded_hours
 void
 HumanSummaryReportWriter::write_flat_summary
 (	ostream& p_os,
-	map<std::string, ActivityInfo> const& p_activity_info_map
+	map<std::string, ActivityStats> const& p_activity_stats_map
 )
 {
 	string::size_type left_col_width = 0;
-	for (auto const& pair: p_activity_info_map)
+	for (auto const& pair: p_activity_stats_map)
 	{
 		auto const& activity = pair.first;
 		auto const activity_width = activity.length();
 		if (activity_width > left_col_width) left_col_width = activity_width;
 	}
-	ActivityInfo total_info;
-	for (auto const& pair: p_activity_info_map)
+	ActivityStats total_info;
+	for (auto const& pair: p_activity_stats_map)
 	{
 		auto const& activity = pair.first;
 		auto const& info = pair.second;
@@ -165,10 +165,10 @@ HumanSummaryReportWriter::write_flat_summary
 void
 HumanSummaryReportWriter::write_tree_summary
 (	ostream& p_os,
-	map<std::string, ActivityInfo> const& p_activity_info_map
+	map<std::string, ActivityStats> const& p_activity_stats_map
 )
 {
-	ActivityTree const tree(p_activity_info_map);
+	ActivityTree const tree(p_activity_stats_map);
 
 	// TODO Enable -b and -e options to be processed.
 	tree.print

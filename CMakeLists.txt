@@ -61,7 +61,7 @@ set(libraries pthread dl)
 
 set(
 	common_sources
-	src/activity_info.cpp
+	src/activity_stats.cpp
 	src/activity_node.cpp
 	src/activity_tree.cpp
 	src/arithmetic.cpp

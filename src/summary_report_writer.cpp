@@ -15,7 +15,7 @@
  */
 
 #include "summary_report_writer.hpp"
-#include "activity_info.hpp"
+#include "activity_stats.hpp"
 #include "arithmetic.hpp"
 #include "seconds.hpp"
 #include "stint.hpp"
@@ -46,7 +46,7 @@ SummaryReportWriter::SummaryReportWriter
 ):
 	ReportWriter(p_stints, p_options)
 {
-	assert (m_activity_info_map.empty());
+	assert (m_activity_stats_map.empty());
 }
 
 SummaryReportWriter::~SummaryReportWriter() = default;
@@ -58,7 +58,7 @@ SummaryReportWriter::do_preprocess_stints
 )
 {
 	(void)p_os; (void)p_stints;  // silence compiler warnings re. unused params.
-	assert (m_activity_info_map.empty());
+	assert (m_activity_stats_map.empty());
 	return;
 }
 
@@ -71,11 +71,11 @@ SummaryReportWriter::do_process_stint(std::ostream& p_os, Stint const& p_stint)
 	auto const& activity = p_stint.activity();
 	if (!activity.empty())
 	{
-		auto const it = m_activity_info_map.find(activity);
-		ActivityInfo const info(seconds, interval.beginning(), interval.ending());
-		if (it == m_activity_info_map.end())
+		auto const it = m_activity_stats_map.find(activity);
+		ActivityStats const info(seconds, interval.beginning(), interval.ending());
+		if (it == m_activity_stats_map.end())
 		{
-			m_activity_info_map.insert(make_pair(activity, info));
+			m_activity_stats_map.insert(make_pair(activity, info));
 		}
 		else
 		{
@@ -92,8 +92,8 @@ SummaryReportWriter::do_postprocess_stints
 )
 {
 	(void)p_stints;  // silence compiler warning re. unused param.
-	do_write_summary(p_os, m_activity_info_map);
-	m_activity_info_map.clear();  // hygienic even if unnecessary
+	do_write_summary(p_os, m_activity_stats_map);
+	m_activity_stats_map.clear();  // hygienic even if unnecessary
 	return;
 }
 

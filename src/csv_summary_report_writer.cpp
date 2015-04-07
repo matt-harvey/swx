@@ -15,7 +15,7 @@
  */
 
 #include "csv_summary_report_writer.hpp"
-#include "activity_info.hpp"
+#include "activity_stats.hpp"
 #include "csv_utilities.hpp"
 #include "stint.hpp"
 #include "summary_report_writer.hpp"
@@ -50,10 +50,10 @@ CsvSummaryReportWriter::~CsvSummaryReportWriter() = default;
 void
 CsvSummaryReportWriter::do_write_summary
 (	ostream& p_os,
-	map<string, ActivityInfo> const& p_activity_info_map
+	map<string, ActivityStats> const& p_activity_stats_map
 )
 {
-	for (auto const& pair: p_activity_info_map)
+	for (auto const& pair: p_activity_stats_map)
 	{
 		auto const& activity = pair.first;
 		auto const& info = pair.second;
