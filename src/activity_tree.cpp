@@ -50,13 +50,13 @@ using std::string;
 namespace swx
 {
 
-ActivityTree::ActivityTree(map<string, ActivityStats> const& p_info_map):
+ActivityTree::ActivityTree(map<string, ActivityStats> const& p_stats_map):
 	m_root(ActivityNode(""))
 {
 	// Calculate the greatest number of components of any activity
 	auto const depth = accumulate
-	(	p_info_map.begin(),
-		p_info_map.end(),
+	(	p_stats_map.begin(),
+		p_stats_map.end(),
 		0,
 		[](size_t n, pair<string, ActivityStats> const& p)
 		{
@@ -66,24 +66,20 @@ ActivityTree::ActivityTree(map<string, ActivityStats> const& p_info_map):
 
 	// Make all the leaf activities have the same number of components, and insert
 	// them into the inheritance map.
-	for (auto const& pair: p_info_map)
+	for (auto const& pair: p_stats_map)
 	{
-		auto node = ActivityNode(pair.first, depth);
-		auto const info = pair.second;
-		m_inheritance_map.insert(make_pair(node, set<ActivityNode>{}));
-		m_info_map.insert(make_pair(node, info));
+		m_map.insert(make_pair(ActivityNode(pair.first, depth), ActivityData(pair.second)));
 	}
 
 	// Go through each generation, starting with the leaves, and building the parent
 	// generation of each. But first, cover the case where there are no nodes. Even
 	// then, we want a root node.
-	if (m_inheritance_map.empty())
+	if (m_map.empty())
 	{
-		m_inheritance_map.insert(make_pair(m_root, set<ActivityNode>{}));
-		m_info_map.insert(make_pair(m_root, ActivityStats()));
+		m_map.insert(make_pair(m_root, ActivityData()));
 		return;
 	}
-	auto current_generation = m_inheritance_map;
+	auto current_generation = m_map;
 	assert (!current_generation.empty());
 	while (current_generation.begin()->first != m_root)
 	{
@@ -91,43 +87,24 @@ ActivityTree::ActivityTree(map<string, ActivityStats> const& p_info_map):
 		for (auto const& pair: current_generation)
 		{
 			auto const& node = pair.first;
+			auto const& stats = pair.second.stats;
 			auto const parent_node = node.parent();
 			auto const parent_iter = parent_generation.find(parent_node);
 			if (parent_iter == parent_generation.end())
 			{
-				parent_generation.insert(make_pair(parent_node, set<ActivityNode>{node}));
-				m_info_map.insert(make_pair(parent_node, info(node)));
+				ActivityData const data(stats, {node});
+				parent_generation.insert(make_pair(parent_node, data));
 			}
 			else
 			{
-				auto& children = parent_iter->second;
-				children.insert(node);
-				auto const info_iter = m_info_map.find(parent_node);
-				assert (info_iter != m_info_map.end());
-				auto& parent_info = info_iter->second;
-				parent_info += info(node);
+				parent_iter->second.children.insert(node);
+				parent_iter->second.stats += stats;
 			}
 		}
-		m_inheritance_map.insert(parent_generation.begin(), parent_generation.end());
+		m_map.insert(parent_generation.begin(), parent_generation.end());
 		current_generation = move(parent_generation);
 		assert (!current_generation.empty());
 	}
-}
-
-set<ActivityNode> const&
-ActivityTree::children(ActivityNode const& p_node) const
-{
-	auto const iter = m_inheritance_map.find(p_node);
-	assert (iter != m_inheritance_map.end());
-	return iter->second;
-}
-
-ActivityStats const&
-ActivityTree::info(ActivityNode const& p_node) const
-{
-	auto const iter = m_info_map.find(p_node);
-	assert (iter != m_info_map.end());
-	return iter->second;
 }
 
 void
@@ -142,6 +119,8 @@ ActivityTree::print
 	unsigned int p_rounding_denominator
 ) const
 {
+	assert (m_map.find(p_node) != m_map.end());
+	auto const& data = m_map.find(p_node)->second;
 	if (p_concatenate_to_previous)
 	{
 		p_os << p_node.marginal_name() << ' ';
@@ -149,18 +128,17 @@ ActivityTree::print
 	else
 	{
 		StreamFlagGuard guard(p_os);
-		auto const seconds = info(p_node).seconds;
 		if (m_root != p_node) p_os << endl;
 		auto const marginal_name = p_node.marginal_name();
 		auto const name_str = (marginal_name.empty() ? "" : marginal_name + ' ');
+		auto const seconds = data.stats.seconds;
 		p_os << string(p_depth * (p_width + 3), ' ') << '['
 		     << fixed << setprecision(p_precision) << right << setw(p_width)
 			 << round(seconds / 60.0 / 60.0, p_rounding_numerator, p_rounding_denominator)
 			 << " ] " << left << name_str;
 	}
-	auto const& child_nodes = children(p_node);
-	auto const has_single_child = (child_nodes.size() == 1);
-	for (auto const& child: child_nodes)
+	auto const has_single_child = (data.children.size() == 1);
+	for (auto const& child: data.children)
 	{
 		print
 		(	p_os,
@@ -197,6 +175,15 @@ ActivityTree::print
 	);
 	p_os << endl;
 	return;
+}
+
+ActivityTree::ActivityData::ActivityData
+(	ActivityStats const& p_stats,
+	set<ActivityNode> const& p_children
+):
+	stats(p_stats),
+	children(p_children)
+{
 }
 
 }  // namespace swx
