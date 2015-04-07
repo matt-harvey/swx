@@ -81,9 +81,11 @@ ActivityTree::ActivityTree(map<string, ActivityInfo> const& p_info_map):
 	{
 		m_inheritance_map.insert(make_pair(m_root, set<ActivityNode>{}));
 		m_info_map.insert(make_pair(m_root, ActivityInfo()));
+		return;
 	}
 	auto current_generation = m_inheritance_map;
-	while (current_generation.size() != 1)  // until root node reached
+	assert (!current_generation.empty());
+	while (current_generation.begin()->first != m_root)
 	{
 		decltype(current_generation) parent_generation;
 		for (auto const& pair: current_generation)
@@ -108,6 +110,7 @@ ActivityTree::ActivityTree(map<string, ActivityInfo> const& p_info_map):
 		}
 		m_inheritance_map.insert(parent_generation.begin(), parent_generation.end());
 		current_generation = move(parent_generation);
+		assert (!current_generation.empty());
 	}
 }
 
@@ -148,10 +151,12 @@ ActivityTree::print
 		StreamFlagGuard guard(p_os);
 		auto const seconds = info(p_node).seconds;
 		if (m_root != p_node) p_os << endl;
+		auto const marginal_name = p_node.marginal_name();
+		auto const name_str = (marginal_name.empty() ? "" : marginal_name + ' ');
 		p_os << string(p_depth * (p_width + 3), ' ') << '['
 		     << fixed << setprecision(p_precision) << right << setw(p_width)
 			 << round(seconds / 60.0 / 60.0, p_rounding_numerator, p_rounding_denominator)
-			 << " ] " << left << p_node.marginal_name() << ' ';
+			 << " ] " << left << name_str;
 	}
 	auto const& child_nodes = children(p_node);
 	auto const has_single_child = (child_nodes.size() == 1);
