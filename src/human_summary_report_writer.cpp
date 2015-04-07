@@ -92,19 +92,9 @@ HumanSummaryReportWriter::print_label_and_rounded_hours
 ) const
 {
 	StreamFlagGuard guard(p_os);
-
-	string indent;
-	if (p_activity_depth != 0)
-	{
-		indent = string((p_activity_depth - 1) * 8, ' ') + "  |___ ";
-	}
-
-	p_os << indent << left << setw(p_left_col_width) << p_label << ' ';
-	p_os << fixed
-	     << setprecision(output_precision())
-		 << right
-		 << setw(output_width())
-		 << seconds_to_rounded_hours(p_seconds);
+	p_os << left << setw(p_left_col_width) << p_label << ' '
+	     << fixed << setprecision(output_precision()) << right
+		 << setw(output_width()) << seconds_to_rounded_hours(p_seconds);
 	guard.reset();
 
 	if (p_beginning != nullptr)
@@ -168,17 +158,31 @@ HumanSummaryReportWriter::write_tree_summary
 	map<std::string, ActivityStats> const& p_activity_stats_map
 )
 {
-	ActivityTree const tree(p_activity_stats_map);
-
 	// TODO Enable -b and -e options to be processed.
-	tree.print
-	(	p_os,
-		output_precision(),
-		output_width(),
-		output_rounding_numerator(),
-		output_rounding_denominator()
-	);
-		
+	
+	// TODO When the user passes a string even without the -r option,
+	// when printing in tree mode, it should probably match that string
+	// to non-leaf nodes as well as just leaf nodes. (It should possibly
+	// even do this when not printing in tree mode.)
+
+	ActivityTree const tree(p_activity_stats_map);
+	ActivityTree::PrintNode const print_node = [this]
+	(	ostream& p_ostream,
+		unsigned int p_node_depth,
+		string const& p_node_label,
+		unsigned long long p_seconds
+	)
+	{
+		p_ostream << string(p_node_depth * (output_width() + 3), ' ')
+				  << '['
+				  << fixed << setprecision(output_precision())
+				  << right << setw(output_width())
+				  << seconds_to_rounded_hours(p_seconds)
+				  << " ] "
+				  << left << p_node_label;
+		return;
+	};
+	tree.print(p_os, print_node);
 	return;
 }
 

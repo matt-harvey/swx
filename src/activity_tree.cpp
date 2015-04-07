@@ -20,53 +20,41 @@
 #include "arithmetic.hpp"
 #include "stream_flag_guard.hpp"
 #include "string_utilities.hpp"
-#include <algorithm>
 #include <cassert>
-#include <iomanip>
+#include <functional>
 #include <iostream>
 #include <map>
-#include <numeric>
 #include <ostream>
 #include <set>
 #include <string>
 #include <utility>
+#include <vector>
 
-using std::accumulate;
 using std::endl;
-using std::fixed;
-using std::left;
+using std::function;
 using std::make_pair;
 using std::map;
 using std::max;
 using std::move;
 using std::ostream;
 using std::pair;
-using std::right;
 using std::set;
-using std::setw;
-using std::setprecision;
 using std::string;
+using std::vector;
 
 namespace swx
 {
 
-ActivityTree::ActivityTree(map<string, ActivityStats> const& p_stats_map):
+ActivityTree::ActivityTree(map<string, ActivityStats> const& p_stats):
 	m_root(ActivityNode(""))
 {
 	// Calculate the greatest number of components of any activity
-	auto const depth = accumulate
-	(	p_stats_map.begin(),
-		p_stats_map.end(),
-		0,
-		[](size_t n, pair<string, ActivityStats> const& p)
-		{
-			return max(n, split(p.first).size());
-		}
-	);
+	vector<string>::size_type depth = 0;
+	for (auto const& p: p_stats) depth = max(depth, split(p.first).size());
 
 	// Make all the leaf activities have the same number of components, and insert
 	// them into the inheritance map.
-	for (auto const& pair: p_stats_map)
+	for (auto const& pair: p_stats)
 	{
 		m_map.insert(make_pair(ActivityNode(pair.first, depth), ActivityData(pair.second)));
 	}
@@ -74,11 +62,7 @@ ActivityTree::ActivityTree(map<string, ActivityStats> const& p_stats_map):
 	// Go through each generation, starting with the leaves, and building the parent
 	// generation of each. But first, cover the case where there are no nodes. Even
 	// then, we want a root node.
-	if (m_map.empty())
-	{
-		m_map.insert(make_pair(m_root, ActivityData()));
-		return;
-	}
+	if (m_map.empty()) m_map.insert(make_pair(m_root, ActivityData()));
 	auto current_generation = m_map;
 	assert (!current_generation.empty());
 	while (current_generation.begin()->first != m_root)
@@ -113,12 +97,14 @@ ActivityTree::print
 	ActivityNode const& p_node,
 	unsigned int p_depth,
 	bool p_concatenate_to_previous,
-	unsigned int p_precision,
-	unsigned int p_width,
-	unsigned int p_rounding_numerator,
-	unsigned int p_rounding_denominator
+	PrintNode const& p_print_node
 ) const
 {
+	// TODO This function makes assumptions about how the PrintNode callback
+	// will print the concatenated node label and data. In particular, it
+	// assumes it will print the data first. Should build the concatenated node
+	// label from call to recursive call, but let the PrintNode callback be
+	// entirely responsible for printing it to the output stream.
 	assert (m_map.find(p_node) != m_map.end());
 	auto const& data = m_map.find(p_node)->second;
 	if (p_concatenate_to_previous)
@@ -131,11 +117,7 @@ ActivityTree::print
 		if (m_root != p_node) p_os << endl;
 		auto const marginal_name = p_node.marginal_name();
 		auto const name_str = (marginal_name.empty() ? "" : marginal_name + ' ');
-		auto const seconds = data.stats.seconds;
-		p_os << string(p_depth * (p_width + 3), ' ') << '['
-		     << fixed << setprecision(p_precision) << right << setw(p_width)
-			 << round(seconds / 60.0 / 60.0, p_rounding_numerator, p_rounding_denominator)
-			 << " ] " << left << name_str;
+		p_print_node(p_os, p_depth, name_str, data.stats.seconds);
 	}
 	auto const has_single_child = (data.children.size() == 1);
 	for (auto const& child: data.children)
@@ -145,34 +127,16 @@ ActivityTree::print
 			child,
 			p_depth + (p_concatenate_to_previous ? 0 : 1),
 			has_single_child,
-			p_precision,
-			p_width,
-			p_rounding_numerator,
-			p_rounding_denominator
+			p_print_node
 		);
 	}
 	return;
 }
 
 void
-ActivityTree::print
-(	ostream& p_os,
-	unsigned int p_precision,
-	unsigned int p_width,
-	unsigned int p_rounding_numerator,
-	unsigned int p_rounding_denominator
-) const
+ActivityTree::print(ostream& p_os, PrintNode const& p_print_node) const
 {
-	print
-	(	p_os,
-		m_root,
-		0,
-		false,
-		p_precision,
-		p_width,
-		p_rounding_numerator,
-		p_rounding_denominator
-	);
+	print(p_os, m_root, 0, false, p_print_node);
 	p_os << endl;
 	return;
 }

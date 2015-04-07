@@ -18,6 +18,7 @@
 #define GUARD_activity_tree_hpp_4902535711835388
 
 #include "activity_node.hpp"
+#include <functional>
 #include <map>
 #include <set>
 #include <ostream>
@@ -46,9 +47,21 @@ private:
 		std::set<ActivityNode> children;
 	};
 
+public:
+	typedef std::function
+	<	void
+		(	std::ostream& p_os,
+			unsigned int p_depth,
+			std::string const& p_node_label,
+			unsigned long long p_seconds
+		)
+	>
+	PrintNode;
+
+
 // special member functions
 public:
-	explicit ActivityTree(std::map<std::string, ActivityStats> const& p_stats_map);
+	explicit ActivityTree(std::map<std::string, ActivityStats> const& p_stats);
 	ActivityTree(ActivityTree const& rhs) = delete;
 	ActivityTree(ActivityTree&& rhs) = delete;
 	ActivityTree& operator=(ActivityTree const& rhs) = delete;
@@ -57,26 +70,15 @@ public:
 
 // ordinary member functions
 private:
-	// TODO MEDIUM PRIORITY params here are cumbersome
 	void print
 	(	std::ostream& p_os,
 		ActivityNode const& p_node,
 		unsigned int p_depth,
 		bool p_concatenate_to_previous,
-		unsigned int p_precision,
-		unsigned int p_width,
-		unsigned int p_rounding_numerator,
-		unsigned int p_rounding_denominator
+		PrintNode const& p_print_node
 	) const;
 public:
-	// TODO MEDIUM PRIORITY params here are cumbersome
-	void print
-	(	std::ostream& p_os,
-		unsigned int p_precision,
-		unsigned int p_width,
-		unsigned int p_rounding_numerator,
-		unsigned int p_rounding_denominator
- 	) const;
+	void print(std::ostream& p_os, PrintNode const& p_print_node) const;
 
 // member variables
 private:
