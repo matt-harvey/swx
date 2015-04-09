@@ -95,40 +95,30 @@ void
 ActivityTree::print
 (	ostream& p_os,
 	ActivityNode const& p_node,
+	string const& p_label,
 	unsigned int p_depth,
-	bool p_concatenate_to_previous,
 	PrintNode const& p_print_node
 ) const
 {
-	// TODO This function makes assumptions about how the PrintNode callback
-	// will print the concatenated node label and data. In particular, it
-	// assumes it will print the data first. Should build the concatenated node
-	// label from call to recursive call, but let the PrintNode callback be
-	// entirely responsible for printing it to the output stream.
 	assert (m_map.find(p_node) != m_map.end());
 	auto const& data = m_map.find(p_node)->second;
-	if (p_concatenate_to_previous)
+	string label_carried_forward;
+	if (data.children.size() == 1)
 	{
-		p_os << p_node.marginal_name() << ' ';
+		if (!p_label.empty())
+		{
+			label_carried_forward = p_label + ' ';
+		}
 	}
 	else
 	{
-		StreamFlagGuard guard(p_os);
-		if (m_root != p_node) p_os << endl;
-		auto const marginal_name = p_node.marginal_name();
-		auto const name_str = (marginal_name.empty() ? "" : marginal_name + ' ');
-		p_print_node(p_os, p_depth, name_str, data.stats.seconds);
+		p_print_node(p_os, p_depth, p_label, data.stats);
+		++p_depth;
 	}
-	auto const has_single_child = (data.children.size() == 1);
 	for (auto const& child: data.children)
 	{
-		print
-		(	p_os,
-			child,
-			p_depth + (p_concatenate_to_previous ? 0 : 1),
-			has_single_child,
-			p_print_node
-		);
+		auto const label = label_carried_forward + child.marginal_name();
+		print(p_os, child, label, p_depth, p_print_node);
 	}
 	return;
 }
@@ -136,8 +126,7 @@ ActivityTree::print
 void
 ActivityTree::print(ostream& p_os, PrintNode const& p_print_node) const
 {
-	print(p_os, m_root, 0, false, p_print_node);
-	p_os << endl;
+	print(p_os, m_root, "", 0, p_print_node);
 	return;
 }
 

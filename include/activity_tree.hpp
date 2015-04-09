@@ -53,7 +53,7 @@ public:
 		(	std::ostream& p_os,
 			unsigned int p_depth,
 			std::string const& p_node_label,
-			unsigned long long p_seconds
+			ActivityStats const& p_stats
 		)
 	>
 	PrintNode;
@@ -73,8 +73,8 @@ private:
 	void print
 	(	std::ostream& p_os,
 		ActivityNode const& p_node,
+		std::string const& p_label,
 		unsigned int p_depth,
-		bool p_concatenate_to_previous,
 		PrintNode const& p_print_node
 	) const;
 public:

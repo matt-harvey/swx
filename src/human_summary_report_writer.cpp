@@ -170,16 +170,17 @@ HumanSummaryReportWriter::write_tree_summary
 	(	ostream& p_ostream,
 		unsigned int p_node_depth,
 		string const& p_node_label,
-		unsigned long long p_seconds
+		ActivityStats const& p_stats
 	)
 	{
+		StreamFlagGuard guard(p_ostream);
 		p_ostream << string(p_node_depth * (output_width() + 3), ' ')
 				  << '['
 				  << fixed << setprecision(output_precision())
 				  << right << setw(output_width())
-				  << seconds_to_rounded_hours(p_seconds)
+				  << seconds_to_rounded_hours(p_stats.seconds)
 				  << " ] "
-				  << left << p_node_label;
+				  << left << p_node_label << endl;
 		return;
 	};
 	tree.print(p_os, print_node);
