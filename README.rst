@@ -164,6 +164,10 @@ provided.
 If you pass the ``-c`` option to a reporting command, then the results will
 be output in CSV format.
 
+If you pass the ``-t`` option, then the results will be output in "tree"
+format, showing the hierarchical structure of activities. This does not
+apply in CSV (``-c``) format or "list" (``-l``) mode.
+
 By default, the number of hours shown is rounded to the nearest quarter of
 an hour. This rounding behaviour can be changed in the Configuration_.
 
