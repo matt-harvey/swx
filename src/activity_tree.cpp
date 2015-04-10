@@ -105,10 +105,7 @@ ActivityTree::print
 	string label_carried_forward;
 	if (data.children.size() == 1)
 	{
-		if (!p_label.empty())
-		{
-			label_carried_forward = p_label + ' ';
-		}
+		label_carried_forward = p_label + ' ';
 	}
 	else
 	{
@@ -117,7 +114,7 @@ ActivityTree::print
 	}
 	for (auto const& child: data.children)
 	{
-		auto const label = label_carried_forward + child.marginal_name();
+		auto const label = trim(label_carried_forward + child.marginal_name());
 		print(p_os, child, label, p_depth, p_print_node);
 	}
 	return;

@@ -158,13 +158,16 @@ HumanSummaryReportWriter::write_tree_summary
 	map<std::string, ActivityStats> const& p_activity_stats_map
 )
 {
-	// TODO Enable -b and -e options to be processed.
-	
 	// TODO When the user passes a string even without the -r option,
 	// when printing in tree mode, it should probably match that string
 	// to non-leaf nodes as well as just leaf nodes. (It should possibly
 	// even do this when not printing in tree mode.)
 
+	if (p_activity_stats_map.empty())
+	{
+		p_os << endl;
+		return;
+	}
 	ActivityTree const tree(p_activity_stats_map);
 	ActivityTree::PrintNode const print_node = [this]
 	(	ostream& p_ostream,
@@ -174,13 +177,26 @@ HumanSummaryReportWriter::write_tree_summary
 	)
 	{
 		StreamFlagGuard guard(p_ostream);
-		p_ostream << string(p_node_depth * (output_width() + 3), ' ')
-				  << '['
+		p_ostream << string(p_node_depth * (output_width() + 4), ' ')
+				  << "[ "
 				  << fixed << setprecision(output_precision())
 				  << right << setw(output_width())
 				  << seconds_to_rounded_hours(p_stats.seconds)
-				  << " ] "
-				  << left << p_node_label << endl;
+				  << " ]";
+		guard.reset();
+		if (m_include_beginning)
+		{
+			auto const& b = p_stats.beginning;
+			auto const s = time_point_to_stamp(b, time_format(), formatted_buf_len());
+			p_ostream << "[ " << s << " ]";
+		}
+		if (m_include_ending)
+		{
+			auto const& e = p_stats.ending;
+			auto const s = time_point_to_stamp(e, time_format(), formatted_buf_len());
+			p_ostream << "[ " << s << " ]";
+		}
+		p_ostream << ' ' << p_node_label << endl;
 		return;
 	};
 	tree.print(p_os, print_node);

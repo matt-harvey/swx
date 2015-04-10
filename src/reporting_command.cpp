@@ -95,11 +95,10 @@ ReportingCommand::ReportingCommand
 		"Output in CSV format"
 	);
 	
-	// TODO Once the implementation has been tidied etc., document this option
-	// in the README.
 	add_boolean_option
 	(	k_tree_view_flag,
-		"Show hierarchical activity structure (ignored in list mode and in CSV format)"
+		"Show hierarchical \"tree\" activity structure (ignored in list mode "
+			"and in CSV format)"
 	);
 }
 
