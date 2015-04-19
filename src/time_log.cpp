@@ -30,7 +30,6 @@
 #include <fstream>
 #include <iomanip>
 #include <ios>
-#include <iostream>
 #include <regex>
 #include <sstream>
 #include <stdexcept>
@@ -38,8 +37,6 @@
 #include <utility>
 #include <vector>
 
-using std::cerr;
-using std::endl;
 using std::getline;
 using std::ifstream;
 using std::isspace;
