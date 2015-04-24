@@ -26,7 +26,7 @@ namespace swx
 {
 
 /**
- * Represents an node in a tree structure of nested activities.
+ * Represents a node in a tree structure of nested activities.
  * Each ActivityNode has one or more components, corresponding to the
  * single-space-separated components of an activity.
  */
