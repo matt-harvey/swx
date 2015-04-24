@@ -275,12 +275,12 @@ Config::set_defaults()
 	);
 	unchecked_set_option
 	(	"output_rounding_denominator",
-		OptionData("4", rounding_explanation)
+		OptionData("10", rounding_explanation)
 	);
 	unchecked_set_option
 	(	"output_precision",
 		OptionData
-		(	"2",
+		(	"1",
 			"Determines the number of decimal places of precision for\n"
 			"durations when output in decimal format."
 		)
