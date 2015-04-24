@@ -24,21 +24,21 @@ namespace swx
 {
 
 StreamFlagGuard::StreamFlagGuard(ostream& p_os):
-	m_os(p_os),
-	m_original_flags(p_os.flags())
+    m_os(p_os),
+    m_original_flags(p_os.flags())
 {
 }
 
 StreamFlagGuard::~StreamFlagGuard()
 {
-	reset();
+    reset();
 }
 
 void
 StreamFlagGuard::reset()
 {
-	m_os.flags(m_original_flags);		
-	return;
+    m_os.flags(m_original_flags);        
+    return;
 }
 
 }  // namespace swx

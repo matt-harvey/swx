@@ -38,24 +38,24 @@ namespace swx
 {
 
 ResumeCommand::ResumeCommand
-(	string const& p_command_word,
-	vector<string> const& p_aliases,
-	TimeLog& p_time_log
+(   string const& p_command_word,
+    vector<string> const& p_aliases,
+    TimeLog& p_time_log
 ):
-	RecordingCommand
-	(	p_command_word,
-		p_aliases,
-		"Resume previous activity",
-		vector<HelpLine>
-		{	HelpLine
-			(	"If currently inactive, start accruing time to the most recent "
-				"activity; or if already active, switch to the activity that "
-				"was last active before the current one"
-			)
-		},
-		false,
-		p_time_log
-	)
+    RecordingCommand
+    (   p_command_word,
+        p_aliases,
+        "Resume previous activity",
+        vector<HelpLine>
+        {   HelpLine
+            (   "If currently inactive, start accruing time to the most recent "
+                "activity; or if already active, switch to the activity that "
+                "was last active before the current one"
+            )
+        },
+        false,
+        p_time_log
+    )
 {
 }
 
@@ -63,40 +63,40 @@ ResumeCommand::~ResumeCommand() = default;
 
 Command::ErrorMessages
 ResumeCommand::do_process
-(	Config const& p_config,
-	ParsedArguments const& p_args,
-	ostream& p_ordinary_ostream
+(   Config const& p_config,
+    ParsedArguments const& p_args,
+    ostream& p_ordinary_ostream
 )
 {
-	(void)p_args; (void)p_config;  // silence compiler re. unused params
+    (void)p_args; (void)p_config;  // silence compiler re. unused params
 
-	ErrorMessages ret;
-	bool const is_active = time_log().is_active();
-	auto const last_activities = time_log().last_activities(2);
-	if (last_activities.empty())
-	{
-		ret.push_back("No activity has yet been recorded.");
-	}
-	else if (!is_active)
-	{
-		auto const activity = last_activities[0];
-		time_log().append_entry(activity);
-		p_ordinary_ostream << "Resumed: " << activity << endl;
-	}
-	else if (last_activities.size() == 1)
-	{
-		assert (is_active);
-		ret.push_back("No prior activity to resume.");
-	}
-	else
-	{
-		assert (is_active);
-		assert (last_activities.size() == 2);
-		auto const activity = last_activities[1];
-		time_log().append_entry(activity);
-		p_ordinary_ostream << "Resumed: " << activity << endl;
-	}
-	return ret;
+    ErrorMessages ret;
+    bool const is_active = time_log().is_active();
+    auto const last_activities = time_log().last_activities(2);
+    if (last_activities.empty())
+    {
+        ret.push_back("No activity has yet been recorded.");
+    }
+    else if (!is_active)
+    {
+        auto const activity = last_activities[0];
+        time_log().append_entry(activity);
+        p_ordinary_ostream << "Resumed: " << activity << endl;
+    }
+    else if (last_activities.size() == 1)
+    {
+        assert (is_active);
+        ret.push_back("No prior activity to resume.");
+    }
+    else
+    {
+        assert (is_active);
+        assert (last_activities.size() == 2);
+        auto const activity = last_activities[1];
+        time_log().append_entry(activity);
+        p_ordinary_ostream << "Resumed: " << activity << endl;
+    }
+    return ret;
 }
 
 }  // namespace swx

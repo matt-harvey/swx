@@ -35,24 +35,24 @@ class Interval
 // special member functions
 public:
 
-	explicit Interval
-	(	TimePoint const& p_beginning,
-		Seconds const& p_duration,
-		bool p_is_live = false
-	);
+    explicit Interval
+    (   TimePoint const& p_beginning,
+        Seconds const& p_duration,
+        bool p_is_live = false
+    );
 
 // ordinary member functions
 public:
-	Seconds duration() const;
-	TimePoint beginning() const;
-	TimePoint ending() const;
-	bool is_live() const;
+    Seconds duration() const;
+    TimePoint beginning() const;
+    TimePoint ending() const;
+    bool is_live() const;
 
 // member variables
 private:
-	bool m_is_live;
-	TimePoint m_beginning;
-	Seconds m_duration;
+    bool m_is_live;
+    TimePoint m_beginning;
+    Seconds m_duration;
 
 };  // class Interval
 

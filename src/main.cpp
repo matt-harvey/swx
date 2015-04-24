@@ -42,36 +42,36 @@ using swx::TimeLog;
 
 int main(int argc, char** argv)
 {
-	try
-	{
-		enable_exceptions(cout);
-		if (argc < 2)
-		{
-			cerr << "Command not provided." << endl;
-			cerr << CommandManager::directions_to_get_help() << endl;
-			return 1;
-		}
-		assert (argc >= 2);
-		vector<string> args(argv + 2, argv + argc);
-		auto const config_path = Info::home_dir() + "/.swxrc";  // non-portable
-		Config const config(config_path);
-		TimeLog time_log
-		(	config.path_to_log(),
-			config.time_format(),
-			config.formatted_buf_len()
-		);
-		CommandManager manager(time_log);
-		manager.process_command(config, argv[1], args);
-	}
-	catch (std::runtime_error& e)
-	{
-		cerr << "Error: " << e.what() << endl;
-		return 1;
-	}
-	catch (...)
-	{
-		// Ensure stack is fully unwound.
-		throw;
-	}
-	return 0;
+    try
+    {
+        enable_exceptions(cout);
+        if (argc < 2)
+        {
+            cerr << "Command not provided." << endl;
+            cerr << CommandManager::directions_to_get_help() << endl;
+            return 1;
+        }
+        assert (argc >= 2);
+        vector<string> args(argv + 2, argv + argc);
+        auto const config_path = Info::home_dir() + "/.swxrc";  // non-portable
+        Config const config(config_path);
+        TimeLog time_log
+        (   config.path_to_log(),
+            config.time_format(),
+            config.formatted_buf_len()
+        );
+        CommandManager manager(time_log);
+        manager.process_command(config, argv[1], args);
+    }
+    catch (std::runtime_error& e)
+    {
+        cerr << "Error: " << e.what() << endl;
+        return 1;
+    }
+    catch (...)
+    {
+        // Ensure stack is fully unwound.
+        throw;
+    }
+    return 0;
 }

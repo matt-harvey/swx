@@ -36,24 +36,24 @@ class PrintCommand: public ReportingCommand
 {
 // special member functions
 public:
-	PrintCommand
-	(	std::string const& p_command_word,
-		std::vector<std::string> const& p_aliases,
-		TimeLog& p_time_log
-	);
-	PrintCommand(PrintCommand const& rhs) = delete;
-	PrintCommand(PrintCommand&& rhs) = delete;
-	PrintCommand& operator=(PrintCommand const& rhs) = delete;
-	PrintCommand& operator=(PrintCommand&& rhs) = delete;
-	virtual ~PrintCommand();
+    PrintCommand
+    (   std::string const& p_command_word,
+        std::vector<std::string> const& p_aliases,
+        TimeLog& p_time_log
+    );
+    PrintCommand(PrintCommand const& rhs) = delete;
+    PrintCommand(PrintCommand&& rhs) = delete;
+    PrintCommand& operator=(PrintCommand const& rhs) = delete;
+    PrintCommand& operator=(PrintCommand&& rhs) = delete;
+    virtual ~PrintCommand();
 
 // inherited virtual functions
 private:
-	virtual ErrorMessages do_process
-	(	Config const& p_config,
-		ParsedArguments const& p_args,
-		std::ostream& p_ordinary_ostream
-	) override;
+    virtual ErrorMessages do_process
+    (   Config const& p_config,
+        ParsedArguments const& p_args,
+        std::ostream& p_ordinary_ostream
+    ) override;
 
 };  // class PrintCommand
 

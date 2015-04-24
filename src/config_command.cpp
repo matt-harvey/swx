@@ -35,62 +35,62 @@ namespace swx
 
 namespace
 {
-	char const k_editing_flag = 'e';
-	char const k_filepath_flag = 'f';
+    char const k_editing_flag = 'e';
+    char const k_filepath_flag = 'f';
 }
 
 ConfigCommand::ConfigCommand
-(	string const& p_command_word,
-	vector<string> const& p_aliases
+(   string const& p_command_word,
+    vector<string> const& p_aliases
 ):
-	Command
-	(	p_command_word,
-		p_aliases,
-		"Print configuration information",
-		vector<HelpLine>
-		{	HelpLine("Print summary of all configuration settings")
-		},
-		false
-	)
+    Command
+    (   p_command_word,
+        p_aliases,
+        "Print configuration information",
+        vector<HelpLine>
+        {   HelpLine("Print summary of all configuration settings")
+        },
+        false
+    )
 {
-	add_boolean_option
-	(	k_editing_flag,
-		"Instead of printing configuration settings, open the configuration "
-			"file using the text editor determined by the \"editor\" "
-			"configuration setting"
-	);
-	add_boolean_option
-	(	k_filepath_flag,
-		"Instead of printing configuration settings, print the location of the "
-			"configuration file"
-	);
+    add_boolean_option
+    (   k_editing_flag,
+        "Instead of printing configuration settings, open the configuration "
+            "file using the text editor determined by the \"editor\" "
+            "configuration setting"
+    );
+    add_boolean_option
+    (   k_filepath_flag,
+        "Instead of printing configuration settings, print the location of the "
+            "configuration file"
+    );
 }
 
 ConfigCommand::~ConfigCommand() = default;
 
 Command::ErrorMessages
 ConfigCommand::do_process
-(	Config const& p_config,
-	ParsedArguments const& p_args,
-	ostream& p_ordinary_ostream
+(   Config const& p_config,
+    ParsedArguments const& p_args,
+    ostream& p_ordinary_ostream
 )
 {
-	auto const& flags = p_args.flags();
-	if (flags.count(k_editing_flag))
-	{
-		string const editor_invokation =
-			p_config.editor() + " " + p_config.filepath();
-		system(editor_invokation.c_str());
-	}
-	else if (flags.count(k_filepath_flag))
-	{
-		p_ordinary_ostream << p_config.filepath() << endl;
-	}
-	else
-	{
-		p_ordinary_ostream << p_config.summary();
-	}
-	return ErrorMessages();
+    auto const& flags = p_args.flags();
+    if (flags.count(k_editing_flag))
+    {
+        string const editor_invokation =
+            p_config.editor() + " " + p_config.filepath();
+        system(editor_invokation.c_str());
+    }
+    else if (flags.count(k_filepath_flag))
+    {
+        p_ordinary_ostream << p_config.filepath() << endl;
+    }
+    else
+    {
+        p_ordinary_ostream << p_config.summary();
+    }
+    return ErrorMessages();
 }
 
 }  // namespace swx

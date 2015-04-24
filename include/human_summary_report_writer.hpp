@@ -38,53 +38,53 @@ class HumanSummaryReportWriter: public SummaryReportWriter
 {
 // special member functions
 public:
-	HumanSummaryReportWriter
-	(	std::vector<Stint> const& p_stints,
-		Options const& p_options,
-		bool p_include_beginning,
-		bool p_include_ending,
-		bool p_show_tree
-	);
-	HumanSummaryReportWriter(HumanSummaryReportWriter const& rhs) = delete;
-	HumanSummaryReportWriter(HumanSummaryReportWriter&& rhs) = delete;
-	HumanSummaryReportWriter& operator=(HumanSummaryReportWriter const& rhs) = delete;
-	HumanSummaryReportWriter& operator=(HumanSummaryReportWriter&& rhs) = delete;
-	virtual ~HumanSummaryReportWriter();
+    HumanSummaryReportWriter
+    (   std::vector<Stint> const& p_stints,
+        Options const& p_options,
+        bool p_include_beginning,
+        bool p_include_ending,
+        bool p_show_tree
+    );
+    HumanSummaryReportWriter(HumanSummaryReportWriter const& rhs) = delete;
+    HumanSummaryReportWriter(HumanSummaryReportWriter&& rhs) = delete;
+    HumanSummaryReportWriter& operator=(HumanSummaryReportWriter const& rhs) = delete;
+    HumanSummaryReportWriter& operator=(HumanSummaryReportWriter&& rhs) = delete;
+    virtual ~HumanSummaryReportWriter();
 
 // inherited virtual functions
 private:
-	virtual void do_write_summary
-	(	std::ostream& p_os,
-		std::map<std::string, ActivityStats> const& p_activity_stats_map
-	) override;
+    virtual void do_write_summary
+    (   std::ostream& p_os,
+        std::map<std::string, ActivityStats> const& p_activity_stats_map
+    ) override;
 
 // ordinary member functions
 private:
-	void print_label_and_rounded_hours
-	(	std::ostream& p_os,
-		std::string const& p_label,
-		unsigned long long p_seconds,
-		TimePoint const* p_beginning,
-		TimePoint const* p_ending,
-		unsigned int p_left_col_width,
-		unsigned int p_activity_depth = 0
-	) const;
+    void print_label_and_rounded_hours
+    (   std::ostream& p_os,
+        std::string const& p_label,
+        unsigned long long p_seconds,
+        TimePoint const* p_beginning,
+        TimePoint const* p_ending,
+        unsigned int p_left_col_width,
+        unsigned int p_activity_depth = 0
+    ) const;
 
-	void write_flat_summary
-	(	std::ostream& p_os,
-		std::map<std::string, ActivityStats> const& p_activity_stats_map
-	);
+    void write_flat_summary
+    (   std::ostream& p_os,
+        std::map<std::string, ActivityStats> const& p_activity_stats_map
+    );
 
-	void write_tree_summary
-	(	std::ostream& p_os,
-		std::map<std::string, ActivityStats> const& p_activity_stats_map
-	);
+    void write_tree_summary
+    (   std::ostream& p_os,
+        std::map<std::string, ActivityStats> const& p_activity_stats_map
+    );
 
 // member variables
 private:
-	bool const m_include_beginning;
-	bool const m_include_ending;
-	bool const m_show_tree;
+    bool const m_include_beginning;
+    bool const m_include_ending;
+    bool const m_show_tree;
 
 };  // class HumanSummaryReportWriter
 

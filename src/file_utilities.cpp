@@ -27,10 +27,10 @@ namespace swx
 bool
 file_exists_at(string const& p_filepath)
 {
-	// non-portable
-	return
-		(access(p_filepath.c_str(), R_OK) == 0) ||
-		(errno != ENOENT);
+    // non-portable
+    return
+        (access(p_filepath.c_str(), R_OK) == 0) ||
+        (errno != ENOENT);
 }
 
 }  // namespace swx

@@ -52,14 +52,14 @@ std::tm time_point_to_tm(TimePoint const& p_time_point);
 TimePoint tm_to_time_point(std::tm const& p_tm);
 
 TimePoint time_stamp_to_point
-(	std::string const& p_time_stamp,
-	std::string const& p_format
+(   std::string const& p_time_stamp,
+    std::string const& p_format
 );
 
 std::string time_point_to_stamp
-(	TimePoint const& p_time_point,
-	std::string const& p_format,
-	unsigned int p_formatted_buf_len
+(   TimePoint const& p_time_point,
+    std::string const& p_format,
+    unsigned int p_formatted_buf_len
 );
 
 }  // namespace swx

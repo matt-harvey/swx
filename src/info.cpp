@@ -32,33 +32,33 @@ namespace swx
 string
 Info::application_name()
 {
-	return SWX_APPLICATION_NAME;
+    return SWX_APPLICATION_NAME;
 }
 
 string
 Info::version()
 {
-#	ifdef SWX_RELEASE
-		ostringstream oss;
-		enable_exceptions(oss);
-		oss << SWX_VERSION_MAJOR << '.'
-			<< SWX_VERSION_MINOR << '.'
-			<< SWX_VERSION_PATCH;
-		return oss.str();
-#	else
-		return "not applicable";
-#	endif
+#    ifdef SWX_RELEASE
+        ostringstream oss;
+        enable_exceptions(oss);
+        oss << SWX_VERSION_MAJOR << '.'
+            << SWX_VERSION_MINOR << '.'
+            << SWX_VERSION_PATCH;
+        return oss.str();
+#    else
+        return "not applicable";
+#    endif
 }
 
 string
 Info::home_dir()
 {
-	auto const home_dir = getenv("HOME");  // non-portable
-	if (home_dir == nullptr)
-	{
-		throw runtime_error("Cannot find home directory");
-	}
-	return string(home_dir);
+    auto const home_dir = getenv("HOME");  // non-portable
+    if (home_dir == nullptr)
+    {
+        throw runtime_error("Cannot find home directory");
+    }
+    return string(home_dir);
 }
 
 }  // namespace swx

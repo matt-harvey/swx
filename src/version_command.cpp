@@ -33,16 +33,16 @@ namespace swx
 {
 
 VersionCommand::VersionCommand
-(	string const& p_command_word,
-	vector<string> const& p_aliases
+(   string const& p_command_word,
+    vector<string> const& p_aliases
 ):
-	Command
-	(	p_command_word,
-		p_aliases,
-		"Print version information",
-		vector<HelpLine>{ HelpLine("Print version information") },
-		false
-	)
+    Command
+    (   p_command_word,
+        p_aliases,
+        "Print version information",
+        vector<HelpLine>{ HelpLine("Print version information") },
+        false
+    )
 {
 }
 
@@ -50,17 +50,17 @@ VersionCommand::~VersionCommand() = default;
 
 Command::ErrorMessages
 VersionCommand::do_process
-(	Config const& p_config,
-	ParsedArguments const& p_args,
-	ostream& p_ordinary_ostream
+(   Config const& p_config,
+    ParsedArguments const& p_args,
+    ostream& p_ordinary_ostream
 )
 {
-	(void)p_args;  // suppress warning re. unused param.
-	p_ordinary_ostream << Info::application_name()
-					   << " version "
-					   << Info::version()
-					   << endl;
-	return ErrorMessages();
+    (void)p_args;  // suppress warning re. unused param.
+    p_ordinary_ostream << Info::application_name()
+                       << " version "
+                       << Info::version()
+                       << endl;
+    return ErrorMessages();
 }
 
 }  // namespace swx

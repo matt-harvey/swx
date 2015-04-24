@@ -34,8 +34,8 @@ class TimeLog;
  * context of \e p_time_log, and returns the expanded sequence of strings.
  */
 std::vector<std::string> expand_placeholders
-(	std::vector<std::string> const& p_components,
-	TimeLog& p_time_log
+(   std::vector<std::string> const& p_components,
+    TimeLog& p_time_log
 );
 
 /**
@@ -43,7 +43,7 @@ std::vector<std::string> expand_placeholders
  * which together explain the usage of placeholders.
  */
 std::vector<std::string> placeholder_help
-(	std::string::size_type p_left_column_width
+(   std::string::size_type p_left_column_width
 );
 
 }  // namespace swx

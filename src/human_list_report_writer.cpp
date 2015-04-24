@@ -39,10 +39,10 @@ namespace swx
 {
 
 HumanListReportWriter::HumanListReportWriter
-(	vector<Stint> const& p_stints,
-	Options const& p_options
+(   vector<Stint> const& p_stints,
+    Options const& p_options
 ):
-	ListReportWriter(p_stints, p_options)
+    ListReportWriter(p_stints, p_options)
 {
 }
 
@@ -51,27 +51,27 @@ HumanListReportWriter::~HumanListReportWriter() = default;
 void
 HumanListReportWriter::do_process_stint(ostream& p_os, Stint const& p_stint)
 {
-	auto const activity = p_stint.activity();
-	if (activity.empty())
-	{
-		p_os << endl;
-	}
-	else
-	{
-		StreamFlagGuard guard(p_os);
-		auto const interval = p_stint.interval();
-		p_os << time_point_to_stamp(interval.beginning(), time_format(), formatted_buf_len()) << "  ";
-		p_os << time_point_to_stamp(interval.ending(), time_format(), formatted_buf_len()) << "  ";
-		p_os << fixed
-		     << setprecision(output_precision())
-			 << right
-		     << setw(output_width())
-			 << round_hours(interval)
-			 << "  ";
-		guard.reset();
-		p_os << p_stint.activity() << endl;
-	}
-	return;
+    auto const activity = p_stint.activity();
+    if (activity.empty())
+    {
+        p_os << endl;
+    }
+    else
+    {
+        StreamFlagGuard guard(p_os);
+        auto const interval = p_stint.interval();
+        p_os << time_point_to_stamp(interval.beginning(), time_format(), formatted_buf_len()) << "  ";
+        p_os << time_point_to_stamp(interval.ending(), time_format(), formatted_buf_len()) << "  ";
+        p_os << fixed
+             << setprecision(output_precision())
+             << right
+             << setw(output_width())
+             << round_hours(interval)
+             << "  ";
+        guard.reset();
+        p_os << p_stint.activity() << endl;
+    }
+    return;
 }
 
 }  // namespace swx

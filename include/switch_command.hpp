@@ -37,26 +37,26 @@ class SwitchCommand: public RecordingCommand
 {
 // special member functions
 public:
-	explicit SwitchCommand
-	(	std::string const& p_command_word,
-		std::vector<std::string> const& p_aliases,
-		TimeLog& p_time_log
-	);
-	SwitchCommand(SwitchCommand const& rhs) = delete;
-	SwitchCommand(SwitchCommand&& rhs) = delete;
-	SwitchCommand& operator=(SwitchCommand const& rhs) = delete;
-	SwitchCommand& operator=(SwitchCommand&& rhs) = delete;
-	virtual ~SwitchCommand();
+    explicit SwitchCommand
+    (   std::string const& p_command_word,
+        std::vector<std::string> const& p_aliases,
+        TimeLog& p_time_log
+    );
+    SwitchCommand(SwitchCommand const& rhs) = delete;
+    SwitchCommand(SwitchCommand&& rhs) = delete;
+    SwitchCommand& operator=(SwitchCommand const& rhs) = delete;
+    SwitchCommand& operator=(SwitchCommand&& rhs) = delete;
+    virtual ~SwitchCommand();
 
 // inherited virtual functions
 private:
-	virtual ErrorMessages do_process
-	(	Config const& p_config,
-		ParsedArguments const& p_args,
-		std::ostream& p_ordinary_ostream
-	) override;
+    virtual ErrorMessages do_process
+    (   Config const& p_config,
+        ParsedArguments const& p_args,
+        std::ostream& p_ordinary_ostream
+    ) override;
 
-	virtual bool does_support_placeholders() const override;
+    virtual bool does_support_placeholders() const override;
 
 };  // class SwitchCommand
 

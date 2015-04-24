@@ -41,60 +41,60 @@ namespace swx
 {
 
 SummaryReportWriter::SummaryReportWriter
-(	vector<Stint> const& p_stints,
-	Options const& p_options
+(   vector<Stint> const& p_stints,
+    Options const& p_options
 ):
-	ReportWriter(p_stints, p_options)
+    ReportWriter(p_stints, p_options)
 {
-	assert (m_activity_stats_map.empty());
+    assert (m_activity_stats_map.empty());
 }
 
 SummaryReportWriter::~SummaryReportWriter() = default;
 
 void
 SummaryReportWriter::do_preprocess_stints
-(	ostream& p_os,
-	vector<Stint> const& p_stints
+(   ostream& p_os,
+    vector<Stint> const& p_stints
 )
 {
-	(void)p_os; (void)p_stints;  // silence compiler warnings re. unused params.
-	assert (m_activity_stats_map.empty());
-	return;
+    (void)p_os; (void)p_stints;  // silence compiler warnings re. unused params.
+    assert (m_activity_stats_map.empty());
+    return;
 }
 
 void
 SummaryReportWriter::do_process_stint(std::ostream& p_os, Stint const& p_stint)
 {
-	(void)p_os;  // silence compiler warning re. unused param.
-	auto const interval = p_stint.interval();
-	unsigned long long const seconds = interval.duration().count();
-	auto const& activity = p_stint.activity();
-	if (!activity.empty())
-	{
-		auto const it = m_activity_stats_map.find(activity);
-		ActivityStats const info(seconds, interval.beginning(), interval.ending());
-		if (it == m_activity_stats_map.end())
-		{
-			m_activity_stats_map.insert(make_pair(activity, info));
-		}
-		else
-		{
-			it->second += info;
-		}
-	}
-	return;
+    (void)p_os;  // silence compiler warning re. unused param.
+    auto const interval = p_stint.interval();
+    unsigned long long const seconds = interval.duration().count();
+    auto const& activity = p_stint.activity();
+    if (!activity.empty())
+    {
+        auto const it = m_activity_stats_map.find(activity);
+        ActivityStats const info(seconds, interval.beginning(), interval.ending());
+        if (it == m_activity_stats_map.end())
+        {
+            m_activity_stats_map.insert(make_pair(activity, info));
+        }
+        else
+        {
+            it->second += info;
+        }
+    }
+    return;
 }
 
 void
 SummaryReportWriter::do_postprocess_stints
-(	ostream& p_os,
-	vector<Stint> const& p_stints
+(   ostream& p_os,
+    vector<Stint> const& p_stints
 )
 {
-	(void)p_stints;  // silence compiler warning re. unused param.
-	do_write_summary(p_os, m_activity_stats_map);
-	m_activity_stats_map.clear();  // hygienic even if unnecessary
-	return;
+    (void)p_stints;  // silence compiler warning re. unused param.
+    do_write_summary(p_os, m_activity_stats_map);
+    m_activity_stats_map.clear();  // hygienic even if unnecessary
+    return;
 }
 
 }  // namespace swx

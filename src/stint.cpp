@@ -44,21 +44,21 @@ namespace swx
 {
 
 Stint::Stint(string const& p_activity, Interval const& p_interval):
-	m_activity(p_activity),
-	m_interval(p_interval)
+    m_activity(p_activity),
+    m_interval(p_interval)
 {
 }
 
 string const&
 Stint::activity() const
 {
-	return m_activity;
+    return m_activity;
 }
 
 Interval
 Stint::interval() const
 {
-	return m_interval;
+    return m_interval;
 }
 
 }  // namespace swx

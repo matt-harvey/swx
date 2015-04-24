@@ -32,39 +32,39 @@ namespace swx
 string
 trim(string const& p_string)
 {
-	auto it = p_string.begin();
-	for ( ; it != p_string.end() && isspace(*it); ++it)
-	{
-	}
-	string ret(it, p_string.end());
-	it = ret.end();
-	if (!ret.empty()) --it;
-	string::size_type num_to_pop = 0;
-	for ( ; it >= p_string.begin() && isspace(*it); --it, ++num_to_pop)
-	{
-	}
-	assert (num_to_pop <= ret.size());
-	ret.resize(ret.size() - num_to_pop);
-	return ret;
+    auto it = p_string.begin();
+    for ( ; it != p_string.end() && isspace(*it); ++it)
+    {
+    }
+    string ret(it, p_string.end());
+    it = ret.end();
+    if (!ret.empty()) --it;
+    string::size_type num_to_pop = 0;
+    for ( ; it >= p_string.begin() && isspace(*it); --it, ++num_to_pop)
+    {
+    }
+    assert (num_to_pop <= ret.size());
+    ret.resize(ret.size() - num_to_pop);
+    return ret;
 }
 
 vector<string>
 split(string const& p_str, char p_delimiter)
 {
-	if (p_str.empty())
-	{
-		return vector<string>{};
-	}
-	vector<string> ret;
-	stringstream ss(p_str);
-	enable_exceptions(ss);
-	string word;
-	while (!ss.eof())
-	{
-		getline(ss, word, p_delimiter);
-		ret.push_back(word);
-	}
-	return ret;
+    if (p_str.empty())
+    {
+        return vector<string>{};
+    }
+    vector<string> ret;
+    stringstream ss(p_str);
+    enable_exceptions(ss);
+    string word;
+    while (!ss.eof())
+    {
+        getline(ss, word, p_delimiter);
+        ret.push_back(word);
+    }
+    return ret;
 }
 
 }  // namespace swx

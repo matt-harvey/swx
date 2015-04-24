@@ -38,53 +38,53 @@ class ReportingCommand: public Command
 {
 // special member functions
 public:
-	ReportingCommand
-	(	std::string const& p_command_word,
-		std::vector<std::string> const& p_aliases,
-		std::string const& p_usage_summary,
-		std::vector<HelpLine> const& p_help_lines,
-		TimeLog& p_time_log
-	);
-	ReportingCommand(ReportingCommand const& rhs) = delete;
-	ReportingCommand(ReportingCommand&& rhs) = delete;
-	ReportingCommand& operator=(ReportingCommand const& rhs) = delete;
-	ReportingCommand& operator=(ReportingCommand&& rhs) = delete;
-	virtual ~ReportingCommand();
+    ReportingCommand
+    (   std::string const& p_command_word,
+        std::vector<std::string> const& p_aliases,
+        std::string const& p_usage_summary,
+        std::vector<HelpLine> const& p_help_lines,
+        TimeLog& p_time_log
+    );
+    ReportingCommand(ReportingCommand const& rhs) = delete;
+    ReportingCommand(ReportingCommand&& rhs) = delete;
+    ReportingCommand& operator=(ReportingCommand const& rhs) = delete;
+    ReportingCommand& operator=(ReportingCommand&& rhs) = delete;
+    virtual ~ReportingCommand();
 
 // ordinary member functions
 protected:
-	
-	/**
-	 * Pass non-null pointers to \e p_begin and \e p_end to filter by
-	 * date range, or pass null pointers to ignore a particular filter.
-	 * Caller retains ownership of pointed-to memory.
-	 *
-	 * Pass a non-empty vector to \e p_activity_args to filter by
-	 * activity. This parameter will have any placeholders expanded before
-	 * further processing.
-	 *
-	 * Pass a string of single-character command-line options to \e p_flags.
-	 */
-	std::ostream& print_report
-	(	std::ostream& p_os,
-		Config const& p_config,
-		Flags const& p_flags,
-		std::vector<std::string> const& p_activity_args =
-			std::vector<std::string>(),
-		TimePoint const* p_begin = nullptr,
-		TimePoint const* p_end = nullptr
-	);
+    
+    /**
+     * Pass non-null pointers to \e p_begin and \e p_end to filter by
+     * date range, or pass null pointers to ignore a particular filter.
+     * Caller retains ownership of pointed-to memory.
+     *
+     * Pass a non-empty vector to \e p_activity_args to filter by
+     * activity. This parameter will have any placeholders expanded before
+     * further processing.
+     *
+     * Pass a string of single-character command-line options to \e p_flags.
+     */
+    std::ostream& print_report
+    (   std::ostream& p_os,
+        Config const& p_config,
+        Flags const& p_flags,
+        std::vector<std::string> const& p_activity_args =
+            std::vector<std::string>(),
+        TimePoint const* p_begin = nullptr,
+        TimePoint const* p_end = nullptr
+    );
 
-	std::string const& time_format() const;
+    std::string const& time_format() const;
 
 // inherited virtual functions
 private:
-	virtual std::string do_get_category() const override;
-	virtual bool does_support_placeholders() const override;
+    virtual std::string do_get_category() const override;
+    virtual bool does_support_placeholders() const override;
 
 // member variables
 private:
-	TimeLog& m_time_log;
+    TimeLog& m_time_log;
 
 };  // class ReportingCommand
 

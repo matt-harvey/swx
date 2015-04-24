@@ -22,8 +22,8 @@ namespace swx
 
 enum class ReportFormat
 {
-	human,
-	csv
+    human,
+    csv
 };
 
 }  // namespace swx

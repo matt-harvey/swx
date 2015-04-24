@@ -29,20 +29,20 @@ class CsvListReportWriter: public ListReportWriter
 {
 // special member functions
 public:
-	CsvListReportWriter
-	(	std::vector<Stint> const& p_stints,
-		Options const& p_options
-	);
-	CsvListReportWriter(CsvListReportWriter const& rhs) = delete;
-	CsvListReportWriter(CsvListReportWriter&& rhs) = delete;
-	CsvListReportWriter& operator=(CsvListReportWriter const& rhs) = delete;
-	CsvListReportWriter& operator=(CsvListReportWriter&& rhs) = delete;
-	virtual ~CsvListReportWriter();
+    CsvListReportWriter
+    (   std::vector<Stint> const& p_stints,
+        Options const& p_options
+    );
+    CsvListReportWriter(CsvListReportWriter const& rhs) = delete;
+    CsvListReportWriter(CsvListReportWriter&& rhs) = delete;
+    CsvListReportWriter& operator=(CsvListReportWriter const& rhs) = delete;
+    CsvListReportWriter& operator=(CsvListReportWriter&& rhs) = delete;
+    virtual ~CsvListReportWriter();
 
 // inherited virtual member functions
 private:
-	virtual void
-		do_process_stint (std::ostream& p_os, Stint const& p_stint) override;
+    virtual void
+        do_process_stint (std::ostream& p_os, Stint const& p_stint) override;
 
 };  // class CsvListReportWriter
 

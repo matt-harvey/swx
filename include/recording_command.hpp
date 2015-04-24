@@ -30,31 +30,31 @@ class RecordingCommand: public Command
 {
 // special member functions
 public:
-	RecordingCommand
-	(	std::string const& p_command_word,
-		std::vector<std::string> const& p_aliases,
-		std::string const& p_usage_summary,
-		std::vector<HelpLine> const& p_help_lines,
-		bool p_accept_ordinary_args,
-		TimeLog& p_time_log
-	);
-	RecordingCommand(RecordingCommand const& rhs) = delete;
-	RecordingCommand(RecordingCommand&& rhs) = delete;
-	RecordingCommand& operator=(RecordingCommand const& rhs) = delete;
-	RecordingCommand& operator=(RecordingCommand&& rhs) = delete;
-	virtual ~RecordingCommand();
+    RecordingCommand
+    (   std::string const& p_command_word,
+        std::vector<std::string> const& p_aliases,
+        std::string const& p_usage_summary,
+        std::vector<HelpLine> const& p_help_lines,
+        bool p_accept_ordinary_args,
+        TimeLog& p_time_log
+    );
+    RecordingCommand(RecordingCommand const& rhs) = delete;
+    RecordingCommand(RecordingCommand&& rhs) = delete;
+    RecordingCommand& operator=(RecordingCommand const& rhs) = delete;
+    RecordingCommand& operator=(RecordingCommand&& rhs) = delete;
+    virtual ~RecordingCommand();
 
 // ordinary member functions
 protected:
-	TimeLog& time_log();
+    TimeLog& time_log();
 
 // inherited virtual functions
 protected:
-	virtual std::string do_get_category() const override;
+    virtual std::string do_get_category() const override;
 
 // member variables
 private:
-	TimeLog& m_time_log;	
+    TimeLog& m_time_log;    
 
 };  // class RecordingCommand
 

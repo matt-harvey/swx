@@ -33,43 +33,43 @@ class SummaryReportWriter: public ReportWriter
 
 // special member functions
 public:
-	SummaryReportWriter
-	(	std::vector<Stint> const& p_stints,
-		Options const& p_options
-	);
-	SummaryReportWriter(SummaryReportWriter const& rhs) = delete;
-	SummaryReportWriter(SummaryReportWriter&& rhs) = delete;
-	SummaryReportWriter& operator=(SummaryReportWriter const& rhs) = delete;
-	SummaryReportWriter& operator=(SummaryReportWriter&& rhs) = delete;
-	virtual ~SummaryReportWriter();
+    SummaryReportWriter
+    (   std::vector<Stint> const& p_stints,
+        Options const& p_options
+    );
+    SummaryReportWriter(SummaryReportWriter const& rhs) = delete;
+    SummaryReportWriter(SummaryReportWriter&& rhs) = delete;
+    SummaryReportWriter& operator=(SummaryReportWriter const& rhs) = delete;
+    SummaryReportWriter& operator=(SummaryReportWriter&& rhs) = delete;
+    virtual ~SummaryReportWriter();
 
 // inherited virtual member functions
 private:
-	virtual void do_preprocess_stints
-	(	std::ostream& p_os,
-		std::vector<Stint> const& p_stints
-	) override;
+    virtual void do_preprocess_stints
+    (   std::ostream& p_os,
+        std::vector<Stint> const& p_stints
+    ) override;
 
-	virtual void do_process_stint
-	(	std::ostream& p_os,
-		Stint const& p_stint
-	) override;
+    virtual void do_process_stint
+    (   std::ostream& p_os,
+        Stint const& p_stint
+    ) override;
 
-	virtual void do_postprocess_stints
-	(	std::ostream& p_os,
-		std::vector<Stint> const& p_stints
-	) override;
+    virtual void do_postprocess_stints
+    (   std::ostream& p_os,
+        std::vector<Stint> const& p_stints
+    ) override;
 
 // other virtual member functions
 private:
-	virtual void do_write_summary
-	(	std::ostream& p_os,
-		std::map<std::string, ActivityStats> const& p_activity_stats_map
-	) = 0;
+    virtual void do_write_summary
+    (   std::ostream& p_os,
+        std::map<std::string, ActivityStats> const& p_activity_stats_map
+    ) = 0;
 
 // member variables
 private:
-	std::map<std::string, ActivityStats> m_activity_stats_map;
+    std::map<std::string, ActivityStats> m_activity_stats_map;
 
 };  // class SummaryReportWriter
 

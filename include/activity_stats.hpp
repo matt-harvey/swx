@@ -35,14 +35,14 @@ namespace swx
  */
 struct ActivityStats
 {
-	explicit ActivityStats
-	(	unsigned long long p_seconds = 0,
-		TimePoint const& p_beginning = TimePoint::max(),
-		TimePoint const& p_ending = TimePoint::min()
-	);
-	unsigned long long seconds;
-	TimePoint beginning;
-	TimePoint ending;
+    explicit ActivityStats
+    (   unsigned long long p_seconds = 0,
+        TimePoint const& p_beginning = TimePoint::max(),
+        TimePoint const& p_ending = TimePoint::min()
+    );
+    unsigned long long seconds;
+    TimePoint beginning;
+    TimePoint ending;
 
 };  // struct ActivityStats
 

@@ -32,29 +32,29 @@ class CsvSummaryReportWriter: public SummaryReportWriter
 {
 // special member functions
 public:
-	CsvSummaryReportWriter
-	(	std::vector<Stint> const& p_stints,
-		Options const& p_options,
-		bool p_include_beginning,
-		bool p_include_ending
-	);
-	CsvSummaryReportWriter(CsvSummaryReportWriter const& rhs) = delete;
-	CsvSummaryReportWriter(CsvSummaryReportWriter&& rhs) = delete;
-	CsvSummaryReportWriter& operator=(CsvSummaryReportWriter const& rhs) = delete;
-	CsvSummaryReportWriter& operator=(CsvSummaryReportWriter&& rhs) = delete;
-	virtual ~CsvSummaryReportWriter();
+    CsvSummaryReportWriter
+    (   std::vector<Stint> const& p_stints,
+        Options const& p_options,
+        bool p_include_beginning,
+        bool p_include_ending
+    );
+    CsvSummaryReportWriter(CsvSummaryReportWriter const& rhs) = delete;
+    CsvSummaryReportWriter(CsvSummaryReportWriter&& rhs) = delete;
+    CsvSummaryReportWriter& operator=(CsvSummaryReportWriter const& rhs) = delete;
+    CsvSummaryReportWriter& operator=(CsvSummaryReportWriter&& rhs) = delete;
+    virtual ~CsvSummaryReportWriter();
 
 // inherited virtual member functions
 private:
-	virtual void do_write_summary
-	(	std::ostream& p_os,
-		std::map<std::string, ActivityStats> const& p_activity_stats_map
-	) override;
+    virtual void do_write_summary
+    (   std::ostream& p_os,
+        std::map<std::string, ActivityStats> const& p_activity_stats_map
+    ) override;
 
 // member variables
 private:
-	bool const m_include_beginning;
-	bool const m_include_ending;
+    bool const m_include_beginning;
+    bool const m_include_ending;
 
 };  // class CsvSummaryReportWriter
 

@@ -35,24 +35,24 @@ class DayCommand: public ReportingCommand
 {
 // special member functions
 public:
-	DayCommand
-	(	std::string const& p_command_word,
-		std::vector<std::string> const& p_aliases,
-		TimeLog& p_time_log
-	);
-	DayCommand(DayCommand const& rhs) = delete;
-	DayCommand(DayCommand&& rhs) = delete;
-	DayCommand& operator=(DayCommand const& rhs) = delete;
-	DayCommand& operator=(DayCommand&& rhs) = delete;
-	virtual ~DayCommand();
+    DayCommand
+    (   std::string const& p_command_word,
+        std::vector<std::string> const& p_aliases,
+        TimeLog& p_time_log
+    );
+    DayCommand(DayCommand const& rhs) = delete;
+    DayCommand(DayCommand&& rhs) = delete;
+    DayCommand& operator=(DayCommand const& rhs) = delete;
+    DayCommand& operator=(DayCommand&& rhs) = delete;
+    virtual ~DayCommand();
 
 // inherited virtual functions
 private:
-	virtual ErrorMessages do_process
-	(	Config const& p_config,
-		ParsedArguments const& p_args,
-		std::ostream& p_ordinary_ostream
-	) override;
+    virtual ErrorMessages do_process
+    (   Config const& p_config,
+        ParsedArguments const& p_args,
+        std::ostream& p_ordinary_ostream
+    ) override;
 
 };  // class DayCommand
 

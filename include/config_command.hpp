@@ -34,23 +34,23 @@ class ConfigCommand: public Command
 {
 // special member functions
 public:
-	ConfigCommand
-	(	std::string const& p_command_word,
-		std::vector<std::string> const& p_aliases
-	);
-	ConfigCommand(ConfigCommand const& rhs) = delete;
-	ConfigCommand(ConfigCommand&& rhs) = delete;
-	ConfigCommand& operator=(ConfigCommand const& rhs) = delete;
-	ConfigCommand& operator=(ConfigCommand&& rhs) = delete;
-	virtual ~ConfigCommand();
+    ConfigCommand
+    (   std::string const& p_command_word,
+        std::vector<std::string> const& p_aliases
+    );
+    ConfigCommand(ConfigCommand const& rhs) = delete;
+    ConfigCommand(ConfigCommand&& rhs) = delete;
+    ConfigCommand& operator=(ConfigCommand const& rhs) = delete;
+    ConfigCommand& operator=(ConfigCommand&& rhs) = delete;
+    virtual ~ConfigCommand();
 
 // inherited virtual functions
 private:
-	virtual ErrorMessages do_process
-	(	Config const& p_config,
-		ParsedArguments const& p_args,
-		std::ostream& p_ordinary_ostream
-	) override;
+    virtual ErrorMessages do_process
+    (   Config const& p_config,
+        ParsedArguments const& p_args,
+        std::ostream& p_ordinary_ostream
+    ) override;
 
 };  // class ConfigCommand
 

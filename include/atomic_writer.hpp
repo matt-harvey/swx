@@ -37,25 +37,25 @@ class AtomicWriter
 {
 // special member functions
 public:
-	explicit AtomicWriter(std::string const& p_filepath);
-	AtomicWriter(AtomicWriter const& rhs) = delete;
-	AtomicWriter(AtomicWriter&& rhs) = delete;
-	AtomicWriter& operator=(AtomicWriter const& rhs) = delete;
-	AtomicWriter& operator=(AtomicWriter&& rhs) = delete;
-	~AtomicWriter();
+    explicit AtomicWriter(std::string const& p_filepath);
+    AtomicWriter(AtomicWriter const& rhs) = delete;
+    AtomicWriter(AtomicWriter&& rhs) = delete;
+    AtomicWriter& operator=(AtomicWriter const& rhs) = delete;
+    AtomicWriter& operator=(AtomicWriter&& rhs) = delete;
+    ~AtomicWriter();
 
 // ordinary member functions
 public:
-	void append(std::string const& p_str);
-	void append_line(std::string const& p_str);
-	void append_line();
-	void commit();
+    void append(std::string const& p_str);
+    void append_line(std::string const& p_str);
+    void append_line();
+    void commit();
 
 // member variables
 private:
-	std::FILE* m_tempfile;
-	std::string const m_orig_filepath;
-	std::string m_temp_filepath;
+    std::FILE* m_tempfile;
+    std::string const m_orig_filepath;
+    std::string m_temp_filepath;
 
 };  // class AtomicWriter
 

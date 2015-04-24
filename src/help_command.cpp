@@ -39,20 +39,20 @@ namespace swx
 {
 
 HelpCommand::HelpCommand
-(	string const& p_command_word,
-	vector<string> const& p_aliases,
-	CommandManager const& p_command_manager
+(   string const& p_command_word,
+    vector<string> const& p_aliases,
+    CommandManager const& p_command_manager
 ):
-	Command
-	(	p_command_word,
-		p_aliases,
-		"Print usage information",
-		vector<HelpLine>
-		{	HelpLine("Print general usage information"),
-			HelpLine("Print usage information for COMMAND", "<COMMAND>")
-		}
-	),
-	m_command_manager(p_command_manager)
+    Command
+    (   p_command_word,
+        p_aliases,
+        "Print usage information",
+        vector<HelpLine>
+        {   HelpLine("Print general usage information"),
+            HelpLine("Print usage information for COMMAND", "<COMMAND>")
+        }
+    ),
+    m_command_manager(p_command_manager)
 {
 }
 
@@ -60,38 +60,38 @@ HelpCommand::~HelpCommand() = default;
 
 Command::ErrorMessages
 HelpCommand::do_process
-(	Config const& p_config,
-	ParsedArguments const& p_args,
-	ostream& p_ordinary_ostream
+(   Config const& p_config,
+    ParsedArguments const& p_args,
+    ostream& p_ordinary_ostream
 )
 {
-	(void)p_config;  // silence compiler re. unused param
-	ErrorMessages ret;
-	Arguments const args = p_args.ordinary_args();
-	if (args.empty())
-	{
-		p_ordinary_ostream << m_command_manager.help_information();	
-	}
-	else if (args.size() == 1)
-	{
-		try
-		{
-			p_ordinary_ostream << m_command_manager.help_information(args[0])
-							   << endl;			
-		}
-		catch (runtime_error&)
-		{
-			ret.push_back
-			(	CommandManager::error_message_for_unrecognized_command(args[0])
-			);
-		}
-	}
-	else
-	{
-		assert (args.size() > 1);
-		ret.push_back("Too many arguments passed to this command.");
-	}
-	return ret;	
+    (void)p_config;  // silence compiler re. unused param
+    ErrorMessages ret;
+    Arguments const args = p_args.ordinary_args();
+    if (args.empty())
+    {
+        p_ordinary_ostream << m_command_manager.help_information();    
+    }
+    else if (args.size() == 1)
+    {
+        try
+        {
+            p_ordinary_ostream << m_command_manager.help_information(args[0])
+                               << endl;            
+        }
+        catch (runtime_error&)
+        {
+            ret.push_back
+            (   CommandManager::error_message_for_unrecognized_command(args[0])
+            );
+        }
+    }
+    else
+    {
+        assert (args.size() > 1);
+        ret.push_back("Too many arguments passed to this command.");
+    }
+    return ret;    
 }
 
 }  // namespace swx

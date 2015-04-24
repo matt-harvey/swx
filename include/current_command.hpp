@@ -37,29 +37,29 @@ class CurrentCommand: public Command
 {
 // special member functions
 public:
-	CurrentCommand
-	(	std::string const& p_command_word,
-		std::vector<std::string> const& p_aliases,
-		TimeLog& p_time_log
-	);
-	CurrentCommand(CurrentCommand const& rhs) = delete;
-	CurrentCommand(CurrentCommand&& rhs) = delete;
-	CurrentCommand& operator=(CurrentCommand const& rhs) = delete;
-	CurrentCommand& operator=(CurrentCommand&& rhs) = delete;
-	virtual ~CurrentCommand();
+    CurrentCommand
+    (   std::string const& p_command_word,
+        std::vector<std::string> const& p_aliases,
+        TimeLog& p_time_log
+    );
+    CurrentCommand(CurrentCommand const& rhs) = delete;
+    CurrentCommand(CurrentCommand&& rhs) = delete;
+    CurrentCommand& operator=(CurrentCommand const& rhs) = delete;
+    CurrentCommand& operator=(CurrentCommand&& rhs) = delete;
+    virtual ~CurrentCommand();
 
 // inherited virtual functions
 private:
-	virtual ErrorMessages do_process
-	(	Config const& p_config,
-		ParsedArguments const& p_args,
-		std::ostream& p_ordinary_ostream
-	) override;
-	
+    virtual ErrorMessages do_process
+    (   Config const& p_config,
+        ParsedArguments const& p_args,
+        std::ostream& p_ordinary_ostream
+    ) override;
+    
 
 // member variables
 private:
-	TimeLog& m_time_log;
+    TimeLog& m_time_log;
 
 };  // class CurrentCommand
 

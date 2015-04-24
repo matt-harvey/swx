@@ -42,17 +42,17 @@ template <typename StringIter>
 std::string
 squish(StringIter p_beg, StringIter const& p_end)
 {
-	std::ostringstream oss;
-	enable_exceptions(oss);
-	if (p_beg != p_end)
-	{
-		oss << trim(*p_beg);
-		for (++p_beg; p_beg != p_end; ++p_beg)
-		{
-			oss << ' ' << trim(*p_beg);
-		}
-	}
-	return trim(oss.str());
+    std::ostringstream oss;
+    enable_exceptions(oss);
+    if (p_beg != p_end)
+    {
+        oss << trim(*p_beg);
+        for (++p_beg; p_beg != p_end; ++p_beg)
+        {
+            oss << ' ' << trim(*p_beg);
+        }
+    }
+    return trim(oss.str());
 }
 
 }  // namespace swx

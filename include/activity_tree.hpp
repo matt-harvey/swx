@@ -37,53 +37,53 @@ class ActivityTree
 {
 // nested types
 private:
-	struct ActivityData
-	{
-		explicit ActivityData
-		(	ActivityStats const& p_stats = ActivityStats(),
-			std::set<ActivityNode> const& p_children = std::set<ActivityNode>()
-		);
-		ActivityStats stats;
-		std::set<ActivityNode> children;
-	};
+    struct ActivityData
+    {
+        explicit ActivityData
+        (   ActivityStats const& p_stats = ActivityStats(),
+            std::set<ActivityNode> const& p_children = std::set<ActivityNode>()
+        );
+        ActivityStats stats;
+        std::set<ActivityNode> children;
+    };
 
 public:
-	typedef std::function
-	<	void
-		(	std::ostream& p_os,
-			unsigned int p_depth,
-			std::string const& p_node_label,
-			ActivityStats const& p_stats
-		)
-	>
-	PrintNode;
+    typedef std::function
+    <    void
+        (   std::ostream& p_os,
+            unsigned int p_depth,
+            std::string const& p_node_label,
+            ActivityStats const& p_stats
+        )
+    >
+    PrintNode;
 
 
 // special member functions
 public:
-	explicit ActivityTree(std::map<std::string, ActivityStats> const& p_stats);
-	ActivityTree(ActivityTree const& rhs) = delete;
-	ActivityTree(ActivityTree&& rhs) = delete;
-	ActivityTree& operator=(ActivityTree const& rhs) = delete;
-	ActivityTree& operator=(ActivityTree&& rhs) = delete;
-	~ActivityTree() = default;
+    explicit ActivityTree(std::map<std::string, ActivityStats> const& p_stats);
+    ActivityTree(ActivityTree const& rhs) = delete;
+    ActivityTree(ActivityTree&& rhs) = delete;
+    ActivityTree& operator=(ActivityTree const& rhs) = delete;
+    ActivityTree& operator=(ActivityTree&& rhs) = delete;
+    ~ActivityTree() = default;
 
 // ordinary member functions
 private:
-	void print
-	(	std::ostream& p_os,
-		ActivityNode const& p_node,
-		std::string const& p_label,
-		unsigned int p_depth,
-		PrintNode const& p_print_node
-	) const;
+    void print
+    (   std::ostream& p_os,
+        ActivityNode const& p_node,
+        std::string const& p_label,
+        unsigned int p_depth,
+        PrintNode const& p_print_node
+    ) const;
 public:
-	void print(std::ostream& p_os, PrintNode const& p_print_node) const;
+    void print(std::ostream& p_os, PrintNode const& p_print_node) const;
 
 // member variables
 private:
-	ActivityNode m_root;
-	std::map<ActivityNode, ActivityData> m_map;
+    ActivityNode m_root;
+    std::map<ActivityNode, ActivityData> m_map;
 
 };  // class ActivityTree
 

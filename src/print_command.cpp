@@ -33,20 +33,20 @@ namespace swx
 {
 
 PrintCommand::PrintCommand
-(	string const& p_command_word,
-	vector<string> const& p_aliases,
-	TimeLog& p_time_log
+(   string const& p_command_word,
+    vector<string> const& p_aliases,
+    TimeLog& p_time_log
 ):
-	ReportingCommand
-	(	p_command_word,
-		p_aliases,
-		"Print summary of activities",
-		vector<HelpLine>
-		{	HelpLine("Print summary of time spent on all activities"),
-			HelpLine("Print summary of time spent on ACTIVITY", "<ACTIVITY>")
-		},
-		p_time_log
-	)
+    ReportingCommand
+    (   p_command_word,
+        p_aliases,
+        "Print summary of activities",
+        vector<HelpLine>
+        {   HelpLine("Print summary of time spent on all activities"),
+            HelpLine("Print summary of time spent on ACTIVITY", "<ACTIVITY>")
+        },
+        p_time_log
+    )
 {
 }
 
@@ -54,18 +54,18 @@ PrintCommand::~PrintCommand() = default;
 
 Command::ErrorMessages
 PrintCommand::do_process
-(	Config const& p_config,
-	ParsedArguments const& p_args,
-	ostream& p_ordinary_ostream
+(   Config const& p_config,
+    ParsedArguments const& p_args,
+    ostream& p_ordinary_ostream
 )
 {
-	print_report
-	(	p_ordinary_ostream,
-		p_config,
-		p_args.flags(),
-		p_args.ordinary_args()
-	);
-	return ErrorMessages();
+    print_report
+    (   p_ordinary_ostream,
+        p_config,
+        p_args.flags(),
+        p_args.ordinary_args()
+    );
+    return ErrorMessages();
 }
 
 }  // namespace swx

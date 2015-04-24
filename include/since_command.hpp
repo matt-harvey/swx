@@ -36,24 +36,24 @@ class SinceCommand: public ReportingCommand
 {
 // special member functions
 public:
-	SinceCommand
-	(	std::string const& p_command_word,
-		std::vector<std::string> const& p_aliases,
-		TimeLog& p_time_log
-	);
-	SinceCommand(SinceCommand const& rhs) = delete;
-	SinceCommand(SinceCommand&& rhs) = delete;
-	SinceCommand& operator=(SinceCommand const& rhs) = delete;
-	SinceCommand& operator=(SinceCommand&& rhs) = delete;
-	virtual ~SinceCommand();
+    SinceCommand
+    (   std::string const& p_command_word,
+        std::vector<std::string> const& p_aliases,
+        TimeLog& p_time_log
+    );
+    SinceCommand(SinceCommand const& rhs) = delete;
+    SinceCommand(SinceCommand&& rhs) = delete;
+    SinceCommand& operator=(SinceCommand const& rhs) = delete;
+    SinceCommand& operator=(SinceCommand&& rhs) = delete;
+    virtual ~SinceCommand();
 
 // inherited virtual functions
 private:
-	virtual ErrorMessages do_process
-	(	Config const& p_config,
-		ParsedArguments const& p_args,
-		std::ostream& p_ordinary_ostream
-	) override;
+    virtual ErrorMessages do_process
+    (   Config const& p_config,
+        ParsedArguments const& p_args,
+        std::ostream& p_ordinary_ostream
+    ) override;
 
 };  // class SinceCommand
 

@@ -35,24 +35,24 @@ class UntilCommand: public ReportingCommand
 {
 // special member functions
 public:
-	UntilCommand
-	(	std::string const& p_command_word,
-		std::vector<std::string> const& p_aliases,
-		TimeLog& p_time_log
-	);
-	UntilCommand(UntilCommand const& rhs) = delete;
-	UntilCommand(UntilCommand&& rhs) = delete;
-	UntilCommand& operator=(UntilCommand const& rhs) = delete;
-	UntilCommand& operator=(UntilCommand&& rhs) = delete;
-	virtual ~UntilCommand();
+    UntilCommand
+    (   std::string const& p_command_word,
+        std::vector<std::string> const& p_aliases,
+        TimeLog& p_time_log
+    );
+    UntilCommand(UntilCommand const& rhs) = delete;
+    UntilCommand(UntilCommand&& rhs) = delete;
+    UntilCommand& operator=(UntilCommand const& rhs) = delete;
+    UntilCommand& operator=(UntilCommand&& rhs) = delete;
+    virtual ~UntilCommand();
 
 // inherited virtual functions
 private:
-	virtual ErrorMessages do_process
-	(	Config const& p_config,
-		ParsedArguments const& p_args,
-		std::ostream& p_ordinary_ostream
-	) override;
+    virtual ErrorMessages do_process
+    (   Config const& p_config,
+        ParsedArguments const& p_args,
+        std::ostream& p_ordinary_ostream
+    ) override;
 
 };  // class UntilCommand
 

@@ -25,10 +25,10 @@ namespace swx
 {
 
 ListReportWriter::ListReportWriter
-(	vector<Stint> const& p_stints,
-	Options const& p_options
+(   vector<Stint> const& p_stints,
+    Options const& p_options
 ):
-	ReportWriter(p_stints, p_options)
+    ReportWriter(p_stints, p_options)
 {
 }
 

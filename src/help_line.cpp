@@ -23,24 +23,24 @@ namespace swx
 {
 
 HelpLine::HelpLine
-(	std::string const& p_usage_descriptor,
-	std::string const& p_args_descriptor
+(   std::string const& p_usage_descriptor,
+    std::string const& p_args_descriptor
 ):
-	m_usage_descriptor(p_usage_descriptor),
-	m_args_descriptor(p_args_descriptor)
+    m_usage_descriptor(p_usage_descriptor),
+    m_args_descriptor(p_args_descriptor)
 {
 }
 
 string
 HelpLine::usage_descriptor() const
 {
-	return m_usage_descriptor;
+    return m_usage_descriptor;
 }
 
 string
 HelpLine::args_descriptor() const
 {
-	return m_args_descriptor;
+    return m_args_descriptor;
 }
 
 }  // namespace swx

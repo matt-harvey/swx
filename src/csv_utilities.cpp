@@ -23,19 +23,19 @@ using std::string;
 
 namespace swx
 {
-	
+    
 template <>
 void
 output_csv_cell(ostream& p_os, string const& p_str)
 {
-	p_os << '"';
-	for (char c: p_str)
-	{
-		if (c == '"') p_os << "\"\"";
-		else p_os << c;
-	}
-	p_os << '"';
-	return;
+    p_os << '"';
+    for (char c: p_str)
+    {
+        if (c == '"') p_os << "\"\"";
+        else p_os << c;
+    }
+    p_os << '"';
+    return;
 }
 
 }  // namespace swx

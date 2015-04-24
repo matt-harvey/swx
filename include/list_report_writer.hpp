@@ -28,15 +28,15 @@ class ListReportWriter: public ReportWriter
 {
 // special member functions
 public:
-	ListReportWriter
-	(	std::vector<Stint> const& p_stints,
-		Options const& p_options
-	);
-	ListReportWriter(ListReportWriter const& rhs) = delete;
-	ListReportWriter(ListReportWriter&& rhs) = delete;
-	ListReportWriter& operator=(ListReportWriter const& rhs) = delete;
-	ListReportWriter& operator=(ListReportWriter&& rhs) = delete;
-	virtual ~ListReportWriter();
+    ListReportWriter
+    (   std::vector<Stint> const& p_stints,
+        Options const& p_options
+    );
+    ListReportWriter(ListReportWriter const& rhs) = delete;
+    ListReportWriter(ListReportWriter&& rhs) = delete;
+    ListReportWriter& operator=(ListReportWriter const& rhs) = delete;
+    ListReportWriter& operator=(ListReportWriter&& rhs) = delete;
+    virtual ~ListReportWriter();
 
 };  // class ListReportWriter
 

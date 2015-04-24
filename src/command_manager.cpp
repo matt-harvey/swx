@@ -68,19 +68,19 @@ namespace swx
 
 namespace
 {
-	string const k_help_command_string("help");
+    string const k_help_command_string("help");
 
 }  // end anonymous namespace
 
 CommandManager::CommandManager(TimeLog& p_time_log): m_time_log(p_time_log)
 {
-	populate_command_map();	
-#	ifndef NDEBUG
-		for (auto const& entry: m_command_map)
-		{
-			assert (entry.second);
-		}
-#	endif
+    populate_command_map();    
+#    ifndef NDEBUG
+        for (auto const& entry: m_command_map)
+        {
+            assert (entry.second);
+        }
+#    endif
 }
 
 CommandManager::~CommandManager() = default;
@@ -88,257 +88,257 @@ CommandManager::~CommandManager() = default;
 void
 CommandManager::populate_command_map()
 {
-	shared_ptr<Command> current_command
-	(	new CurrentCommand("current", {"c"}, m_time_log)
-	);
-	create_command(current_command);
+    shared_ptr<Command> current_command
+    (   new CurrentCommand("current", {"c"}, m_time_log)
+    );
+    create_command(current_command);
 
-	shared_ptr<Command> version_command
-	(	new VersionCommand("version", {})
-	);
-	create_command(version_command);	
-	
-	shared_ptr<Command> help_command
-	(	new HelpCommand(k_help_command_string, {"h"}, *this)
-	);
-	create_command(help_command);
+    shared_ptr<Command> version_command
+    (   new VersionCommand("version", {})
+    );
+    create_command(version_command);    
+    
+    shared_ptr<Command> help_command
+    (   new HelpCommand(k_help_command_string, {"h"}, *this)
+    );
+    create_command(help_command);
 
-	shared_ptr<Command> config_command
-	(	new ConfigCommand("config", {})
-	);
-	create_command(config_command);
+    shared_ptr<Command> config_command
+    (   new ConfigCommand("config", {})
+    );
+    create_command(config_command);
 
-	shared_ptr<Command> edit_command
-	(	new EditCommand("edit", {"e"})
-	);
-	create_command(edit_command);
+    shared_ptr<Command> edit_command
+    (   new EditCommand("edit", {"e"})
+    );
+    create_command(edit_command);
 
-	shared_ptr<Command> switch_command
-	(	new SwitchCommand("switch", {"s"}, m_time_log)
-	);
-	create_command(switch_command);
+    shared_ptr<Command> switch_command
+    (   new SwitchCommand("switch", {"s"}, m_time_log)
+    );
+    create_command(switch_command);
 
-	shared_ptr<Command> resume_command
-	(	new ResumeCommand("resume", {}, m_time_log)
-	);
-	create_command(resume_command);
+    shared_ptr<Command> resume_command
+    (   new ResumeCommand("resume", {}, m_time_log)
+    );
+    create_command(resume_command);
 
-	shared_ptr<Command> print_command
-	(	new PrintCommand("print", {"p"}, m_time_log)
-	);
-	create_command(print_command);
+    shared_ptr<Command> print_command
+    (   new PrintCommand("print", {"p"}, m_time_log)
+    );
+    create_command(print_command);
 
-	shared_ptr<Command> day_command
-	(	new DayCommand("day", {"d"}, m_time_log)
-	);
-	create_command(day_command);
+    shared_ptr<Command> day_command
+    (   new DayCommand("day", {"d"}, m_time_log)
+    );
+    create_command(day_command);
 
-	shared_ptr<Command> since_command
-	(	new SinceCommand("since", {}, m_time_log)
-	);
-	create_command(since_command);
+    shared_ptr<Command> since_command
+    (   new SinceCommand("since", {}, m_time_log)
+    );
+    create_command(since_command);
 
-	shared_ptr<Command> until_command
-	(	new UntilCommand("until", {}, m_time_log)
-	);
-	create_command(until_command);
+    shared_ptr<Command> until_command
+    (   new UntilCommand("until", {}, m_time_log)
+    );
+    create_command(until_command);
 
-	shared_ptr<Command> between_command
-	(	new BetweenCommand("between", {}, m_time_log)
-	);
-	create_command(between_command);
+    shared_ptr<Command> between_command
+    (   new BetweenCommand("between", {}, m_time_log)
+    );
+    create_command(between_command);
 
-	return;
+    return;
 }
 
 int
 CommandManager::process_command
-(	Config const& p_config,
-	string const& p_command,
-	vector<string> const& p_args
+(   Config const& p_config,
+    string const& p_command,
+    vector<string> const& p_args
 ) const
 {
-	auto const it = m_command_map.find(p_command);
-	if (it == m_command_map.end())
-	{
-		return process_unrecognized_command(p_command);
-	}
-	else
-	{
-		assert (it->second);
-		auto const command_ptr = it->second;
-		int const ret = command_ptr->process
-		(	p_config,
-			p_args,
-			ordinary_ostream(),
-			error_ostream()
-		);
-		if (ret != 0)
-		{
-			error_ostream() << directions_to_get_help(p_command) << endl;
-		}
-		return ret;
-	}
+    auto const it = m_command_map.find(p_command);
+    if (it == m_command_map.end())
+    {
+        return process_unrecognized_command(p_command);
+    }
+    else
+    {
+        assert (it->second);
+        auto const command_ptr = it->second;
+        int const ret = command_ptr->process
+        (   p_config,
+            p_args,
+            ordinary_ostream(),
+            error_ostream()
+        );
+        if (ret != 0)
+        {
+            error_ostream() << directions_to_get_help(p_command) << endl;
+        }
+        return ret;
+    }
 }
 
 string
 CommandManager::help_information(string const& p_command) const
 {
-	auto const it = m_command_map.find(p_command);
-	if (it == m_command_map.end())
-	{
-		throw runtime_error
-		(	error_message_for_unrecognized_command(p_command)
-		);
-	}
-	return it->second->usage_descriptor();
+    auto const it = m_command_map.find(p_command);
+    if (it == m_command_map.end())
+    {
+        throw runtime_error
+        (   error_message_for_unrecognized_command(p_command)
+        );
+    }
+    return it->second->usage_descriptor();
 }
 
 string
 CommandManager::help_information() const
 {
-	typedef string Category;
-	map<Category, set<shared_ptr<Command>>> grouped_commands;
-	for (auto const& pair: m_command_map)
-	{
-		shared_ptr<Command> const& command_ptr = pair.second;
-		grouped_commands[command_ptr->category()].insert(command_ptr);
-	}
-	ostringstream oss;
-	enable_exceptions(oss);
-	oss << "Usage: "
-	    << Info::application_name()
-	    << " <COMMAND> [OPTIONS...] [ARGUMENTS...] [OPTIONS...]\n";
-	string::size_type width = 0;
-	for (auto const& pair: grouped_commands)
-	{
-		auto const& command_group = pair.second;
-		for (auto const& command_ptr: command_group)
-		{
-			auto const& command = *command_ptr;
-			string::size_type current_width = command.command_word().size();
-			for (auto const& alias: command.aliases())
-			{
-				current_width += 2;
-				current_width += alias.size();
-			}
-			current_width += 4;
-			width = ((current_width > width)? current_width: width);
-		}
-	}
-	for (auto const& pair: grouped_commands)
-	{
-		Category const& category = pair.first;
-		oss << '\n' << category << " commands:\n\n";
-		auto const& command_group = pair.second;
-		for (auto const& command_ptr: command_group)
-		{
-			auto const& command = *command_ptr;
-			StreamFlagGuard guard(oss);
-			ostringstream oss2;
-			enable_exceptions(oss2);
-			oss2 << command.command_word();
-			for (auto const& alias: command.aliases())
-			{
-				oss2 << ", " << alias;
-			}
-			oss << "  " << setw(width) << left << oss2.str();
-			guard.reset();
-			oss << command.usage_summary() << '\n';
-		}
-	}
-	oss << "\nFor more information on a particular command, enter '"
-	    << Info::application_name() << ' '
-		<< k_help_command_string << " <COMMAND>'.\n";
-	return oss.str();
+    typedef string Category;
+    map<Category, set<shared_ptr<Command>>> grouped_commands;
+    for (auto const& pair: m_command_map)
+    {
+        shared_ptr<Command> const& command_ptr = pair.second;
+        grouped_commands[command_ptr->category()].insert(command_ptr);
+    }
+    ostringstream oss;
+    enable_exceptions(oss);
+    oss << "Usage: "
+        << Info::application_name()
+        << " <COMMAND> [OPTIONS...] [ARGUMENTS...] [OPTIONS...]\n";
+    string::size_type width = 0;
+    for (auto const& pair: grouped_commands)
+    {
+        auto const& command_group = pair.second;
+        for (auto const& command_ptr: command_group)
+        {
+            auto const& command = *command_ptr;
+            string::size_type current_width = command.command_word().size();
+            for (auto const& alias: command.aliases())
+            {
+                current_width += 2;
+                current_width += alias.size();
+            }
+            current_width += 4;
+            width = ((current_width > width)? current_width: width);
+        }
+    }
+    for (auto const& pair: grouped_commands)
+    {
+        Category const& category = pair.first;
+        oss << '\n' << category << " commands:\n\n";
+        auto const& command_group = pair.second;
+        for (auto const& command_ptr: command_group)
+        {
+            auto const& command = *command_ptr;
+            StreamFlagGuard guard(oss);
+            ostringstream oss2;
+            enable_exceptions(oss2);
+            oss2 << command.command_word();
+            for (auto const& alias: command.aliases())
+            {
+                oss2 << ", " << alias;
+            }
+            oss << "  " << setw(width) << left << oss2.str();
+            guard.reset();
+            oss << command.usage_summary() << '\n';
+        }
+    }
+    oss << "\nFor more information on a particular command, enter '"
+        << Info::application_name() << ' '
+        << k_help_command_string << " <COMMAND>'.\n";
+    return oss.str();
 }
 
 string
 CommandManager::directions_to_get_help()
 {
-	ostringstream oss;
-	enable_exceptions(oss);
-	oss << "For usage information, enter '"
-	    << Info::application_name()
-		<< ' '
-		<< k_help_command_string
-		<< "'.";
-	return oss.str();
+    ostringstream oss;
+    enable_exceptions(oss);
+    oss << "For usage information, enter '"
+        << Info::application_name()
+        << ' '
+        << k_help_command_string
+        << "'.";
+    return oss.str();
 }
 
 string
 CommandManager::directions_to_get_help(string const& p_command)
 {
-	ostringstream oss;
-	enable_exceptions(oss);
-	oss << "For usage information, enter '"
-	    << Info::application_name()
-		<< ' '
-		<< k_help_command_string
-		<< ' '
-		<< p_command
-		<< "'.";
-	return oss.str();
+    ostringstream oss;
+    enable_exceptions(oss);
+    oss << "For usage information, enter '"
+        << Info::application_name()
+        << ' '
+        << k_help_command_string
+        << ' '
+        << p_command
+        << "'.";
+    return oss.str();
 }
 
 string
 CommandManager::error_message_for_unrecognized_command
-(	string const& p_command
+(   string const& p_command
 )
 {
-	return string("Unrecognized command: ") + p_command;
+    return string("Unrecognized command: ") + p_command;
 }
 
 int
 CommandManager::process_unrecognized_command(string const& p_command) const
 {
-	error_ostream() << error_message_for_unrecognized_command(p_command)
-	                << endl
-					<< directions_to_get_help()
-					<< endl;
-	return 1;
+    error_ostream() << error_message_for_unrecognized_command(p_command)
+                    << endl
+                    << directions_to_get_help()
+                    << endl;
+    return 1;
 }
 
 ostream&
 CommandManager::ordinary_ostream() const
 {
-	return cout;	
+    return cout;    
 }
 
 ostream&
 CommandManager::error_ostream() const
 {
-	return cerr;
+    return cerr;
 }
 
 void
 CommandManager::create_command(shared_ptr<Command> const& p_cp)
 {
-	register_command_word(p_cp->command_word(), p_cp);
-	for (auto const& alias: p_cp->aliases())
-	{
-		register_command_word(alias, p_cp);
-	}
-	return;
+    register_command_word(p_cp->command_word(), p_cp);
+    for (auto const& alias: p_cp->aliases())
+    {
+        register_command_word(alias, p_cp);
+    }
+    return;
 }
 
 void
 CommandManager::register_command_word
-(	string const& p_word,
-	shared_ptr<Command> const& p_cp
+(   string const& p_word,
+    shared_ptr<Command> const& p_cp
 )
 {
-	if (m_command_map.find(p_word) != m_command_map.end())
-	{
-		ostringstream oss;
-		enable_exceptions(oss);
-		oss << "Command word \""
-		    << p_word
-			<< "\" has already been registered.";
-		throw std::runtime_error(oss.str());
-	}
-	m_command_map[p_word] = p_cp;
-	return;
+    if (m_command_map.find(p_word) != m_command_map.end())
+    {
+        ostringstream oss;
+        enable_exceptions(oss);
+        oss << "Command word \""
+            << p_word
+            << "\" has already been registered.";
+        throw std::runtime_error(oss.str());
+    }
+    m_command_map[p_word] = p_cp;
+    return;
 }
 
 }  // namespace swx

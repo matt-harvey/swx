@@ -32,20 +32,20 @@ class HelpLine
 {
 // special member functions
 public:
-	HelpLine
-	(	std::string const& p_usage_descriptor,
-		std::string const& p_args_descriptor = std::string()
-	);
+    HelpLine
+    (   std::string const& p_usage_descriptor,
+        std::string const& p_args_descriptor = std::string()
+    );
 
 // accessors
 public:
-	std::string usage_descriptor() const;
-	std::string args_descriptor() const;
+    std::string usage_descriptor() const;
+    std::string args_descriptor() const;
 
 // data members
 private:
-	std::string m_usage_descriptor;
-	std::string m_args_descriptor;
+    std::string m_usage_descriptor;
+    std::string m_args_descriptor;
 
 };  // class HelpLine
 

@@ -36,59 +36,59 @@ namespace swx
 {
 
 ActivityNode::ActivityNode(string const& p_activity):
-	m_components(split(p_activity))
+    m_components(split(p_activity))
 {
 }
 
 ActivityNode::ActivityNode(string const& p_activity, unsigned int p_depth):
-	m_components(split(p_activity))
+    m_components(split(p_activity))
 {
-	m_components.resize(p_depth);
+    m_components.resize(p_depth);
 }
 
 ActivityNode::ActivityNode
-(	vector<string>::const_iterator const& p_begin,
-	vector<string>::const_iterator const& p_end
+(   vector<string>::const_iterator const& p_begin,
+    vector<string>::const_iterator const& p_end
 ):
-	m_components(p_begin, p_end)
+    m_components(p_begin, p_end)
 {
 }
 
 bool
 ActivityNode::operator<(ActivityNode const& rhs) const
 {
-	return m_components < rhs.m_components;
+    return m_components < rhs.m_components;
 }
 
 bool
 ActivityNode::operator==(ActivityNode const& rhs) const
 {
-	return m_components == rhs.m_components;
+    return m_components == rhs.m_components;
 }
 
 bool
 ActivityNode::operator!=(ActivityNode const& rhs) const
 {
-	return !(*this == rhs);
+    return !(*this == rhs);
 }
 
 string
 ActivityNode::activity() const
 {
-	return squish(m_components.begin(), m_components.end());
+    return squish(m_components.begin(), m_components.end());
 }
 
 string
 ActivityNode::marginal_name() const
 {
-	return m_components.empty() ? "" : m_components.back();
+    return m_components.empty() ? "" : m_components.back();
 }
 
 ActivityNode
 ActivityNode::parent() const
 {
-	assert (!m_components.empty());
-	return ActivityNode(m_components.begin(), m_components.end() - 1);
+    assert (!m_components.empty());
+    return ActivityNode(m_components.begin(), m_components.end() - 1);
 }
 
 }  // namespace swx

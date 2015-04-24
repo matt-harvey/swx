@@ -28,21 +28,21 @@ namespace swx
 {
 
 RecordingCommand::RecordingCommand
-(	string const& p_command_word,
-	vector<string> const& p_aliases,
-	string const& p_usage_summary,
-	vector<HelpLine> const& p_help_line,
-	bool p_accept_ordinary_args,
-	TimeLog& p_time_log
+(   string const& p_command_word,
+    vector<string> const& p_aliases,
+    string const& p_usage_summary,
+    vector<HelpLine> const& p_help_line,
+    bool p_accept_ordinary_args,
+    TimeLog& p_time_log
 ):
-	Command
-	(	p_command_word,
-		p_aliases,
-		p_usage_summary,
-		p_help_line,
-		p_accept_ordinary_args
-	),
-	m_time_log(p_time_log)
+    Command
+    (   p_command_word,
+        p_aliases,
+        p_usage_summary,
+        p_help_line,
+        p_accept_ordinary_args
+    ),
+    m_time_log(p_time_log)
 {
 }
 
@@ -51,13 +51,13 @@ RecordingCommand::~RecordingCommand() = default;
 TimeLog&
 RecordingCommand::time_log()
 {
-	return m_time_log;
+    return m_time_log;
 }
 
 string
 RecordingCommand::do_get_category() const
 {
-	return "Recording";
+    return "Recording";
 }
 
 }  // namespace swx

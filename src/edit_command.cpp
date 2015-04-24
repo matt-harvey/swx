@@ -35,50 +35,50 @@ namespace swx
 
 namespace
 {
-	char const k_config_file_flag = 'c';
+    char const k_config_file_flag = 'c';
 }
 
 EditCommand::EditCommand
-(	string const& p_command_word,
-	vector<string> const& p_aliases
+(   string const& p_command_word,
+    vector<string> const& p_aliases
 ):
-	Command
-	(	p_command_word,
-		p_aliases,
-		"Open the activity log or configuration file in a text editor",
-		vector<HelpLine>
-		{	HelpLine
-			(	"Open the activity log in a text editor; the editor used is "
-					"determined by the \"editor\" configuration setting"
-			)
-		},
-		false
-	)
+    Command
+    (   p_command_word,
+        p_aliases,
+        "Open the activity log or configuration file in a text editor",
+        vector<HelpLine>
+        {   HelpLine
+            (   "Open the activity log in a text editor; the editor used is "
+                    "determined by the \"editor\" configuration setting"
+            )
+        },
+        false
+    )
 {
-	add_boolean_option
-	(	k_config_file_flag,
-		"Instead of opening the activity log, open the configuration file"
-	);
+    add_boolean_option
+    (   k_config_file_flag,
+        "Instead of opening the activity log, open the configuration file"
+    );
 }
 
 EditCommand::~EditCommand() = default;
 
 Command::ErrorMessages
 EditCommand::do_process
-(	Config const& p_config,
-	ParsedArguments const& p_args,
-	ostream& p_ordinary_ostream
+(   Config const& p_config,
+    ParsedArguments const& p_args,
+    ostream& p_ordinary_ostream
 )
 {
-	(void)p_ordinary_ostream;  // suppress compiler warning re. unused param.
-	string const filepath =
-	(	p_args.flags().count(k_config_file_flag)?
-		p_config.filepath():
-		p_config.path_to_log()
-	);
-	string const editor_invokation = p_config.editor() + " " + filepath;
-	system(editor_invokation.c_str());
-	return ErrorMessages();
+    (void)p_ordinary_ostream;  // suppress compiler warning re. unused param.
+    string const filepath =
+    (   p_args.flags().count(k_config_file_flag)?
+        p_config.filepath():
+        p_config.path_to_log()
+    );
+    string const editor_invokation = p_config.editor() + " " + filepath;
+    system(editor_invokation.c_str());
+    return ErrorMessages();
 }
 
 }  // namespace swx

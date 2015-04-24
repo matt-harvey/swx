@@ -34,62 +34,62 @@ class Config
 {
 // nested types
 private:
-	struct OptionData
-	{
-		OptionData() = default;
-		OptionData
-		(	std::string const& p_value,
-			std::string const& p_description
-		);
-		std::string value;
-		std::string description;
-	};
+    struct OptionData
+    {
+        OptionData() = default;
+        OptionData
+        (   std::string const& p_value,
+            std::string const& p_description
+        );
+        std::string value;
+        std::string description;
+    };
 
 // special member functions
 public:
-	explicit Config(std::string const& p_filepath);
-	Config(Config const& rhs) = delete;
-	Config(Config&& rhs) = delete;
-	Config& operator=(Config const& rhs) = delete;
-	Config& operator=(Config&& rhs) = delete;
-	~Config();
+    explicit Config(std::string const& p_filepath);
+    Config(Config const& rhs) = delete;
+    Config(Config&& rhs) = delete;
+    Config& operator=(Config const& rhs) = delete;
+    Config& operator=(Config&& rhs) = delete;
+    ~Config();
 
 // ordinary member functions
 public:
-	std::string filepath() const;
-	unsigned int output_rounding_numerator() const;
-	unsigned int output_rounding_denominator() const;
-	unsigned int output_precision() const;
-	unsigned int output_width() const;
-	std::string time_format() const;
-	unsigned int formatted_buf_len() const;
-	std::string editor() const;
-	std::string path_to_log() const;
+    std::string filepath() const;
+    unsigned int output_rounding_numerator() const;
+    unsigned int output_rounding_denominator() const;
+    unsigned int output_precision() const;
+    unsigned int output_width() const;
+    std::string time_format() const;
+    unsigned int formatted_buf_len() const;
+    std::string editor() const;
+    std::string path_to_log() const;
 
-	/**
-	 * @returns a printable summary of configuration settings.
-	 */
-	std::string summary() const;
+    /**
+     * @returns a printable summary of configuration settings.
+     */
+    std::string summary() const;
 
 private:
-	void set_option_value(std::string const& p_key, std::string const& p_value);
+    void set_option_value(std::string const& p_key, std::string const& p_value);
 
-	void unchecked_set_option
-	(	std::string const& p_key,
-		OptionData const& p_option_data
-	);
+    void unchecked_set_option
+    (   std::string const& p_key,
+        OptionData const& p_option_data
+    );
 
-	template <typename Value>
-	Value get_option_value(std::string const& p_key) const;
+    template <typename Value>
+    Value get_option_value(std::string const& p_key) const;
 
-	std::string get_raw_option_value(std::string const& p_key) const;
-	void set_defaults();
-	void initialize_config_file();
+    std::string get_raw_option_value(std::string const& p_key) const;
+    void set_defaults();
+    void initialize_config_file();
 
 // member variables
 private:
-	std::string m_filepath;
-	std::map<std::string, OptionData> m_map;
+    std::string m_filepath;
+    std::map<std::string, OptionData> m_map;
 
 };  // class Config
 
@@ -100,21 +100,21 @@ template <typename Value>
 Value
 Config::get_option_value(std::string const& p_key) const
 {
-	Value ret;
-	auto const raw_value = get_raw_option_value(p_key);
-	std::stringstream ss(raw_value);
-	enable_exceptions(ss);
-	ss.clear();
-	ss >> ret;
-	if (!ss)
-	{
-		std::ostringstream oss;
-		enable_exceptions(oss);
-		oss << "Could not parse value for configuration key \"" << p_key
-		    << "\" from value string \"" << raw_value << "\"";
-		throw std::runtime_error(oss.str());
-	}
-	return ret;
+    Value ret;
+    auto const raw_value = get_raw_option_value(p_key);
+    std::stringstream ss(raw_value);
+    enable_exceptions(ss);
+    ss.clear();
+    ss >> ret;
+    if (!ss)
+    {
+        std::ostringstream oss;
+        enable_exceptions(oss);
+        oss << "Could not parse value for configuration key \"" << p_key
+            << "\" from value string \"" << raw_value << "\"";
+        throw std::runtime_error(oss.str());
+    }
+    return ret;
 }
 
 template <>
@@ -122,7 +122,7 @@ inline
 std::string
 Config::get_option_value<std::string>(std::string const& p_key) const
 {
-	return get_raw_option_value(p_key);
+    return get_raw_option_value(p_key);
 }
 
 }  // namespace swx

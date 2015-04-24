@@ -27,37 +27,37 @@ namespace swx
 
 namespace
 {
-	double round_whole(double x)
-	{
-		auto const c = ceil(x);
-		auto const f = floor(x);
-		if (x < 0)
-		{
-			return ((c - x) < (x - f)) ? c : f;
-		}
-		else
-		{
-			return ((c - x) <= (x - f)) ? c : f;
-		}
-	}
+    double round_whole(double x)
+    {
+        auto const c = ceil(x);
+        auto const f = floor(x);
+        if (x < 0)
+        {
+            return ((c - x) < (x - f)) ? c : f;
+        }
+        else
+        {
+            return ((c - x) <= (x - f)) ? c : f;
+        }
+    }
 
 }  // end anonymous namespace
 
 template <>
 bool addition_is_safe(unsigned long long p_x, unsigned long long p_y)
 {
-	return p_x <= numeric_limits<unsigned long long>::max() - p_y;
+    return p_x <= numeric_limits<unsigned long long>::max() - p_y;
 }
 
 double
 round(double x, int num, int den)
 {
-	x *= den;
-	x /= num;
-	x = round_whole(x);
-	x *= num;
-	x /= den;
-	return x;
+    x *= den;
+    x /= num;
+    x = round_whole(x);
+    x *= num;
+    x /= den;
+    return x;
 }
 
 

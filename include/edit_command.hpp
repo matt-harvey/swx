@@ -34,23 +34,23 @@ class EditCommand: public Command
 {
 // special member functions
 public:
-	EditCommand
-	(	std::string const& p_command_word,
-		std::vector<std::string> const& p_aliases
-	);
-	EditCommand(EditCommand const& rhs) = delete;
-	EditCommand(EditCommand&& rhs) = delete;
-	EditCommand& operator=(EditCommand const& rhs) = delete;
-	EditCommand& operator=(EditCommand&& rhs) = delete;
-	~EditCommand();
+    EditCommand
+    (   std::string const& p_command_word,
+        std::vector<std::string> const& p_aliases
+    );
+    EditCommand(EditCommand const& rhs) = delete;
+    EditCommand(EditCommand&& rhs) = delete;
+    EditCommand& operator=(EditCommand const& rhs) = delete;
+    EditCommand& operator=(EditCommand&& rhs) = delete;
+    ~EditCommand();
 
 // inherited virtual functions
 private:
-	virtual ErrorMessages do_process
-	(	Config const& p_config,
-		ParsedArguments const& p_args,
-		std::ostream& p_ordinary_ostream
-	) override;
+    virtual ErrorMessages do_process
+    (   Config const& p_config,
+        ParsedArguments const& p_args,
+        std::ostream& p_ordinary_ostream
+    ) override;
 
 };  // class EditCommand
 

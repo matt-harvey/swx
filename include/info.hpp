@@ -29,18 +29,18 @@ class Info
 {
 // special member functions
 public:
-	Info() = delete;
-	Info(Info const& rhs) = delete;
-	Info(Info&& rhs) = delete;
-	Info& operator=(Info const& rhs) = delete;
-	Info& operator=(Info&& rhs) = delete;
-	~Info() = delete;
+    Info() = delete;
+    Info(Info const& rhs) = delete;
+    Info(Info&& rhs) = delete;
+    Info& operator=(Info const& rhs) = delete;
+    Info& operator=(Info&& rhs) = delete;
+    ~Info() = delete;
 
 // static functions
 public:
-	static std::string application_name();
-	static std::string version();
-	static std::string home_dir();
+    static std::string application_name();
+    static std::string version();
+    static std::string home_dir();
 
 };  // class Info
 

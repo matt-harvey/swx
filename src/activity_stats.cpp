@@ -28,33 +28,33 @@ namespace swx
 {
 
 ActivityStats::ActivityStats
-(	unsigned long long p_seconds,
-	TimePoint const& p_beginning,
-	TimePoint const& p_ending
+(   unsigned long long p_seconds,
+    TimePoint const& p_beginning,
+    TimePoint const& p_ending
 ):
-	seconds(p_seconds),
-	beginning(p_beginning),
-	ending(p_ending)
+    seconds(p_seconds),
+    beginning(p_beginning),
+    ending(p_ending)
 {
 }
 
 ActivityStats&
 operator+=(ActivityStats& lhs, ActivityStats const& rhs)
 {
-	if (!addition_is_safe(lhs.seconds, rhs.seconds))
-	{
-		throw runtime_error("Cannot safely sum number of seconds spent on activity.");
-	}
-	lhs.seconds += rhs.seconds;
-	lhs.beginning = min(lhs.beginning, rhs.beginning);
-	lhs.ending = max(lhs.ending, rhs.ending);
-	return lhs;
+    if (!addition_is_safe(lhs.seconds, rhs.seconds))
+    {
+        throw runtime_error("Cannot safely sum number of seconds spent on activity.");
+    }
+    lhs.seconds += rhs.seconds;
+    lhs.beginning = min(lhs.beginning, rhs.beginning);
+    lhs.ending = max(lhs.ending, rhs.ending);
+    return lhs;
 }
 
 ActivityStats const
 operator+(ActivityStats lhs, ActivityStats const& rhs)
 {
-	return lhs += rhs;
+    return lhs += rhs;
 }
 
 }  // namespace swx

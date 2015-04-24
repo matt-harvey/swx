@@ -34,14 +34,14 @@ namespace swx
 {
 
 CsvSummaryReportWriter::CsvSummaryReportWriter
-(	vector<Stint> const& p_stints,
-	Options const& p_options,
-	bool p_include_beginning,
-	bool p_include_ending
+(   vector<Stint> const& p_stints,
+    Options const& p_options,
+    bool p_include_beginning,
+    bool p_include_ending
 ):
-	SummaryReportWriter(p_stints, p_options),
-	m_include_beginning(p_include_beginning),
-	m_include_ending(p_include_ending)
+    SummaryReportWriter(p_stints, p_options),
+    m_include_beginning(p_include_beginning),
+    m_include_ending(p_include_ending)
 {
 }
 
@@ -49,52 +49,52 @@ CsvSummaryReportWriter::~CsvSummaryReportWriter() = default;
 
 void
 CsvSummaryReportWriter::do_write_summary
-(	ostream& p_os,
-	map<string, ActivityStats> const& p_activity_stats_map
+(   ostream& p_os,
+    map<string, ActivityStats> const& p_activity_stats_map
 )
 {
-	for (auto const& pair: p_activity_stats_map)
-	{
-		auto const& activity = pair.first;
-		auto const& info = pair.second;
-		if (m_include_beginning && m_include_ending)
-		{
-			output_csv_row
-			(	p_os,
-				activity,
-				seconds_to_rounded_hours(info.seconds),
-				time_point_to_stamp(info.beginning, time_format(), formatted_buf_len()),
-				time_point_to_stamp(info.ending, time_format(), formatted_buf_len())
-			);
-		}
-		else if (m_include_beginning)
-		{
-			output_csv_row
-			(	p_os,
-				activity,
-				seconds_to_rounded_hours(info.seconds),
-				time_point_to_stamp(info.beginning, time_format(), formatted_buf_len())
-			);
-		}
-		else if (m_include_ending)
-		{
-			output_csv_row
-			(	p_os,
-				activity,
-				seconds_to_rounded_hours(info.seconds),
-				time_point_to_stamp(info.ending, time_format(), formatted_buf_len())
-			);
-		}
-		else
-		{
-			output_csv_row
-			(	p_os,
-				activity,
-				seconds_to_rounded_hours(info.seconds)
-			);
-		}
-	}
-	return;
+    for (auto const& pair: p_activity_stats_map)
+    {
+        auto const& activity = pair.first;
+        auto const& info = pair.second;
+        if (m_include_beginning && m_include_ending)
+        {
+            output_csv_row
+            (   p_os,
+                activity,
+                seconds_to_rounded_hours(info.seconds),
+                time_point_to_stamp(info.beginning, time_format(), formatted_buf_len()),
+                time_point_to_stamp(info.ending, time_format(), formatted_buf_len())
+            );
+        }
+        else if (m_include_beginning)
+        {
+            output_csv_row
+            (   p_os,
+                activity,
+                seconds_to_rounded_hours(info.seconds),
+                time_point_to_stamp(info.beginning, time_format(), formatted_buf_len())
+            );
+        }
+        else if (m_include_ending)
+        {
+            output_csv_row
+            (   p_os,
+                activity,
+                seconds_to_rounded_hours(info.seconds),
+                time_point_to_stamp(info.ending, time_format(), formatted_buf_len())
+            );
+        }
+        else
+        {
+            output_csv_row
+            (   p_os,
+                activity,
+                seconds_to_rounded_hours(info.seconds)
+            );
+        }
+    }
+    return;
 }
 
 }  // namespace swx

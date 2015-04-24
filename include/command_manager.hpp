@@ -42,66 +42,66 @@ class CommandManager
 {
 // nested types
 private:
-	typedef
-		std::map<std::string, std::shared_ptr<Command>>
-		CommandMap;
+    typedef
+        std::map<std::string, std::shared_ptr<Command>>
+        CommandMap;
 
 // special member functions
 public:
-	explicit CommandManager(TimeLog& p_time_log);
-	CommandManager(CommandManager const& rhs) = delete;
-	CommandManager(CommandManager&& rhs) = delete;
-	CommandManager& operator=(CommandManager const& rhs) = delete;
-	CommandManager& operator=(CommandManager&& rhs) = delete;
-	~CommandManager();
+    explicit CommandManager(TimeLog& p_time_log);
+    CommandManager(CommandManager const& rhs) = delete;
+    CommandManager(CommandManager&& rhs) = delete;
+    CommandManager& operator=(CommandManager const& rhs) = delete;
+    CommandManager& operator=(CommandManager&& rhs) = delete;
+    ~CommandManager();
 
 // ordinary and static member functions
 private:
-	void populate_command_map();
+    void populate_command_map();
 
 public:
 
-	int process_command
-	(	Config const& p_config,
-		std::string const& p_command,
-		std::vector<std::string> const& p_args
-	) const;
+    int process_command
+    (   Config const& p_config,
+        std::string const& p_command,
+        std::vector<std::string> const& p_args
+    ) const;
 
-	/**
-	 * @returns a string providing help information for a particular
-	 * command.
-	 *
-	 * @throws std::runtime_error if p_command is not a registered
-	 * command word.
-	 */
-	std::string help_information(std::string const& p_command) const;
+    /**
+     * @returns a string providing help information for a particular
+     * command.
+     *
+     * @throws std::runtime_error if p_command is not a registered
+     * command word.
+     */
+    std::string help_information(std::string const& p_command) const;
 
-	/**
-	 * @returns a string providing general help information.
-	 */
-	std::string help_information() const;
+    /**
+     * @returns a string providing general help information.
+     */
+    std::string help_information() const;
 
-	static std::string directions_to_get_help();
-	static std::string directions_to_get_help(std::string const& p_command);
+    static std::string directions_to_get_help();
+    static std::string directions_to_get_help(std::string const& p_command);
 
-	static std::string error_message_for_unrecognized_command
-	(	std::string const& p_command
-	);
+    static std::string error_message_for_unrecognized_command
+    (   std::string const& p_command
+    );
 
 private:
-	int process_unrecognized_command(std::string const& p_command) const;
-	std::ostream& ordinary_ostream() const;
-	std::ostream& error_ostream() const;
-	void create_command(std::shared_ptr<Command> const& p_cp);
-	void register_command_word
-	(	std::string const& p_word,
-		std::shared_ptr<Command> const& p_cp
-	);
+    int process_unrecognized_command(std::string const& p_command) const;
+    std::ostream& ordinary_ostream() const;
+    std::ostream& error_ostream() const;
+    void create_command(std::shared_ptr<Command> const& p_cp);
+    void register_command_word
+    (   std::string const& p_word,
+        std::shared_ptr<Command> const& p_cp
+    );
 
 // member variables
 private:
-	TimeLog& m_time_log;
-	CommandMap m_command_map;
+    TimeLog& m_time_log;
+    CommandMap m_command_map;
 
 };  // class CommandManager
 

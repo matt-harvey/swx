@@ -39,38 +39,38 @@ namespace swx
 {
 
 Interval::Interval
-(	TimePoint const& p_beginning,
-	Seconds const& p_duration,
-	bool p_is_live
+(   TimePoint const& p_beginning,
+    Seconds const& p_duration,
+    bool p_is_live
 ):
-	m_is_live(p_is_live),
-	m_beginning(p_beginning),
-	m_duration(p_duration)
+    m_is_live(p_is_live),
+    m_beginning(p_beginning),
+    m_duration(p_duration)
 {
 }
 
 Seconds
 Interval::duration() const
 {
-	return m_duration;
+    return m_duration;
 }
 
 TimePoint
 Interval::beginning() const
 {
-	return m_beginning;
+    return m_beginning;
 }
 
 TimePoint
 Interval::ending() const
 {
-	return beginning() + duration();
+    return beginning() + duration();
 }
 
 bool
 Interval::is_live() const
 {
-	return m_is_live;
+    return m_is_live;
 }
 
 }  // namespace swx

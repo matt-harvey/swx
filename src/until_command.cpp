@@ -40,27 +40,27 @@ namespace swx
 {
 
 UntilCommand::UntilCommand
-(	string const& p_command_word,
-	vector<string> const& p_aliases,
-	TimeLog& p_time_log
+(   string const& p_command_word,
+    vector<string> const& p_aliases,
+    TimeLog& p_time_log
 ):
-	ReportingCommand
-	(	p_command_word,
-		p_aliases,
-		"Print summary of activities until a given time",
-		vector<HelpLine>
-		{	HelpLine
-			(	"Print summary of time spent on all activities until "
-					"TIMESTAMP",
-				"<TIMESTAMP>"
-			),
-			HelpLine
-			(	"Print summary of time spent on ACTIVITY until TIMESTAMP",
-				"<TIMESTAMP> <ACTIVITY>"
-			)
-		},
-		p_time_log
-	)
+    ReportingCommand
+    (   p_command_word,
+        p_aliases,
+        "Print summary of activities until a given time",
+        vector<HelpLine>
+        {   HelpLine
+            (   "Print summary of time spent on all activities until "
+                    "TIMESTAMP",
+                "<TIMESTAMP>"
+            ),
+            HelpLine
+            (   "Print summary of time spent on ACTIVITY until TIMESTAMP",
+                "<TIMESTAMP> <ACTIVITY>"
+            )
+        },
+        p_time_log
+    )
 {
 }
 
@@ -68,45 +68,45 @@ UntilCommand::~UntilCommand() = default;
 
 Command::ErrorMessages
 UntilCommand::do_process
-(	Config const& p_config,
-	ParsedArguments const& p_args,
-	ostream& p_ordinary_ostream
+(   Config const& p_config,
+    ParsedArguments const& p_args,
+    ostream& p_ordinary_ostream
 )
 {
-	Arguments const oargs = p_args.ordinary_args();
-	if (oargs.empty())
-	{
-		return {"Too few arguments passed to this command."};
-	}
-	else
-	{
-		unique_ptr<TimePoint> time_point_ptr;
-		try
-		{
-			auto const time_format = p_config.time_format();
-			auto const fbl = p_config.formatted_buf_len();
-			time_point_ptr.reset
-			(	new TimePoint(time_stamp_to_point(oargs[0], time_format))
-			);
-		}
-		catch (runtime_error&)
-		{
-			ostringstream oss;
-			enable_exceptions(oss);
-			oss << "Could not parse timestamp: " << oargs[0];
-			return {oss.str()};
-		}
-		assert (oargs.size() >= 1);
-		print_report
-		(	p_ordinary_ostream,
-			p_config,
-			p_args.flags(),
-			vector<string>(oargs.begin() + 1, oargs.end()),
-			nullptr,
-			time_point_ptr.get()
-		);
-	}
-	return ErrorMessages();
+    Arguments const oargs = p_args.ordinary_args();
+    if (oargs.empty())
+    {
+        return {"Too few arguments passed to this command."};
+    }
+    else
+    {
+        unique_ptr<TimePoint> time_point_ptr;
+        try
+        {
+            auto const time_format = p_config.time_format();
+            auto const fbl = p_config.formatted_buf_len();
+            time_point_ptr.reset
+            (   new TimePoint(time_stamp_to_point(oargs[0], time_format))
+            );
+        }
+        catch (runtime_error&)
+        {
+            ostringstream oss;
+            enable_exceptions(oss);
+            oss << "Could not parse timestamp: " << oargs[0];
+            return {oss.str()};
+        }
+        assert (oargs.size() >= 1);
+        print_report
+        (   p_ordinary_ostream,
+            p_config,
+            p_args.flags(),
+            vector<string>(oargs.begin() + 1, oargs.end()),
+            nullptr,
+            time_point_ptr.get()
+        );
+    }
+    return ErrorMessages();
 }
 
 }  // namespace swx

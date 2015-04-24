@@ -35,29 +35,29 @@ class HelpCommand: public Command
 {
 // special member functions
 public:
-	HelpCommand
-	(	std::string const& p_command_word,
-		std::vector<std::string> const& p_aliases,
-		CommandManager const& p_command_manager
-	);
+    HelpCommand
+    (   std::string const& p_command_word,
+        std::vector<std::string> const& p_aliases,
+        CommandManager const& p_command_manager
+    );
 
-	HelpCommand(HelpCommand const& rhs) = delete;
-	HelpCommand(HelpCommand&& rhs) = delete;
-	HelpCommand& operator=(HelpCommand const& rhs) = delete;
-	HelpCommand& operator=(HelpCommand&& rhs) = delete;
-	virtual ~HelpCommand();
+    HelpCommand(HelpCommand const& rhs) = delete;
+    HelpCommand(HelpCommand&& rhs) = delete;
+    HelpCommand& operator=(HelpCommand const& rhs) = delete;
+    HelpCommand& operator=(HelpCommand&& rhs) = delete;
+    virtual ~HelpCommand();
 
 // inherited virtual functions
 private:
-	virtual ErrorMessages do_process
-	(	Config const& p_config,
-		ParsedArguments const& p_args,
-		std::ostream& p_ordinary_ostream
-	) override;
+    virtual ErrorMessages do_process
+    (   Config const& p_config,
+        ParsedArguments const& p_args,
+        std::ostream& p_ordinary_ostream
+    ) override;
 
 // member variables
 private:
-	CommandManager const& m_command_manager;
+    CommandManager const& m_command_manager;
 
 };  // class HelpCommand
 

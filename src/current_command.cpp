@@ -34,53 +34,53 @@ namespace swx
 
 namespace
 {
-	char const k_suppress_newline_flag = 's';
+    char const k_suppress_newline_flag = 's';
 
 }  // end anonymous namespace
 
 CurrentCommand::CurrentCommand
-(	string const& p_command_word,
-	vector<string> const& p_aliases,
-	TimeLog& p_time_log
+(   string const& p_command_word,
+    vector<string> const& p_aliases,
+    TimeLog& p_time_log
 ):
-	Command
-	(	p_command_word,
-		p_aliases,
-		"Print name of current activity",
-		vector<HelpLine>
-		{	HelpLine
-			(	"Print the name of the current activity, or print a blank line if "
-					"currently inactive"
-			)
-		},
-		false
-	),
-	m_time_log(p_time_log)
+    Command
+    (   p_command_word,
+        p_aliases,
+        "Print name of current activity",
+        vector<HelpLine>
+        {   HelpLine
+            (   "Print the name of the current activity, or print a blank line if "
+                    "currently inactive"
+            )
+        },
+        false
+    ),
+    m_time_log(p_time_log)
 {
-	add_boolean_option(k_suppress_newline_flag, "Do not terminate output with a newline");
+    add_boolean_option(k_suppress_newline_flag, "Do not terminate output with a newline");
 }
 
 CurrentCommand::~CurrentCommand() = default;
 
 Command::ErrorMessages
 CurrentCommand::do_process
-(	Config const& p_config,
-	ParsedArguments const& p_args,
-	ostream& p_ordinary_ostream
+(   Config const& p_config,
+    ParsedArguments const& p_args,
+    ostream& p_ordinary_ostream
 )
 {
-	(void)p_config;  // silence compiler re. unused param
-	TimePoint const n = now();
-	auto const stints = m_time_log.get_stints(nullptr, &n, &n);
-	if (!stints.empty())
-	{
-		p_ordinary_ostream << stints[0].activity();
-	}
-	if (!p_args.flags().count(k_suppress_newline_flag))
-	{
-		p_ordinary_ostream << endl;
-	}
-	return ErrorMessages();
+    (void)p_config;  // silence compiler re. unused param
+    TimePoint const n = now();
+    auto const stints = m_time_log.get_stints(nullptr, &n, &n);
+    if (!stints.empty())
+    {
+        p_ordinary_ostream << stints[0].activity();
+    }
+    if (!p_args.flags().count(k_suppress_newline_flag))
+    {
+        p_ordinary_ostream << endl;
+    }
+    return ErrorMessages();
 }
 
 }  // namespace swx

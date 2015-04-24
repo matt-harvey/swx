@@ -40,28 +40,28 @@ namespace swx
 {
 
 BetweenCommand::BetweenCommand
-(	string const& p_command_word,
-	vector<string> const& p_aliases,
-	TimeLog& p_time_log
+(   string const& p_command_word,
+    vector<string> const& p_aliases,
+    TimeLog& p_time_log
 ):
-	ReportingCommand
-	(	p_command_word,
-		p_aliases,
-		"Print summary of activities between two times",
-		vector<HelpLine>
-		{	HelpLine
-			(	"Print summary of time spent on all activities between "
-					"TIMESTAMP1 and TIMESTAMP2",
-				"<TIMESTAMP1> <TIMESTAMP2>"
-			),
-			HelpLine
-			(	"Print summary of time spent on ACTIVITY between "
-					"TIMESTAMP1 and TIMESTAMP2",
-				"<TIMESTAMP1> <TIMESTAMP2> <ACTIVITY>"
-			)
-		},
-		p_time_log
-	)
+    ReportingCommand
+    (   p_command_word,
+        p_aliases,
+        "Print summary of activities between two times",
+        vector<HelpLine>
+        {   HelpLine
+            (   "Print summary of time spent on all activities between "
+                    "TIMESTAMP1 and TIMESTAMP2",
+                "<TIMESTAMP1> <TIMESTAMP2>"
+            ),
+            HelpLine
+            (   "Print summary of time spent on ACTIVITY between "
+                    "TIMESTAMP1 and TIMESTAMP2",
+                "<TIMESTAMP1> <TIMESTAMP2> <ACTIVITY>"
+            )
+        },
+        p_time_log
+    )
 {
 }
 
@@ -69,59 +69,59 @@ BetweenCommand::~BetweenCommand() = default;
 
 Command::ErrorMessages
 BetweenCommand::do_process
-(	Config const& p_config,
-	ParsedArguments const& p_args,
-	ostream& p_ordinary_ostream
+(   Config const& p_config,
+    ParsedArguments const& p_args,
+    ostream& p_ordinary_ostream
 )
 {
-	Arguments const oargs = p_args.ordinary_args();
-	auto const fbl = p_config.formatted_buf_len();
-	if (oargs.size() < 2)
-	{
-		return {"Too few arguments passed to this command."};
-	}
-	else
-	{
-		unique_ptr<TimePoint> time_point_since_ptr;
-		unique_ptr<TimePoint> time_point_until_ptr;
-		auto const time_format = p_config.time_format();
-		try
-		{
-			time_point_since_ptr.reset
-			(	new TimePoint(time_stamp_to_point(oargs[0], time_format))
-			);
-		}
-		catch (runtime_error&)
-		{
-			ostringstream oss;
-			enable_exceptions(oss);
-			oss << "Could not parse timestamp: " << oargs[0];
-			return {oss.str()};
-		}
-		try
-		{
-			time_point_until_ptr.reset
-			(	new TimePoint(time_stamp_to_point(oargs[1], time_format))
-			);
-		}
-		catch (runtime_error&)
-		{
-			ostringstream oss;
-			enable_exceptions(oss);
-			oss << "Could not parse timestamp: " << oargs[1];
-			return {oss.str()};
-		}
-		assert (oargs.size() >= 2);
-		print_report
-		(	p_ordinary_ostream,
-			p_config,
-			p_args.flags(),
-			vector<string>(oargs.begin() + 2, oargs.end()),
-			time_point_since_ptr.get(),
-			time_point_until_ptr.get()
-		);
-	}
-	return ErrorMessages();
+    Arguments const oargs = p_args.ordinary_args();
+    auto const fbl = p_config.formatted_buf_len();
+    if (oargs.size() < 2)
+    {
+        return {"Too few arguments passed to this command."};
+    }
+    else
+    {
+        unique_ptr<TimePoint> time_point_since_ptr;
+        unique_ptr<TimePoint> time_point_until_ptr;
+        auto const time_format = p_config.time_format();
+        try
+        {
+            time_point_since_ptr.reset
+            (   new TimePoint(time_stamp_to_point(oargs[0], time_format))
+            );
+        }
+        catch (runtime_error&)
+        {
+            ostringstream oss;
+            enable_exceptions(oss);
+            oss << "Could not parse timestamp: " << oargs[0];
+            return {oss.str()};
+        }
+        try
+        {
+            time_point_until_ptr.reset
+            (   new TimePoint(time_stamp_to_point(oargs[1], time_format))
+            );
+        }
+        catch (runtime_error&)
+        {
+            ostringstream oss;
+            enable_exceptions(oss);
+            oss << "Could not parse timestamp: " << oargs[1];
+            return {oss.str()};
+        }
+        assert (oargs.size() >= 2);
+        print_report
+        (   p_ordinary_ostream,
+            p_config,
+            p_args.flags(),
+            vector<string>(oargs.begin() + 2, oargs.end()),
+            time_point_since_ptr.get(),
+            time_point_until_ptr.get()
+        );
+    }
+    return ErrorMessages();
 }
 
 

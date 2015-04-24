@@ -35,20 +35,20 @@ class HumanListReportWriter: public ListReportWriter
 {
 // special member functions
 public:
-	HumanListReportWriter
-	(	std::vector<Stint> const& p_stints,
-		Options const& p_options
-	);
-	HumanListReportWriter(HumanListReportWriter const& rhs) = delete;
-	HumanListReportWriter(HumanListReportWriter&& rhs) = delete;
-	HumanListReportWriter& operator=(HumanListReportWriter const& rhs) = delete;
-	HumanListReportWriter& operator=(HumanListReportWriter&& rhs) = delete;
-	virtual ~HumanListReportWriter();
+    HumanListReportWriter
+    (   std::vector<Stint> const& p_stints,
+        Options const& p_options
+    );
+    HumanListReportWriter(HumanListReportWriter const& rhs) = delete;
+    HumanListReportWriter(HumanListReportWriter&& rhs) = delete;
+    HumanListReportWriter& operator=(HumanListReportWriter const& rhs) = delete;
+    HumanListReportWriter& operator=(HumanListReportWriter&& rhs) = delete;
+    virtual ~HumanListReportWriter();
 
 // inherited virtual functions
 private:
-	virtual void
-		do_process_stint(std::ostream& p_os, Stint const& p_stint) override;
+    virtual void
+        do_process_stint(std::ostream& p_os, Stint const& p_stint) override;
 
 };  // class HumanListReportWriter
 

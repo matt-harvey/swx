@@ -36,24 +36,24 @@ class ResumeCommand: public RecordingCommand
 {
 // special member functions
 public:
-	explicit ResumeCommand
-	(	std::string const& p_command_word,
-		std::vector<std::string> const& p_aliases,
-		TimeLog& p_time_log
-	);
-	ResumeCommand(ResumeCommand const& rhs) = delete;
-	ResumeCommand(ResumeCommand&& rhs) = delete;
-	ResumeCommand& operator=(ResumeCommand const& rhs) = delete;
-	ResumeCommand& operator=(ResumeCommand&& rhs) = delete;
-	virtual ~ResumeCommand();
+    explicit ResumeCommand
+    (   std::string const& p_command_word,
+        std::vector<std::string> const& p_aliases,
+        TimeLog& p_time_log
+    );
+    ResumeCommand(ResumeCommand const& rhs) = delete;
+    ResumeCommand(ResumeCommand&& rhs) = delete;
+    ResumeCommand& operator=(ResumeCommand const& rhs) = delete;
+    ResumeCommand& operator=(ResumeCommand&& rhs) = delete;
+    virtual ~ResumeCommand();
 
 // inherited virtual functions
 private:
-	virtual ErrorMessages do_process
-	(	Config const& p_config,
-		ParsedArguments const& p_args,
-		std::ostream& p_ordinary_ostream
-	) override;
+    virtual ErrorMessages do_process
+    (   Config const& p_config,
+        ParsedArguments const& p_args,
+        std::ostream& p_ordinary_ostream
+    ) override;
 
 };  // class ResumeCommand
 

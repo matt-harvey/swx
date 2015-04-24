@@ -34,23 +34,23 @@ class VersionCommand: public Command
 {
 // special member functions
 public:
-	VersionCommand
-	(	std::string const& p_command_word,
-		std::vector<std::string> const& p_aliases
-	);
-	VersionCommand(VersionCommand const& rhs) = delete;
-	VersionCommand(VersionCommand&& rhs) = delete;
-	VersionCommand& operator=(VersionCommand const& rhs) = delete;
-	VersionCommand& operator=(VersionCommand&& rhs) = delete;
-	virtual ~VersionCommand();
+    VersionCommand
+    (   std::string const& p_command_word,
+        std::vector<std::string> const& p_aliases
+    );
+    VersionCommand(VersionCommand const& rhs) = delete;
+    VersionCommand(VersionCommand&& rhs) = delete;
+    VersionCommand& operator=(VersionCommand const& rhs) = delete;
+    VersionCommand& operator=(VersionCommand&& rhs) = delete;
+    virtual ~VersionCommand();
 
 // inherited virtual functions
 private:
-	virtual ErrorMessages do_process
-	(	Config const& p_config,
-		ParsedArguments const& p_args,
-		std::ostream& p_ordinary_ostream
-	) override;
+    virtual ErrorMessages do_process
+    (   Config const& p_config,
+        ParsedArguments const& p_args,
+        std::ostream& p_ordinary_ostream
+    ) override;
 
 };  // class VersionCommand
 

@@ -35,55 +35,55 @@ class ActivityNode
 // special member functions
 public:
 
-	explicit ActivityNode(std::string const& p_activity);
+    explicit ActivityNode(std::string const& p_activity);
 
-	/**
-	 * Initializes the node using \e p_activity then resizes it to
-	 * \e p_depth, either by adding empty components, or by deleting
-	 * components from the end, until \e p_depth is reached.
-	 */
-	ActivityNode(std::string const& p_activity, unsigned int p_depth);
+    /**
+     * Initializes the node using \e p_activity then resizes it to
+     * \e p_depth, either by adding empty components, or by deleting
+     * components from the end, until \e p_depth is reached.
+     */
+    ActivityNode(std::string const& p_activity, unsigned int p_depth);
 
 private:
-	ActivityNode
-	(	std::vector<std::string>::const_iterator const& p_begin,
-		std::vector<std::string>::const_iterator const& p_end
-	);
+    ActivityNode
+    (   std::vector<std::string>::const_iterator const& p_begin,
+        std::vector<std::string>::const_iterator const& p_end
+    );
 public:
-	ActivityNode(ActivityNode const& rhs) = default;
-	ActivityNode(ActivityNode&& rhs) = default;
-	ActivityNode& operator=(ActivityNode const& rhs) = default;
-	ActivityNode& operator=(ActivityNode&& rhs) = default;
-	~ActivityNode() = default;
+    ActivityNode(ActivityNode const& rhs) = default;
+    ActivityNode(ActivityNode&& rhs) = default;
+    ActivityNode& operator=(ActivityNode const& rhs) = default;
+    ActivityNode& operator=(ActivityNode&& rhs) = default;
+    ~ActivityNode() = default;
 
 // operators
 public:
-	bool operator<(ActivityNode const& rhs) const;
-	bool operator==(ActivityNode const& rhs) const;
-	bool operator!=(ActivityNode const& rhs) const;
+    bool operator<(ActivityNode const& rhs) const;
+    bool operator==(ActivityNode const& rhs) const;
+    bool operator!=(ActivityNode const& rhs) const;
 
 // ordinary member functions
 public:
-	/**
-	 * @returns the full name of the node's activity
-	 */
-	std::string activity() const;
+    /**
+     * @returns the full name of the node's activity
+     */
+    std::string activity() const;
 
-	/**
-	 * @returns the name of the last component of the activity.
-	 */
-	std::string marginal_name() const;
+    /**
+     * @returns the name of the last component of the activity.
+     */
+    std::string marginal_name() const;
 
-	/**
-	 * @returns an ActivityNode corresponding to the "parent" of the
-	 * activity. If there is no parent (which will be the case if and only
-	 * if the node has no components), behaviour is undefined.
-	 */
-	ActivityNode parent() const;
+    /**
+     * @returns an ActivityNode corresponding to the "parent" of the
+     * activity. If there is no parent (which will be the case if and only
+     * if the node has no components), behaviour is undefined.
+     */
+    ActivityNode parent() const;
 
 // member variables
 private:
-	std::vector<std::string> m_components;
+    std::vector<std::string> m_components;
 
 };  // class ActivityNode
 
