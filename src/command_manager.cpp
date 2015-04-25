@@ -75,12 +75,12 @@ namespace
 CommandManager::CommandManager(TimeLog& p_time_log): m_time_log(p_time_log)
 {
     populate_command_map();    
-#    ifndef NDEBUG
+#   ifndef NDEBUG
         for (auto const& entry: m_command_map)
         {
             assert (entry.second);
         }
-#    endif
+#   endif
 }
 
 CommandManager::~CommandManager() = default;

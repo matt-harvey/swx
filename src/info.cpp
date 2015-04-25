@@ -38,16 +38,16 @@ Info::application_name()
 string
 Info::version()
 {
-#    ifdef SWX_RELEASE
+#   ifdef SWX_RELEASE
         ostringstream oss;
         enable_exceptions(oss);
         oss << SWX_VERSION_MAJOR << '.'
             << SWX_VERSION_MINOR << '.'
             << SWX_VERSION_PATCH;
         return oss.str();
-#    else
+#   else
         return "not applicable";
-#    endif
+#   endif
 }
 
 string

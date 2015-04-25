@@ -298,7 +298,7 @@ TimeLog::load_entry(string const& p_entry_string, size_t p_line_number)
     {
         auto const last_time_point = m_entries.back().time_point;
         if (entry.time_point < last_time_point)
-        {
+        {       
             ostringstream oss;
             enable_exceptions(oss);
             oss << "Time log entries out of order at line "
