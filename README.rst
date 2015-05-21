@@ -168,6 +168,10 @@ If you pass the ``-t`` option, then the results will be output in "tree"
 format, showing the hierarchical structure of activities. This does not
 apply in CSV (``-c``) format or "list" (``-l``) mode.
 
+If you pass the ``-s`` option, then the results will be output in "succinct"
+format, with the total duration shown only, and no activity names shown. This
+does not apply in "list" (``-l``) mode or "tree" (``-t``) mode.
+
 By default, the number of hours shown is rounded to the nearest tenth of
 an hour (6 minutes). This behaviour can be changed in the Configuration_.
 

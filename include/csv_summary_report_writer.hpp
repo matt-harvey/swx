@@ -36,7 +36,8 @@ public:
     (   std::vector<Stint> const& p_stints,
         Options const& p_options,
         bool p_include_beginning,
-        bool p_include_ending
+        bool p_include_ending,
+        bool p_succinct
     );
     CsvSummaryReportWriter(CsvSummaryReportWriter const& rhs) = delete;
     CsvSummaryReportWriter(CsvSummaryReportWriter&& rhs) = delete;
@@ -55,6 +56,7 @@ private:
 private:
     bool const m_include_beginning;
     bool const m_include_ending;
+    bool const m_succinct;
 
 };  // class CsvSummaryReportWriter
 

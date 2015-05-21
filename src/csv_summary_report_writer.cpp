@@ -37,11 +37,13 @@ CsvSummaryReportWriter::CsvSummaryReportWriter
 (   vector<Stint> const& p_stints,
     Options const& p_options,
     bool p_include_beginning,
-    bool p_include_ending
+    bool p_include_ending,
+    bool p_succinct
 ):
     SummaryReportWriter(p_stints, p_options),
     m_include_beginning(p_include_beginning),
-    m_include_ending(p_include_ending)
+    m_include_ending(p_include_ending),
+    m_succinct(p_succinct)
 {
 }
 
@@ -53,6 +55,44 @@ CsvSummaryReportWriter::do_write_summary
     map<string, ActivityStats> const& p_activity_stats_map
 )
 {
+    if (m_succinct)
+    {
+        ActivityStats total_info;
+        for (auto const& pair: p_activity_stats_map) total_info += pair.second;
+        if (m_include_beginning && m_include_ending)
+        {
+            output_csv_row
+            (   p_os,
+                seconds_to_rounded_hours(total_info.seconds),
+                time_point_to_stamp(total_info.beginning, time_format(), formatted_buf_len()),
+                time_point_to_stamp(total_info.ending, time_format(), formatted_buf_len())
+            );
+        }
+        else if (m_include_beginning)
+        {
+            output_csv_row
+            (   p_os,
+                seconds_to_rounded_hours(total_info.seconds),
+                time_point_to_stamp(total_info.beginning, time_format(), formatted_buf_len())
+            );
+        }
+        else if (m_include_ending)
+        {
+            output_csv_row
+            (   p_os,
+                seconds_to_rounded_hours(total_info.seconds),
+                time_point_to_stamp(total_info.ending, time_format(), formatted_buf_len())
+            );
+        }
+        else
+        {
+            output_csv_row
+            (   p_os,
+                seconds_to_rounded_hours(total_info.seconds)
+            );
+        }
+        return;
+    }
     for (auto const& pair: p_activity_stats_map)
     {
         auto const& activity = pair.first;

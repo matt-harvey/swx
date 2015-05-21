@@ -51,6 +51,7 @@ namespace
     char const k_verbose_flag = 'v';
     char const k_csv_flag = 'c';
     char const k_tree_view_flag = 't';
+    char const k_succinct_view_flag = 's';
 }
 
 ReportingCommand::ReportingCommand
@@ -94,11 +95,15 @@ ReportingCommand::ReportingCommand
     (   k_csv_flag,
         "Output in CSV format"
     );
-    
     add_boolean_option
     (   k_tree_view_flag,
         "Show hierarchical \"tree\" activity structure (ignored in list mode "
             "and in CSV format)"
+    );
+    add_boolean_option
+    (   k_succinct_view_flag,
+        "Succinct output: show grand total only (ignored in list mode and in "
+            "tree mode)"
     );
 }
 
@@ -122,6 +127,7 @@ ReportingCommand::print_report
     bool const detail = (verbose || p_flags.count(k_list_flag));
     bool const summary = (verbose || !p_flags.count(k_list_flag));
     bool const show_tree = p_flags.count(k_tree_view_flag);
+    bool const succinct = p_flags.count(k_succinct_view_flag);
 
     unique_ptr<string> activity_ptr;
     if (!p_activity_components.empty())
@@ -158,7 +164,8 @@ ReportingCommand::print_report
                 (   stints,
                     options,
                     show_beginning,
-                    show_end
+                    show_end,
+                    succinct
                 )
             );
         }
@@ -170,7 +177,8 @@ ReportingCommand::print_report
                     options,
                     show_beginning,
                     show_end,
-                    show_tree
+                    show_tree,
+                    succinct
                 )
             );
         }

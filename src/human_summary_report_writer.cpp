@@ -58,12 +58,14 @@ HumanSummaryReportWriter::HumanSummaryReportWriter
     Options const& p_options,
     bool p_include_beginning,
     bool p_include_ending,
-    bool p_show_tree
+    bool p_show_tree,
+    bool p_succinct
 ):
     SummaryReportWriter(p_stints, p_options),
     m_include_beginning(p_include_beginning),
     m_include_ending(p_include_ending),
-    m_show_tree(p_show_tree)
+    m_show_tree(p_show_tree),
+    m_succinct(p_succinct)
 {
 }
 
@@ -76,6 +78,7 @@ HumanSummaryReportWriter::do_write_summary
 )
 {
     if (m_show_tree) write_tree_summary(p_os, p_activity_stats_map);
+    else if (m_succinct) write_succinct_summary(p_os, p_activity_stats_map);
     else write_flat_summary(p_os, p_activity_stats_map);
     return;
 }
@@ -87,14 +90,17 @@ HumanSummaryReportWriter::print_label_and_rounded_hours
     unsigned long long p_seconds,
     TimePoint const* p_beginning,
     TimePoint const* p_ending,
-    unsigned int p_left_col_width,
-    unsigned int p_activity_depth
+    unsigned int p_left_col_width
 ) const
 {
     StreamFlagGuard guard(p_os);
-    p_os << left << setw(p_left_col_width) << p_label << ' '
-         << fixed << setprecision(output_precision()) << right
-         << setw(output_width()) << seconds_to_rounded_hours(p_seconds);
+    if (!p_label.empty())
+    {
+        p_os << left << setw(p_left_col_width) << p_label << ' '
+             << right << setw(output_width());
+    }
+    p_os << fixed << setprecision(output_precision())
+         << seconds_to_rounded_hours(p_seconds);
     guard.reset();
 
     if (p_beginning != nullptr)
@@ -109,6 +115,24 @@ HumanSummaryReportWriter::print_label_and_rounded_hours
     }
     p_os << endl;
 
+    return;
+}
+
+void
+HumanSummaryReportWriter::write_succinct_summary
+(   ostream& p_os,
+    map<std::string, ActivityStats> const& p_activity_stats_map
+)
+{
+    ActivityStats total_info;
+    for (auto const& pair: p_activity_stats_map) total_info += pair.second;
+    print_label_and_rounded_hours
+    (   p_os,
+        string(),
+        total_info.seconds,
+        (m_include_beginning? &(total_info.beginning): nullptr),
+        (m_include_ending? &(total_info.ending): nullptr)
+    );
     return;
 }
 

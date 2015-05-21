@@ -43,7 +43,8 @@ public:
         Options const& p_options,
         bool p_include_beginning,
         bool p_include_ending,
-        bool p_show_tree
+        bool p_show_tree,
+        bool p_succinct
     );
     HumanSummaryReportWriter(HumanSummaryReportWriter const& rhs) = delete;
     HumanSummaryReportWriter(HumanSummaryReportWriter&& rhs) = delete;
@@ -66,9 +67,13 @@ private:
         unsigned long long p_seconds,
         TimePoint const* p_beginning,
         TimePoint const* p_ending,
-        unsigned int p_left_col_width,
-        unsigned int p_activity_depth = 0
+        unsigned int p_left_col_width = 0
     ) const;
+
+    void write_succinct_summary
+    (   std::ostream& p_os,
+        std::map<std::string, ActivityStats> const& p_activity_stats_map
+    );
 
     void write_flat_summary
     (   std::ostream& p_os,
@@ -85,6 +90,7 @@ private:
     bool const m_include_beginning;
     bool const m_include_ending;
     bool const m_show_tree;
+    bool const m_succinct;
 
 };  // class HumanSummaryReportWriter
 
