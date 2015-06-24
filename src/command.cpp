@@ -223,7 +223,7 @@ Command::usage_descriptor() const
 {
     // TODO LOW PRIORITY This should handle wrapping of the right-hand cell
     // to a reasonable width if necessary.
-    typedef string::size_type ColWidth;
+    using ColWidth = string::size_type;
     ColWidth command_word_length = m_command_word.length();
     ColWidth left_col_width = command_word_length;
     auto const app_name = Info::application_name();

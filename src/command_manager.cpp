@@ -197,7 +197,7 @@ CommandManager::help_information(string const& p_command) const
 string
 CommandManager::help_information() const
 {
-    typedef string Category;
+    using Category = string;
     map<Category, set<shared_ptr<Command>>> grouped_commands;
     for (auto const& pair: m_command_map)
     {

@@ -42,9 +42,7 @@ class CommandManager
 {
 // nested types
 private:
-    typedef
-        std::map<std::string, std::shared_ptr<Command>>
-        CommandMap;
+    using CommandMap = std::map<std::string, std::shared_ptr<Command>>;
 
 // special member functions
 public:

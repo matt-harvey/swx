@@ -25,7 +25,7 @@ namespace swx
 /**
  * Represents a number of seconds elapsed.
  */
-typedef std::chrono::duration<unsigned long long> Seconds;
+using Seconds = std::chrono::duration<unsigned long long>;
 
 }  // namespace swx
 

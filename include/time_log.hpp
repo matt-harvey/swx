@@ -35,11 +35,11 @@ namespace swx
  */
 class TimeLog
 {
-// nested types and typedefs
+// nested types
 private:
 
-    typedef std::string const* ActivityId;
-    typedef std::unordered_set<std::string> Activities;
+    using ActivityId = std::string const*;
+    using Activities = std::unordered_set<std::string>;
 
     /**
      * Represents a single record in the log.

@@ -37,11 +37,11 @@ namespace swx
  */
 class Command
 {
-// nested types and typedefs
+// nested types
 protected:
-    typedef std::vector<std::string> Arguments;
-    typedef std::vector<std::string> ErrorMessages;
-    typedef std::set<char> Flags;
+    using Arguments = std::vector<std::string>;
+    using ErrorMessages = std::vector<std::string>;
+    using Flags = std::set<char>;
 
 protected:
     class ParsedArguments

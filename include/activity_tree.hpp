@@ -48,15 +48,14 @@ private:
     };
 
 public:
-    typedef std::function
-    <    void
+    using PrintNode = std::function
+    <   void
         (   std::ostream& p_os,
             unsigned int p_depth,
             std::string const& p_node_label,
             ActivityStats const& p_stats
         )
-    >
-    PrintNode;
+    >;
 
 
 // special member functions

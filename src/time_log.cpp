@@ -161,9 +161,8 @@ TimeLog::last_activity_to_match(string const& p_regex)
 {
     load();
     regex const reg(p_regex, regex::extended | regex::optimize);
-    typedef decltype(m_entries)::const_reverse_iterator RevIter;
     auto const empty_activity_id = register_activity("");
-    for (RevIter rit = m_entries.rbegin(); rit != m_entries.rend(); ++rit)
+    for (auto rit = m_entries.rbegin(); rit != m_entries.rend(); ++rit)  // reverse
     {
         auto const id = rit->activity_id;
         if (id != empty_activity_id)
@@ -188,14 +187,13 @@ TimeLog::last_activities(size_t p_num)
         return ret;
     }
     assert (m_entries.size() >= 1);
-    typedef decltype(m_entries)::const_reverse_iterator RevIter;
-    for (RevIter it = m_entries.rbegin(); it != m_entries.rend(); ++it)
+    for (auto rit = m_entries.rbegin(); rit != m_entries.rend(); ++rit)  // reverse
     {
         if (ret.size() == p_num)
         {
             break;
         }
-        auto const& activity = id_to_activity(it->activity_id);
+        auto const& activity = id_to_activity(rit->activity_id);
         if (!activity.empty() && (ret.empty() || (activity != ret.back())))
         {
             ret.push_back(activity);
