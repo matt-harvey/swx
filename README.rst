@@ -4,16 +4,108 @@ Overview
 ``swx`` is a command line application for keeping track of the amount of
 time you spend on different activities.
 
-The name "swx" stands for "stopwatch extended", reflecting that it works
-essentially like a stopwatch that has been extended with various additional
-features to support fine-grained recording and reporting on activities
-conducted over a period time.
-
 Usage
 =====
 
-Basic usage
------------
+Quick summary
+-------------
+
+Start work on a new activity::
+
+  swx s -c <name-of-new-activity>
+
+or::
+  
+  swx s <name-of-new-activity> -c
+
+(Flags can be placed before or after the other arguments.)
+
+Switch to an existing activity::
+
+  swx s <name-of-existing-activity>
+
+Stop working on any activity::
+
+  swx s
+
+Resume work on the most recent activity::
+
+  swx resume
+
+Switch to the most recent activity that matches a regular expression::
+
+  swx s -r <regular-expression>
+
+Switch to a "child activity" of the current activity::
+
+  swx s <current-activity> <child-activity>
+
+or just::
+
+  swx s _ <child-activity>
+
+Switch to the "parent activity" of the current activity::
+
+  swx s __
+
+Switch to a "sibling activity" of the current activity::
+
+  swx s __ <sibling-activity>
+
+Print a summary of today's activities::
+
+  swx d
+
+Print the summary in "tree" form::
+
+  swx d -t
+
+Print a summary of yesterday's activities::
+
+  swx d -1
+
+Print a date-ordered list of today's individual activity stints::
+
+  swx d -l
+
+Print a summary of the entire activity log::
+
+  swx p
+
+Print a summary of all activities since a given date and time::
+
+  swx since <timestamp-in-iso-"YYYY-MM-DDThh:mm"-format>
+
+Print a summary of all activitites between two times::
+
+  swx between <earliest-timestamp> <latest-timestamp>
+
+Print a summary of all activities matching a regular expression::
+
+  swx p -r <regular-expression>
+
+Print just the name of the current activity::
+
+  swx c
+
+Edit the time log::
+
+  swx e
+
+Get configuration info::
+
+  swx config
+
+Get general help::
+  
+  swx help
+
+Get help on a particular command::
+
+  swx help <command>
+
+General command structure
+-------------------------
 
 To use ``swx``, you enter a brief "switching" command each time you start an
 activity, end an activity, or switch from one activity to another. ``swx``
@@ -329,6 +421,13 @@ activity log will be stored. Unless you have specified otherwise in your
 configuration file, this data file will be stored in your home directory, and
 will be named ``<YOUR-USER-NAME>.swx``. You may or may not want to remove this
 file if you uninstall ``swx``.
+
+Miscellaneous
+=============
+
+The name "swx" stands for "stopwatch extended", reflecting that the application
+works essentially like a stopwatch which has been extended with various additional
+functionality.
 
 Contact
 =======
