@@ -20,8 +20,7 @@ Resume work on the most recent activity: ``swx resume``
 
 Switch to the most recent activity that matches a regular expression: ``swx s -r <regex>``
 
-Switch to a "child activity" of the current activity: ``swx s <current-activity> <child-activity>``
-
+Switch to a "child activity" of the current activity: ``swx s <current-activity> <child-activity>``,
 or just: ``swx s _ <child-activity>``
 
 Switch to the "parent activity" of the current activity: ``swx s __``
@@ -30,27 +29,27 @@ Switch to a "sibling activity" of the current activity: ``swx s __ <sibling-acti
 
 Print a summary of today's activities: ``swx d``
 
-Print the summary in tree form: ``swx d -t``
+Print today's activities in tree form: ``swx d -t``
 
-Print a summary of yesterday's activities: ``swx d -1``
+Print yesterday's activities: ``swx d -1``
 
-Print a date-ordered list of today's individual activity stints: ``swx d -l``
+Print a time-ordered list of today's individual activity stints: ``swx d -l``
 
 Print a summary of the entire activity log: ``swx p``
 
-Print a summary of all activities since a given date and time: ``swx since <YYYY-MM-DDThh:mm>``
+Print a summary of activities since a given date and time: ``swx since <YYYY-MM-DDThh:mm>``
 
-Print a summary of all activitites between two times: ``swx between <YYYY-MM-DDThh:mm> <YYYY-MM-DDThh:mm>``
+Print a summary of activitites between two times: ``swx between <YYYY-MM-DDThh:mm> <YYYY-MM-DDThh:mm>``
 
-Print a summary of all activities matching a regular expression: ``swx p -r <regex>``
+Print a summary of activities matching a regular expression: ``swx p -r <regex>``
 
 Print just the name of the current activity ``swx c``
 
-Edit the time log: ``swx e``
+Open the time log for editing: ``swx e``
 
 Get configuration info: ``swx config``
 
-Edit the configuration file: ``swx config -e``  
+Open the configuration file for editing: ``swx config -e``  
 
 Get general help: ``swx help``
 
