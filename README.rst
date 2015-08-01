@@ -10,99 +10,51 @@ Usage
 Quick summary
 -------------
 
-Start work on a new activity::
+Start work on a new activity: ``swx s -c <activity>`` 
 
-  swx s -c <name-of-new-activity>
+Switch to an existing activity: ``swx s <activity>``
 
-or::
-  
-  swx s <name-of-new-activity> -c
+Stop working on any activity: ``swx s``
 
-(Flags can be placed before or after the other arguments.)
+Resume work on the most recent activity: ``swx resume``
 
-Switch to an existing activity::
+Switch to the most recent activity that matches a regular expression: ``swx s -r <regex>``
 
-  swx s <name-of-existing-activity>
+Switch to a "child activity" of the current activity: ``swx s <current-activity> <child-activity>``
 
-Stop working on any activity::
+or just: ``swx s _ <child-activity>``
 
-  swx s
+Switch to the "parent activity" of the current activity: ``swx s __``
 
-Resume work on the most recent activity::
+Switch to a "sibling activity" of the current activity: ``swx s __ <sibling-activity>``
 
-  swx resume
+Print a summary of today's activities: ``swx d``
 
-Switch to the most recent activity that matches a regular expression::
+Print the summary in tree form: ``swx d -t``
 
-  swx s -r <regular-expression>
+Print a summary of yesterday's activities: ``swx d -1``
 
-Switch to a "child activity" of the current activity::
+Print a date-ordered list of today's individual activity stints: ``swx d -l``
 
-  swx s <current-activity> <child-activity>
+Print a summary of the entire activity log: ``swx p``
 
-or just::
+Print a summary of all activities since a given date and time: ``swx since <YYYY-MM-DDThh:mm>``
 
-  swx s _ <child-activity>
+Print a summary of all activitites between two times: ``swx between <YYYY-MM-DDThh:mm> <YYYY-MM-DDThh:mm>``
 
-Switch to the "parent activity" of the current activity::
+Print a summary of all activities matching a regular expression: ``swx p -r <regex>``
 
-  swx s __
+Print just the name of the current activity ``swx c``
 
-Switch to a "sibling activity" of the current activity::
+Edit the time log: ``swx e``
 
-  swx s __ <sibling-activity>
+Get configuration info: ``swx config``
 
-Print a summary of today's activities::
+Edit the configuration file: ``swx config -e``  
 
-  swx d
+Get general help: ``swx help``
 
-Print the summary in "tree" form::
-
-  swx d -t
-
-Print a summary of yesterday's activities::
-
-  swx d -1
-
-Print a date-ordered list of today's individual activity stints::
-
-  swx d -l
-
-Print a summary of the entire activity log::
-
-  swx p
-
-Print a summary of all activities since a given date and time::
-
-  swx since <timestamp-in-iso-"YYYY-MM-DDThh:mm"-format>
-
-Print a summary of all activitites between two times::
-
-  swx between <earliest-timestamp> <latest-timestamp>
-
-Print a summary of all activities matching a regular expression::
-
-  swx p -r <regular-expression>
-
-Print just the name of the current activity::
-
-  swx c
-
-Edit the time log::
-
-  swx e
-
-Get configuration info::
-
-  swx config
-
-Get general help::
-  
-  swx help
-
-Get help on a particular command::
-
-  swx help <command>
+Get help on a particular command: ``swx help <command>``
 
 General command structure
 -------------------------
