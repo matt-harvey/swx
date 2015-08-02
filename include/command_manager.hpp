@@ -43,6 +43,16 @@ class CommandManager
 // nested types
 private:
     using CommandMap = std::map<std::string, std::shared_ptr<Command>>;
+    using Commands = std::vector<std::shared_ptr<Command>>;
+
+    struct CommandGroup
+    {
+        explicit CommandGroup(std::string const& p_label): label(p_label)
+        {
+        }
+        std::string label;
+        Commands commands;
+    };
 
 // special member functions
 public:
@@ -92,7 +102,7 @@ private:
     std::ostream& error_ostream() const;
 
     template <typename CommandT, typename ... Args>
-    void create_command(Args&& ... p_args);
+    void create_command(CommandGroup& p_command_group, Args&& ... p_args);
 
     void register_command_word
     (   std::string const& p_word,
@@ -103,6 +113,7 @@ private:
 private:
     TimeLog& m_time_log;
     CommandMap m_command_map;
+    std::vector<CommandGroup> m_command_groups;
 
 };  // class CommandManager
 
@@ -111,7 +122,7 @@ private:
 
 template <typename CommandT, typename ... Args>
 void
-CommandManager::create_command(Args&& ... p_args)
+CommandManager::create_command(CommandGroup& p_command_group, Args&& ... p_args)
 {
     auto command = std::make_shared<CommandT>(std::forward<Args>(p_args) ...);
     register_command_word(command->command_word(), command);
@@ -119,6 +130,7 @@ CommandManager::create_command(Args&& ... p_args)
     {
         register_command_word(alias, command);
     }
+    p_command_group.commands.push_back(command);
     return;
 }
 

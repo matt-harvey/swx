@@ -26,12 +26,6 @@
 namespace swx
 {
 
-// begin forward declarations
-
-class CommandCategory;
-
-// end forward declarations
-
 class RecordingCommand: public Command
 {
 // special member functions
@@ -53,10 +47,6 @@ public:
 // ordinary member functions
 protected:
     TimeLog& time_log();
-
-// inherited virtual functions
-protected:
-    virtual CommandCategory do_get_category() const override;
 
 // member variables
 private:

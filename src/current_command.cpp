@@ -16,7 +16,6 @@
 
 #include "current_command.hpp"
 #include "command.hpp"
-#include "command_category.hpp"
 #include "config.hpp"
 #include "help_line.hpp"
 #include "time_log.hpp"
@@ -62,12 +61,6 @@ CurrentCommand::CurrentCommand
 }
 
 CurrentCommand::~CurrentCommand() = default;
-
-CommandCategory
-CurrentCommand::do_get_category() const
-{
-    return CommandCategory("Reporting");
-}
 
 Command::ErrorMessages
 CurrentCommand::do_process

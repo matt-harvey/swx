@@ -69,7 +69,6 @@ set(
     src/print_command.cpp
     src/between_command.cpp
     src/command.cpp
-    src/command_category.cpp
     src/command_manager.cpp
     src/config.cpp
     src/config_command.cpp

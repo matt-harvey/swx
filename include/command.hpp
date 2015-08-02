@@ -28,12 +28,6 @@
 namespace swx
 {
 
-// begin forward declarations
-
-class CommandCategory;
-
-// end forward declarations
-
 /**
  * Represents a command that processes arguments received from
  * the command line.
@@ -89,13 +83,6 @@ protected:
     void add_boolean_option(char p_flag, std::string const& p_description);
 public:
 
-    /**
-     * @returns a category labelled "Miscellaneous", with the largest possible
-     * sort order (i.e. will always come last, unless another category has the
-     * same sort order and a "greater" label), unless do_get_category() is overridden.
-     */
-    CommandCategory category() const;
-
     bool has_boolean_option(char p_flag) const;
 
     int process
@@ -112,8 +99,6 @@ public:
 
 // virtual functions
 private:
-    virtual CommandCategory do_get_category() const;
-
     virtual ErrorMessages do_process
     (   Config const& p_config,
         ParsedArguments const& p_args,

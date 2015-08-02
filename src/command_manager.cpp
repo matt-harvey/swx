@@ -17,7 +17,6 @@
 #include "command_manager.hpp"
 #include "between_command.hpp"
 #include "command.hpp"
-#include "command_category.hpp"
 #include "config.hpp"
 #include "config_command.hpp"
 #include "current_command.hpp"
@@ -54,6 +53,7 @@ using std::cout;
 using std::endl;
 using std::left;
 using std::map;
+using std::move;
 using std::ostream;
 using std::ostringstream;
 using std::runtime_error;
@@ -91,20 +91,28 @@ CommandManager::populate_command_map()
 {
     using V = vector<string>;
 
-    create_command<SwitchCommand>("switch", V{"s"}, m_time_log);
-    create_command<ResumeCommand>("resume", V{}, m_time_log);
+    CommandGroup rec("Recording commands");
+    CommandGroup rep("Reporting commands");
+    CommandGroup misc("Miscellaneous commands");
 
-    create_command<CurrentCommand>("current", V{"c"}, m_time_log);
-    create_command<PrintCommand>("print", V{"p"}, m_time_log);
-    create_command<DayCommand>("day", V{"d"}, m_time_log);
-    create_command<BetweenCommand>("between", V{}, m_time_log);
-    create_command<SinceCommand>("since", V{}, m_time_log);
-    create_command<UntilCommand>("until", V{}, m_time_log);
+    create_command<SwitchCommand>(rec, "switch", V{"s"}, m_time_log);
+    create_command<ResumeCommand>(rec, "resume", V{}, m_time_log);
 
-    create_command<EditCommand>("edit", V{"e"});
-    create_command<ConfigCommand>("config", V{});
-    create_command<HelpCommand>(k_help_command_string, V{"--help", "-h"}, *this);
-    create_command<VersionCommand>("version", V{"--version"});
+    create_command<CurrentCommand>(rep, "current", V{"c"}, m_time_log);
+    create_command<PrintCommand>(rep, "print", V{"p"}, m_time_log);
+    create_command<DayCommand>(rep, "day", V{"d"}, m_time_log);
+    create_command<BetweenCommand>(rep, "between", V{}, m_time_log);
+    create_command<SinceCommand>(rep, "since", V{}, m_time_log);
+    create_command<UntilCommand>(rep, "until", V{}, m_time_log);
+
+    create_command<EditCommand>(misc, "edit", V{"e"});
+    create_command<ConfigCommand>(misc, "config", V{});
+    create_command<HelpCommand>(misc, k_help_command_string, V{"--help", "-h"}, *this);
+    create_command<VersionCommand>(misc, "version", V{"--version"});
+
+    m_command_groups.push_back(move(rec));
+    m_command_groups.push_back(move(rep));
+    m_command_groups.push_back(move(misc));
 
     return;
 }
@@ -155,22 +163,15 @@ CommandManager::help_information(string const& p_command) const
 string
 CommandManager::help_information() const
 {
-    map<CommandCategory, set<shared_ptr<Command>>> grouped_commands;
-    for (auto const& pair: m_command_map)
-    {
-        shared_ptr<Command> const& command_ptr = pair.second;
-        grouped_commands[command_ptr->category()].insert(command_ptr);
-    }
     ostringstream oss;
     enable_exceptions(oss);
     oss << "Usage: "
         << Info::application_name()
         << " <COMMAND> [OPTIONS...] [ARGUMENTS...] [OPTIONS...]\n";
     string::size_type width = 0;
-    for (auto const& pair: grouped_commands)
+    for (auto const& group: m_command_groups)
     {
-        auto const& command_group = pair.second;
-        for (auto const& command_ptr: command_group)
+        for (auto const& command_ptr: group.commands)
         {
             auto const& command = *command_ptr;
             string::size_type current_width = command.command_word().size();
@@ -183,12 +184,10 @@ CommandManager::help_information() const
             width = ((current_width > width)? current_width: width);
         }
     }
-    for (auto const& pair: grouped_commands)
+    for (auto const& group: m_command_groups)
     {
-        auto const& category = pair.first;
-        oss << '\n' << category.label() << " commands:\n\n";
-        auto const& command_group = pair.second;
-        for (auto const& command_ptr: command_group)
+        oss << '\n' << group.label << ":\n\n";
+        for (auto const& command_ptr: group.commands)
         {
             auto const& command = *command_ptr;
             StreamFlagGuard guard(oss);

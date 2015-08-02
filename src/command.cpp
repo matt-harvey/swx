@@ -15,7 +15,6 @@
  */
 
 #include "command.hpp"
-#include "command_category.hpp"
 #include "config.hpp"
 #include "help_line.hpp"
 #include "info.hpp"
@@ -154,12 +153,6 @@ Command::add_boolean_option(char p_flag, string const& p_description)
     return;
 }
 
-CommandCategory
-Command::category() const
-{
-    return do_get_category();
-}
-
 bool
 Command::has_boolean_option(char p_flag) const
 {
@@ -296,15 +289,6 @@ vector<string> const&
 Command::aliases() const
 {
     return m_aliases;
-}
-
-CommandCategory
-Command::do_get_category() const
-{
-    return CommandCategory
-    (   "Miscellaneous",
-        numeric_limits<CommandCategory::SortOrder>::max()
-    );
 }
 
 bool
