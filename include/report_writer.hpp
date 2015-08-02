@@ -60,7 +60,7 @@ public:
     };
 
 // special member functions
-protected:
+public:
     ReportWriter
     (   std::vector<Stint> const& p_stints,
         Options const& p_options

@@ -181,9 +181,6 @@ individual activity stints will be shown, in the following format::
 
     <START-TIME> <END-TIME> <HOURS-SPENT-IN-DIGITAL-FORMAT> <ACTIVITY>
 
-If you pass the ``-v`` option, then both the detailed list and the summary will
-be printed.
-
 If you pass the ``-r`` option, then the activity string you enter will be
 treated as a regular expression (of the POSIX extended variety), rather than an
 exact activity name. Any activities will then be included in the report for

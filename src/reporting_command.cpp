@@ -48,7 +48,6 @@ namespace
     char const k_list_flag = 'l';
     char const k_beginning_flag ='b';
     char const k_ending_flag = 'e';
-    char const k_verbose_flag = 'v';
     char const k_csv_flag = 'c';
     char const k_tree_view_flag = 't';
     char const k_succinct_view_flag = 's';
@@ -87,11 +86,6 @@ ReportingCommand::ReportingCommand
             "not apply in list mode)"
     );
     add_boolean_option
-    (   k_verbose_flag,
-        "Print both a date-ordered list of individual activity stints, and a "
-            "summary of the time spent on each activity"
-    );
-    add_boolean_option
     (   k_csv_flag,
         "Output in CSV format"
     );
@@ -123,25 +117,17 @@ ReportingCommand::print_report
     bool const use_regex = p_flags.count(k_regex_flag);
     bool const show_beginning = p_flags.count(k_beginning_flag);
     bool const show_end = p_flags.count(k_ending_flag);
-    bool const verbose = p_flags.count(k_verbose_flag);
-    bool const detail = (verbose || p_flags.count(k_list_flag));
-    bool const summary = (verbose || !p_flags.count(k_list_flag));
+    bool const detail = p_flags.count(k_list_flag);
     bool const show_tree = p_flags.count(k_tree_view_flag);
     bool const succinct = p_flags.count(k_succinct_view_flag);
 
     unique_ptr<string> activity_ptr;
     if (!p_activity_components.empty())
     {
-        auto const expanded =
-            expand_placeholders(p_activity_components, m_time_log);
-        activity_ptr.reset
-        (   new string(squish(expanded.begin(), expanded.end()))
-        );
+        auto const expanded = expand_placeholders(p_activity_components, m_time_log);
+        activity_ptr.reset(new string(squish(expanded.begin(), expanded.end())));
     }
-    auto const stints =
-        m_time_log.get_stints(activity_ptr.get(), p_begin, p_end, use_regex);
-    unique_ptr<ListReportWriter> list_writer;
-    unique_ptr<SummaryReportWriter> summary_writer;
+    auto const stints = m_time_log.get_stints(activity_ptr.get(), p_begin, p_end, use_regex);
     ReportWriter::Options const options
     (   p_config.output_rounding_numerator(),
         p_config.output_rounding_denominator(),
@@ -150,16 +136,23 @@ ReportingCommand::print_report
         p_config.formatted_buf_len(),
         p_config.time_format()
     );
+    unique_ptr<ReportWriter> report_writer;
     if (detail)
-    {
-        if (csv) list_writer.reset(new CsvListReportWriter(stints, options));
-        else     list_writer.reset(new HumanListReportWriter(stints, options));
-    }
-    if (summary)
     {
         if (csv)
         {
-            summary_writer.reset
+            report_writer.reset(new CsvListReportWriter(stints, options));
+        }
+        else
+        {
+            report_writer.reset(new HumanListReportWriter(stints, options));
+        }
+    }
+    else
+    {
+        if (csv)
+        {
+            report_writer.reset
             (   new CsvSummaryReportWriter
                 (   stints,
                     options,
@@ -171,7 +164,7 @@ ReportingCommand::print_report
         }
         else
         {
-            summary_writer.reset
+            report_writer.reset
             (   new HumanSummaryReportWriter
                 (   stints,
                     options,
@@ -183,9 +176,7 @@ ReportingCommand::print_report
             );
         }
     }
-    if (list_writer) list_writer->write(p_os);
-    if (list_writer && summary_writer) p_os << endl;
-    if (summary_writer) summary_writer->write(p_os);
+    report_writer->write(p_os);
     return p_os;    
 }
 
