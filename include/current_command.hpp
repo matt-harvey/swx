@@ -29,6 +29,7 @@ namespace swx
 
 // begin forward declarations
 
+class CommandCategory;
 class Config;
 
 // end forward declarations
@@ -50,12 +51,13 @@ public:
 
 // inherited virtual functions
 private:
+    virtual CommandCategory do_get_category() const override;
+
     virtual ErrorMessages do_process
     (   Config const& p_config,
         ParsedArguments const& p_args,
         std::ostream& p_ordinary_ostream
     ) override;
-    
 
 // member variables
 private:
