@@ -89,65 +89,22 @@ CommandManager::~CommandManager() = default;
 void
 CommandManager::populate_command_map()
 {
-    shared_ptr<Command> current_command
-    (   new CurrentCommand("current", {"c"}, m_time_log)
-    );
-    create_command(current_command);
+    using V = vector<string>;
 
-    shared_ptr<Command> version_command
-    (   new VersionCommand("version", {})
-    );
-    create_command(version_command);    
-    
-    shared_ptr<Command> help_command
-    (   new HelpCommand(k_help_command_string, {"h"}, *this)
-    );
-    create_command(help_command);
+    create_command<SwitchCommand>("switch", V{"s"}, m_time_log);
+    create_command<ResumeCommand>("resume", V{}, m_time_log);
 
-    shared_ptr<Command> config_command
-    (   new ConfigCommand("config", {})
-    );
-    create_command(config_command);
+    create_command<CurrentCommand>("current", V{"c"}, m_time_log);
+    create_command<PrintCommand>("print", V{"p"}, m_time_log);
+    create_command<DayCommand>("day", V{"d"}, m_time_log);
+    create_command<BetweenCommand>("between", V{}, m_time_log);
+    create_command<SinceCommand>("since", V{}, m_time_log);
+    create_command<UntilCommand>("until", V{}, m_time_log);
 
-    shared_ptr<Command> edit_command
-    (   new EditCommand("edit", {"e"})
-    );
-    create_command(edit_command);
-
-    shared_ptr<Command> switch_command
-    (   new SwitchCommand("switch", {"s"}, m_time_log)
-    );
-    create_command(switch_command);
-
-    shared_ptr<Command> resume_command
-    (   new ResumeCommand("resume", {}, m_time_log)
-    );
-    create_command(resume_command);
-
-    shared_ptr<Command> print_command
-    (   new PrintCommand("print", {"p"}, m_time_log)
-    );
-    create_command(print_command);
-
-    shared_ptr<Command> day_command
-    (   new DayCommand("day", {"d"}, m_time_log)
-    );
-    create_command(day_command);
-
-    shared_ptr<Command> since_command
-    (   new SinceCommand("since", {}, m_time_log)
-    );
-    create_command(since_command);
-
-    shared_ptr<Command> until_command
-    (   new UntilCommand("until", {}, m_time_log)
-    );
-    create_command(until_command);
-
-    shared_ptr<Command> between_command
-    (   new BetweenCommand("between", {}, m_time_log)
-    );
-    create_command(between_command);
+    create_command<EditCommand>("edit", V{"e"});
+    create_command<ConfigCommand>("config", V{});
+    create_command<HelpCommand>(k_help_command_string, V{"--help", "-h"}, *this);
+    create_command<VersionCommand>("version", V{"--version"});
 
     return;
 }
@@ -309,17 +266,6 @@ ostream&
 CommandManager::error_ostream() const
 {
     return cerr;
-}
-
-void
-CommandManager::create_command(shared_ptr<Command> const& p_cp)
-{
-    register_command_word(p_cp->command_word(), p_cp);
-    for (auto const& alias: p_cp->aliases())
-    {
-        register_command_word(alias, p_cp);
-    }
-    return;
 }
 
 void

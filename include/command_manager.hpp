@@ -90,7 +90,10 @@ private:
     int process_unrecognized_command(std::string const& p_command) const;
     std::ostream& ordinary_ostream() const;
     std::ostream& error_ostream() const;
-    void create_command(std::shared_ptr<Command> const& p_cp);
+
+    template <typename CommandT, typename ... Args>
+    void create_command(Args&& ... p_args);
+
     void register_command_word
     (   std::string const& p_word,
         std::shared_ptr<Command> const& p_cp
@@ -102,6 +105,22 @@ private:
     CommandMap m_command_map;
 
 };  // class CommandManager
+
+
+// member template implementations
+
+template <typename CommandT, typename ... Args>
+void
+CommandManager::create_command(Args&& ... p_args)
+{
+    auto command = std::make_shared<CommandT>(std::forward<Args>(p_args) ...);
+    register_command_word(command->command_word(), command);
+    for (auto const& alias: command->aliases())
+    {
+        register_command_word(alias, command);
+    }
+    return;
+}
 
 }  // namespace swx
 
