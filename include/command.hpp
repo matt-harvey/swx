@@ -18,6 +18,7 @@
 #define GUARD_command_hpp_08439188501070807
 
 #include "config.hpp"
+#include "exit_code.hpp"
 #include "help_line.hpp"
 #include <map>
 #include <ostream>
@@ -85,7 +86,7 @@ public:
 
     bool has_boolean_option(char p_flag) const;
 
-    int process
+    ExitCode process
     (   Config const& p_config,
         Arguments const& p_args,
         std::ostream& p_ordinary_ostream,

@@ -22,6 +22,7 @@
 #include "current_command.hpp"
 #include "day_command.hpp"
 #include "edit_command.hpp"
+#include "exit_code.hpp"
 #include "help_command.hpp"
 #include "info.hpp"
 #include "placeholder.hpp"
@@ -34,6 +35,7 @@
 #include "until_command.hpp"
 #include "version_command.hpp"
 #include <cassert>
+#include <cstdlib>
 #include <iomanip>
 #include <ios>
 #include <iostream>
@@ -110,7 +112,7 @@ CommandManager::CommandManager(TimeLog& p_time_log)
 
 CommandManager::~CommandManager() = default;
 
-int
+ExitCode
 CommandManager::process_command
 (   Config const& p_config,
     string const& p_command,
@@ -126,13 +128,13 @@ CommandManager::process_command
     {
         assert (it->second);
         auto const command_ptr = it->second;
-        int const ret = command_ptr->process
+        auto const ret = command_ptr->process
         (   p_config,
             p_args,
             ordinary_ostream(),
             error_ostream()
         );
-        if (ret != 0)
+        if (ret != EXIT_SUCCESS)
         {
             error_ostream() << directions_to_get_help(p_command) << endl;
         }
@@ -238,14 +240,14 @@ CommandManager::error_message_for_unrecognized_command
     return string("Unrecognized command: ") + p_command;
 }
 
-int
+ExitCode
 CommandManager::process_unrecognized_command(string const& p_command) const
 {
     error_ostream() << error_message_for_unrecognized_command(p_command)
                     << endl
                     << directions_to_get_help()
                     << endl;
-    return 1;
+    return EXIT_FAILURE;
 }
 
 ostream&

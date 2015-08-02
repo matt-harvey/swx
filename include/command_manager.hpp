@@ -19,6 +19,7 @@
 
 #include "command.hpp"
 #include "config.hpp"
+#include "exit_code.hpp"
 #include "stream_flag_guard.hpp"
 #include <memory>
 #include <ostream>
@@ -74,7 +75,7 @@ private:
 
 public:
 
-    int process_command
+    ExitCode process_command
     (   Config const& p_config,
         std::string const& p_command,
         std::vector<std::string> const& p_args
@@ -102,7 +103,7 @@ public:
     );
 
 private:
-    int process_unrecognized_command(std::string const& p_command) const;
+    ExitCode process_unrecognized_command(std::string const& p_command) const;
     std::ostream& ordinary_ostream() const;
     std::ostream& error_ostream() const;
 

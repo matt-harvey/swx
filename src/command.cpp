@@ -16,12 +16,14 @@
 
 #include "command.hpp"
 #include "config.hpp"
+#include "exit_code.hpp"
 #include "help_line.hpp"
 #include "info.hpp"
 #include "placeholder.hpp"
 #include "stream_flag_guard.hpp"
 #include "stream_utilities.hpp"
 #include <cassert>
+#include <cstdlib>
 #include <iomanip>
 #include <iostream>
 #include <limits>
@@ -159,7 +161,7 @@ Command::has_boolean_option(char p_flag) const
     return m_boolean_options.find(p_flag) != m_boolean_options.end();
 }
 
-int
+ExitCode
 Command::process
 (   Config const& p_config,
     Arguments const& p_args,
@@ -175,7 +177,7 @@ Command::process
     if (!m_accept_ordinary_args && !parsed_args.ordinary_args().empty())
     {
         p_error_ostream << "Too many arguments.\nAborted" << endl;
-        return 1;
+        return EXIT_FAILURE;
     }
     auto const& flags = parsed_args.flags();
     assert (!m_boolean_options.empty() || flags.empty());
@@ -191,7 +193,7 @@ Command::process
     if (has_unrecognized_option)
     {
         p_error_ostream << "Aborted" << endl;
-        return 1;
+        return EXIT_FAILURE;
     }
     auto const error_messages =
         do_process(p_config, parsed_args, p_ordinary_ostream);
@@ -202,10 +204,10 @@ Command::process
     if (error_messages.empty())
     {
         assert (!has_unrecognized_option);
-        return 0;
+        return EXIT_SUCCESS;
     }
     assert (error_messages.size() > 0);
-    return 1;
+    return EXIT_FAILURE;
 }
 
 string

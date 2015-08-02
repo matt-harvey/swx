@@ -21,6 +21,7 @@
 #include "time_log.hpp"
 #include "time_point.hpp"
 #include <cassert>
+#include <cstdlib>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -49,7 +50,7 @@ int main(int argc, char** argv)
         {
             cerr << "Command not provided." << endl;
             cerr << CommandManager::directions_to_get_help() << endl;
-            return 1;
+            return EXIT_FAILURE;
         }
         assert (argc >= 2);
         vector<string> args(argv + 2, argv + argc);
@@ -61,17 +62,16 @@ int main(int argc, char** argv)
             config.formatted_buf_len()
         );
         CommandManager manager(time_log);
-        manager.process_command(config, argv[1], args);
+        return manager.process_command(config, argv[1], args);
     }
     catch (std::runtime_error& e)
     {
         cerr << "Error: " << e.what() << endl;
-        return 1;
+        return EXIT_FAILURE;
     }
     catch (...)
     {
         // Ensure stack is fully unwound.
         throw;
     }
-    return 0;
 }
