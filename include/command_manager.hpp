@@ -20,7 +20,6 @@
 #include "command.hpp"
 #include "config.hpp"
 #include "stream_flag_guard.hpp"
-#include "time_log.hpp"
 #include <memory>
 #include <ostream>
 #include <string>
@@ -31,6 +30,12 @@
 
 namespace swx
 {
+
+// begin forward declarations
+
+class TimeLog;
+
+// end forward declarations
 
 /**
  * Manages the various commands provided by the application.
@@ -56,7 +61,7 @@ private:
 
 // special member functions
 public:
-    explicit CommandManager(TimeLog& p_time_log);
+    CommandManager(TimeLog& p_time_log);
     CommandManager(CommandManager const& rhs) = delete;
     CommandManager(CommandManager&& rhs) = delete;
     CommandManager& operator=(CommandManager const& rhs) = delete;
@@ -111,7 +116,6 @@ private:
 
 // member variables
 private:
-    TimeLog& m_time_log;
     CommandMap m_command_map;
     std::vector<CommandGroup> m_command_groups;
 

@@ -73,21 +73,7 @@ namespace
 
 }  // end anonymous namespace
 
-CommandManager::CommandManager(TimeLog& p_time_log): m_time_log(p_time_log)
-{
-    populate_command_map();    
-#   ifndef NDEBUG
-        for (auto const& entry: m_command_map)
-        {
-            assert (entry.second);
-        }
-#   endif
-}
-
-CommandManager::~CommandManager() = default;
-
-void
-CommandManager::populate_command_map()
+CommandManager::CommandManager(TimeLog& p_time_log)
 {
     using V = vector<string>;
 
@@ -95,15 +81,15 @@ CommandManager::populate_command_map()
     CommandGroup rep("Reporting commands");
     CommandGroup misc("Miscellaneous commands");
 
-    create_command<SwitchCommand>(rec, "switch", V{"s"}, m_time_log);
-    create_command<ResumeCommand>(rec, "resume", V{}, m_time_log);
+    create_command<SwitchCommand>(rec, "switch", V{"s"}, p_time_log);
+    create_command<ResumeCommand>(rec, "resume", V{}, p_time_log);
 
-    create_command<CurrentCommand>(rep, "current", V{"c"}, m_time_log);
-    create_command<PrintCommand>(rep, "print", V{"p"}, m_time_log);
-    create_command<DayCommand>(rep, "day", V{"d"}, m_time_log);
-    create_command<BetweenCommand>(rep, "between", V{}, m_time_log);
-    create_command<SinceCommand>(rep, "since", V{}, m_time_log);
-    create_command<UntilCommand>(rep, "until", V{}, m_time_log);
+    create_command<CurrentCommand>(rep, "current", V{"c"}, p_time_log);
+    create_command<PrintCommand>(rep, "print", V{"p"}, p_time_log);
+    create_command<DayCommand>(rep, "day", V{"d"}, p_time_log);
+    create_command<BetweenCommand>(rep, "between", V{}, p_time_log);
+    create_command<SinceCommand>(rep, "since", V{}, p_time_log);
+    create_command<UntilCommand>(rep, "until", V{}, p_time_log);
 
     create_command<EditCommand>(misc, "edit", V{"e"});
     create_command<ConfigCommand>(misc, "config", V{});
@@ -114,8 +100,15 @@ CommandManager::populate_command_map()
     m_command_groups.push_back(move(rep));
     m_command_groups.push_back(move(misc));
 
-    return;
+#   ifndef NDEBUG
+        for (auto const& entry: m_command_map)
+        {
+            assert (entry.second);
+        }
+#   endif
 }
+
+CommandManager::~CommandManager() = default;
 
 int
 CommandManager::process_command
