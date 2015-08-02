@@ -26,6 +26,12 @@
 namespace swx
 {
 
+// begin forward declarations
+
+class CommandCategory;
+
+// end forward declarations
+
 class RecordingCommand: public Command
 {
 // special member functions
@@ -50,7 +56,7 @@ protected:
 
 // inherited virtual functions
 protected:
-    virtual std::string do_get_category() const override;
+    virtual CommandCategory do_get_category() const override;
 
 // member variables
 private:

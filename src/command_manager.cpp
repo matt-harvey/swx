@@ -17,6 +17,7 @@
 #include "command_manager.hpp"
 #include "between_command.hpp"
 #include "command.hpp"
+#include "command_category.hpp"
 #include "config.hpp"
 #include "config_command.hpp"
 #include "current_command.hpp"
@@ -197,8 +198,7 @@ CommandManager::help_information(string const& p_command) const
 string
 CommandManager::help_information() const
 {
-    using Category = string;
-    map<Category, set<shared_ptr<Command>>> grouped_commands;
+    map<CommandCategory, set<shared_ptr<Command>>> grouped_commands;
     for (auto const& pair: m_command_map)
     {
         shared_ptr<Command> const& command_ptr = pair.second;
@@ -228,8 +228,8 @@ CommandManager::help_information() const
     }
     for (auto const& pair: grouped_commands)
     {
-        Category const& category = pair.first;
-        oss << '\n' << category << " commands:\n\n";
+        auto const& category = pair.first;
+        oss << '\n' << category.label() << " commands:\n\n";
         auto const& command_group = pair.second;
         for (auto const& command_ptr: command_group)
         {

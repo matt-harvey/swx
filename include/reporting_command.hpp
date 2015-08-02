@@ -30,6 +30,7 @@ namespace swx
 
 // begin forward declarations
 
+class CommandCategory;
 class Config;
 
 // end forward declarations
@@ -79,7 +80,7 @@ protected:
 
 // inherited virtual functions
 private:
-    virtual std::string do_get_category() const override;
+    virtual CommandCategory do_get_category() const override;
     virtual bool does_support_placeholders() const override;
 
 // member variables

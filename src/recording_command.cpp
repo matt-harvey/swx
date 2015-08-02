@@ -16,6 +16,7 @@
 
 #include "recording_command.hpp"
 #include "command.hpp"
+#include "command_category.hpp"
 #include "help_line.hpp"
 #include "time_log.hpp"
 #include <string>
@@ -54,10 +55,10 @@ RecordingCommand::time_log()
     return m_time_log;
 }
 
-string
+CommandCategory
 RecordingCommand::do_get_category() const
 {
-    return "Recording";
+    return CommandCategory("Recording");
 }
 
 }  // namespace swx

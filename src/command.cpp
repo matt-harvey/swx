@@ -15,6 +15,7 @@
  */
 
 #include "command.hpp"
+#include "command_category.hpp"
 #include "config.hpp"
 #include "help_line.hpp"
 #include "info.hpp"
@@ -24,6 +25,7 @@
 #include <cassert>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <ostream>
 #include <set>
 #include <sstream>
@@ -38,6 +40,7 @@ using std::make_pair;
 using std::ostream;
 using std::ostringstream;
 using std::make_pair;
+using std::numeric_limits;
 using std::pair;
 using std::runtime_error;
 using std::set;
@@ -151,7 +154,7 @@ Command::add_boolean_option(char p_flag, string const& p_description)
     return;
 }
 
-string
+CommandCategory
 Command::category() const
 {
     return do_get_category();
@@ -295,10 +298,13 @@ Command::aliases() const
     return m_aliases;
 }
 
-string
+CommandCategory
 Command::do_get_category() const
 {
-    return "Miscellaneous";
+    return CommandCategory
+    (   "Miscellaneous",
+        numeric_limits<CommandCategory::SortOrder>::max()
+    );
 }
 
 bool

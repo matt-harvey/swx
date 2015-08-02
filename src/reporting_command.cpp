@@ -16,6 +16,7 @@
 
 #include "reporting_command.hpp"
 #include "command.hpp"
+#include "command_category.hpp"
 #include "config.hpp"
 #include "csv_list_report_writer.hpp"
 #include "csv_summary_report_writer.hpp"
@@ -189,10 +190,10 @@ ReportingCommand::print_report
     return p_os;    
 }
 
-string
+CommandCategory
 ReportingCommand::do_get_category() const
 {
-    return "Reporting";
+    return CommandCategory("Reporting");
 }
 
 bool
