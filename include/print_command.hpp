@@ -51,7 +51,7 @@ public:
 private:
     virtual ErrorMessages do_process
     (   Config const& p_config,
-        ParsedArguments const& p_args,
+        std::vector<std::string> const& p_ordinary_args,
         std::ostream& p_ordinary_ostream
     ) override;
 

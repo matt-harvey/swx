@@ -28,7 +28,6 @@ namespace swx
 // begin forward declarations
 
 class Config;
-class ParsedArguments;
 
 // end forward declarations
 
@@ -51,7 +50,7 @@ public:
 private:
     virtual ErrorMessages do_process
     (   Config const& p_config,
-        ParsedArguments const& p_args,
+        std::vector<std::string> const& p_ordinary_args,
         std::ostream& p_ordinary_ostream
     ) override;
 

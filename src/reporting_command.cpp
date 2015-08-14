@@ -42,17 +42,6 @@ using std::vector;
 namespace swx
 {
 
-namespace
-{
-    char const k_regex_flag = 'r';
-    char const k_list_flag = 'l';
-    char const k_beginning_flag ='b';
-    char const k_ending_flag = 'e';
-    char const k_csv_flag = 'c';
-    char const k_tree_view_flag = 't';
-    char const k_succinct_view_flag = 's';
-}
-
 ReportingCommand::ReportingCommand
 (   string const& p_command_word,
     vector<string> const& p_aliases,
@@ -63,41 +52,48 @@ ReportingCommand::ReportingCommand
     Command(p_command_word, p_aliases, p_usage_summary, p_help_line),
     m_time_log(p_time_log)
 {
-    add_boolean_option
-    (   k_regex_flag,
+    add_option
+    (   'r',
         "Treat ACTIVITY as a (POSIX extended) regular expression, and include "
-            "all activities that match it"
+            "all activities that match it",
+        &m_use_regex
     );
-    add_boolean_option
-    (   k_list_flag,
+    add_option
+    (   'l',
         "Instead of printing a summary, print a date-ordered list of "
-            "individual activity stints during the relevant period"
+            "individual activity stints during the relevant period",
+        &m_show_detail
     );
-    add_boolean_option
-    (   k_beginning_flag,
+    add_option
+    (   'b',
         "In addition to any other information, output the earliest time at "
             "which each activity was conducted during the relevant period (does "
-            "not apply in list mode)"
+            "not apply in list mode)",
+        &m_show_beginning
     );
-    add_boolean_option
-    (   k_ending_flag,
+    add_option
+    (   'e',
         "Output in a column to the right of any other info, the latest time at "
             "which each activity was conducted during the relevant period (does "
-            "not apply in list mode)"
+            "not apply in list mode)",
+        &m_show_end
     );
-    add_boolean_option
-    (   k_csv_flag,
-        "Output in CSV format"
+    add_option
+    (   'c',
+        "Output in CSV format",
+        &m_produce_csv
     );
-    add_boolean_option
-    (   k_tree_view_flag,
+    add_option
+    (   't',
         "Show hierarchical \"tree\" activity structure (ignored in list mode "
-            "and in CSV format)"
+            "and in CSV format)",
+        &m_show_tree
     );
-    add_boolean_option
-    (   k_succinct_view_flag,
+    add_option
+    (   's',
         "Succinct output: show grand total only (ignored in list mode and in "
-            "tree mode)"
+            "tree mode)",
+        &m_be_succinct
     );
 }
 
@@ -107,27 +103,19 @@ ostream&
 ReportingCommand::print_report
 (   ostream& p_os,
     Config const& p_config,
-    Flags const& p_flags,
     vector<string> const& p_activity_components,
     TimePoint const* p_begin,
     TimePoint const* p_end
 )
 {
-    bool const csv = p_flags.count(k_csv_flag);
-    bool const use_regex = p_flags.count(k_regex_flag);
-    bool const show_beginning = p_flags.count(k_beginning_flag);
-    bool const show_end = p_flags.count(k_ending_flag);
-    bool const detail = p_flags.count(k_list_flag);
-    bool const show_tree = p_flags.count(k_tree_view_flag);
-    bool const succinct = p_flags.count(k_succinct_view_flag);
-
     unique_ptr<string> activity_ptr;
     if (!p_activity_components.empty())
     {
         auto const expanded = expand_placeholders(p_activity_components, m_time_log);
         activity_ptr.reset(new string(squish(expanded.begin(), expanded.end())));
     }
-    auto const stints = m_time_log.get_stints(activity_ptr.get(), p_begin, p_end, use_regex);
+    auto const stints =
+        m_time_log.get_stints(activity_ptr.get(), p_begin, p_end, m_use_regex);
     ReportWriter::Options const options
     (   p_config.output_rounding_numerator(),
         p_config.output_rounding_denominator(),
@@ -137,9 +125,9 @@ ReportingCommand::print_report
         p_config.time_format()
     );
     unique_ptr<ReportWriter> report_writer;
-    if (detail)
+    if (m_show_detail)
     {
-        if (csv)
+        if (m_produce_csv)
         {
             report_writer.reset(new CsvListReportWriter(stints, options));
         }
@@ -150,15 +138,15 @@ ReportingCommand::print_report
     }
     else
     {
-        if (csv)
+        if (m_produce_csv)
         {
             report_writer.reset
             (   new CsvSummaryReportWriter
                 (   stints,
                     options,
-                    show_beginning,
-                    show_end,
-                    succinct
+                    m_show_beginning,
+                    m_show_end,
+                    m_be_succinct
                 )
             );
         }
@@ -168,10 +156,10 @@ ReportingCommand::print_report
             (   new HumanSummaryReportWriter
                 (   stints,
                     options,
-                    show_beginning,
-                    show_end,
-                    show_tree,
-                    succinct
+                    m_show_beginning,
+                    m_show_end,
+                    m_show_tree,
+                    m_be_succinct
                 )
             );
         }

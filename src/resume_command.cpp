@@ -64,11 +64,11 @@ ResumeCommand::~ResumeCommand() = default;
 Command::ErrorMessages
 ResumeCommand::do_process
 (   Config const& p_config,
-    ParsedArguments const& p_args,
+    vector<string> const& p_ordinary_args,
     ostream& p_ordinary_ostream
 )
 {
-    (void)p_args; (void)p_config;  // silence compiler re. unused params
+    (void)p_ordinary_args; (void)p_config;  // silence compiler re. unused params
 
     ErrorMessages ret;
     bool const is_active = time_log().is_active();

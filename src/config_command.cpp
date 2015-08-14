@@ -33,12 +33,6 @@ using std::vector;
 namespace swx
 {
 
-namespace
-{
-    char const k_editing_flag = 'e';
-    char const k_filepath_flag = 'f';
-}
-
 ConfigCommand::ConfigCommand
 (   string const& p_command_word,
     vector<string> const& p_aliases
@@ -53,16 +47,18 @@ ConfigCommand::ConfigCommand
         false
     )
 {
-    add_boolean_option
-    (   k_editing_flag,
+    add_option
+    (   'e',
         "Instead of printing configuration settings, open the configuration "
             "file using the text editor determined by the \"editor\" "
-            "configuration setting"
+            "configuration setting",
+        &m_editing_option
     );
-    add_boolean_option
-    (   k_filepath_flag,
+    add_option
+    (   'f',
         "Instead of printing configuration settings, print the location of the "
-            "configuration file"
+            "configuration file",
+        &m_filepath_option
     );
 }
 
@@ -71,18 +67,16 @@ ConfigCommand::~ConfigCommand() = default;
 Command::ErrorMessages
 ConfigCommand::do_process
 (   Config const& p_config,
-    ParsedArguments const& p_args,
+    vector<string> const& p_ordinary_args,
     ostream& p_ordinary_ostream
 )
 {
-    auto const& flags = p_args.flags();
-    if (flags.count(k_editing_flag))
+    if (m_editing_option)
     {
-        string const editor_invokation =
-            p_config.editor() + " " + p_config.filepath();
+        string const editor_invokation = p_config.editor() + " " + p_config.filepath();
         system(editor_invokation.c_str());
     }
-    else if (flags.count(k_filepath_flag))
+    else if (m_filepath_option)
     {
         p_ordinary_ostream << p_config.filepath() << endl;
     }

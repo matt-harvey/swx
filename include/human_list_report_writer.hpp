@@ -47,8 +47,7 @@ public:
 
 // inherited virtual functions
 private:
-    virtual void
-        do_process_stint(std::ostream& p_os, Stint const& p_stint) override;
+    virtual void do_process_stint(std::ostream& p_os, Stint const& p_stint) override;
 
 };  // class HumanListReportWriter
 

@@ -61,34 +61,33 @@ HelpCommand::~HelpCommand() = default;
 Command::ErrorMessages
 HelpCommand::do_process
 (   Config const& p_config,
-    ParsedArguments const& p_args,
+    vector<string> const& p_ordinary_args,
     ostream& p_ordinary_ostream
 )
 {
     (void)p_config;  // silence compiler re. unused param
     ErrorMessages ret;
-    Arguments const args = p_args.ordinary_args();
-    if (args.empty())
+    if (p_ordinary_args.empty())
     {
         p_ordinary_ostream << m_command_manager.help_information();    
     }
-    else if (args.size() == 1)
+    else if (p_ordinary_args.size() == 1)
     {
         try
         {
-            p_ordinary_ostream << m_command_manager.help_information(args[0])
+            p_ordinary_ostream << m_command_manager.help_information(p_ordinary_args[0])
                                << endl;            
         }
         catch (runtime_error&)
         {
             ret.push_back
-            (   CommandManager::error_message_for_unrecognized_command(args[0])
+            (   CommandManager::error_message_for_unrecognized_command(p_ordinary_args[0])
             );
         }
     }
     else
     {
-        assert (args.size() > 1);
+        assert (p_ordinary_args.size() > 1);
         ret.push_back("Too many arguments passed to this command.");
     }
     return ret;    

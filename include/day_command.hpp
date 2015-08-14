@@ -50,9 +50,13 @@ public:
 private:
     virtual ErrorMessages do_process
     (   Config const& p_config,
-        ParsedArguments const& p_args,
+        std::vector<std::string> const& p_args,
         std::ostream& p_ordinary_ostream
     ) override;
+
+// member variables
+private:
+    std::string m_days_ago_str = "0";
 
 };  // class DayCommand
 

@@ -31,7 +31,9 @@ Print a summary of today's activities: ``swx d``
 
 Print today's activities in tree form: ``swx d -t``
 
-Print yesterday's activities: ``swx d -1``
+Print yesterday's activities: ``swx d -a1``
+
+Print activities from 2 days ago: ``swx d -a2``
 
 Print a time-ordered list of today's individual activity stints: ``swx d -l``
 
@@ -158,8 +160,9 @@ activity name, if you want to see only time spent on a given activity, or to
 omit the activity name, if you want to see time spent on all activities.
 
 ``swx day`` (or ``swx d``) prints a summary of only the current day's
-activities, or, if passed a single-digit option *n*, the activities of *n* days
-ago. For example, ``swx day -1`` prints a summary of yesterday's activities.
+activities, or, if passed ``-a`` with an integer argument *n*, the activities
+of *n* days ago. For example, ``swx day -a1`` prints a summary of yesterday's
+activities.
 
 ``swx print`` (or ``swx p``) prints a summary of activity that is not filtered
 by time at all.

@@ -32,12 +32,6 @@ using std::vector;
 namespace swx
 {
 
-namespace
-{
-    char const k_suppress_newline_flag = 's';
-
-}  // end anonymous namespace
-
 CurrentCommand::CurrentCommand
 (   string const& p_command_word,
     vector<string> const& p_aliases,
@@ -57,7 +51,11 @@ CurrentCommand::CurrentCommand
     ),
     m_time_log(p_time_log)
 {
-    add_boolean_option(k_suppress_newline_flag, "Do not terminate output with a newline");
+    add_option
+    (   's',
+        "Do not terminate output with a newline",
+        &m_suppress_newline
+    );
 }
 
 CurrentCommand::~CurrentCommand() = default;
@@ -65,21 +63,15 @@ CurrentCommand::~CurrentCommand() = default;
 Command::ErrorMessages
 CurrentCommand::do_process
 (   Config const& p_config,
-    ParsedArguments const& p_args,
+    vector<string> const& p_ordinary_args,
     ostream& p_ordinary_ostream
 )
 {
-    (void)p_config;  // silence compiler re. unused param
+    (void)p_config; (void)p_ordinary_args; // silence compiler re. unused param
     TimePoint const n = now();
     auto const stints = m_time_log.get_stints(nullptr, &n, &n);
-    if (!stints.empty())
-    {
-        p_ordinary_ostream << stints[0].activity();
-    }
-    if (!p_args.flags().count(k_suppress_newline_flag))
-    {
-        p_ordinary_ostream << endl;
-    }
+    if (!stints.empty()) p_ordinary_ostream << stints[0].activity();
+    if (!m_suppress_newline) p_ordinary_ostream << endl;
     return ErrorMessages();
 }
 

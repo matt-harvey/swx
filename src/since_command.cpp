@@ -70,12 +70,11 @@ SinceCommand::~SinceCommand() = default;
 Command::ErrorMessages
 SinceCommand::do_process
 (   Config const& p_config,
-    ParsedArguments const& p_args,
+    vector<string> const& p_ordinary_args,
     ostream& p_ordinary_ostream
 )
 {
-    Arguments const oargs = p_args.ordinary_args();
-    if (oargs.empty())
+    if (p_ordinary_args.empty())
     {
         return {"Too few arguments passed to this command."};
     }
@@ -86,22 +85,21 @@ SinceCommand::do_process
         {
             auto const time_format = p_config.time_format();
             time_point_ptr.reset
-            (   new TimePoint(time_stamp_to_point(oargs[0], time_format))
+            (   new TimePoint(time_stamp_to_point(p_ordinary_args[0], time_format))
             );
         }
         catch (runtime_error&)
         {
             ostringstream oss;
             enable_exceptions(oss);
-            oss << "Could not parse timestamp: " << oargs[0];
+            oss << "Could not parse timestamp: " << p_ordinary_args[0];
             return {oss.str()};
         }
-        assert (oargs.size() >= 1);
+        assert (p_ordinary_args.size() >= 1);
         print_report
         (   p_ordinary_ostream,
             p_config,
-            p_args.flags(),
-            vector<string>(oargs.begin() + 1, oargs.end()),
+            vector<string>(p_ordinary_args.begin() + 1, p_ordinary_args.end()),
             time_point_ptr.get()
         );
     }

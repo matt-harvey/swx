@@ -51,11 +51,11 @@ VersionCommand::~VersionCommand() = default;
 Command::ErrorMessages
 VersionCommand::do_process
 (   Config const& p_config,
-    ParsedArguments const& p_args,
+    vector<string> const& p_ordinary_args,
     ostream& p_ordinary_ostream
 )
 {
-    (void)p_args;  // suppress warning re. unused param.
+    (void)p_config; (void)p_ordinary_args;  // suppress warning re. unused param.
     p_ordinary_ostream << Info::application_name()
                        << " version "
                        << Info::version()

@@ -39,13 +39,6 @@ using std::vector;
 namespace swx
 {
 
-namespace
-{
-    char const k_creation_flag = 'c';
-    char const k_regex_flag = 'r';
-
-}  // end anonymous namespace
-
 SwitchCommand::SwitchCommand
 (   string const& p_command_word,
     vector<string> const& p_aliases,
@@ -70,15 +63,17 @@ SwitchCommand::SwitchCommand
         p_time_log
     )
 {
-    add_boolean_option
-    (   k_creation_flag,
+    add_option
+    (   'c',
         "Create a new activity named ACTIVITY, and start accruing time to it; "
-            "raise an error if an activity with this name already exists"
+            "raise an error if an activity with this name already exists",
+        &m_create_activity
     );
-    add_boolean_option
-    (   k_regex_flag,
+    add_option
+    (   'r',
         "Switch to the most recent activity to match ACTIVITY, considered as "
-            "a (POSIX extended) regular expression"
+            "a (POSIX extended) regular expression",
+        &m_use_regex
     );
 }
 
@@ -87,25 +82,21 @@ SwitchCommand::~SwitchCommand() = default;
 Command::ErrorMessages
 SwitchCommand::do_process
 (   Config const& p_config,
-    ParsedArguments const& p_args,
+    vector<string> const& p_ordinary_args,
     ostream& p_ordinary_ostream
 )
 {
     (void)p_config;  // silence compiler re. unused param.
 
     ErrorMessages error_messages;
-    auto const& flags = p_args.flags();
 
     // interpret arguments
-    bool const using_regex = flags.count(k_regex_flag);
-    bool const creating_activity = flags.count(k_creation_flag);
-    Arguments const args =
-        expand_placeholders(p_args.ordinary_args(), time_log());
+    vector<string> const args = expand_placeholders(p_ordinary_args, time_log());
 
     // find the activity that we want to switch to
     string const activity_input(squish(args.begin(), args.end()));
     string activity;
-    if (using_regex)
+    if (m_use_regex)
     {
         if (activity_input.empty())
         {
@@ -148,7 +139,7 @@ SwitchCommand::do_process
     }
 
     // process switch
-    if ((creating_activity != activity_exists) || activity.empty())
+    if ((m_create_activity != activity_exists) || activity.empty())
     {
         // we can switch
         time_log().append_entry(activity);
@@ -156,7 +147,7 @@ SwitchCommand::do_process
         {
             p_ordinary_ostream << "Activity ceased." << endl;
         }
-        else if (creating_activity)
+        else if (m_create_activity)
         {
             p_ordinary_ostream << "Created and switched to new activity: "
                                << activity << endl;
@@ -174,7 +165,7 @@ SwitchCommand::do_process
         // say why not
         ostringstream oss;
         enable_exceptions(oss);
-        if (creating_activity)
+        if (m_create_activity)
         {
             assert (activity_exists);
             oss << "Activity already exists: " << activity;

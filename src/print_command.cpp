@@ -55,15 +55,14 @@ PrintCommand::~PrintCommand() = default;
 Command::ErrorMessages
 PrintCommand::do_process
 (   Config const& p_config,
-    ParsedArguments const& p_args,
+    vector<string> const& p_ordinary_args,
     ostream& p_ordinary_ostream
 )
 {
     print_report
     (   p_ordinary_ostream,
         p_config,
-        p_args.flags(),
-        p_args.ordinary_args()
+        p_ordinary_args
     );
     return ErrorMessages();
 }

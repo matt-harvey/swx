@@ -62,13 +62,10 @@ protected:
      * Pass a non-empty vector to \e p_activity_args to filter by
      * activity. This parameter will have any placeholders expanded before
      * further processing.
-     *
-     * Pass a string of single-character command-line options to \e p_flags.
      */
     std::ostream& print_report
     (   std::ostream& p_os,
         Config const& p_config,
-        Flags const& p_flags,
         std::vector<std::string> const& p_activity_args =
             std::vector<std::string>(),
         TimePoint const* p_begin = nullptr,
@@ -83,6 +80,13 @@ private:
 
 // member variables
 private:
+    bool m_produce_csv = false;
+    bool m_use_regex = false;
+    bool m_show_beginning = false;
+    bool m_show_end = false;
+    bool m_show_detail = false;
+    bool m_show_tree = false;
+    bool m_be_succinct = false;
     TimeLog& m_time_log;
 
 };  // class ReportingCommand

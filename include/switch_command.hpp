@@ -29,7 +29,6 @@ namespace swx
 // begin forward declarations
 
 class Config;
-class ParsedArguments;
 
 // end forward declarations
 
@@ -52,11 +51,16 @@ public:
 private:
     virtual ErrorMessages do_process
     (   Config const& p_config,
-        ParsedArguments const& p_args,
+        std::vector<std::string> const& p_ordinary_args,
         std::ostream& p_ordinary_ostream
     ) override;
 
     virtual bool does_support_placeholders() const override;
+
+// member variables
+private:
+    bool m_create_activity = false;
+    bool m_use_regex = false;
 
 };  // class SwitchCommand
 

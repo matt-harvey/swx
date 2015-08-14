@@ -33,11 +33,6 @@ using std::vector;
 namespace swx
 {
 
-namespace
-{
-    char const k_config_file_flag = 'c';
-}
-
 EditCommand::EditCommand
 (   string const& p_command_word,
     vector<string> const& p_aliases
@@ -55,9 +50,10 @@ EditCommand::EditCommand
         false
     )
 {
-    add_boolean_option
-    (   k_config_file_flag,
-        "Instead of opening the activity log, open the configuration file"
+    add_option
+    (   'c',
+        "Instead of opening the activity log, open the configuration file",
+        &m_open_config_file
     );
 }
 
@@ -66,13 +62,13 @@ EditCommand::~EditCommand() = default;
 Command::ErrorMessages
 EditCommand::do_process
 (   Config const& p_config,
-    ParsedArguments const& p_args,
+    vector<string> const& p_ordinary_args,
     ostream& p_ordinary_ostream
 )
 {
-    (void)p_ordinary_ostream;  // suppress compiler warning re. unused param.
+    (void)p_ordinary_ostream; p_ordinary_args;  // suppress compiler warning re. unused param.
     string const filepath =
-    (   p_args.flags().count(k_config_file_flag)?
+    (   m_open_config_file?
         p_config.filepath():
         p_config.path_to_log()
     );

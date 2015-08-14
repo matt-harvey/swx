@@ -40,28 +40,9 @@ class Command
 {
 // nested types
 protected:
-    using Arguments = std::vector<std::string>;
     using ErrorMessages = std::vector<std::string>;
-    using Flags = std::set<char>;
-
-protected:
-    class ParsedArguments
-    {
-    public:
-        friend class Command;
-    private:
-        ParsedArguments
-        (   std::vector<std::string> const& p_raw_args,
-            bool p_recognize_double_dash,
-            bool p_accept_ordinary_args
-        );
-    public:
-        std::vector<std::string> const& ordinary_args() const;
-        Flags const& flags() const;
-    private:
-        Flags m_flags;
-        std::vector<std::string> m_ordinary_args;
-    };
+private:
+    struct Option;
 
 // special member functions
 protected:
@@ -81,14 +62,37 @@ public:
 
 // ordinary member functions
 protected:
-    void add_boolean_option(char p_flag, std::string const& p_description);
+    
+    /**
+     * @param p_character the character passed to the command line to activate
+     * the option.
+     *
+     * @param p_description the description of the option as appearing in the
+     * help text
+     *
+     * @param p_presence_target if non-null, will have its dereferenced contents
+     * set to *true* if the option is encountered during parsing; otherwise, will
+     * be left unchanged
+     *
+     * @param p_arg_target if non-null, signifies that the option requires an
+     * argument, the contents of which, if encountered during parsing, will be assigned to
+     * <em>*p_arg_target</em>
+     *
+     * @param p_arg_label should be given a non-empty string if <em>p_arg_target</em>
+     * is used; this is used as a placeholder for the argument in the generated help text
+     */
+    void add_option
+    (   char p_character,
+        std::string const& p_description,
+        bool* p_presence_target = nullptr,
+        std::string* p_arg_target = nullptr,
+        std::string const& p_arg_label = std::string()
+    );
+
 public:
-
-    bool has_boolean_option(char p_flag) const;
-
     ExitCode process
     (   Config const& p_config,
-        Arguments const& p_args,
+        std::vector<std::string> const& p_args,
         std::ostream& p_ordinary_ostream,
         std::ostream& p_error_ostream
     );
@@ -102,7 +106,7 @@ public:
 private:
     virtual ErrorMessages do_process
     (   Config const& p_config,
-        ParsedArguments const& p_args,
+        std::vector<std::string> const& p_ordinary_args,
         std::ostream& p_ordinary_ostream
     ) = 0;
 
@@ -119,7 +123,7 @@ private:
     std::string const m_usage_summary;
     std::vector<std::string> const m_aliases;
     std::vector<HelpLine> const m_help_lines;
-    std::map<char, std::string> m_boolean_options;
+    std::map<char, Option> m_options;
 
 };  // class Command
 

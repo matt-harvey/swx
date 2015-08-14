@@ -28,6 +28,7 @@
 using std::ostream;
 using std::ostringstream;
 using std::string;
+using std::stringstream;
 using std::vector;
 
 namespace swx
@@ -68,14 +69,13 @@ DayCommand::DayCommand
         p_time_log
     )
 {
-    string const s("Instead of today's activities, print the activities from ");
-    for (int i = 1; i <= k_max_days_ago; ++i)
-    {
-        add_boolean_option
-        (   static_cast<char>(i + '0'),
-            s + days_ago_pluralized(i)
-        );
-    }
+    add_option
+    (   'a',
+        "Instead of today's activities, print the activities from N days ago.",
+        nullptr,
+        &m_days_ago_str,
+        "<N>"
+    );
 }
 
 DayCommand::~DayCommand() = default;
@@ -83,7 +83,7 @@ DayCommand::~DayCommand() = default;
 Command::ErrorMessages
 DayCommand::do_process
 (   Config const& p_config,
-    ParsedArguments const& p_args,
+    std::vector<std::string> const& p_ordinary_args,
     ostream& p_ordinary_ostream
 )
 {
@@ -91,26 +91,11 @@ DayCommand::do_process
     TimePoint const n = now();
 
     int days_ago = 0;
-    bool digit_flag_encountered = false;
-    auto const& flags = p_args.flags();
-
-    for (int i = 1; i <= k_max_days_ago; ++i)
+    stringstream ss(m_days_ago_str);
+    ss >> days_ago;
+    if (!ss)
     {
-        if (flags.count(static_cast<char>(i + '0')))
-        {
-            if (digit_flag_encountered)
-            {
-                ret.push_back
-                (   "Only a single digit numeric option can be passed "
-                    "to this command"
-                );
-            }
-            else
-            {
-                days_ago = i;
-                digit_flag_encountered = true;
-            }
-        }
+        ret.push_back("Could not parse \"" + m_days_ago_str + "\" as numeric argument.");
     }
     if (ret.empty())
     {
@@ -119,8 +104,7 @@ DayCommand::do_process
         print_report
         (   p_ordinary_ostream,
             p_config,
-            flags,
-            p_args.ordinary_args(),
+            p_ordinary_args,
             &b,
             &e
         );

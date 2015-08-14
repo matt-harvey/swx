@@ -55,62 +55,33 @@ namespace swx
 namespace
 {
     
-    char const k_flag_prefix = '-';
-
-    pair<char, string> const k_double_dash_option =
-        make_pair
-        (   '-',
-            "Treat any dash-prefixed arguments after this flag as "
-                "ordinary arguments, rather than flags"
-        );
+    char const k_option_prefix = '-';
+    char const k_double_dash_option_char = '-';
 
 }  // end anonymous namespace
 
-Command::ParsedArguments::ParsedArguments
-(   vector<string> const& p_raw_args,
-    bool p_recognize_double_dash,
-    bool p_accept_ordinary_args
-)
+struct Command::Option
 {
-    if (p_accept_ordinary_args && !p_recognize_double_dash)
+    Option
+    (   char p_character,
+        std::string const& p_description,
+        bool* p_presence_target = nullptr,
+        std::string* p_arg_target = nullptr,
+        std::string const& p_arg_label = std::string()
+    ):
+        presence_target(p_presence_target),
+        arg_target(p_arg_target),
+        character(p_character),
+        description(p_description),
+        arg_label(p_arg_label)
     {
-        m_ordinary_args = p_raw_args;
-        return;
     }
-    ostringstream oss;
-    enable_exceptions(oss);
-    oss << k_flag_prefix << k_double_dash_option.first;
-    string const double_dash = oss.str();
-    for (auto it = p_raw_args.begin(); it != p_raw_args.end(); ++it)
-    {
-        auto const& arg = *it;
-        if (p_recognize_double_dash && (arg == double_dash))
-        {
-            copy(it + 1, p_raw_args.end(), back_inserter(m_ordinary_args));
-            break;
-        }
-        else if (!arg.empty() && (arg[0] == k_flag_prefix))
-        {
-            m_flags.insert(arg.begin() + 1, arg.end());
-        }
-        else
-        {
-            m_ordinary_args.push_back(*it);    
-        }
-    }
-}
-
-vector<string> const&
-Command::ParsedArguments::ordinary_args() const
-{
-    return m_ordinary_args;
-}
-
-Command::Flags const&
-Command::ParsedArguments::flags() const
-{
-    return m_flags;
-}
+    char character;
+    std::string description;
+    bool* presence_target;
+    std::string* arg_target;
+    std::string arg_label;
+};
 
 Command::Command
 (   string const& p_command_word,
@@ -130,84 +101,138 @@ Command::Command
 Command::~Command() = default;
 
 void
-Command::add_boolean_option(char p_flag, string const& p_description)
+Command::add_option
+(   char p_character,
+    string const& p_description,
+    bool* p_presence_target,
+    std::string* p_arg_target,
+    std::string const& p_arg_label
+)
 {
-    if (has_boolean_option(p_flag))
+    if (m_options.count(p_character))
     {
         ostringstream oss;
         enable_exceptions(oss);
-        oss << "Flag already enabled for this Command: " << p_flag;
+        oss << "Option already enabled for this Command: " << p_character;
         throw runtime_error(oss.str());
     }
-    m_boolean_options.insert(make_pair(p_flag, p_description));
+    Option const option
+    (   p_character,
+        p_description,
+        p_presence_target,
+        p_arg_target,
+        p_arg_label
+    );
+    m_options.emplace(p_character, option);
     if (m_accept_ordinary_args)
     {
         try
         {
-            m_boolean_options.insert(k_double_dash_option);
+            Option const double_dash_option
+            (   k_double_dash_option_char,
+                "Treat any dash-prefixed arguments after this option as "
+                    "ordinary arguments, rather than options"
+            );
+            m_options.emplace(k_double_dash_option_char, double_dash_option);
         }
         catch (...)
         {
-            m_boolean_options.erase(p_flag);
+            m_options.erase(p_character);
             throw;
         }
     }
     return;
 }
 
-bool
-Command::has_boolean_option(char p_flag) const
-{
-    return m_boolean_options.find(p_flag) != m_boolean_options.end();
-}
-
 ExitCode
 Command::process
 (   Config const& p_config,
-    Arguments const& p_args,
+    vector<string> const& p_args,
     ostream& p_ordinary_ostream,
     ostream& p_error_ostream
 )
 {
-    ParsedArguments const parsed_args
-    (   p_args,
-        has_boolean_option(k_double_dash_option.first),
-        m_accept_ordinary_args
-    );
-    if (!m_accept_ordinary_args && !parsed_args.ordinary_args().empty())
+    vector<string> ordinary_args;
+    auto const recognize_double_dash = m_options.count(k_double_dash_option_char);
+    if (m_accept_ordinary_args && !recognize_double_dash)
     {
-        p_error_ostream << "Too many arguments.\nAborted" << endl;
-        return EXIT_FAILURE;
+        ordinary_args = p_args;
     }
-    auto const& flags = parsed_args.flags();
-    assert (!m_boolean_options.empty() || flags.empty());
-    bool has_unrecognized_option = false;
-    for (auto c: flags)
+    else
     {
-        if (!has_boolean_option(c))
+        ostringstream oss;
+        enable_exceptions(oss);
+        oss << k_option_prefix << k_double_dash_option_char;
+        string const double_dash = oss.str();
+        auto const args_end = p_args.end();
+
+        // examine each argument in turn
+        for (auto it = p_args.begin(); it != args_end; ++it)
         {
-            p_error_ostream << "Unrecognized option: " << c << endl;
-            has_unrecognized_option = true;
+            auto const& arg = *it;
+
+            if (recognize_double_dash && (arg == double_dash))
+            {
+                // double-dash ends the options, so treat remaining arguments as
+                // ordinary arguments, not options
+                copy(it + 1, p_args.end(), back_inserter(ordinary_args));
+                break;
+            }
+            else if (!arg.empty() && (arg[0] == k_option_prefix))
+            {
+                // arg is an option (e.g. "-a"), or a cluster of options (e.g. "-abc")
+                auto const arg_end = arg.end();
+
+                // look at each character in arg in turn
+                for (auto chit = arg.begin() + 1; chit != arg_end; ++chit)
+                {
+                    auto const c = *chit;
+                    auto const opt_it = m_options.find(c);
+                    if (opt_it == m_options.end())
+                    {
+                        p_error_ostream << "Unrecognized option: " << c << "\nAborted."
+                                        << endl;
+                        return EXIT_FAILURE;
+                    }
+                    assert (opt_it != m_options.end());
+                    auto const& opt = opt_it->second;
+                    auto* const presence_target = opt.presence_target;
+                    if (presence_target != nullptr) *presence_target = true;
+                    auto* const arg_target = opt.arg_target;
+                    if (arg_target == nullptr)
+                    {
+                        continue;  // option does not take an argument
+                    }
+                    // option takes an argument
+                    assert (chit + 1 <= arg_end);
+                    assert (it + 1 <= args_end);
+                    auto const joined_arg_present = (chit + 1 != arg_end);   // e.g. "-a9"
+                    auto const separated_arg_present = (it + 1 != args_end); // e.g. "-a 9"
+                    if (!joined_arg_present && !separated_arg_present)
+                    {
+                        p_error_ostream << "Option " << c << " requires argument.\nAborted."
+                                        << endl;
+                        return EXIT_FAILURE;
+                    }
+                    if (joined_arg_present) *arg_target = string(chit + 1, arg_end);
+                    else *arg_target = *(++it);
+                    break;  // we've finished with this option-cluster
+                }
+            }
+            else
+            {
+                if (!m_accept_ordinary_args)
+                {
+                    p_error_ostream << "Too many arguments.\nAborted" << endl;
+                    return EXIT_FAILURE;
+                }
+                ordinary_args.push_back(*it);
+            }
         }
     }
-    if (has_unrecognized_option)
-    {
-        p_error_ostream << "Aborted" << endl;
-        return EXIT_FAILURE;
-    }
-    auto const error_messages =
-        do_process(p_config, parsed_args, p_ordinary_ostream);
-    for (auto const& message: error_messages)
-    {
-        p_error_ostream << message << endl;
-    }
-    if (error_messages.empty())
-    {
-        assert (!has_unrecognized_option);
-        return EXIT_SUCCESS;
-    }
-    assert (error_messages.size() > 0);
-    return EXIT_FAILURE;
+    auto const error_messages = do_process(p_config, ordinary_args, p_ordinary_ostream);
+    for (auto const& message: error_messages) p_error_ostream << message << endl;
+    return error_messages.empty() ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
 string
@@ -252,18 +277,23 @@ Command::usage_descriptor() const
         for (++it; it != m_aliases.end(); ++it) oss << ", " << *it;
     }
     left_col_width = 6;
-    if (!m_boolean_options.empty())
+    if (!m_options.empty())
     {
         oss << "\n\nOptions:\n";
-        for (auto const& option: m_boolean_options)
+        for (auto const& option: m_options)
+        {
+            auto const required_width = 2 + option.second.arg_label.size() + 4;
+            if (required_width > left_col_width) left_col_width = required_width;
+        }
+        for (auto const& option: m_options)
         {
             StreamFlagGuard guard(oss);
-            string const flag{'-', option.first};
-            string const& description = option.second;
+            string const option_str{'-', option.first};
+            auto const& opt = option.second;
             oss << "\n  " << setw(left_col_width) << left
-                << flag;
+                << (option_str + " " + opt.arg_label);
             guard.reset();
-            oss << description;
+            oss << opt.description;
         }
     }
     if (does_support_placeholders())
