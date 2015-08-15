@@ -103,8 +103,6 @@ Config::get_option_value(std::string const& p_key) const
     Value ret;
     auto const raw_value = get_raw_option_value(p_key);
     std::stringstream ss(raw_value);
-    enable_exceptions(ss);
-    ss.clear();
     ss >> ret;
     if (!ss)
     {
