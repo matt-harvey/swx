@@ -113,7 +113,7 @@ ReportingCommand::print_report
         auto const expanded = expand_placeholders(p_activity_components, m_time_log);
         activity_ptr.reset(new string(squish(expanded.begin(), expanded.end())));
     }
-    auto const stints =
+    auto const stints = 
         m_time_log.get_stints(activity_ptr.get(), p_begin, p_end, m_use_regex);
     ReportWriter::Options const options
     (   p_config.output_rounding_numerator(),

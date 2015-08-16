@@ -15,7 +15,6 @@
  */
 
 #include "command_manager.hpp"
-#include "between_command.hpp"
 #include "command.hpp"
 #include "config.hpp"
 #include "config_command.hpp"
@@ -28,11 +27,9 @@
 #include "placeholder.hpp"
 #include "print_command.hpp"
 #include "resume_command.hpp"
-#include "since_command.hpp"
 #include "stream_utilities.hpp"
 #include "switch_command.hpp"
 #include "time_log.hpp"
-#include "until_command.hpp"
 #include "version_command.hpp"
 #include <cassert>
 #include <cstdlib>
@@ -89,9 +86,6 @@ CommandManager::CommandManager(TimeLog& p_time_log)
     create_command<CurrentCommand>(rep, "current", V{"c"}, p_time_log);
     create_command<PrintCommand>(rep, "print", V{"p"}, p_time_log);
     create_command<DayCommand>(rep, "day", V{"d"}, p_time_log);
-    create_command<BetweenCommand>(rep, "between", V{}, p_time_log);
-    create_command<SinceCommand>(rep, "since", V{}, p_time_log);
-    create_command<UntilCommand>(rep, "until", V{}, p_time_log);
 
     create_command<EditCommand>(misc, "edit", V{"e"});
     create_command<ConfigCommand>(misc, "config", V{});

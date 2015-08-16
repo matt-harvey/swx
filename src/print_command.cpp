@@ -21,12 +21,17 @@
 #include "reporting_command.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
+#include "time_point.hpp"
+#include <memory>
 #include <ostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
 using std::ostream;
+using std::runtime_error;
 using std::string;
+using std::unique_ptr;
 using std::vector;
 
 namespace swx
@@ -48,6 +53,20 @@ PrintCommand::PrintCommand
         p_time_log
     )
 {
+    add_option
+    (   'f',
+        "Only count time spent on activities since TIMESTAMP",
+        nullptr,
+        &m_since_str,
+        "<TIMESTAMP>"
+    );
+    add_option
+    (   't',
+        "Only count time spent on activities until TIMESTAMP",
+        nullptr,
+        &m_until_str,
+        "<TIMESTAMP>"
+    );
 }
 
 PrintCommand::~PrintCommand() = default;
@@ -59,12 +78,47 @@ PrintCommand::do_process
     ostream& p_ordinary_ostream
 )
 {
-    print_report
-    (   p_ordinary_ostream,
-        p_config,
-        p_ordinary_args
-    );
-    return ErrorMessages();
+    ErrorMessages ret;
+    unique_ptr<TimePoint> since_time_point_ptr;
+    unique_ptr<TimePoint> until_time_point_ptr;
+    auto const time_format = p_config.time_format();
+    if (!m_since_str.empty())
+    {
+        try
+        {
+            since_time_point_ptr.reset
+            (   new TimePoint(time_stamp_to_point(m_since_str, time_format))
+            );
+        }
+        catch (runtime_error&)
+        {
+            ret.push_back("Could not parse timestamp: " + m_since_str);
+        }
+    }
+    if (!m_until_str.empty())
+    {
+        try
+        {
+            until_time_point_ptr.reset
+            (   new TimePoint(time_stamp_to_point(m_until_str, time_format))
+            );
+        }
+        catch (runtime_error&)
+        {
+            ret.push_back("Could not parse timestamp: " + m_until_str);
+        }
+    }
+    if (ret.empty())
+    {
+        print_report
+        (   p_ordinary_ostream,
+            p_config,
+            p_ordinary_args,
+            since_time_point_ptr.get(),
+            until_time_point_ptr.get()
+        );
+    }
+    return ret;
 }
 
 }  // namespace swx

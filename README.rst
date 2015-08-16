@@ -39,9 +39,9 @@ Print a time-ordered list of today's individual activity stints: ``swx d -l``
 
 Print a summary of the entire activity log: ``swx p``
 
-Print a summary of activities since a given date and time: ``swx since <YYYY-MM-DDThh:mm>``
+Print a summary of activities since a given date and time: ``swx p -f <YYYY-MM-DDThh:mm>``
 
-Print a summary of activitites between two times: ``swx between <YYYY-MM-DDThh:mm> <YYYY-MM-DDThh:mm>``
+Print a summary of activitites between two times: ``swx p -f <YYYY-MM-DDThh:mm> -t <YYYY-MM-DDThh:mm>``
 
 Print a summary of activities matching a regular expression: ``swx p -r <regex>``
 
@@ -146,40 +146,30 @@ Reporting commands
 ------------------
 
 To output a summary of the time you have spent on your various activities,
-various "reporting commands" are available::
+two "reporting commands" are available::
 
     swx print
-    swx since
-    swx between
-    swx until
     swx day
 
 Enter ``swx help <COMMAND>`` for detailed usage information in regards to
-each of these. They all follow a similar pattern, and allow you to enter an
+each of these. They follow a similar pattern, and allow you to enter an
 activity name, if you want to see only time spent on a given activity, or to
 omit the activity name, if you want to see time spent on all activities.
 
 ``swx day`` (or ``swx d``) prints a summary of only the current day's
-activities, or, if passed ``-a`` with an integer argument *n*, the activities
-of *n* days ago. For example, ``swx day -a1`` prints a summary of yesterday's
-activities.
+activities, or, if passed the ``-a`` option with an integer argument *n*, the
+activities of *n* days ago. For example, ``swx day -a1`` prints a summary of
+yesterday's activities.
 
-``swx print`` (or ``swx p``) prints a summary of activity that is not filtered
-by time at all.
-
-The amount of time spent on each activity during the relevant period is shown
-in terms of digital hours.
-
-The other reporting commands take one or two timestamps as arguments, to show
-only activity *since* a certain time, only activity *until* a certain time, or
-only activity *between* two times. The activity name (if any) is entered after
-the timestamp(s). By default, you must enter timestamps in ISO format
-(YYYY-MM-DDTHH:MM). (You can customize this format in the configuration file―see
-Configuration_ below.)
+``swx print`` (or ``swx p``) will by default print a summary of activity that
+is not filtered by time at all. With a timestamp passed to the ``-f`` option,
+it will show only activity since the given time; with a timestamp passed to the
+``-t`` option, only activity up until the given time. Using these options
+combined, one can filter for activity between two times.
 
 By default, activities are summarised in "tree" form, showing the hierarchical
 structure of activities, sub-activities and so on. If you pass the ``-v``
-option to a reporting command, then activities will instead be summarised
+option to a reporting command, then activities will instead be displayed
 in "verbose" form, showing the full name of each activity, with activities
 ordered alphabetically by name. If you pass the ``-l`` option to a reporting
 command, then instead a list of individual activity stints will be shown, in
@@ -213,6 +203,9 @@ be output in CSV format.
 If you pass the ``-s`` option, then the results will be output in "succinct"
 format, with the total duration shown only, and no activity names shown. This
 does not apply in "list" (``-l``) mode.
+
+The amount of time spent on each activity during the relevant period is shown
+in terms of digital hours.
 
 By default, the number of hours shown is rounded to the nearest tenth of
 an hour (6 minutes). This behaviour can be changed in the Configuration_.

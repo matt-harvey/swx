@@ -55,6 +55,11 @@ private:
         std::ostream& p_ordinary_ostream
     ) override;
 
+// member variables
+private:
+    std::string m_since_str;
+    std::string m_until_str;
+
 };  // class PrintCommand
 
 }  // namespace swx

@@ -66,8 +66,6 @@ set(
     src/activity_tree.cpp
     src/arithmetic.cpp
     src/atomic_writer.cpp
-    src/print_command.cpp
-    src/between_command.cpp
     src/command.cpp
     src/command_manager.cpp
     src/config.cpp
@@ -86,11 +84,11 @@ set(
     src/interval.cpp
     src/list_report_writer.cpp
     src/placeholder.cpp
+    src/print_command.cpp
     src/recording_command.cpp
     src/report_writer.cpp
     src/reporting_command.cpp
     src/resume_command.cpp
-    src/since_command.cpp
     src/stint.cpp
     src/stream_flag_guard.cpp
     src/string_utilities.cpp
@@ -99,7 +97,6 @@ set(
     src/day_command.cpp
     src/time_point.cpp
     src/time_log.cpp
-    src/until_command.cpp
     src/version_command.cpp
 )
 add_library(swx_common ${common_sources})
