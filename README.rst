@@ -33,7 +33,7 @@ Print today's activities in "verbose" form: ``swx d -v``
 
 Print yesterday's activities: ``swx d -a1``
 
-Print activities from 2 days ago: ``swx d -a2``
+Print activities of two days ago: ``swx d -a2``
 
 Print a time-ordered list of today's individual activity stints: ``swx d -l``
 
