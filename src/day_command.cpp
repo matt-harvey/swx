@@ -71,7 +71,7 @@ DayCommand::DayCommand
 {
     add_option
     (   'a',
-        "Instead of today's activities, print the activities from N days ago.",
+        "Instead of today's activities, print the activities of N days ago",
         nullptr,
         &m_days_ago_str,
         "<N>"
