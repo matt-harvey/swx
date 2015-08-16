@@ -84,8 +84,8 @@ private:
     bool m_use_regex = false;
     bool m_show_beginning = false;
     bool m_show_end = false;
-    bool m_show_detail = false;
-    bool m_show_tree = false;
+    bool m_show_stints = false;
+    bool m_be_verbose = false;
     bool m_be_succinct = false;
     TimeLog& m_time_log;
 

@@ -27,9 +27,9 @@ Switch to the "parent activity" of the current activity: ``swx s __``
 
 Switch to a "sibling activity" of the current activity: ``swx s __ <sibling-activity>``
 
-Print a summary of today's activities: ``swx d``
+Print a summary of today's activities in tree form: ``swx d``
 
-Print today's activities in tree form: ``swx d -t``
+Print today's activities in "verbose" form: ``swx d -v``
 
 Print yesterday's activities: ``swx d -a1``
 
@@ -167,6 +167,9 @@ activities.
 ``swx print`` (or ``swx p``) prints a summary of activity that is not filtered
 by time at all.
 
+The amount of time spent on each activity during the relevant period is shown
+in terms of digital hours.
+
 The other reporting commands take one or two timestamps as arguments, to show
 only activity *since* a certain time, only activity *until* a certain time, or
 only activity *between* two times. The activity name (if any) is entered after
@@ -174,13 +177,13 @@ the timestamp(s). By default, you must enter timestamps in ISO format
 (YYYY-MM-DDTHH:MM). (You can customize this format in the configuration file―see
 Configuration_ below.)
 
-By default, only a summary of activities is printed. This comprises an
-alphabetically ordered list of activities with the total amount of time spent
-on each activity during the period in question shown in terms of digital
-hours.
-
-If you pass the ``-l`` option to the reporting command, then instead a list of
-individual activity stints will be shown, in the following format::
+By default, activities are summarised in "tree" form, showing the hierarchical
+structure of activities, sub-activities and so on. If you pass the ``-v``
+option to a reporting command, then activities will instead be summarised
+in "verbose" form, showing the full name of each activity, with activities
+ordered alphabetically by name. If you pass the ``-l`` option to a reporting
+command, then instead a list of individual activity stints will be shown, in
+the following format::
 
     <START-TIME> <END-TIME> <HOURS-SPENT-IN-DIGITAL-FORMAT> <ACTIVITY>
 
@@ -207,13 +210,9 @@ provided.
 If you pass the ``-c`` option to a reporting command, then the results will
 be output in CSV format.
 
-If you pass the ``-t`` option, then the results will be output in "tree"
-format, showing the hierarchical structure of activities. This does not
-apply in CSV (``-c``) format or "list" (``-l``) mode.
-
 If you pass the ``-s`` option, then the results will be output in "succinct"
 format, with the total duration shown only, and no activity names shown. This
-does not apply in "list" (``-l``) mode or "tree" (``-t``) mode.
+does not apply in "list" (``-l``) mode.
 
 By default, the number of hours shown is rounded to the nearest tenth of
 an hour (6 minutes). This behaviour can be changed in the Configuration_.

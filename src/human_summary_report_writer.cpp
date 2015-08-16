@@ -58,13 +58,13 @@ HumanSummaryReportWriter::HumanSummaryReportWriter
     Options const& p_options,
     bool p_include_beginning,
     bool p_include_ending,
-    bool p_show_tree,
+    bool p_verbose,
     bool p_succinct
 ):
     SummaryReportWriter(p_stints, p_options),
     m_include_beginning(p_include_beginning),
     m_include_ending(p_include_ending),
-    m_show_tree(p_show_tree),
+    m_verbose(p_verbose),
     m_succinct(p_succinct)
 {
 }
@@ -77,9 +77,9 @@ HumanSummaryReportWriter::do_write_summary
     map<std::string, ActivityStats> const& p_activity_stats_map
 )
 {
-    if (m_show_tree) write_tree_summary(p_os, p_activity_stats_map);
-    else if (m_succinct) write_succinct_summary(p_os, p_activity_stats_map);
-    else write_flat_summary(p_os, p_activity_stats_map);
+    if (m_succinct) write_succinct_summary(p_os, p_activity_stats_map);
+    else if (m_verbose) write_flat_summary(p_os, p_activity_stats_map);
+    else write_tree_summary(p_os, p_activity_stats_map);
     return;
 }
 

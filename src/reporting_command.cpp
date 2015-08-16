@@ -62,20 +62,20 @@ ReportingCommand::ReportingCommand
     (   'l',
         "Instead of printing a summary, print a date-ordered list of "
             "individual activity stints during the relevant period",
-        &m_show_detail
+        &m_show_stints
     );
     add_option
     (   'b',
         "In addition to any other information, output the earliest time at "
-            "which each activity was conducted during the relevant period (does "
-            "not apply in list mode)",
+            "which each activity was conducted during the relevant period (ignored "
+            "in list mode)",
         &m_show_beginning
     );
     add_option
     (   'e',
         "Output in a column to the right of any other info, the latest time at "
-            "which each activity was conducted during the relevant period (does "
-            "not apply in list mode)",
+            "which each activity was conducted during the relevant period (ignored "
+            "in list mode)",
         &m_show_end
     );
     add_option
@@ -84,15 +84,14 @@ ReportingCommand::ReportingCommand
         &m_produce_csv
     );
     add_option
-    (   't',
-        "Show hierarchical \"tree\" activity structure (ignored in list mode "
-            "and in CSV format)",
-        &m_show_tree
+    (   'v',
+        "Instead of printing the summary in \"tree\" form, print the full name of "\
+            "each activity (ignored in list mode or succinct mode)",
+        &m_be_verbose
     );
     add_option
     (   's',
-        "Succinct output: show grand total only (ignored in list mode and in "
-            "tree mode)",
+        "Succinct output: show grand total only (ignored in list mode)",
         &m_be_succinct
     );
 }
@@ -125,7 +124,7 @@ ReportingCommand::print_report
         p_config.time_format()
     );
     unique_ptr<ReportWriter> report_writer;
-    if (m_show_detail)
+    if (m_show_stints)
     {
         if (m_produce_csv)
         {
@@ -158,7 +157,7 @@ ReportingCommand::print_report
                     options,
                     m_show_beginning,
                     m_show_end,
-                    m_show_tree,
+                    !m_be_verbose,
                     m_be_succinct
                 )
             );

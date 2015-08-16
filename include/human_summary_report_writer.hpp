@@ -43,7 +43,7 @@ public:
         Options const& p_options,
         bool p_include_beginning,
         bool p_include_ending,
-        bool p_show_tree,
+        bool p_verbose,
         bool p_succinct
     );
     HumanSummaryReportWriter(HumanSummaryReportWriter const& rhs) = delete;
@@ -89,7 +89,7 @@ private:
 private:
     bool const m_include_beginning;
     bool const m_include_ending;
-    bool const m_show_tree;
+    bool const m_verbose;
     bool const m_succinct;
 
 };  // class HumanSummaryReportWriter
