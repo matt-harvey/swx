@@ -157,7 +157,7 @@ ReportingCommand::print_report
                     options,
                     m_show_beginning,
                     m_show_end,
-                    !m_be_verbose,
+                    m_be_verbose,
                     m_be_succinct
                 )
             );
