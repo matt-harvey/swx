@@ -66,7 +66,7 @@ EditCommand::do_process
     ostream& p_ordinary_ostream
 )
 {
-    (void)p_ordinary_ostream; p_ordinary_args;  // suppress compiler warning re. unused param.
+    (void)p_ordinary_ostream; (void)p_ordinary_args;  // suppress compiler warning re. unused param.
     string const filepath =
     (   m_open_config_file?
         p_config.filepath():
