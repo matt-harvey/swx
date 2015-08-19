@@ -15,13 +15,19 @@
  */
 
 #include "string_utilities.hpp"
+#include "stream_utilities.hpp"
+#include <algorithm>
 #include <cassert>
 #include <cstdio>
+#include <iterator>
 #include <sstream>
 #include <string>
 #include <vector>
 
+using std::copy;
 using std::getline;
+using std::ostream_iterator;
+using std::ostringstream;
 using std::string;
 using std::stringstream;
 using std::vector;
@@ -63,6 +69,47 @@ split(string const& p_str, char p_delimiter)
     }
     if (!p_str.empty()) ret.emplace_back(it0, it1);
     return ret;
+}
+
+string
+wrap
+(   string const& p_string,
+    string::size_type p_margin,
+    string::size_type p_width
+)
+{
+    // TODO LOW PRIORITY This could probably be tidied up a bit.
+    auto const separator = string("\n") + string(p_margin, ' ');
+    ostringstream oss;
+    enable_exceptions(oss);
+
+    string::const_iterator it0, it1, it2;
+    for (it0 = it1 = it2 = p_string.begin(); it2 != p_string.end(); ++it2)
+    {
+        if (*it2 == ' ')
+        {
+            if (it2 - it0 + p_margin > p_width)
+            {
+                if (it0 != p_string.begin()) oss << separator;
+                copy(it0, it1, ostream_iterator<char>(oss));
+                it0 = it1 + 1;
+            }
+            it1 = it2;
+        }
+    }
+    if (it0 != p_string.begin()) oss << separator;
+    copy(it0, it1, ostream_iterator<char>(oss));
+    if ((it2 - it0 + p_margin > p_width) && (it1 < it2))
+    {
+        oss << separator;
+        ++it1;
+    }
+    if (it1 < it2)
+    {
+        copy(it1, it2, ostream_iterator<char>(oss));
+    }
+
+    return oss.str();
 }
 
 }  // namespace swx

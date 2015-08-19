@@ -22,6 +22,7 @@
 #include "placeholder.hpp"
 #include "stream_flag_guard.hpp"
 #include "stream_utilities.hpp"
+#include "string_utilities.hpp"
 #include <cassert>
 #include <cstdlib>
 #include <iomanip>
@@ -236,8 +237,6 @@ Command::usage_summary() const
 string
 Command::usage_descriptor() const
 {
-    // TODO LOW PRIORITY This should handle wrapping of the right-hand cell
-    // to a reasonable width if necessary.
     using ColWidth = string::size_type;
     ColWidth command_word_length = m_command_word.length();
     ColWidth left_col_width = command_word_length;
@@ -248,7 +247,7 @@ Command::usage_descriptor() const
             line.args_descriptor().length() + command_word_length;
         if (left_cell_width > left_col_width) left_col_width = left_cell_width;
     }
-    left_col_width += app_name.length() + 1 + m_command_word.length() + 2;
+    left_col_width += 2 + app_name.length();
     ostringstream oss;
     enable_exceptions(oss);
     oss << "Usage:\n";
@@ -259,7 +258,7 @@ Command::usage_descriptor() const
             << (app_name + ' ' + m_command_word + ' ' + line.args_descriptor())
             << "  ";
         guard.reset();
-        oss << line.usage_descriptor();
+        oss << ": " << wrap(line.usage_descriptor(), left_col_width + 6);
     }
     if (!m_aliases.empty())
     {
@@ -285,21 +284,15 @@ Command::usage_descriptor() const
             oss << "\n  " << setw(left_col_width) << left
                 << (option_str + " " + help_line.args_descriptor());
             guard.reset();
-            oss << help_line.usage_descriptor();
+            oss << ": " << wrap(help_line.usage_descriptor(), left_col_width + 4);
         }
     }
     if (does_support_placeholders())
     {
-        auto const placeholder_lines = placeholder_help(left_col_width);
-        if (!placeholder_lines.empty())
-        {
-            oss << "\n\nPlaceholders:\n";
-            for (auto const& line: placeholder_lines)
-            {
-                oss << "\n  " << line;
-            }
-        }
+        oss << "\n\nPlaceholders:\n";
+        write_placeholder_help(oss, left_col_width);
     }
+    oss << endl;
     return oss.str();
 }
 

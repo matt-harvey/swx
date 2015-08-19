@@ -17,11 +17,13 @@
 #include "string_utilities.hpp"
 #include <boost/test/unit_test.hpp>
 #include <iterator>
+#include <sstream>
 #include <string>
 #include <vector>
 
 using std::begin;
 using std::end;
+using std::ostringstream;
 using std::string;
 using std::vector;
 
@@ -80,6 +82,30 @@ BOOST_AUTO_TEST_CASE(split)
     string const str5("yeah");
     vector<string> const vec5{"yeah"};
     BOOST_CHECK(split(str5, '!') == vec5);
+
+    string const str6(",yeah");
+    vector<string> const vec6{"", "yeah"};
+    BOOST_CHECK(split(str6, ',') == vec6);
+
+    string const str7("yeah,");
+    vector<string> const vec7{"yeah", ""};
+    BOOST_CHECK(split(str7, ',') == vec7);
+}
+
+BOOST_AUTO_TEST_CASE(wrap)
+{
+    using swx::wrap;
+
+    string const s0 = "Hello there, what is happening here? Anything?";
+    string const s0a = "Hello there,\nwhat is\nhappening\nhere?\nAnything?";
+    BOOST_CHECK_EQUAL(wrap(s0, 0, 12), s0a);
+
+    string const s1 = "Yes hello there, what is happening here? Any stuff?";
+    string const s1a = "Yes hello\n    there, what is\n    happening\n    here? "\
+                       "Any\n    stuff?";
+    BOOST_CHECK_EQUAL(wrap(s1, 4, 18), s1a);
+
+    BOOST_CHECK_EQUAL(wrap(string(), 0, 12), "");
 }
 
 }  // namespace test

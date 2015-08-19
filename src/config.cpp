@@ -81,10 +81,6 @@ namespace
 
     string comment_out(string const& s)
     {
-        if (s.empty())
-        {
-            return s;
-        }
         ostringstream oss;
         enable_exceptions(oss);
         oss << k_commenting_char;
@@ -96,7 +92,7 @@ namespace
         for (string::size_type i = 0; i != sz; ++i)
         {
             auto const c = s[i];
-             oss << c;
+            oss << c;
             if ((c == '\n') && (i + 1 != sz))
             {
                 oss << k_commenting_char;
@@ -107,6 +103,11 @@ namespace
             }
         }
         return oss.str();
+    }
+
+    string comment_out_wrap(string const& s)
+    {
+        return s.empty() ? s : comment_out(wrap(s, 0, 78));
     }
 
 }  // end anonymous namespace
@@ -263,11 +264,11 @@ void
 Config::set_defaults()
 {
     string const rounding_explanation
-    (   "output_rounding_numerator and output_rounding_denominator together\n"
-        "determine rounding behaviour when printing a duration figure.\n"
-        "For example, if output_rounding_numerator is 1 and\n"
-        "output_rounding_denominator is 4, and the output duration is\n"
-        "measured in hours, then the output will be rounded to the nearest\n"
+    (   "output_rounding_numerator and output_rounding_denominator together "
+        "determine rounding behaviour when printing a duration figure. "
+        "For example, if output_rounding_numerator is 1 and "
+        "output_rounding_denominator is 4, and the output duration is "
+        "measured in hours, then the output will be rounded to the nearest "
         "quarter of an hour."
     );
     unchecked_set_option
@@ -282,7 +283,7 @@ Config::set_defaults()
     (   "output_precision",
         OptionData
         (   "1",
-            "Determines the number of decimal places of precision for\n"
+            "Determines the number of decimal places of precision for "
             "durations when output in decimal format."
         )
     );
@@ -294,14 +295,14 @@ Config::set_defaults()
     (   "format_string",
         OptionData
         (   "%Y-%m-%dT%H:%M",
-            "Determines the format used when parsing and printing timestamps.\n"
-            "See the documentation for the C function strftime for details.\n"
-            "If you change this, you should also review the formatted_buf_len\n"
-            "option to ensure it will be adequate.\n"
-            "Note, changing this option will NOT cause the timestamps already\n"
-            "entered in the data file to be retroactively reformatted. This\n"
-            "will cause parsing errors unless you manually reformat the old\n"
-            "entries to the new format. It is therefore best to decide on a\n"
+            "Determines the format used when parsing and printing timestamps. "
+            "See the documentation for the C function strftime for details. "
+            "If you change this, you should also review the formatted_buf_len "
+            "option to ensure it will be adequate. "
+            "Note, changing this option will NOT cause the timestamps already "
+            "entered in the data file to be retroactively reformatted. This "
+            "will cause parsing errors unless you manually reformat the old "
+            "entries to the new format. It is therefore best to decide on a "
             "format when you first run the program, and then stick with it."
         )
     );
@@ -309,8 +310,8 @@ Config::set_defaults()
     (   "formatted_buf_len",
         OptionData
         (   "50",
-            "Should be set to a value that is at least one greater than the\n"
-            "length of the longest string expected to be printed as a result\n"
+            "Should be set to a value that is at least one greater than the "
+            "length of the longest string expected to be printed as a result "
             "of formatting a time point using format_string."
         )
     );
@@ -319,7 +320,7 @@ Config::set_defaults()
     (   "editor",
         OptionData
         (   (env_editor? env_editor: "vi"),  // non-portable
-            "Editor to be invoked by file editing commands. Must be callable\n"
+            "Editor to be invoked by file editing commands. Must be callable "
             "by name from the command line, with filepath as argument."
         )
     );
@@ -348,11 +349,11 @@ Config::initialize_config_file()
         << " can be set in this file.\n"
         << "\n"
         << "SYNTAX:\n"
-        << "\tkey" << k_separator << "value\n"
-        << "\tBlank lines are permitted.\n"
-        << "\tDo NOT place quotes around value.\n"
-        << "\tvalue may contain whitespace.\n"
-        << "\tComments must occupy a line to themselves beginning with '"
+        << "  key" << k_separator << "value\n"
+        << "  Blank lines are permitted.\n"
+        << "  Do NOT place quotes around value.\n"
+        << "  Value may contain whitespace.\n"
+        << "  Comments must occupy a line to themselves beginning with '"
         << k_commenting_char << "'.";
     writer.append_line(comment_out(oss.str()));
     writer.append_line(string(80, k_commenting_char));
@@ -360,7 +361,7 @@ Config::initialize_config_file()
     {
         OptionData const data = entry.second;
         writer.append_line();
-        writer.append_line(comment_out(data.description));
+        writer.append_line(comment_out_wrap(data.description));
         writer.append_line(comment_out("Default: " + data.value));
         writer.append_line
         (   comment_out

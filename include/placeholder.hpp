@@ -17,6 +17,7 @@
 #ifndef GUARD_placeholder_hpp_31044386248590605
 #define GUARD_placeholder_hpp_31044386248590605
 
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -39,11 +40,15 @@ std::vector<std::string> expand_placeholders
 );
 
 /**
- * @returns a vector of strings each of which is a line of help text,
- * which together explain the usage of placeholders.
+ * Writes to \e p_os text in two columns explaining the use of placeholders.
+ * The left column of the text will take up no less than \e p_margin characters,
+ * and the whole text, both columns included, will take up no more than \e
+ * p_width characters.
  */
-std::vector<std::string> placeholder_help
-(   std::string::size_type p_left_column_width
+void write_placeholder_help
+(   std::ostream& p_os,
+    std::string::size_type p_margin = 0,
+    std::string::size_type p_width = 80
 );
 
 }  // namespace swx

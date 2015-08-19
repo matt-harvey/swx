@@ -53,6 +53,19 @@ std::string squish(StringIter p_beg, StringIter const& p_end);
  */
 std::vector<std::string> split(std::string const& p_str, char p_delimiter = ' ');
 
+/**
+ * @returns a string derived from \e p_string by inserting newline characters
+ * at positions between words such that each resulting line does not exceed \e p_width
+ * characters in length if possible (a long enough word will prevent this being
+ * fulfilled) inclusive of \e p_margin, where \e p_margin spaces are inserted
+ * at the beginning of each resulting line other than the first.
+ */
+std::string wrap
+(   std::string const& p_string,
+    std::string::size_type p_margin = 0,
+    std::string::size_type p_width = 80
+);
+
 // TEMPLATE IMPLEMENTATIONS
 
 template <typename StringIter>

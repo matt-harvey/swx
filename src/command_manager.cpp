@@ -28,6 +28,7 @@
 #include "print_command.hpp"
 #include "resume_command.hpp"
 #include "stream_utilities.hpp"
+#include "string_utilities.hpp"
 #include "switch_command.hpp"
 #include "time_log.hpp"
 #include "version_command.hpp"
@@ -189,7 +190,7 @@ CommandManager::help_information() const
             }
             oss << "  " << setw(width) << left << oss2.str();
             guard.reset();
-            oss << command.usage_summary() << '\n';
+            oss << ": " << wrap(command.usage_summary(), width + 4) << endl;
         }
     }
     oss << "\nFor more information on a particular command, enter '"
