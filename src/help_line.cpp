@@ -31,6 +31,10 @@ HelpLine::HelpLine
 {
 }
 
+HelpLine::HelpLine(char const* p_usage_descriptor): m_usage_descriptor(p_usage_descriptor)
+{
+}
+
 string
 HelpLine::usage_descriptor() const
 {

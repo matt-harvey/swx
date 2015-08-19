@@ -67,8 +67,7 @@ protected:
      * @param p_character the character passed to the command line to activate
      * the option.
      *
-     * @param p_description the description of the option as appearing in the
-     * help text
+     * @param p_help_line HelpLine describing the usage of the option
      *
      * @param p_presence_target if non-null, will have its dereferenced contents
      * set to *true* if the option is encountered during parsing; otherwise, will
@@ -77,16 +76,12 @@ protected:
      * @param p_arg_target if non-null, signifies that the option requires an
      * argument, the contents of which, if encountered during parsing, will be assigned to
      * <em>*p_arg_target</em>
-     *
-     * @param p_arg_label should be given a non-empty string if <em>p_arg_target</em>
-     * is used; this is used as a placeholder for the argument in the generated help text
      */
     void add_option
     (   char p_character,
-        std::string const& p_description,
+        HelpLine const& p_help_line,
         bool* p_presence_target = nullptr,
-        std::string* p_arg_target = nullptr,
-        std::string const& p_arg_label = std::string()
+        std::string* p_arg_target = nullptr
     );
 
 public:

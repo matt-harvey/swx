@@ -25,8 +25,8 @@ namespace swx
 /**
  * Represents a line of help information for presentation to user,
  * describing a particular string of arguments that might be passed to
- * a command, together with a description of how the command is used
- * in conjunction with that string of arguments.
+ * a command or command option, together with a description of how the
+ * command or option is used in conjunction with that string of arguments.
  */
 class HelpLine
 {
@@ -36,6 +36,8 @@ public:
     (   std::string const& p_usage_descriptor,
         std::string const& p_args_descriptor = std::string()
     );
+
+    HelpLine(char const* p_usage_descriptor);
 
 // accessors
 public:

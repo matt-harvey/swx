@@ -55,17 +55,15 @@ PrintCommand::PrintCommand
 {
     add_option
     (   'f',
-        "Only count time spent on activities since TIMESTAMP",
+        HelpLine("Only count time spent on activities since TIMESTAMP", "<TIMESTAMP>"),
         nullptr,
-        &m_since_str,
-        "<TIMESTAMP>"
+        &m_since_str
     );
     add_option
     (   't',
-        "Only count time spent on activities until TIMESTAMP",
+        HelpLine("Only count time spent on activities until TIMESTAMP", "<TIMESTAMP>"),
         nullptr,
-        &m_until_str,
-        "<TIMESTAMP>"
+        &m_until_str
     );
 }
 

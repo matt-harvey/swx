@@ -61,20 +61,16 @@ DayCommand::DayCommand
         "Print summary of a single day's activities",
         vector<HelpLine>
         {   HelpLine("Print summary of time spent on all activities today"),
-            HelpLine
-            (   "Print summary of time spent on ACTIVITY today",
-                "<ACTIVITY>"
-            )
+            HelpLine("Print summary of time spent on ACTIVITY today", "<ACTIVITY>")
         },
         p_time_log
     )
 {
     add_option
     (   'a',
-        "Instead of today's activities, print the activities of N days ago",
+        HelpLine("Instead of today's activities, print the activities of N days ago", "<N>"),
         nullptr,
-        &m_days_ago_str,
-        "<N>"
+        &m_days_ago_str
     );
 }
 

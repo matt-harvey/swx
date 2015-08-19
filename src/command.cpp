@@ -64,23 +64,20 @@ struct Command::Option
 {
     Option
     (   char p_character,
-        std::string const& p_description,
+        HelpLine const& p_help_line,
         bool* p_presence_target = nullptr,
-        std::string* p_arg_target = nullptr,
-        std::string const& p_arg_label = std::string()
+        std::string* p_arg_target = nullptr
     ):
         presence_target(p_presence_target),
         arg_target(p_arg_target),
         character(p_character),
-        description(p_description),
-        arg_label(p_arg_label)
+        help_line(p_help_line)
     {
     }
     char character;
-    std::string description;
     bool* presence_target;
     std::string* arg_target;
-    std::string arg_label;
+    HelpLine help_line;
 };
 
 Command::Command
@@ -103,10 +100,9 @@ Command::~Command() = default;
 void
 Command::add_option
 (   char p_character,
-    string const& p_description,
+    HelpLine const& p_help_line,
     bool* p_presence_target,
-    std::string* p_arg_target,
-    std::string const& p_arg_label
+    std::string* p_arg_target
 )
 {
     if (m_options.count(p_character))
@@ -116,14 +112,10 @@ Command::add_option
         oss << "Option already enabled for this Command: " << p_character;
         throw runtime_error(oss.str());
     }
-    Option const option
+    m_options.emplace
     (   p_character,
-        p_description,
-        p_presence_target,
-        p_arg_target,
-        p_arg_label
+        Option(p_character, p_help_line, p_presence_target, p_arg_target)
     );
-    m_options.emplace(p_character, option);
     if (m_accept_ordinary_args)
     {
         try
@@ -282,18 +274,18 @@ Command::usage_descriptor() const
         oss << "\n\nOptions:\n";
         for (auto const& option: m_options)
         {
-            auto const required_width = 2 + option.second.arg_label.size() + 4;
-            if (required_width > left_col_width) left_col_width = required_width;
+            auto const width = option.second.help_line.args_descriptor().size() + 6;
+            if (width > left_col_width) left_col_width = width;
         }
         for (auto const& option: m_options)
         {
             StreamFlagGuard guard(oss);
             string const option_str{'-', option.first};
-            auto const& opt = option.second;
+            auto const& help_line = option.second.help_line;
             oss << "\n  " << setw(left_col_width) << left
-                << (option_str + " " + opt.arg_label);
+                << (option_str + " " + help_line.args_descriptor());
             guard.reset();
-            oss << opt.description;
+            oss << help_line.usage_descriptor();
         }
     }
     if (does_support_placeholders())
