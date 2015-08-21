@@ -31,9 +31,26 @@ namespace swx
  */
 std::string trim(std::string const& p_string);
 
+/**
+ * @param p_beg iterator pointing to the first of a sequence of strings
+ *
+ * @param p_end iterator to one-past-the-end of the sequence of strings
+ *
+ * @returns a string produced by trimming the whitespace from the beginning and
+ * end of each string, and then joining them together with a single space between
+ * each.
+ */
 template <typename StringIter>
 std::string squish(StringIter p_beg, StringIter const& p_end);
 
+/**
+ * @param p_str string to split
+ *
+ * @param p_delimiter
+ *
+ * @returns a vector of strings derived from splitting \e p_str at each occurrence
+ * of \e p_delimiter. The returned strings omit the delimiter.
+ */
 std::vector<std::string> split(std::string const& p_str, char p_delimiter = ' ');
 
 // TEMPLATE IMPLEMENTATIONS

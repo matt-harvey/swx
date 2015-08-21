@@ -21,6 +21,7 @@
 #include "string_utilities.hpp"
 #include <algorithm>
 #include <cassert>
+#include <cstdio>
 #include <cstdlib>
 #include <iostream>
 #include <fstream>

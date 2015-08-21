@@ -108,6 +108,7 @@ target_link_libraries (${executable_stem} swx_common ${libraries})
 set(
     test_sources
     test/arithmetic.cpp
+    test/string_utilities.cpp
     test/test.cpp
 )
 add_executable(

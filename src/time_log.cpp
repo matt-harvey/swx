@@ -25,6 +25,7 @@
 #include <cassert>
 #include <chrono>
 #include <cstddef>
+#include <cstdio>
 #include <cstring>
 #include <ctime>
 #include <fstream>

@@ -23,7 +23,7 @@ using std::numeric_limits;
 namespace test
 {
 
-BOOST_AUTO_TEST_CASE(addition_is_safe_test)
+BOOST_AUTO_TEST_CASE(addition_is_safe)
 {
     using swx::addition_is_safe;
 

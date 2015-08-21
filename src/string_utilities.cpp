@@ -16,7 +16,7 @@
 
 #include "string_utilities.hpp"
 #include <cassert>
-#include <iostream>  // DEBUG
+#include <cstdio>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -51,19 +51,17 @@ trim(string const& p_string)
 vector<string>
 split(string const& p_str, char p_delimiter)
 {
-    if (p_str.empty())
-    {
-        return vector<string>{};
-    }
     vector<string> ret;
-    stringstream ss(p_str);
-    enable_exceptions(ss);
-    string word;
-    while (!ss.eof())
+    string::const_iterator it0, it1;
+    for (it0 = it1 = p_str.begin(); it1 != p_str.end(); ++it1)
     {
-        getline(ss, word, p_delimiter);
-        ret.push_back(word);
+        if (*it1 == p_delimiter)
+        {
+            ret.emplace_back(it0, it1);
+            it0 = it1 + 1;
+        }
     }
+    if (!p_str.empty()) ret.emplace_back(it0, it1);
     return ret;
 }
 
