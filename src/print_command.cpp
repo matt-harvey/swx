@@ -79,13 +79,13 @@ PrintCommand::do_process
     ErrorMessages ret;
     unique_ptr<TimePoint> since_time_point_ptr;
     unique_ptr<TimePoint> until_time_point_ptr;
-    auto const time_format = p_config.time_format();
+    auto const time_fmt = p_config.time_format();
     if (!m_since_str.empty())
     {
         try
         {
             since_time_point_ptr.reset
-            (   new TimePoint(time_stamp_to_point(m_since_str, time_format))
+            (   new TimePoint(time_stamp_to_point(m_since_str, time_fmt))
             );
         }
         catch (runtime_error&)
@@ -98,7 +98,7 @@ PrintCommand::do_process
         try
         {
             until_time_point_ptr.reset
-            (   new TimePoint(time_stamp_to_point(m_until_str, time_format))
+            (   new TimePoint(time_stamp_to_point(m_until_str, time_fmt))
             );
         }
         catch (runtime_error&)

@@ -37,17 +37,6 @@ namespace swx
 namespace
 {
     int const k_max_days_ago = 9;
-    
-    string days_ago_pluralized(int days)
-    {
-        if (days == 1)
-        {
-            return "yesterday";
-        }
-        ostringstream oss;
-        oss << days << " days ago";
-        return oss.str();
-    }
 }
 
 DayCommand::DayCommand

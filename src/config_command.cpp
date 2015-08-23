@@ -71,6 +71,7 @@ ConfigCommand::do_process
     ostream& p_ordinary_ostream
 )
 {
+    (void)p_ordinary_args;  // silence compiler warning re. unused param.
     if (m_editing_option)
     {
         string const editor_invokation = p_config.editor() + " " + p_config.filepath();

@@ -69,9 +69,9 @@ struct Command::Option
         bool* p_presence_target = nullptr,
         std::string* p_arg_target = nullptr
     ):
+        character(p_character),
         presence_target(p_presence_target),
         arg_target(p_arg_target),
-        character(p_character),
         help_line(p_help_line)
     {
     }
