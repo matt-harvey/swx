@@ -28,13 +28,31 @@ template <>
 void
 output_csv_cell(ostream& p_os, string const& p_str)
 {
-    p_os << '"';
-    for (char c: p_str)
+    auto use_quotes = false;
+    for (auto it = p_str.begin(); !use_quotes && (it != p_str.end()); ++it)
     {
-        if (c == '"') p_os << "\"\"";
-        else p_os << c;
+        switch (*it)
+        {
+        case ',': case '"': case '\n': case '\r':
+            use_quotes = true;  
+        default:
+            ;  // do nothing
+        }
     }
-    p_os << '"';
+    if (use_quotes)
+    {
+        p_os << '"';
+        for (char c: p_str)
+        {
+            if (c == '"') p_os << "\"\"";
+            else p_os << c;
+        }
+        p_os << '"';
+    }
+    else
+    {
+        p_os << p_str;
+    }
     return;
 }
 

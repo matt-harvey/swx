@@ -30,22 +30,42 @@ BOOST_AUTO_TEST_CASE(output_csv_cell)
     // string
     ostringstream oss0;
     output_csv_cell(oss0, "Hello there");
-    BOOST_CHECK_EQUAL(oss0.str(), "\"Hello there\"");
+    BOOST_CHECK_EQUAL(oss0.str(), "Hello there");
 
     // string with quotes
     ostringstream oss1;
     output_csv_cell(oss1, "Hello \"Doctor\"!");
     BOOST_CHECK_EQUAL(oss1.str(), "\"Hello \"\"Doctor\"\"!\"");
 
-    // integer
+    // string with comma
     ostringstream oss2;
-    output_csv_cell(oss2, 300);
-    BOOST_CHECK_EQUAL(oss2.str(), "\"300\"");
+    output_csv_cell(oss2, "Hello, there");
+    BOOST_CHECK_EQUAL(oss2.str(), "\"Hello, there\"");
+
+    // string with quote and comma
+    ostringstream oss3;
+    output_csv_cell(oss3, "Hello, \"there\"");
+    BOOST_CHECK_EQUAL(oss3.str(), "\"Hello, \"\"there\"\"\"");
+
+    // string with newline
+    ostringstream oss4;
+    output_csv_cell(oss4, "Hello\nthere");
+    BOOST_CHECK_EQUAL(oss4.str(), "\"Hello\nthere\"");
+
+    // string with carriage return
+    ostringstream oss5;
+    output_csv_cell(oss5, "Hello\rthere");
+    BOOST_CHECK_EQUAL(oss5.str(), "\"Hello\rthere\"");
+
+    // integer
+    ostringstream oss6;
+    output_csv_cell(oss6, 300);
+    BOOST_CHECK_EQUAL(oss6.str(), "300");
 
     // negative double
-    ostringstream oss3;
-    output_csv_cell(oss3, -33.9);
-    BOOST_CHECK_EQUAL(oss3.str(), "\"-33.9\"");
+    ostringstream oss7;
+    output_csv_cell(oss7, -33.9);
+    BOOST_CHECK_EQUAL(oss7.str(), "-33.9");
 }
 
 BOOST_AUTO_TEST_CASE(output_csv_row)
@@ -55,19 +75,19 @@ BOOST_AUTO_TEST_CASE(output_csv_row)
     // one cell, string
     ostringstream oss0;
     output_csv_row(oss0, "Hello there");
-    BOOST_CHECK_EQUAL(oss0.str(), "\"Hello there\"\n");
+    BOOST_CHECK_EQUAL(oss0.str(), "Hello there\n");
 
     // one cell, double
     ostringstream oss1;
     output_csv_row(oss1, 33.9);
-    BOOST_CHECK_EQUAL(oss1.str(), "\"33.9\"\n");
+    BOOST_CHECK_EQUAL(oss1.str(), "33.9\n");
 
     // multiple cells
     ostringstream oss2;
-    output_csv_row(oss2, "Hello", 33.905, "\"Yes indeed\"", -5, "Interesting \"hey\"?");
+    output_csv_row(oss2, "Hello", 33.905, "\"Yes indeed\"", -5, "Interesting, \"hey\"?");
     BOOST_CHECK_EQUAL
     (   oss2.str(),
-        "\"Hello\",\"33.905\",\"\"\"Yes indeed\"\"\",\"-5\",\"Interesting \"\"hey\"\"?\"\n"
+        "Hello,33.905,\"\"\"Yes indeed\"\"\",-5,\"Interesting, \"\"hey\"\"?\"\n"
     );
 }
 
