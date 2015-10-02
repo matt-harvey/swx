@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Matthew Harvey
+ * Copyright 2014, 2015 Matthew Harvey
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,43 +15,34 @@
  */
 
 #include "csv_utilities.hpp"
+#include <cstring>
 #include <ostream>
-#include <string>
 
 using std::ostream;
 using std::string;
 
 namespace swx
 {
-    
+ 
 template <>
 void
 output_csv_cell(ostream& p_os, string const& p_str)
 {
-    auto use_quotes = false;
-    for (auto it = p_str.begin(); !use_quotes && (it != p_str.end()); ++it)
+    if (p_str.find_first_of(",\"\n\r") == string::npos)
     {
-        switch (*it)
-        {
-        case ',': case '"': case '\n': case '\r':
-            use_quotes = true;  
-        default:
-            ;  // do nothing
-        }
-    }
-    if (use_quotes)
-    {
-        p_os << '"';
-        for (char c: p_str)
-        {
-            if (c == '"') p_os << "\"\"";
-            else p_os << c;
-        }
-        p_os << '"';
+        // no need to quote
+        p_os << p_str;
     }
     else
     {
-        p_os << p_str;
+        // need to quote and escape
+        p_os << '"';
+        for (auto const c: p_str)
+        {
+            p_os << c;
+            if (c == '"') p_os << c;
+        }
+        p_os << '"';
     }
     return;
 }
