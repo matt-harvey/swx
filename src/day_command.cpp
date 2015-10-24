@@ -86,13 +86,14 @@ DayCommand::do_process
     {
         auto const b = day_begin(n, -days_ago);
         auto const e = day_end(n, -days_ago);
-        print_report
+        auto const error_messages = print_report
         (   p_ordinary_ostream,
             p_config,
             p_ordinary_args,
             &b,
             &e
         );
+        for (auto const& message: error_messages) ret.push_back(message);
     }
     return ret;
 }

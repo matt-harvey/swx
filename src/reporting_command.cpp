@@ -53,15 +53,22 @@ ReportingCommand::ReportingCommand
     m_time_log(p_time_log)
 {
     add_option
+    (   'd',
+        "In addition to ACTIVITY, output the descendant activities of ACTIVITY, and "
+            "their descendants, and so on recursively (cannot be used in combination "
+            "with -r)",
+        &m_include_descendants
+    );
+    add_option
     (   'r',
         "Treat ACTIVITY as a (POSIX extended) regular expression, and include "
-            "all activities that match it",
+            "all activities that match it (cannot be used in combination with -d)",
         &m_use_regex
     );
     add_option
     (   'l',
-        "Instead of printing a summary, print a date-ordered list of "
-            "individual activity stints during the relevant period",
+        "Instead of printing a summary, print a date-ordered list of individual "
+            "activity stints during the relevant period",
         &m_show_stints
     );
     add_option
@@ -98,7 +105,7 @@ ReportingCommand::ReportingCommand
 
 ReportingCommand::~ReportingCommand() = default;
 
-ostream&
+Command::ErrorMessages
 ReportingCommand::print_report
 (   ostream& p_os,
     Config const& p_config,
@@ -108,13 +115,25 @@ ReportingCommand::print_report
 )
 {
     unique_ptr<string> activity_ptr;
+    if (m_use_regex && m_include_descendants)
+    {
+        return ErrorMessages{ "-r option cannot be used in combination with -d" };
+    }
     if (!p_activity_components.empty())
     {
         auto const expanded = expand_placeholders(p_activity_components, m_time_log);
         activity_ptr.reset(new string(squish(expanded.begin(), expanded.end())));
+        if (m_include_descendants)
+        {
+            *activity_ptr = "^" + *activity_ptr + "($|[[:space:]].*)";
+        }
     }
-    auto const stints = 
-        m_time_log.get_stints(activity_ptr.get(), p_begin, p_end, m_use_regex);
+    auto const stints = m_time_log.get_stints
+    (   activity_ptr.get(),
+        p_begin,
+        p_end,
+        (m_use_regex || m_include_descendants)
+    );
     ReportWriter::Options const options
     (   p_config.output_rounding_numerator(),
         p_config.output_rounding_denominator(),
@@ -164,7 +183,7 @@ ReportingCommand::print_report
         }
     }
     report_writer->write(p_os);
-    return p_os;    
+    return ErrorMessages{};
 }
 
 bool

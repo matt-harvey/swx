@@ -43,9 +43,13 @@ Print a summary of activities since a given date and time: ``swx p -f <YYYY-MM-D
 
 Print a summary of activitites between two times: ``swx p -f <YYYY-MM-DDThh:mm> -t <YYYY-MM-DDThh:mm>``
 
-Print a summary of activities matching a regular expression: ``swx p -r <regex>``
-
 Print just the name of the current activity ``swx c``
+
+Print a summary of a given activity and its "descendants": ``swx p -d <activity>``
+
+Print a summary of a given activity, excluding its descendants: ``swx p <activity>``
+
+Print a summary of activities matching a regular expression: ``swx p -r <regex>``
 
 Open the time log for editing: ``swx e``
 
@@ -165,27 +169,36 @@ yesterday's activities.
 is not filtered by time at all. With a timestamp passed to the ``-f`` option,
 it will show only activity since the given time; with a timestamp passed to the
 ``-t`` option, only activity up until the given time. Using these options
-combined, one can filter for activity between two times.
+combined, you can filter for activity between two times.
 
 By default, activities are summarised in "tree" form, showing the hierarchical
-structure of activities, sub-activities and so on. If you pass the ``-v``
-option to a reporting command, then activities will instead be displayed
-in "verbose" form, showing the full name of each activity, with activities
-ordered alphabetically by name. If you pass the ``-l`` option to a reporting
-command, then instead a list of individual activity stints will be shown, in
-the following format::
+structure of activities, sub-activities and so on (see `Complex activities`_
+below). If you pass the ``-v`` option to a reporting command, then activities
+will instead be displayed in "verbose" form, showing the full name of each
+activity, with activities ordered alphabetically by name. If you pass the
+``-l`` option to a reporting command, then instead a list of individual
+activity stints will be shown, showing the start and end time, and the
+duration of each stint in digital format.
 
-    <START-TIME> <END-TIME> <HOURS-SPENT-IN-DIGITAL-FORMAT> <ACTIVITY>
+When filtering by activity name, the default behaviour is to filter for only
+the exact activity provided. For example, if you have spent 5 hours on an
+activity called ``emails``, and 4 hours on an activity called ``emails
+customer``, then the command ``swx print emails`` will only print the 5 hours
+of activity under ``emails``, even though ``emails customer`` is a sub-activity
+of ``emails``. In order to print both the passed activity and all its
+sub-activities, you can pass the ``-d`` flag (for "descendants"). (Note the
+``-d`` flag cannot be used in combination with the ``-r`` flag.)
 
-If you pass the ``-r`` option, then the activity string you enter will be
-treated as a regular expression (of the POSIX extended variety), rather than an
-exact activity name. Any activities will then be included in the report for
-which their activity name matches this regular expression.
+If you pass the ``-r`` option to a reporting command, then the activity string
+you enter will be treated as a regular expression (of the POSIX extended
+variety), rather than an exact activity name. Any activities will then be
+included in the report for which their activity name matches this regular
+expression.
 
-If you pass the ``-b`` option, then in addition to the other info, the
-earliest time at which each activity was conducted during the period
-in question will be printed next to each activity. (This does not apply when
-outputting in "list" mode.)
+If you pass the ``-b`` option to a reporting command, then in addition to the
+other info, the earliest time at which each activity was conducted during the
+period in question will be printed next to each activity. (This does not apply
+when outputting in "list" mode.)
 
 If you pass the ``-e`` option, then in addition to, and to the right of,
 any other info, the latest time at which each activity was conducted during

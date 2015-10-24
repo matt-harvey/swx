@@ -62,8 +62,11 @@ protected:
      * Pass a non-empty vector to \e p_activity_args to filter by
      * activity. This parameter will have any placeholders expanded before
      * further processing.
+     *
+     * Returns non-empty ErrorMessages if anything goes wrong (but does
+     * not rule out throwing an exception).
      */
-    std::ostream& print_report
+    ErrorMessages print_report
     (   std::ostream& p_os,
         Config const& p_config,
         std::vector<std::string> const& p_activity_args =
@@ -80,6 +83,7 @@ private:
 
 // member variables
 private:
+    bool m_include_descendants = false;
     bool m_produce_csv = false;
     bool m_use_regex = false;
     bool m_show_beginning = false;

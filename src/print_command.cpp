@@ -108,13 +108,14 @@ PrintCommand::do_process
     }
     if (ret.empty())
     {
-        print_report
+        auto const error_messages = print_report
         (   p_ordinary_ostream,
             p_config,
             p_ordinary_args,
             since_time_point_ptr.get(),
             until_time_point_ptr.get()
         );
+        for (auto const& message: error_messages) ret.push_back(message);
     }
     return ret;
 }
