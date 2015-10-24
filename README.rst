@@ -186,14 +186,13 @@ activity called ``emails``, and 4 hours on an activity called ``emails
 customer``, then the command ``swx print emails`` will only print the 5 hours
 of activity under ``emails``, even though ``emails customer`` is a sub-activity
 of ``emails``. In order to print both the passed activity and all its
-sub-activities, you can pass the ``-d`` flag (for "descendants"). (Note the
-``-d`` flag cannot be used in combination with the ``-r`` flag.)
+sub-activities, you can pass the ``-d`` flag (for "descendants").
 
 If you pass the ``-r`` option to a reporting command, then the activity string
 you enter will be treated as a regular expression (of the POSIX extended
 variety), rather than an exact activity name. Any activities will then be
 included in the report for which their activity name matches this regular
-expression.
+expression. (Note this cannot be used in combination with the ``-d`` flag.)
 
 If you pass the ``-b`` option to a reporting command, then in addition to the
 other info, the earliest time at which each activity was conducted during the
