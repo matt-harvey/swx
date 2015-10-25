@@ -24,23 +24,33 @@
 #include "human_summary_report_writer.hpp"
 #include "list_report_writer.hpp"
 #include "placeholder.hpp"
+#include "stream_utilities.hpp"
 #include "string_utilities.hpp"
 #include "summary_report_writer.hpp"
 #include "time_log.hpp"
 #include <iostream>
 #include <memory>
 #include <ostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
 using std::endl;
 using std::ostream;
+using std::ostringstream;
 using std::string;
 using std::unique_ptr;
 using std::vector;
 
 namespace swx
 {
+
+namespace
+{
+    auto const k_include_descendants_flag = 'd';
+    auto const k_use_regex_flag = 'r';
+
+}  // end anonymous namespace
 
 ReportingCommand::ReportingCommand
 (   string const& p_command_word,
@@ -52,25 +62,35 @@ ReportingCommand::ReportingCommand
     Command(p_command_word, p_aliases, p_usage_summary, p_help_line),
     m_time_log(p_time_log)
 {
+    ostringstream include_descendants_message_stream;
+    include_descendants_message_stream
+        << "In addition to ACTIVITY, output the descendant activities of ACTIVITY, and "
+        << "their descendants, and so on recursively (cannot be used in combination with "
+        << '-' << k_use_regex_flag << ')';
     add_option
-    (   'd',
-        "In addition to ACTIVITY, output the descendant activities of ACTIVITY, and "
-            "their descendants, and so on recursively (cannot be used in combination "
-            "with -r)",
+    (   k_include_descendants_flag,
+        include_descendants_message_stream.str(),
         &m_include_descendants
     );
+
+    ostringstream use_regex_message_stream;
+    use_regex_message_stream
+        << "Treat ACTIVITY as a (POSIX extended) regular expression, and include "
+        << "all activities that match it (cannot be used in combination with "
+        << '-' << k_include_descendants_flag << ')';
     add_option
-    (   'r',
-        "Treat ACTIVITY as a (POSIX extended) regular expression, and include "
-            "all activities that match it (cannot be used in combination with -d)",
+    (   k_use_regex_flag,
+        use_regex_message_stream.str(),
         &m_use_regex
     );
+
     add_option
     (   'l',
         "Instead of printing a summary, print a date-ordered list of individual "
             "activity stints during the relevant period",
         &m_show_stints
     );
+
     add_option
     (   'b',
         "In addition to any other information, output the earliest time at "
@@ -78,6 +98,7 @@ ReportingCommand::ReportingCommand
             "in list mode)",
         &m_show_beginning
     );
+
     add_option
     (   'e',
         "Output in a column to the right of any other info, the latest time at "
@@ -85,17 +106,20 @@ ReportingCommand::ReportingCommand
             "in list mode)",
         &m_show_end
     );
+
     add_option
     (   'c',
         "Output in CSV format",
         &m_produce_csv
     );
+
     add_option
     (   'v',
         "Instead of printing the summary in \"tree\" form, print the full name of "\
             "each activity (ignored in list mode or succinct mode)",
         &m_be_verbose
     );
+
     add_option
     (   's',
         "Succinct output: show grand total only (ignored in list mode)",
@@ -117,7 +141,12 @@ ReportingCommand::print_report
     unique_ptr<string> activity_ptr;
     if (m_use_regex && m_include_descendants)
     {
-        return ErrorMessages{ "-r option cannot be used in combination with -d" };
+        ostringstream oss;
+        enable_exceptions(oss);
+        oss << '-' << k_use_regex_flag
+            << " cannot be used in combination with "
+            << '-' << k_include_descendants_flag << '.';
+        return ErrorMessages{ oss.str() };
     }
     if (!p_activity_components.empty())
     {
