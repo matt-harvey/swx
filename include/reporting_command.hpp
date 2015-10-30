@@ -83,7 +83,7 @@ private:
 
 // member variables
 private:
-    bool m_include_descendants = false;
+    bool m_exclude_subactivities = false;
     bool m_produce_csv = false;
     bool m_use_regex = false;
     bool m_show_beginning = false;

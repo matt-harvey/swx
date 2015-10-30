@@ -47,7 +47,7 @@ namespace swx
 
 namespace
 {
-    auto const k_include_descendants_flag = 'd';
+    auto const k_exclude_subactivities_flag = 'x';
     auto const k_use_regex_flag = 'r';
 
 }  // end anonymous namespace
@@ -62,22 +62,21 @@ ReportingCommand::ReportingCommand
     Command(p_command_word, p_aliases, p_usage_summary, p_help_line),
     m_time_log(p_time_log)
 {
-    ostringstream include_descendants_message_stream;
-    include_descendants_message_stream
-        << "In addition to ACTIVITY, output the descendant activities of ACTIVITY, and "
-        << "their descendants, and so on recursively (cannot be used in combination with "
-        << '-' << k_use_regex_flag << ')';
+    ostringstream exclude_subactivities_message_stream;
+    exclude_subactivities_message_stream
+        << "Output only the exact ACTIVITY given; do not include its subactivities "
+        << "(cannot be used in combination with -" << k_use_regex_flag << ')';
     add_option
-    (   k_include_descendants_flag,
-        include_descendants_message_stream.str(),
-        &m_include_descendants
+    (   k_exclude_subactivities_flag,
+        exclude_subactivities_message_stream.str(),
+        &m_exclude_subactivities
     );
 
     ostringstream use_regex_message_stream;
     use_regex_message_stream
         << "Treat ACTIVITY as a (POSIX extended) regular expression, and include "
-        << "all activities that match it (cannot be used in combination with "
-        << '-' << k_include_descendants_flag << ')';
+        << "all activities that match it (cannot be used in combination with -"
+        << k_exclude_subactivities_flag << ')';
     add_option
     (   k_use_regex_flag,
         use_regex_message_stream.str(),
@@ -139,20 +138,20 @@ ReportingCommand::print_report
 )
 {
     unique_ptr<string> activity_ptr;
-    if (m_use_regex && m_include_descendants)
+    if (m_use_regex && m_exclude_subactivities)
     {
         ostringstream oss;
         enable_exceptions(oss);
         oss << '-' << k_use_regex_flag
             << " cannot be used in combination with "
-            << '-' << k_include_descendants_flag << '.';
+            << '-' << k_exclude_subactivities_flag << '.';
         return ErrorMessages{ oss.str() };
     }
     if (!p_activity_components.empty())
     {
         auto const expanded = expand_placeholders(p_activity_components, m_time_log);
         activity_ptr.reset(new string(squish(expanded.begin(), expanded.end())));
-        if (m_include_descendants)
+        if (!m_exclude_subactivities)
         {
             *activity_ptr = "^" + *activity_ptr + "($|[[:space:]].*)";
         }
@@ -161,7 +160,7 @@ ReportingCommand::print_report
     (   activity_ptr.get(),
         p_begin,
         p_end,
-        (m_use_regex || m_include_descendants)
+        (m_use_regex || !m_exclude_subactivities)
     );
     ReportWriter::Options const options
     (   p_config.output_rounding_numerator(),

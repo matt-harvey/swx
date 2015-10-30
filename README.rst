@@ -45,9 +45,9 @@ Print a summary of activitites between two times: ``swx p -f <YYYY-MM-DDThh:mm> 
 
 Print just the name of the current activity ``swx c``
 
-Print a summary of a given activity and its "descendants": ``swx p -d <activity>``
+Print a summary of a given activity and its sub-activities: ``swx p <activity>``
 
-Print a summary of a given activity, excluding its descendants: ``swx p <activity>``
+Print a summary of a given activity, excluding its sub-activities ``swx p -x <activity>``
 
 Print a summary of activities matching a regular expression: ``swx p -r <regex>``
 
@@ -180,19 +180,22 @@ activity, with activities ordered alphabetically by name. If you pass the
 activity stints will be shown, showing the start and end time, and the
 duration of each stint in digital format.
 
-When filtering by activity name, the default behaviour is to filter for only
-the exact activity provided. For example, if you have spent 5 hours on an
-activity called ``emails``, and 4 hours on an activity called ``emails
-customer``, then the command ``swx print emails`` will only print the 5 hours
-of activity under ``emails``, even though ``emails customer`` is a sub-activity
-of ``emails``. In order to print both the passed activity and all its
-sub-activities, you can pass the ``-d`` flag (for "descendants").
+When filtering by activity name, the default behaviour is to filter for the
+given activity along with its sub-activities. For example, if you have spent 5
+hours on an activity called ``emails``, and 4 hours on an activity called
+``emails customer``, then the command ``swx print emails`` will print the time
+spent on both these activities. To print only a given activity without its
+sub-activities, use the ``-x`` flag. Thus the command ``swx print -x emails``
+would print only the 5 hours spent on emails and not the 4 hours spent on
+``emails customer``.
 
 If you pass the ``-r`` option to a reporting command, then the activity string
 you enter will be treated as a regular expression (of the POSIX extended
 variety), rather than an exact activity name. Any activities will then be
 included in the report for which their activity name matches this regular
-expression. (Note this cannot be used in combination with the ``-d`` flag.)
+expression. (Note this cannot be used in combination with the ``-x`` flag.)
+Continuing with example above ``swx print -r mail`` would again capture
+both ``emails`` and ``emails customer``.
 
 If you pass the ``-b`` option to a reporting command, then in addition to the
 other info, the earliest time at which each activity was conducted during the
