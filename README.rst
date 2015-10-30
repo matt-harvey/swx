@@ -117,11 +117,15 @@ recording), you record this cessation by simply entering::
 
     swx s
 
-If you pass the ``-r`` option to ``swx switch``, then the activity argument will
-be treated as a regular expression (of the POSIX extended variety), rather
-than an exact activity name. A switch will then be recorded to the most recently
-active activity the name of which matches that regular expression. This can save
-a fair bit of typing when switching back to a recently used activity.
+If you pass the ``-r`` option to ``swx switch``, then the activity argument
+will be treated as a regular expression (of the POSIX extended variety), rather
+than an exact activity name. A switch will then be recorded to the most
+recently active activity the name of which matches that regular expression.
+This can save a fair bit of typing when switching back to a recently used
+activity. For example, suppose you are currently working on "emails
+customer-service", and the activity before that was "emails admin", and the one
+before that was "emails suppliers". Then you could switch back to "emails
+suppliers" simply by typing ``swx s -r sup``.
 
 After switching to an activity, ``swx`` always displays a message confirming the
 full name of the activity switched to—or confirming that activity has ceased,
@@ -155,10 +159,11 @@ two "reporting commands" are available::
     swx print
     swx day
 
-Enter ``swx help <COMMAND>`` for detailed usage information in regards to
-each of these. They follow a similar pattern, and allow you to enter an
-activity name, if you want to see only time spent on a given activity, or to
-omit the activity name, if you want to see time spent on all activities.
+Enter ``swx help <COMMAND>`` for detailed usage information in regards to each
+of these. They follow a similar pattern, and allow you to enter an activity
+name, if you want to see only time spent on a given activity (and its
+sub-activities), or to omit the activity name, if you want to see time spent on
+all activities.
 
 ``swx day`` (or ``swx d``) prints a summary of only the current day's
 activities, or, if passed the ``-a`` option with an integer argument *n*, the
@@ -182,12 +187,12 @@ duration of each stint in digital format.
 
 When filtering by activity name, the default behaviour is to filter for the
 given activity along with its sub-activities. For example, if you have spent 5
-hours on an activity called ``emails``, and 4 hours on an activity called
-``emails customer``, then the command ``swx print emails`` will print the time
-spent on both these activities. To print only a given activity without its
-sub-activities, use the ``-x`` flag. Thus the command ``swx print -x emails``
-would print only the 5 hours spent on emails and not the 4 hours spent on
-``emails customer``.
+hours on an activity called "emails", and 4 hours on an activity called
+"emails customer", then the command ``swx print emails`` will print the full
+9 hours spent on both these activities. To print only a given activity without
+its sub-activities, use the ``-x`` flag. Thus ``swx print -x emails`` would
+print only the 5 hours spent on emails and not the 4 hours spent on "emails
+customer".
 
 If you pass the ``-r`` option to a reporting command, then the activity string
 you enter will be treated as a regular expression (of the POSIX extended
@@ -195,7 +200,7 @@ variety), rather than an exact activity name. Any activities will then be
 included in the report for which their activity name matches this regular
 expression. (Note this cannot be used in combination with the ``-x`` flag.)
 Continuing with example above ``swx print -r mail`` would again capture
-both ``emails`` and ``emails customer``.
+both "emails" and "emails customer".
 
 If you pass the ``-b`` option to a reporting command, then in addition to the
 other info, the earliest time at which each activity was conducted during the
