@@ -315,13 +315,13 @@ already-entered timestamps to the new format.
 Help and other commands
 -----------------------
 
+Enter ``swx current`` (or ``swx c``) to print just the name of the current
+activity. If there is no current activity, this will print a blank line.
+
 Enter ``swx help`` to see a summary of usage, or ``swx help <COMMAND>`` to
 see a summary of usage for a particular command.
 
 Enter ``swx version`` to see version information.
-
-Enter ``swx current`` (or ``swx c``) to print just the name of the current
-activity. If there is no current activity, this will print a blank line.
 
 Building and installing
 =======================

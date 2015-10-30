@@ -84,10 +84,10 @@ CommandManager::CommandManager(TimeLog& p_time_log)
     create_command<SwitchCommand>(rec, "switch", V{"s"}, p_time_log);
     create_command<ResumeCommand>(rec, "resume", V{}, p_time_log);
 
-    create_command<CurrentCommand>(rep, "current", V{"c"}, p_time_log);
     create_command<PrintCommand>(rep, "print", V{"p"}, p_time_log);
     create_command<DayCommand>(rep, "day", V{"d"}, p_time_log);
 
+    create_command<CurrentCommand>(misc, "current", V{"c"}, p_time_log);
     create_command<EditCommand>(misc, "edit", V{"e"});
     create_command<ConfigCommand>(misc, "config", V{});
     create_command<HelpCommand>(misc, k_help_command_string, V{"--help", "-h"}, *this);
