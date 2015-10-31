@@ -36,7 +36,7 @@ class SwitchCommand: public RecordingCommand
 {
 // special member functions
 public:
-    explicit SwitchCommand
+    SwitchCommand
     (   std::string const& p_command_word,
         std::vector<std::string> const& p_aliases,
         TimeLog& p_time_log
@@ -59,6 +59,7 @@ private:
 
 // member variables
 private:
+    bool m_amend = false;
     bool m_create_activity = false;
     bool m_use_regex = false;
 

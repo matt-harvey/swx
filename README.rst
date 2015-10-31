@@ -127,6 +127,23 @@ customer-service", and the activity before that was "emails admin", and the one
 before that was "emails suppliers". Then you could switch back to "emails
 suppliers" simply by typing ``swx s -r sup``.
 
+If you pass the ``-a`` option to ``swx switch``, then instead of simply
+switching to the new activity "from now on", the time log will rather be
+amended so that the activity of the current stint is entirely *replaced* with
+the activity being switched to. For example, suppose you have worked on
+"email" for 0.5 hours followed by "spreadsheeting" for 2 hours. If you enter
+``swx s -ac cleaning``, then the time log will be amended so that it now
+reflects a sequence of activity consisting of 0.5 hours of "email"
+followed by 2 hours of "cleaning". Note the ``-c`` option is also used in this
+example because we are creating a new activity. You can just as well use ``swx
+switch -a`` to replace the current stint's activity with another activity that
+also already exists. Continuing with the current example, if you entered ``swx
+s -a email``, the time log would be revised to reflect a single 2.5-hour stint
+of "email".
+
+If ``-a`` is used without an argument, then it will effectively erase the
+current activity stint, so that it becomes, in effect, a stint of inactivity.
+
 After switching to an activity, ``swx`` always displays a message confirming the
 full name of the activity switched to—or confirming that activity has ceased,
 as the case may be.
@@ -299,6 +316,10 @@ the file manually.
 
 You should not enter future-dated entries: the application will raise an error
 if it reads a future-dated entry in the log.
+
+Note that if you simply want to edit the activity of the current activity stint,
+this can be achieved more directly by using the ``switch`` command with the ``-a``
+("amend") option. (See `The "switch" command`_, above.)
 
 Configuration
 -------------

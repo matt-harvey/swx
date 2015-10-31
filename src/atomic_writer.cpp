@@ -75,7 +75,8 @@ namespace
     };
 }
 
-AtomicWriter::AtomicWriter(string const& p_filepath):
+AtomicWriter::AtomicWriter(string const& p_filepath, bool p_replace):
+    m_replace(p_replace),
     m_tempfile(nullptr),
     m_orig_filepath(p_filepath)
 {
@@ -97,7 +98,7 @@ AtomicWriter::AtomicWriter(string const& p_filepath):
     {
         throw runtime_error("Error opening stream to temp file.");
     }
-    if (file_exists_at(m_orig_filepath))
+    if (!m_replace && file_exists_at(m_orig_filepath))
     {
         // copy contents of original file to temp file
         FILE* const infile = fopen(m_orig_filepath.c_str(), "r");

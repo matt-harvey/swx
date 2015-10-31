@@ -37,7 +37,12 @@ class AtomicWriter
 {
 // special member functions
 public:
-    explicit AtomicWriter(std::string const& p_filepath);
+    /**
+     * @param p_filepath path to file to write to.
+     * @param p_replace pass this true to replace existing file contents, or false
+     *   to append to existing file contents.
+     */
+    explicit AtomicWriter(std::string const& p_filepath, bool p_replace = false);
     AtomicWriter(AtomicWriter const& rhs) = delete;
     AtomicWriter(AtomicWriter&& rhs) = delete;
     AtomicWriter& operator=(AtomicWriter const& rhs) = delete;
@@ -53,6 +58,7 @@ public:
 
 // member variables
 private:
+    bool m_replace;
     std::FILE* m_tempfile;
     std::string const m_orig_filepath;
     std::string m_temp_filepath;

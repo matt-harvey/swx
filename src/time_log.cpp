@@ -73,6 +73,25 @@ namespace
         return time_format.length();
     }
 
+    // NOTE this will NOT mark the cache as stale, and will not commit to the writer.
+    void append_to_writer
+    (   AtomicWriter& p_writer,
+        string const& p_activity,
+        TimePoint const& p_time_point,
+        string const& p_time_format,
+        unsigned int p_formatted_buf_len
+    )
+    {
+        p_writer.append(time_point_to_stamp(p_time_point, p_time_format, p_formatted_buf_len));
+        if (!p_activity.empty())
+        {
+            p_writer.append(" ");
+            p_writer.append(p_activity);
+        }
+        p_writer.append("\n");
+        return;
+    }
+
 }  // end anonymous namespace
 
 TimeLog::TimeLog
@@ -95,17 +114,49 @@ void
 TimeLog::append_entry(string const& p_activity)
 {
     AtomicWriter writer(m_filepath);
-    mark_cache_as_stale();
-    writer.append(time_point_to_stamp(now(), m_time_format, m_formatted_buf_len));
-    if (!p_activity.empty())
-    {
-        writer.append(" ");
-        writer.append(p_activity);
-    }
-    writer.append("\n");
+    append_to_writer(writer, p_activity, now(), m_time_format, m_formatted_buf_len);
     writer.commit();
     mark_cache_as_stale();
     return;
+}
+
+string
+TimeLog::amend_last(std::string const& p_activity)
+{
+    if (m_entries.empty())
+    {
+        return string();
+    }
+    load();
+    Entries::const_iterator it = m_entries.begin();
+    Entries::const_iterator e = m_entries.end();
+    assert (it != e);
+    --e;
+    auto const activity_at = [this](Entries::const_iterator const& eit) -> string const&
+    {
+        return id_to_activity(eit->activity_id);
+    };
+    auto const& last_activity = activity_at(e);
+    if (p_activity != last_activity)
+    {
+        AtomicWriter writer(m_filepath, true);
+        auto const append = [this, &writer](string const& a, TimePoint const& tp)
+        {
+            append_to_writer(writer, a, tp, m_time_format, m_formatted_buf_len);
+        };
+        for ( ; it != e; ++it)
+        {
+            append(activity_at(it), it->time_point);
+        }
+        if ((it == m_entries.begin()) || (activity_at(--it) != p_activity))
+        {
+            assert (e != m_entries.end());
+            append(p_activity, e->time_point);
+        }
+        writer.commit();
+        mark_cache_as_stale();
+    }
+    return last_activity;
 }
 
 vector<Stint>

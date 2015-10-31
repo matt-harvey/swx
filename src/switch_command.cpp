@@ -75,6 +75,14 @@ SwitchCommand::SwitchCommand
             "a (POSIX extended) regular expression",
         &m_use_regex
     );
+    add_option
+    (   'a',
+        "Instead of switching, retroactively amend the activity of the current "
+            "stint to ACTIVITY. If ACTIVITY is not provided, this will cause the "
+            "current stint to be erased (i.e. amended to become a period of "
+            "inactivity).",
+        &m_amend
+    );
 }
 
 SwitchCommand::~SwitchCommand() = default;
@@ -141,22 +149,26 @@ SwitchCommand::do_process
     // process switch
     if ((m_create_activity != activity_exists) || activity.empty())
     {
-        // we can switch
-        time_log().append_entry(activity);
-        if (activity.empty())
+        string cease_message, create_message, existing_message;
+        // we can switch or amend
+        if (m_amend)
         {
-            p_ordinary_ostream << "Activity ceased." << endl;
-        }
-        else if (m_create_activity)
-        {
-            p_ordinary_ostream << "Created and switched to new activity: "
-                               << activity << endl;
+            auto const last = time_log().amend_last(activity); 
+            cease_message = "Current stint erased.\nWas: " + last;
+            create_message = "Amended current stint\nWas: " + last + "\nNow: " + activity;
+            existing_message = create_message;
         }
         else
         {
-            assert (activity_exists);
-            p_ordinary_ostream << "Switched to: " << activity << endl;
+            time_log().append_entry(activity);
+            cease_message = "Activity ceased.";
+            create_message = "Created and switched to new activity: "  + activity;
+            existing_message = "Switched to: " + activity;
         }
+        if (activity.empty()) p_ordinary_ostream << cease_message;
+        else if (m_create_activity) p_ordinary_ostream << create_message;
+        else p_ordinary_ostream << existing_message;
+        p_ordinary_ostream << endl;
     }
     else
     {

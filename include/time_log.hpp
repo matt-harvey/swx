@@ -51,6 +51,8 @@ private:
         TimePoint time_point;
     };
 
+    using Entries = std::vector<Entry>;
+
 // special member functions
 public:
     TimeLog
@@ -73,6 +75,14 @@ public:
      * persisted to file, with a date of "now".
      */
     void append_entry(std::string const& p_activity);
+
+    /**
+     * Amend the last activity in the log to p_activity. If there are no
+     * activities in the log, this does nothing.
+     *
+     * @return the activity erased, or an empty string if currently inactive.
+     */
+    std::string amend_last(std::string const& p_activity);
 
     /**
      * Pass non-null pointers to filter by activity name and/or date
@@ -146,7 +156,7 @@ private:
 
     std::string const& id_to_activity(ActivityId p_activity_id);
 
-    std::vector<Entry>::const_iterator find_entry_just_before
+    Entries::const_iterator find_entry_just_before
     (   TimePoint const& p_time_point
     );
 
@@ -155,7 +165,7 @@ private:
     bool m_is_loaded;
     unsigned int m_formatted_buf_len;
     std::string m_filepath;
-    std::vector<Entry> m_entries;
+    Entries m_entries;
     Activities m_activities;
     std::string const m_time_format;
 
