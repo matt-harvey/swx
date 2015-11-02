@@ -153,10 +153,18 @@ SwitchCommand::do_process
         // we can switch or amend
         if (m_amend)
         {
-            auto const last = time_log().amend_last(activity); 
-            cease_message = "Current stint erased.\nWas: " + last;
-            create_message = "Amended current stint\nWas: " + last + "\nNow: " + activity;
-            existing_message = create_message;
+            if (time_log().last_activities(1).empty())
+            {
+                cease_message = create_message = existing_message =
+                    "There are no recorded stints to amend.";
+            }
+            else
+            {
+                auto const last = time_log().amend_last(activity); 
+                cease_message = "Current stint erased.\nWas: " + last;
+                create_message = "Amended current stint\nWas: " + last + "\nNow: " + activity;
+                existing_message = create_message;
+            }
         }
         else
         {
