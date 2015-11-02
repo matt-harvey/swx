@@ -123,11 +123,11 @@ TimeLog::append_entry(string const& p_activity)
 string
 TimeLog::amend_last(std::string const& p_activity)
 {
+    load();
     if (m_entries.empty())
     {
         return string();
     }
-    load();
     Entries::const_iterator it = m_entries.begin();
     Entries::const_iterator e = m_entries.end();
     assert (it != e);
