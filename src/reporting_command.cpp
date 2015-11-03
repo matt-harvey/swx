@@ -151,7 +151,7 @@ ReportingCommand::print_report
     {
         auto const expanded = expand_placeholders(p_activity_components, m_time_log);
         activity_ptr.reset(new string(squish(expanded.begin(), expanded.end())));
-        if (!m_exclude_subactivities)
+        if (!m_exclude_subactivities && !m_use_regex)
         {
             *activity_ptr = "^" + *activity_ptr + "($|[[:space:]].*)";
         }
