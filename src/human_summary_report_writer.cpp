@@ -56,16 +56,9 @@ namespace swx
 HumanSummaryReportWriter::HumanSummaryReportWriter
 (   vector<Stint> const& p_stints,
     Options const& p_options,
-    bool p_include_beginning,
-    bool p_include_ending,
-    bool p_verbose,
-    bool p_succinct
+    Flags::type p_flags
 ):
-    SummaryReportWriter(p_stints, p_options),
-    m_include_beginning(p_include_beginning),
-    m_include_ending(p_include_ending),
-    m_verbose(p_verbose),
-    m_succinct(p_succinct)
+    SummaryReportWriter(p_stints, p_options, p_flags)
 {
 }
 
@@ -77,8 +70,8 @@ HumanSummaryReportWriter::do_write_summary
     map<std::string, ActivityStats> const& p_activity_stats_map
 )
 {
-    if (m_succinct) write_succinct_summary(p_os, p_activity_stats_map);
-    else if (m_verbose) write_flat_summary(p_os, p_activity_stats_map);
+    if (has_flag(Flags::succinct)) write_succinct_summary(p_os, p_activity_stats_map);
+    else if (has_flag(Flags::verbose)) write_flat_summary(p_os, p_activity_stats_map);
     else write_tree_summary(p_os, p_activity_stats_map);
     return;
 }
@@ -130,8 +123,8 @@ HumanSummaryReportWriter::write_succinct_summary
     (   p_os,
         string(),
         total_info.seconds,
-        (m_include_beginning? &(total_info.beginning): nullptr),
-        (m_include_ending? &(total_info.ending): nullptr)
+        (has_flag(Flags::include_beginning) ?  &(total_info.beginning) : nullptr),
+        (has_flag(Flags::include_ending) ? &(total_info.ending) : nullptr)
     );
     return;
 }
@@ -150,6 +143,8 @@ HumanSummaryReportWriter::write_flat_summary
         if (activity_width > left_col_width) left_col_width = activity_width;
     }
     ActivityStats total_info;
+    auto const include_beginning = has_flag(Flags::include_beginning);
+    auto const include_ending = has_flag(Flags::include_ending);
     for (auto const& pair: p_activity_stats_map)
     {
         auto const& activity = pair.first;
@@ -159,8 +154,8 @@ HumanSummaryReportWriter::write_flat_summary
         (   p_os,
             activity,
             info.seconds,
-            (m_include_beginning? &(info.beginning): nullptr),
-            (m_include_ending? &(info.ending): nullptr),
+            (include_beginning ? &(info.beginning) : nullptr),
+            (include_ending ? &(info.ending) : nullptr),
             left_col_width
         );
     }
@@ -169,8 +164,8 @@ HumanSummaryReportWriter::write_flat_summary
     (   p_os,
         "TOTAL",
         total_info.seconds,
-        (m_include_beginning? &(total_info.beginning): nullptr),
-        (m_include_ending? &(total_info.ending): nullptr),
+        (include_beginning ? &(total_info.beginning) : nullptr),
+        (include_ending ? &(total_info.ending) : nullptr),
         left_col_width
     );
     return;
@@ -208,13 +203,13 @@ HumanSummaryReportWriter::write_tree_summary
                   << seconds_to_rounded_hours(p_stats.seconds)
                   << " ]";
         guard.reset();
-        if (m_include_beginning)
+        if (has_flag(Flags::include_beginning))
         {
             auto const& b = p_stats.beginning;
             auto const s = time_point_to_stamp(b, time_format(), formatted_buf_len());
             p_ostream << "[ " << s << " ]";
         }
-        if (m_include_ending)
+        if (has_flag(Flags::include_ending))
         {
             auto const& e = p_stats.ending;
             auto const s = time_point_to_stamp(e, time_format(), formatted_buf_len());

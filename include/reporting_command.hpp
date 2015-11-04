@@ -91,6 +91,7 @@ private:
     bool m_show_stints = false;
     bool m_be_verbose = false;
     bool m_be_succinct = false;
+
     TimeLog& m_time_log;
 
 };  // class ReportingCommand

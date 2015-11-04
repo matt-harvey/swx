@@ -36,14 +36,9 @@ namespace swx
 CsvSummaryReportWriter::CsvSummaryReportWriter
 (   vector<Stint> const& p_stints,
     Options const& p_options,
-    bool p_include_beginning,
-    bool p_include_ending,
-    bool p_succinct
+    Flags::type p_flags
 ):
-    SummaryReportWriter(p_stints, p_options),
-    m_include_beginning(p_include_beginning),
-    m_include_ending(p_include_ending),
-    m_succinct(p_succinct)
+    SummaryReportWriter(p_stints, p_options, p_flags)
 {
 }
 
@@ -55,11 +50,14 @@ CsvSummaryReportWriter::do_write_summary
     map<string, ActivityStats> const& p_activity_stats_map
 )
 {
-    if (m_succinct)
+    auto const include_beginning = has_flag(Flags::include_beginning);
+    auto const include_ending = has_flag(Flags::include_ending);
+    auto const succinct = has_flag(Flags::succinct);
+    if (succinct)
     {
         ActivityStats total_info;
         for (auto const& pair: p_activity_stats_map) total_info += pair.second;
-        if (m_include_beginning && m_include_ending)
+        if (include_beginning && include_ending)
         {
             output_csv_row
             (   p_os,
@@ -68,7 +66,7 @@ CsvSummaryReportWriter::do_write_summary
                 time_point_to_stamp(total_info.ending, time_format(), formatted_buf_len())
             );
         }
-        else if (m_include_beginning)
+        else if (include_beginning)
         {
             output_csv_row
             (   p_os,
@@ -76,7 +74,7 @@ CsvSummaryReportWriter::do_write_summary
                 time_point_to_stamp(total_info.beginning, time_format(), formatted_buf_len())
             );
         }
-        else if (m_include_ending)
+        else if (include_ending)
         {
             output_csv_row
             (   p_os,
@@ -97,7 +95,7 @@ CsvSummaryReportWriter::do_write_summary
     {
         auto const& activity = pair.first;
         auto const& info = pair.second;
-        if (m_include_beginning && m_include_ending)
+        if (include_beginning && include_ending)
         {
             output_csv_row
             (   p_os,
@@ -107,7 +105,7 @@ CsvSummaryReportWriter::do_write_summary
                 time_point_to_stamp(info.ending, time_format(), formatted_buf_len())
             );
         }
-        else if (m_include_beginning)
+        else if (include_beginning)
         {
             output_csv_row
             (   p_os,
@@ -116,7 +114,7 @@ CsvSummaryReportWriter::do_write_summary
                 time_point_to_stamp(info.beginning, time_format(), formatted_buf_len())
             );
         }
-        else if (m_include_ending)
+        else if (include_ending)
         {
             output_csv_row
             (   p_os,

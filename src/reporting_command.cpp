@@ -184,30 +184,20 @@ ReportingCommand::print_report
     }
     else
     {
+        using Flags = SummaryReportWriter::Flags;
+        auto flags = Flags::none;
+        if (m_show_beginning) flags |= Flags::include_beginning;
+        if (m_show_end) flags |= Flags::include_ending;
+        if (m_be_verbose) flags |= Flags::verbose;
+        if (m_be_succinct) flags |= Flags::succinct;
+
         if (m_produce_csv)
         {
-            report_writer.reset
-            (   new CsvSummaryReportWriter
-                (   stints,
-                    options,
-                    m_show_beginning,
-                    m_show_end,
-                    m_be_succinct
-                )
-            );
+            report_writer.reset(new CsvSummaryReportWriter(stints, options, flags));
         }
         else
         {
-            report_writer.reset
-            (   new HumanSummaryReportWriter
-                (   stints,
-                    options,
-                    m_show_beginning,
-                    m_show_end,
-                    m_be_verbose,
-                    m_be_succinct
-                )
-            );
+            report_writer.reset(new HumanSummaryReportWriter(stints, options, flags));
         }
     }
     report_writer->write(p_os);

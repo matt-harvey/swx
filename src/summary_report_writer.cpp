@@ -42,9 +42,11 @@ namespace swx
 
 SummaryReportWriter::SummaryReportWriter
 (   vector<Stint> const& p_stints,
-    Options const& p_options
+    Options const& p_options,
+    Flags::type p_flags
 ):
-    ReportWriter(p_stints, p_options)
+    ReportWriter(p_stints, p_options),
+    m_flags(p_flags)
 {
     assert (m_activity_stats_map.empty());
 }
@@ -95,6 +97,12 @@ SummaryReportWriter::do_postprocess_stints
     do_write_summary(p_os, m_activity_stats_map);
     m_activity_stats_map.clear();  // hygienic even if unnecessary
     return;
+}
+
+bool
+SummaryReportWriter::has_flag(Flags::type p_flag) const
+{
+    return m_flags & p_flag;
 }
 
 }  // namespace swx

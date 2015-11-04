@@ -35,9 +35,7 @@ public:
     CsvSummaryReportWriter
     (   std::vector<Stint> const& p_stints,
         Options const& p_options,
-        bool p_include_beginning,
-        bool p_include_ending,
-        bool p_succinct
+        Flags::type p_flags
     );
     CsvSummaryReportWriter(CsvSummaryReportWriter const& rhs) = delete;
     CsvSummaryReportWriter(CsvSummaryReportWriter&& rhs) = delete;
@@ -51,12 +49,6 @@ private:
     (   std::ostream& p_os,
         std::map<std::string, ActivityStats> const& p_activity_stats_map
     ) override;
-
-// member variables
-private:
-    bool const m_include_beginning;
-    bool const m_include_ending;
-    bool const m_succinct;
 
 };  // class CsvSummaryReportWriter
 

@@ -30,12 +30,28 @@ namespace swx
 
 class SummaryReportWriter: public ReportWriter
 {
+// nested types
+public:
+    struct Flags
+    {
+        using type = int;
+        static type constexpr none                  = 0;
+        static type constexpr exclude_subactivities = (1 << 0);
+        static type constexpr produce_csv           = (1 << 1);
+        static type constexpr use_regex             = (1 << 2);
+        static type constexpr include_beginning     = (1 << 3);
+        static type constexpr include_ending        = (1 << 4);
+        static type constexpr show_stints           = (1 << 5);
+        static type constexpr verbose               = (1 << 6);
+        static type constexpr succinct              = (1 << 7);
+    };  // struct Flags
 
 // special member functions
 public:
     SummaryReportWriter
     (   std::vector<Stint> const& p_stints,
-        Options const& p_options
+        Options const& p_options,
+        Flags::type p_flags
     );
     SummaryReportWriter(SummaryReportWriter const& rhs) = delete;
     SummaryReportWriter(SummaryReportWriter&& rhs) = delete;
@@ -67,8 +83,12 @@ private:
         std::map<std::string, ActivityStats> const& p_activity_stats_map
     ) = 0;
 
+protected:
+    bool has_flag(Flags::type p_flag) const;
+
 // member variables
 private:
+    Flags::type const m_flags;
     std::map<std::string, ActivityStats> m_activity_stats_map;
 
 };  // class SummaryReportWriter

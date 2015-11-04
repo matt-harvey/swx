@@ -41,10 +41,7 @@ public:
     HumanSummaryReportWriter
     (   std::vector<Stint> const& p_stints,
         Options const& p_options,
-        bool p_include_beginning,
-        bool p_include_ending,
-        bool p_verbose,
-        bool p_succinct
+        Flags::type p_flags
     );
     HumanSummaryReportWriter(HumanSummaryReportWriter const& rhs) = delete;
     HumanSummaryReportWriter(HumanSummaryReportWriter&& rhs) = delete;
@@ -84,13 +81,6 @@ private:
     (   std::ostream& p_os,
         std::map<std::string, ActivityStats> const& p_activity_stats_map
     );
-
-// member variables
-private:
-    bool const m_include_beginning;
-    bool const m_include_ending;
-    bool const m_verbose;
-    bool const m_succinct;
 
 };  // class HumanSummaryReportWriter
 
