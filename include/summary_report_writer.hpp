@@ -36,14 +36,10 @@ public:
     {
         using type = int;
         static type constexpr none                  = 0;
-        static type constexpr exclude_subactivities = (1 << 0);
-        static type constexpr produce_csv           = (1 << 1);
-        static type constexpr use_regex             = (1 << 2);
-        static type constexpr include_beginning     = (1 << 3);
-        static type constexpr include_ending        = (1 << 4);
-        static type constexpr show_stints           = (1 << 5);
-        static type constexpr verbose               = (1 << 6);
-        static type constexpr succinct              = (1 << 7);
+        static type constexpr include_beginning     = (1 << 0);
+        static type constexpr include_ending        = (1 << 1);
+        static type constexpr verbose               = (1 << 2);
+        static type constexpr succinct              = (1 << 3);
     };  // struct Flags
 
 // special member functions
