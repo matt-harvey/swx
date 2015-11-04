@@ -83,6 +83,7 @@ private:
         std::map<std::string, ActivityStats> const& p_activity_stats_map
     ) = 0;
 
+// ordinary member functions
 protected:
     bool has_flag(Flags::type p_flag) const;
 
