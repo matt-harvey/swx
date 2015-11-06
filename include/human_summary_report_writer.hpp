@@ -41,7 +41,7 @@ public:
     HumanSummaryReportWriter
     (   std::vector<Stint> const& p_stints,
         Options const& p_options,
-        Flags::type p_flags
+        Flags::Type p_flags
     );
     HumanSummaryReportWriter(HumanSummaryReportWriter const& rhs) = delete;
     HumanSummaryReportWriter(HumanSummaryReportWriter&& rhs) = delete;

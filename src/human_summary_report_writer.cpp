@@ -56,7 +56,7 @@ namespace swx
 HumanSummaryReportWriter::HumanSummaryReportWriter
 (   vector<Stint> const& p_stints,
     Options const& p_options,
-    Flags::type p_flags
+    Flags::Type p_flags
 ):
     SummaryReportWriter(p_stints, p_options, p_flags)
 {
@@ -177,11 +177,6 @@ HumanSummaryReportWriter::write_tree_summary
     map<std::string, ActivityStats> const& p_activity_stats_map
 )
 {
-    // TODO When the user passes a string even without the -r option,
-    // when printing in tree mode, it should probably match that string
-    // to non-leaf nodes as well as just leaf nodes. (It should possibly
-    // even do this when not printing in tree mode.)
-
     if (p_activity_stats_map.empty())
     {
         p_os << endl;

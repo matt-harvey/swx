@@ -52,13 +52,13 @@ ConfigCommand::ConfigCommand
         "Instead of printing configuration settings, open the configuration "
             "file using the text editor determined by the \"editor\" "
             "configuration setting",
-        &m_editing_option
+        [this]() { m_editing_option = true; }
     );
     add_option
     (   'f',
         "Instead of printing configuration settings, print the location of the "
             "configuration file",
-        &m_filepath_option
+        [this]() { m_filepath_option = true; }
     );
 }
 

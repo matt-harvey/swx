@@ -26,7 +26,7 @@ namespace swx
 TrueActivityFilter::~TrueActivityFilter() = default;
 
 bool
-TrueActivityFilter::do_test(string const& p_str) const
+TrueActivityFilter::does_match(string const& p_str) const
 {
     (void)p_str;  // silence compiler warning re. unused param.
     return true;

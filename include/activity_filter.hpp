@@ -23,11 +23,32 @@ namespace swx
 {
 
 /**
- * Abstract functor class representing a test against which a given string can be
- * evaluated, where the string represents the name of an activity.
+ * Abstract class representing a test against which a given string can be
+ * evaluated, where the string represents the name of an activity. Also
+ * supports replacing the matched part of the evaluated string with a new
+ * string.
+ *
+ * TODO HIGH PRIORITY Write tests for this and its subclasses.
  */
 class ActivityFilter
 {
+public:
+// nested types
+    enum class Type
+    {
+        ordinary,
+        exact,
+        regex,
+        always_true
+    };
+
+// static factory function
+public:
+    /**
+     * Caller receives ownership the pointer.
+     */
+    static ActivityFilter* create(std::string const& p_comparitor, Type p_type);
+
 // special member functions
 public:
     ActivityFilter() = default;
@@ -43,11 +64,21 @@ public:
      * @param p_str (the name of) an activity.
      * @return \e true if an only if \e p_str satisfies the test.
      */
-    bool operator()(std::string const& p_str) const;
+    bool matches(std::string const& p_str) const;
+
+    std::string replace
+    (   std::string const& p_old_str,
+        std::string const& p_substitution
+    ) const;
 
 // virtual member functions
 private:
-    virtual bool do_test(std::string const& p_str) const = 0;
+    virtual bool does_match(std::string const& p_str) const = 0;
+
+    virtual std::string do_replace
+    (   std::string const& p_old_str,
+        std::string const& p_substitution
+    ) const;
 
 };  // class ActivityFilter
 

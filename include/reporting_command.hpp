@@ -17,8 +17,10 @@
 #ifndef GUARD_reporting_command_hpp_869979514679862
 #define GUARD_reporting_command_hpp_869979514679862
 
+#include "activity_filter.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
+#include "summary_report_writer.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
 #include <ostream>
@@ -83,15 +85,10 @@ private:
 
 // member variables
 private:
-    bool m_exclude_subactivities = false;
     bool m_produce_csv = false;
-    bool m_use_regex = false;
-    bool m_show_beginning = false;
-    bool m_show_end = false;
     bool m_show_stints = false;
-    bool m_be_verbose = false;
-    bool m_be_succinct = false;
-
+    SummaryReportWriter::Flags::Type m_report_flags = SummaryReportWriter::Flags::none;
+    ActivityFilter::Type m_activity_filter_type = ActivityFilter::Type::ordinary;
     TimeLog& m_time_log;
 
 };  // class ReportingCommand

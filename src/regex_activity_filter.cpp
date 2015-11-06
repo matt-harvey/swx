@@ -19,6 +19,7 @@
 #include <string>
 
 using std::regex;
+using std::regex_replace;
 using std::regex_search;
 using std::string;
 
@@ -33,9 +34,18 @@ RegexActivityFilter::RegexActivityFilter(string const& p_string):
 RegexActivityFilter::~RegexActivityFilter() = default;
 
 bool
-RegexActivityFilter::do_test(string const& p_str) const
+RegexActivityFilter::does_match(string const& p_str) const
 {
     return regex_search(p_str, m_comparitor);
+}
+
+string
+RegexActivityFilter::do_replace
+(   string const& p_old_str,
+    string const& p_substitution
+) const
+{
+    return regex_replace(p_old_str, m_comparitor, p_substitution);
 }
 
 }  // namespace swx

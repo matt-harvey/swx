@@ -32,6 +32,7 @@ namespace swx
 // begin forward declarations
 
 class ActivityFilter;
+class AtomicWriter;
 
 // end forward declarations
 
@@ -89,6 +90,11 @@ public:
      * @return the activity erased, or an empty string if currently inactive.
      */
     std::string amend_last(std::string const& p_activity);
+
+    std::vector<Stint>::size_type rename_activity
+    (   ActivityFilter const& p_activity_filter,
+        std::string const& p_new
+    );
 
     /**
      * Provide \e p_activity_filter to filter by activity name.
@@ -148,11 +154,16 @@ private:
     void mark_cache_as_stale();
     void load();
     ActivityId register_activity(std::string const& p_activity);
+    std::string const& activity_at(Entry const& p_entry);
+    void load_entry(std::string const& p_entry_string, std::size_t p_line_number);
+    void write_entry(AtomicWriter& p_writer, Entry const& p_entry);
 
-    void load_entry
-    (   std::string const& p_entry_string,
-        std::size_t p_line_number
+    void write_stint
+    (   AtomicWriter& p_writer,
+        std::string const& p_activity,
+        TimePoint const& p_time_point
     );
+        
 
     std::string const& id_to_activity(ActivityId p_activity_id);
 

@@ -53,7 +53,7 @@ EditCommand::EditCommand
     add_option
     (   'c',
         "Instead of opening the activity log, open the configuration file",
-        &m_open_config_file
+        [this]() { m_open_config_file = true; }
     );
 }
 

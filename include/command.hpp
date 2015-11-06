@@ -20,7 +20,9 @@
 #include "config.hpp"
 #include "exit_code.hpp"
 #include "help_line.hpp"
+#include <functional>
 #include <map>
+#include <memory>
 #include <ostream>
 #include <set>
 #include <string>
@@ -61,6 +63,9 @@ public:
     virtual ~Command();
 
 // ordinary member functions
+private:
+    void add_option(char p_character, Option const& p_option);
+
 protected:
     
     /**
@@ -69,9 +74,8 @@ protected:
      *
      * @param p_help_line HelpLine describing the usage of the option
      *
-     * @param p_presence_target if non-null, will have its dereferenced contents
-     * set to *true* if the option is encountered during parsing; otherwise, will
-     * be left unchanged
+     * @param p_callback is a callable to be called when the given option is
+     * encountered when parsing the args.
      *
      * @param p_arg_target if non-null, signifies that the option requires an
      * argument, the contents of which, if encountered during parsing, will be assigned to
@@ -80,7 +84,7 @@ protected:
     void add_option
     (   char p_character,
         HelpLine const& p_help_line,
-        bool* p_presence_target = nullptr,
+        std::function<void()> const& p_callback,
         std::string* p_arg_target = nullptr
     );
 

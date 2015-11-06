@@ -89,6 +89,7 @@ set(
     src/placeholder.cpp
     src/print_command.cpp
     src/recording_command.cpp
+    src/rename_command.cpp
     src/regex_activity_filter.cpp
     src/report_writer.cpp
     src/reporting_command.cpp

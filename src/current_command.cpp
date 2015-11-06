@@ -56,7 +56,7 @@ CurrentCommand::CurrentCommand
     add_option
     (   's',
         "Do not terminate output with a newline",
-        &m_suppress_newline
+        [this]() { m_suppress_newline = true; }
     );
 }
 

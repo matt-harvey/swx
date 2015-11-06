@@ -36,7 +36,7 @@ namespace swx
 CsvSummaryReportWriter::CsvSummaryReportWriter
 (   vector<Stint> const& p_stints,
     Options const& p_options,
-    Flags::type p_flags
+    Flags::Type p_flags
 ):
     SummaryReportWriter(p_stints, p_options, p_flags)
 {

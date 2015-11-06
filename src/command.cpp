@@ -25,9 +25,11 @@
 #include "string_utilities.hpp"
 #include <cassert>
 #include <cstdlib>
+#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <memory>
 #include <ostream>
 #include <set>
 #include <sstream>
@@ -37,6 +39,7 @@
 #include <vector>
 
 using std::endl;
+using std::function;
 using std::left;
 using std::make_pair;
 using std::ostream;
@@ -48,6 +51,7 @@ using std::runtime_error;
 using std::set;
 using std::setw;
 using std::string;
+using std::unique_ptr;
 using std::vector;
 
 namespace swx
@@ -64,21 +68,18 @@ namespace
 struct Command::Option
 {
     Option
-    (   char p_character,
-        HelpLine const& p_help_line,
-        bool* p_presence_target = nullptr,
-        std::string* p_arg_target = nullptr
+    (   HelpLine const& p_help_line,
+        function<void()> const& p_callback,
+        string* p_arg_target = nullptr
     ):
-        character(p_character),
-        presence_target(p_presence_target),
-        arg_target(p_arg_target),
-        help_line(p_help_line)
+        help_line(p_help_line),
+        callback(p_callback),
+        arg_target(p_arg_target)
     {
     }
-    char character;
-    bool* presence_target;
-    std::string* arg_target;
     HelpLine help_line;
+    function<void()> callback;
+    string* arg_target = nullptr;
 };
 
 Command::Command
@@ -99,12 +100,7 @@ Command::Command
 Command::~Command() = default;
 
 void
-Command::add_option
-(   char p_character,
-    HelpLine const& p_help_line,
-    bool* p_presence_target,
-    std::string* p_arg_target
-)
+Command::add_option(char p_character, Option const& p_option)
 {
     if (m_options.count(p_character))
     {
@@ -113,18 +109,16 @@ Command::add_option
         oss << "Option already enabled for this Command: " << p_character;
         throw runtime_error(oss.str());
     }
-    m_options.emplace
-    (   p_character,
-        Option(p_character, p_help_line, p_presence_target, p_arg_target)
-    );
+    m_options.emplace(p_character, p_option);
     if (m_accept_ordinary_args)
     {
         try
         {
-            Option const double_dash_option
-            (   k_double_dash_option_char,
-                "Treat any dash-prefixed arguments after this option as "
-                    "ordinary arguments, rather than options"
+            Option double_dash_option
+            (   "Treat any dash-prefixed arguments after this option as "
+                    "ordinary arguments, rather than options",
+                []() { ; /* do nothing */ },
+                nullptr
             );
             m_options.emplace(k_double_dash_option_char, double_dash_option);
         }
@@ -135,6 +129,17 @@ Command::add_option
         }
     }
     return;
+}
+
+void
+Command::add_option
+(   char p_character,
+    HelpLine const& p_help_line,
+    function<void()> const& p_callback,
+    string* p_arg_target
+)
+{
+    add_option(p_character, Option(p_help_line, p_callback, p_arg_target));
 }
 
 ExitCode
@@ -189,8 +194,8 @@ Command::process
                     }
                     assert (opt_it != m_options.end());
                     auto const& opt = opt_it->second;
-                    auto* const presence_target = opt.presence_target;
-                    if (presence_target != nullptr) *presence_target = true;
+                    auto const callback = opt.callback;
+                    if (callback != nullptr) callback();
                     auto* const arg_target = opt.arg_target;
                     if (arg_target == nullptr)
                     {

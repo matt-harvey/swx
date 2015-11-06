@@ -15,6 +15,11 @@
  */
 
 #include "activity_filter.hpp"
+#include "exact_activity_filter.hpp"
+#include "ordinary_activity_filter.hpp"
+#include "regex_activity_filter.hpp"
+#include "true_activity_filter.hpp"
+#include <cassert>
 #include <string>
 
 using std::string;
@@ -22,12 +27,42 @@ using std::string;
 namespace swx
 {
 
+ActivityFilter*
+ActivityFilter::create(string const& p_comparitor, Type p_type)
+{
+    switch (p_type)
+    {
+    case Type::ordinary:
+        return new OrdinaryActivityFilter(p_comparitor);
+    case Type::exact:
+        return new ExactActivityFilter(p_comparitor);
+    case Type::regex:
+        return new RegexActivityFilter(p_comparitor);
+    case Type::always_true:
+        return new TrueActivityFilter;
+    default:
+        assert (false);  // we whould never reach here
+    }
+}
+
 ActivityFilter::~ActivityFilter() = default;
 
 bool
-ActivityFilter::operator()(string const& p_str) const
+ActivityFilter::matches(string const& p_str) const
 {
-    return do_test(p_str);
+    return does_match(p_str);
+}
+
+string
+ActivityFilter::replace(string const& p_old_str, string const& p_substitution) const
+{
+    return do_replace(p_old_str, p_substitution);
+}
+
+string
+ActivityFilter::do_replace(string const& p_old_str, string const& p_substitution) const
+{
+    return matches(p_old_str) ? p_substitution : p_old_str;
 }
 
 }  // namespace swx

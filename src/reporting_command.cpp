@@ -20,19 +20,15 @@
 #include "config.hpp"
 #include "csv_list_report_writer.hpp"
 #include "csv_summary_report_writer.hpp"
-#include "exact_activity_filter.hpp"
 #include "help_line.hpp"
 #include "human_list_report_writer.hpp"
 #include "human_summary_report_writer.hpp"
 #include "list_report_writer.hpp"
-#include "ordinary_activity_filter.hpp"
 #include "placeholder.hpp"
-#include "regex_activity_filter.hpp"
 #include "stream_utilities.hpp"
 #include "string_utilities.hpp"
 #include "summary_report_writer.hpp"
 #include "time_log.hpp"
-#include "true_activity_filter.hpp"
 #include <iostream>
 #include <memory>
 #include <ostream>
@@ -70,29 +66,29 @@ ReportingCommand::ReportingCommand
     ostringstream exclude_subactivities_message_stream;
     exclude_subactivities_message_stream
         << "Output only the exact ACTIVITY given; do not include its subactivities "
-        << "(cannot be used in combination with -" << k_use_regex_flag << ')';
+        << "(ignored if used prior to -" << k_use_regex_flag << ')';
     add_option
     (   k_exclude_subactivities_flag,
         exclude_subactivities_message_stream.str(),
-        &m_exclude_subactivities
+        [this]() { m_activity_filter_type = ActivityFilter::Type::exact; }
     );
 
     ostringstream use_regex_message_stream;
     use_regex_message_stream
         << "Treat ACTIVITY as a (POSIX extended) regular expression, and include "
-        << "all activities that match it (cannot be used in combination with -"
+        << "all activities that match it (ignored if used prior to -"
         << k_exclude_subactivities_flag << ')';
     add_option
     (   k_use_regex_flag,
         use_regex_message_stream.str(),
-        &m_use_regex
+        [this]() { m_activity_filter_type = ActivityFilter::Type::regex; }
     );
 
     add_option
     (   'l',
         "Instead of printing a summary, print a date-ordered list of individual "
             "activity stints during the relevant period",
-        &m_show_stints
+        [this]() { m_show_stints = true; }
     );
 
     add_option
@@ -100,7 +96,7 @@ ReportingCommand::ReportingCommand
         "In addition to any other information, output the earliest time at "
             "which each activity was conducted during the relevant period (ignored "
             "in list mode)",
-        &m_show_beginning
+        [this]() { m_report_flags |= SummaryReportWriter::Flags::include_beginning; }
     );
 
     add_option
@@ -108,26 +104,26 @@ ReportingCommand::ReportingCommand
         "Output in a column to the right of any other info, the latest time at "
             "which each activity was conducted during the relevant period (ignored "
             "in list mode)",
-        &m_show_end
+        [this]() { m_report_flags |= SummaryReportWriter::Flags::include_ending; }
     );
 
     add_option
     (   'c',
         "Output in CSV format",
-        &m_produce_csv
+        [this]() { m_produce_csv = true; }
     );
 
     add_option
     (   'v',
         "Instead of printing the summary in \"tree\" form, print the full name of "\
             "each activity (ignored in list mode or succinct mode)",
-        &m_be_verbose
+        [this]() { m_report_flags |= SummaryReportWriter::Flags::verbose; }
     );
 
     add_option
     (   's',
         "Succinct output: show grand total only (ignored in list mode)",
-        &m_be_succinct
+        [this]() { m_report_flags |= SummaryReportWriter::Flags::succinct; }
     );
 }
 
@@ -143,38 +139,23 @@ ReportingCommand::print_report
 )
 {
     unique_ptr<string> activity_ptr;
-    if (m_use_regex && m_exclude_subactivities)
-    {
-        ostringstream oss;
-        enable_exceptions(oss);
-        oss << '-' << k_use_regex_flag
-            << " cannot be used in combination with "
-            << '-' << k_exclude_subactivities_flag << '.';
-        return ErrorMessages{ oss.str() };
-    }
-    unique_ptr<ActivityFilter> activity_filter;
+    string comparitor;
     if (p_activity_components.empty())
     {
-        activity_filter.reset(new TrueActivityFilter);
+        m_activity_filter_type = ActivityFilter::Type::always_true;
     }
     else
     {
         auto const expanded = expand_placeholders(p_activity_components, m_time_log);
-        auto const comparitor = squish(expanded.begin(), expanded.end());
-        if (m_use_regex)
-        {
-            activity_filter.reset(new RegexActivityFilter(comparitor));
-        }
-        else if (m_exclude_subactivities)
-        {
-            activity_filter.reset(new ExactActivityFilter(comparitor));
-        }
-        else
-        {
-            activity_filter.reset(new OrdinaryActivityFilter(comparitor)); 
-        }
+        comparitor = squish(expanded.begin(), expanded.end());
     }
-    auto const stints = m_time_log.get_stints(*activity_filter, p_begin, p_end);
+
+    unique_ptr<ActivityFilter>
+        filter(ActivityFilter::create(comparitor, m_activity_filter_type));
+
+    // TODO MEDIUM PRIORITY Factor out code shared between here and
+    // src/rename_command.hpp, probably using a factory.
+    auto const stints = m_time_log.get_stints(*filter, p_begin, p_end);
     ReportWriter::Options const options
     (   p_config.output_rounding_numerator(),
         p_config.output_rounding_denominator(),
@@ -197,20 +178,13 @@ ReportingCommand::print_report
     }
     else
     {
-        using Flags = SummaryReportWriter::Flags;
-        auto flags = Flags::none;
-        if (m_show_beginning) flags |= Flags::include_beginning;
-        if (m_show_end) flags |= Flags::include_ending;
-        if (m_be_verbose) flags |= Flags::verbose;
-        if (m_be_succinct) flags |= Flags::succinct;
-
         if (m_produce_csv)
         {
-            report_writer.reset(new CsvSummaryReportWriter(stints, options, flags));
+            report_writer.reset(new CsvSummaryReportWriter(stints, options, m_report_flags));
         }
         else
         {
-            report_writer.reset(new HumanSummaryReportWriter(stints, options, flags));
+            report_writer.reset(new HumanSummaryReportWriter(stints, options, m_report_flags));
         }
     }
     report_writer->write(p_os);

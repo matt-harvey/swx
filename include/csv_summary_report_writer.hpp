@@ -35,7 +35,7 @@ public:
     CsvSummaryReportWriter
     (   std::vector<Stint> const& p_stints,
         Options const& p_options,
-        Flags::type p_flags
+        Flags::Type p_flags
     );
     CsvSummaryReportWriter(CsvSummaryReportWriter const& rhs) = delete;
     CsvSummaryReportWriter(CsvSummaryReportWriter&& rhs) = delete;

@@ -26,6 +26,7 @@
 #include "info.hpp"
 #include "placeholder.hpp"
 #include "print_command.hpp"
+#include "rename_command.hpp"
 #include "resume_command.hpp"
 #include "stream_utilities.hpp"
 #include "string_utilities.hpp"
@@ -79,6 +80,7 @@ CommandManager::CommandManager(TimeLog& p_time_log)
 
     CommandGroup rec("Recording commands");
     CommandGroup rep("Reporting commands");
+    CommandGroup edit("Editing commands");
     CommandGroup misc("Miscellaneous commands");
 
     create_command<SwitchCommand>(rec, "switch", V{"s"}, p_time_log);
@@ -87,14 +89,17 @@ CommandManager::CommandManager(TimeLog& p_time_log)
     create_command<PrintCommand>(rep, "print", V{"p"}, p_time_log);
     create_command<DayCommand>(rep, "day", V{"d"}, p_time_log);
 
+    create_command<RenameCommand>(edit, "rename", V{}, p_time_log);
+    create_command<EditCommand>(edit, "edit", V{"e"});
+
     create_command<CurrentCommand>(misc, "current", V{"c"}, p_time_log);
-    create_command<EditCommand>(misc, "edit", V{"e"});
     create_command<ConfigCommand>(misc, "config", V{});
     create_command<HelpCommand>(misc, k_help_command_string, V{"--help", "-h"}, *this);
     create_command<VersionCommand>(misc, "version", V{"--version"});
 
     m_command_groups.push_back(move(rec));
     m_command_groups.push_back(move(rep));
+    m_command_groups.push_back(move(edit));
     m_command_groups.push_back(move(misc));
 
 #   ifndef NDEBUG

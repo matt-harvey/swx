@@ -40,7 +40,7 @@ public:
 
 // inherited virtual functions
 private:
-    virtual bool do_test(std::string const& p_str) const;
+    virtual bool does_match(std::string const& p_str) const;
 
 };  // class TrueActivityFilter
 

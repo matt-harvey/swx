@@ -67,13 +67,13 @@ SwitchCommand::SwitchCommand
     (   'c',
         "Create a new activity named ACTIVITY, and start accruing time to it; "
             "raise an error if an activity with this name already exists",
-        &m_create_activity
+        [this]() { m_create_activity = true; }
     );
     add_option
     (   'r',
         "Switch to the most recent activity to match ACTIVITY, considered as "
             "a (POSIX extended) regular expression",
-        &m_use_regex
+        [this]() { m_use_regex = true; }
     );
     add_option
     (   'a',
@@ -81,7 +81,7 @@ SwitchCommand::SwitchCommand
             "stint to ACTIVITY. If ACTIVITY is not provided, this will cause the "
             "current stint to be erased (i.e. amended to become a period of "
             "inactivity).",
-        &m_amend
+        [this]() { m_amend = true; }
     );
 }
 

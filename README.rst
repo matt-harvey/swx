@@ -215,7 +215,7 @@ If you pass the ``-r`` option to a reporting command, then the activity string
 you enter will be treated as a regular expression (of the POSIX extended
 variety), rather than an exact activity name. Any activities will then be
 included in the report for which their activity name matches this regular
-expression. (Note this cannot be used in combination with the ``-x`` flag.)
+expression. (Note this is ignored if used prior to the ``-x`` flag.)
 Continuing with example above ``swx print -r mail`` would again capture
 both "emails" and "emails customer".
 
@@ -258,10 +258,12 @@ A compound activity is specified as multiple words separated by whitespace,
 e.g. ``email customer-service``.
 
 When passing the name of a compound activity to a ``swx`` command, it can
-just be passed directly as multiple arguments to the command, without
+generally just be passed directly as multiple arguments to the command, without
 enclosing it in quotes. ``swx`` will treat it as single, compound activity.
-E.g., entering ``swx switch email customer-service`` is exactly equivalent
-to entering ``swx switch 'email customer-service'``.
+E.g., entering ``swx switch email customer-service`` is exactly equivalent to
+entering ``swx switch 'email customer-service'``. The exception to this is the
+"rename" command, which takes two activity names as arguments; if either of
+these is a "compound" then it must be enclosed in quotes to avoid ambiguity.
 
 Placeholders
 ------------
@@ -293,10 +295,41 @@ These placeholders can be inserted anywhere among the command-line arguments
 where one or more activity "components" are expected, and will be expanded
 accordingly. This can save some typing when switching between closely related
 activities, or generating a report on the current activity or related
-activities. E.g., if we are currently active on ``email customer-service
-enquiries`` and want to record a switch to ``email customer-service
-complaints``, then we can enter simply ``swx s __ complaints``, rather than
+activities. E.g., if we are currently active on "email customer-service
+enquiries" and want to record a switch to "email customer-service
+complaints", then we can enter simply ``swx s __ complaints``, rather than
 having to enter ``swx s email customer-service complaints``.
+
+The "rename" command
+--------------------
+
+``swx rename`` can be used to change the name of an activity. By default, this
+renames both the given activity in its own right, and this activity as a
+component of any sub-activities. For example, suppose we have recorded an
+activity called "email" and an activity called "email customer-service". Then
+suppose we do::
+
+  swx rename email electronic-mail
+
+This will cause "email" to become "electronic-mail" and "email customer-service"
+to become "electronic-mail customer-service". If we *only* wanted to rename
+"email" and *not* "email customer-service", we could use the ``-x`` option
+to exclude sub-activities when renaming. Alternatively, the ``-r`` option to
+be used to replace every occurrence of the first argument, considered as a regular
+expression, with the second argument, anywhwere it occurs in any activity name.
+
+If one of the arguments to ``rename`` consists of more than one word, then
+it should be enclosed in quotes so that the program call tell which word
+goes with which. E.g.::
+
+  swx rename email 'electronic mail'
+
+Placeholders will still be expanded within each argument, however.
+
+Note ``swx rename`` will not warn you if the new name is the same name as an
+existing activity. In this case, the ``rename`` command will essentially
+perform a merge, with stints associated with the first activity being
+reassigned to the second activity.
 
 Manually editing the time log
 -----------------------------
@@ -319,7 +352,9 @@ if it reads a future-dated entry in the log.
 
 Note that if you simply want to edit the activity of the current activity stint,
 this can be achieved more directly by using the ``switch`` command with the ``-a``
-("amend") option. (See `The "switch" command`_, above.)
+("amend") option. (See `The "switch" command`_, above.) Or, if you want to change
+the name of an existing activity wherever it occurs, this can also be achieved
+with ``swx rename``. (See `The "rename" command`_ above.)
 
 Configuration
 -------------

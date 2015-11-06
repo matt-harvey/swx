@@ -42,7 +42,12 @@ public:
 
 // inherited virtual member functions
 private:
-    virtual bool do_test(std::string const& p_str) const override;
+    virtual bool does_match(std::string const& p_str) const override;
+
+    virtual std::string do_replace
+    (   std::string const& p_old_str,
+        std::string const& p_substitution
+    ) const override;
 
 // data members
 private:

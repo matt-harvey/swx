@@ -34,12 +34,12 @@ class SummaryReportWriter: public ReportWriter
 public:
     struct Flags
     {
-        using type = int;
-        static type constexpr none                  = 0;
-        static type constexpr include_beginning     = (1 << 0);
-        static type constexpr include_ending        = (1 << 1);
-        static type constexpr verbose               = (1 << 2);
-        static type constexpr succinct              = (1 << 3);
+        using Type = int;
+        static Type constexpr none                  = 0;
+        static Type constexpr include_beginning     = (1 << 0);
+        static Type constexpr include_ending        = (1 << 1);
+        static Type constexpr verbose               = (1 << 2);
+        static Type constexpr succinct              = (1 << 3);
     };  // struct Flags
 
 // special member functions
@@ -47,7 +47,7 @@ public:
     SummaryReportWriter
     (   std::vector<Stint> const& p_stints,
         Options const& p_options,
-        Flags::type p_flags
+        Flags::Type p_flags
     );
     SummaryReportWriter(SummaryReportWriter const& rhs) = delete;
     SummaryReportWriter(SummaryReportWriter&& rhs) = delete;
@@ -81,11 +81,11 @@ private:
 
 // ordinary member functions
 protected:
-    bool has_flag(Flags::type p_flag) const;
+    bool has_flag(Flags::Type p_flag) const;
 
 // member variables
 private:
-    Flags::type const m_flags;
+    Flags::Type const m_flags;
     std::map<std::string, ActivityStats> m_activity_stats_map;
 
 };  // class SummaryReportWriter

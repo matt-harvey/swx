@@ -131,31 +131,54 @@ TimeLog::amend_last(std::string const& p_activity)
     Entries::const_iterator e = m_entries.end();
     assert (it != e);
     --e;
-    auto const activity_at = [this](Entries::const_iterator const& eit) -> string const&
-    {
-        return id_to_activity(eit->activity_id);
-    };
-    auto const& last_activity = activity_at(e);
+    auto const& last_activity = activity_at(*e);
     if (p_activity != last_activity)
     {
         AtomicWriter writer(m_filepath, true);
-        auto const append = [this, &writer](string const& a, TimePoint const& tp)
-        {
-            append_to_writer(writer, a, tp, m_time_format, m_formatted_buf_len);
-        };
         for ( ; it != e; ++it)
         {
-            append(activity_at(it), it->time_point);
+            write_entry(writer, *it);
         }
-        if ((it == m_entries.begin()) || (activity_at(--it) != p_activity))
+        if ((it == m_entries.begin()) || (activity_at(*--it) != p_activity))
         {
             assert (e != m_entries.end());
-            append(p_activity, e->time_point);
+            write_stint(writer, p_activity, e->time_point);
         }
         writer.commit();
         mark_cache_as_stale();
     }
     return last_activity;
+}
+
+vector<Stint>::size_type
+TimeLog::rename_activity(ActivityFilter const& p_activity_filter, string const& p_new)
+{
+    load();
+    vector<Stint>::size_type count = 0;
+    AtomicWriter writer(m_filepath, true);
+    string last_activity;
+    for (auto const& entry: m_entries)
+    {
+        auto const& activity = activity_at(entry);
+        string new_activity;
+        if (p_activity_filter.matches(activity))
+        {
+            new_activity = p_activity_filter.replace(activity, p_new);
+            ++count;
+        }
+        else
+        {
+            new_activity = activity;
+        }
+        if (new_activity != last_activity)
+        {
+            write_stint(writer, new_activity, entry.time_point);
+        }
+        last_activity = new_activity;
+    }
+    writer.commit();
+    mark_cache_as_stale();
+    return count;
 }
 
 vector<Stint>
@@ -173,7 +196,7 @@ TimeLog::get_stints
     for ( ; (it != e) && (!p_end || (it->time_point < *p_end)); ++it)
     {
         string const& activity = id_to_activity(it->activity_id);
-        if (p_activity_filter(activity))
+        if (p_activity_filter.matches(activity))
         {
             auto tp = it->time_point;
             if (p_begin && (tp < *p_begin)) tp = *p_begin;
@@ -205,7 +228,7 @@ TimeLog::last_activity_to_match(string const& p_regex)
         if (id != empty_activity_id)
         {
             auto const& activity = id_to_activity(id);
-            if (activity_filter(activity))
+            if (activity_filter.matches(activity))
             {
                 return activity;
             }
@@ -245,11 +268,7 @@ bool
 TimeLog::is_active()
 {
     load();
-    if (m_entries.empty())
-    {
-        return false;
-    }
-    return !id_to_activity(m_entries.back().activity_id).empty();
+    return !(m_entries.empty() || activity_at(m_entries.back()).empty());
 }
 
 bool
@@ -311,6 +330,12 @@ TimeLog::register_activity(string const& p_activity)
     return &*(m_activities.insert(p_activity).first);
 }
 
+string const&
+TimeLog::activity_at(Entry const& p_entry)
+{
+    return id_to_activity(p_entry.activity_id);
+}
+
 void
 TimeLog::load_entry(string const& p_entry_string, size_t p_line_number)
 {
@@ -322,7 +347,9 @@ TimeLog::load_entry(string const& p_entry_string, size_t p_line_number)
             << p_line_number << '.';
         throw runtime_error(oss.str());
     }
-    auto it = p_entry_string.begin() + expected_time_stamp_length(m_time_format, m_formatted_buf_len);
+    auto it =
+        p_entry_string.begin() +
+        expected_time_stamp_length(m_time_format, m_formatted_buf_len);
     assert (it > p_entry_string.begin());
     string const time_stamp(p_entry_string.begin(), it);
     auto const activity = trim(string(it, p_entry_string.end()));
@@ -343,6 +370,29 @@ TimeLog::load_entry(string const& p_entry_string, size_t p_line_number)
     }
     m_entries.push_back(entry);
     return;
+}
+
+void
+TimeLog::write_entry(AtomicWriter& p_writer, Entry const& p_entry)
+{
+    write_stint(p_writer, activity_at(p_entry), p_entry.time_point);
+    return;
+}
+
+void
+TimeLog::write_stint
+(   AtomicWriter& p_writer,
+    std::string const& p_activity,
+    TimePoint const& p_time_point
+)
+{
+    append_to_writer
+    (   p_writer,
+        p_activity,
+        p_time_point,
+        m_time_format,
+        m_formatted_buf_len
+    );
 }
 
 string const&

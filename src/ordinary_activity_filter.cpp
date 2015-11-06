@@ -34,7 +34,7 @@ OrdinaryActivityFilter::OrdinaryActivityFilter(string const& p_comparitor):
 OrdinaryActivityFilter::~OrdinaryActivityFilter() = default;
 
 bool
-OrdinaryActivityFilter::do_test(string const& p_str) const
+OrdinaryActivityFilter::does_match(string const& p_str) const
 {
     auto const str_size = p_str.size();
     auto const comparitor_size = m_comparitor.size();
@@ -42,6 +42,21 @@ OrdinaryActivityFilter::do_test(string const& p_str) const
         (str_size >= comparitor_size) &&
         equal(m_comparitor.begin(), m_comparitor.end(), p_str.begin()) &&
         (str_size == comparitor_size || *(p_str.begin() + comparitor_size) == ' ');
+}
+
+string
+OrdinaryActivityFilter::do_replace
+(   string const& p_old_str,
+    string const& p_substitution
+) const
+{
+    if (matches(p_old_str))
+    {
+        auto const comparitor_size = m_comparitor.size();
+        assert (m_comparitor.size() <= p_old_str.size());
+        return p_substitution + string(p_old_str.begin() + comparitor_size, p_old_str.end());
+    }
+    return p_old_str;
 }
 
 }  // namespace swx

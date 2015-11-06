@@ -31,7 +31,7 @@ ExactActivityFilter::ExactActivityFilter(string const& p_comparitor):
 ExactActivityFilter::~ExactActivityFilter() = default;
 
 bool
-ExactActivityFilter::do_test(string const& p_str) const
+ExactActivityFilter::does_match(string const& p_str) const
 {
     return p_str == m_comparitor;
 }
