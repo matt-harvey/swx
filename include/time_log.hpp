@@ -84,11 +84,11 @@ public:
     void append_entry(std::string const& p_activity);
 
     /**
-     * Amend the last activity in the log to \e p_activity. If there are no
-     * activities in the log, this does nothing. The results will be immediately
+     * Amend the activity of the last entry in the log to \e p_activity. If there
+     * are no entries in the log, this does nothing. The change will be immediately
      * persisted to file.
      *
-     * @return the activity erased, or an empty string if currently inactive.
+     * @return the previous activity, or an empty string if inactive.
      */
     std::string amend_last(std::string const& p_activity);
 
