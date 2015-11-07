@@ -18,11 +18,7 @@
 #include "activity_filter.hpp"
 #include "command.hpp"
 #include "config.hpp"
-#include "csv_list_report_writer.hpp"
-#include "csv_summary_report_writer.hpp"
 #include "help_line.hpp"
-#include "human_list_report_writer.hpp"
-#include "human_summary_report_writer.hpp"
 #include "list_report_writer.hpp"
 #include "placeholder.hpp"
 #include "stream_utilities.hpp"
@@ -88,7 +84,7 @@ ReportingCommand::ReportingCommand
     (   'l',
         "Instead of printing a summary, print a date-ordered list of individual "
             "activity stints during the relevant period",
-        [this]() { m_show_stints = true; }
+        [this]() { m_report_flags |= ReportWriter::Flags::show_stints; }
     );
 
     add_option
@@ -96,7 +92,7 @@ ReportingCommand::ReportingCommand
         "In addition to any other information, output the earliest time at "
             "which each activity was conducted during the relevant period (ignored "
             "in list mode)",
-        [this]() { m_report_flags |= SummaryReportWriter::Flags::include_beginning; }
+        [this]() { m_report_flags |= ReportWriter::Flags::include_beginning; }
     );
 
     add_option
@@ -104,26 +100,26 @@ ReportingCommand::ReportingCommand
         "Output in a column to the right of any other info, the latest time at "
             "which each activity was conducted during the relevant period (ignored "
             "in list mode)",
-        [this]() { m_report_flags |= SummaryReportWriter::Flags::include_ending; }
+        [this]() { m_report_flags |= ReportWriter::Flags::include_ending; }
     );
 
     add_option
     (   'c',
         "Output in CSV format",
-        [this]() { m_produce_csv = true; }
+        [this]() { m_report_flags |= ReportWriter::Flags::csv; }
     );
 
     add_option
     (   'v',
         "Instead of printing the summary in \"tree\" form, print the full name of "\
             "each activity (ignored in list mode or succinct mode)",
-        [this]() { m_report_flags |= SummaryReportWriter::Flags::verbose; }
+        [this]() { m_report_flags |= ReportWriter::Flags::verbose; }
     );
 
     add_option
     (   's',
         "Succinct output: show grand total only (ignored in list mode)",
-        [this]() { m_report_flags |= SummaryReportWriter::Flags::succinct; }
+        [this]() { m_report_flags |= ReportWriter::Flags::succinct; }
     );
 }
 
@@ -138,8 +134,8 @@ ReportingCommand::print_report
     TimePoint const* p_end
 )
 {
-    unique_ptr<string> activity_ptr;
     string comparitor;
+
     if (p_activity_components.empty())
     {
         m_activity_filter_type = ActivityFilter::Type::always_true;
@@ -152,10 +148,8 @@ ReportingCommand::print_report
 
     unique_ptr<ActivityFilter>
         filter(ActivityFilter::create(comparitor, m_activity_filter_type));
-
-    // TODO MEDIUM PRIORITY Factor out code shared between here and
-    // src/rename_command.hpp, probably using a factory.
     auto const stints = m_time_log.get_stints(*filter, p_begin, p_end);
+
     ReportWriter::Options const options
     (   p_config.output_rounding_numerator(),
         p_config.output_rounding_denominator(),
@@ -164,30 +158,11 @@ ReportingCommand::print_report
         p_config.formatted_buf_len(),
         p_config.time_format()
     );
-    unique_ptr<ReportWriter> report_writer;
-    if (m_show_stints)
-    {
-        if (m_produce_csv)
-        {
-            report_writer.reset(new CsvListReportWriter(stints, options));
-        }
-        else
-        {
-            report_writer.reset(new HumanListReportWriter(stints, options));
-        }
-    }
-    else
-    {
-        if (m_produce_csv)
-        {
-            report_writer.reset(new CsvSummaryReportWriter(stints, options, m_report_flags));
-        }
-        else
-        {
-            report_writer.reset(new HumanSummaryReportWriter(stints, options, m_report_flags));
-        }
-    }
+
+    unique_ptr<ReportWriter>
+        report_writer(ReportWriter::create(stints, options, m_report_flags));
     report_writer->write(p_os);
+
     return ErrorMessages{};
 }
 

@@ -85,9 +85,7 @@ private:
 
 // member variables
 private:
-    bool m_produce_csv = false;
-    bool m_show_stints = false;
-    SummaryReportWriter::Flags::Type m_report_flags = SummaryReportWriter::Flags::none;
+    ReportWriter::Flags::Type m_report_flags = ReportWriter::Flags::none;
     ActivityFilter::Type m_activity_filter_type = ActivityFilter::Type::ordinary;
     TimeLog& m_time_log;
 

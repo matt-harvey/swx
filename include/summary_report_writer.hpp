@@ -30,18 +30,6 @@ namespace swx
 
 class SummaryReportWriter: public ReportWriter
 {
-// nested types
-public:
-    struct Flags
-    {
-        using Type = int;
-        static Type constexpr none                  = 0;
-        static Type constexpr include_beginning     = (1 << 0);
-        static Type constexpr include_ending        = (1 << 1);
-        static Type constexpr verbose               = (1 << 2);
-        static Type constexpr succinct              = (1 << 3);
-    };  // struct Flags
-
 // special member functions
 public:
     SummaryReportWriter

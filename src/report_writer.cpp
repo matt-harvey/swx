@@ -17,6 +17,10 @@
 #include "report_writer.hpp"
 #include "arithmetic.hpp"
 #include "config.hpp"
+#include "csv_list_report_writer.hpp"
+#include "csv_summary_report_writer.hpp"
+#include "human_list_report_writer.hpp"
+#include "human_summary_report_writer.hpp"
 #include "interval.hpp"
 #include "stint.hpp"
 #include <ostream>
@@ -29,6 +33,33 @@ using std::vector;
 
 namespace swx
 {
+
+ReportWriter*
+ReportWriter::create
+(   vector<Stint> const& p_stints,
+    Options const& p_options,
+    Flags::Type p_flags
+)
+{
+    auto const csv = (p_flags & Flags::csv);
+    auto const show_stints = (p_flags & Flags::show_stints);
+    if (csv && show_stints)
+    {
+        return new CsvListReportWriter(p_stints, p_options);
+    }
+    else if (csv)
+    {
+        return new CsvSummaryReportWriter(p_stints, p_options, p_flags);
+    }
+    else if (show_stints)
+    {
+        return new HumanListReportWriter(p_stints, p_options);
+    }
+    else
+    {
+        return new HumanSummaryReportWriter(p_stints, p_options, p_flags);
+    }
+}
 
 ReportWriter::ReportWriter
 (   vector<Stint> const& p_stints,

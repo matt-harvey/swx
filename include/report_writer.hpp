@@ -59,6 +59,32 @@ public:
         std::string const time_format;
     };
 
+    /**
+     * Boolean options for configuring the report.
+     */
+    struct Flags
+    {
+        using Type = int;
+        static Type constexpr none              = 0;
+        static Type constexpr include_beginning = (1 << 0);
+        static Type constexpr include_ending    = (1 << 1);
+        static Type constexpr verbose           = (1 << 2);
+        static Type constexpr succinct          = (1 << 3);
+        static Type constexpr csv               = (1 << 4);
+        static Type constexpr show_stints       = (1 << 5);
+    };
+
+// static factory function
+public:
+    /**
+     * Caller receives ownership of the pointer.
+     */
+    static ReportWriter* create
+    (   std::vector<Stint> const& p_stints,
+        Options const& p_options,
+        Flags::Type p_flags
+    );
+
 // special member functions
 public:
     ReportWriter
