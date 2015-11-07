@@ -314,7 +314,7 @@ suppose we do::
 This will cause "email" to become "electronic-mail" and "email customer-service"
 to become "electronic-mail customer-service". If we *only* wanted to rename
 "email" and *not* "email customer-service", we could use the ``-x`` option
-to exclude sub-activities when renaming. Alternatively, the ``-r`` option to
+to exclude sub-activities when renaming. Alternatively, the ``-r`` option can
 be used to replace every occurrence of the first argument, considered as a regular
 expression, with the second argument, anywhwere it occurs in any activity name.
 
@@ -324,9 +324,9 @@ goes with which. E.g.::
 
   swx rename email 'electronic mail'
 
-Placeholders will still be expanded within each argument, however.
+Note placeholders will still be expanded within each argument, however.
 
-Note ``swx rename`` will not warn you if the new name is the same name as an
+``swx rename`` will not warn you if the new name is the same name as an
 existing activity. In this case, the ``rename`` command will essentially
 perform a merge, with stints associated with the first activity being
 reassigned to the second activity.
