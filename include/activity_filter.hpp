@@ -66,6 +66,11 @@ public:
      */
     bool matches(std::string const& p_str) const;
 
+    /**
+     * If \e p_old_str satisfies this filter, perform a replacement according
+     * to the rule for this filter, replacing the matched text with \e p_substitution
+     * and returning the result as a new string.
+     */
     std::string replace
     (   std::string const& p_old_str,
         std::string const& p_substitution

@@ -84,13 +84,21 @@ public:
     void append_entry(std::string const& p_activity);
 
     /**
-     * Amend the last activity in the log to p_activity. If there are no
-     * activities in the log, this does nothing.
+     * Amend the last activity in the log to \e p_activity. If there are no
+     * activities in the log, this does nothing. The results will be immediately
+     * persisted to file.
      *
      * @return the activity erased, or an empty string if currently inactive.
      */
     std::string amend_last(std::string const& p_activity);
 
+    /**
+     * Apply <em>p_activity_filter.replace(activity, p_new)</em> to every
+     * activity matched by \e p_activity_filter. The changes will be immediately
+     * persisted to file.
+     *
+     * @return the number of stints for which a change was made.
+     */
     std::vector<Stint>::size_type rename_activity
     (   ActivityFilter const& p_activity_filter,
         std::string const& p_new
