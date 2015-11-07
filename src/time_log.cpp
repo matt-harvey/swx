@@ -15,8 +15,10 @@
  */
 
 #include "time_log.hpp"
+#include "activity_filter.hpp"
 #include "atomic_writer.hpp"
 #include "file_utilities.hpp"
+#include "regex_activity_filter.hpp"
 #include "stint.hpp"
 #include "stream_utilities.hpp"
 #include "string_utilities.hpp"
@@ -31,7 +33,6 @@
 #include <fstream>
 #include <iomanip>
 #include <ios>
-#include <regex>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -45,8 +46,6 @@ using std::ios;
 using std::move;
 using std::ofstream;
 using std::ostringstream;
-using std::regex;
-using std::regex_search;
 using std::remove;
 using std::runtime_error;
 using std::size_t;
@@ -161,48 +160,34 @@ TimeLog::amend_last(std::string const& p_activity)
 
 vector<Stint>
 TimeLog::get_stints
-(   string const* p_sought_activity,
+(   ActivityFilter const& p_activity_filter,
     TimePoint const* p_begin,
-    TimePoint const* p_end,
-    bool p_use_regex
+    TimePoint const* p_end
 )
 {
     load();    
-    regex reg;
-    if (!p_sought_activity) p_use_regex = false;
-    if (p_use_regex)
-    {
-        assert (p_sought_activity);
-        reg = regex(*p_sought_activity, regex::extended | regex::optimize);
-    }
     vector<Stint> ret;
     auto const e = m_entries.end();
-    auto it = (p_begin? find_entry_just_before(*p_begin): m_entries.begin());
+    auto it = (p_begin ? find_entry_just_before(*p_begin) : m_entries.begin());
     auto const n = now();
-    auto const sought_id =
-        (p_sought_activity? register_activity(*p_sought_activity): 0);
     for ( ; (it != e) && (!p_end || (it->time_point < *p_end)); ++it)
     {
-        ActivityId const activity_id = it->activity_id;
-        if (!p_sought_activity || (sought_id == activity_id) || p_use_regex)
+        string const& activity = id_to_activity(it->activity_id);
+        if (p_activity_filter(activity))
         {
-            auto const& activity = id_to_activity(activity_id);
-            if (!p_use_regex || regex_search(activity, reg))
-            {
-                auto tp = it->time_point;
-                if (p_begin && (tp < *p_begin)) tp = *p_begin;
-                auto const next_it = it + 1;
-                auto const done = (next_it == e);
-                auto next_tp = (done? (n > tp? n: tp): next_it->time_point);
-                if (p_end && (next_tp > *p_end)) next_tp = *p_end;
-                assert (next_tp >= tp);
-                assert (!p_begin || (tp >= *p_begin));
-                assert (!p_end || (next_tp <= *p_end));
-                auto const duration = next_tp - tp;
-                auto const seconds = chrono::duration_cast<Seconds>(duration);
-                Interval const interval(tp, seconds, done);
-                ret.push_back(Stint(activity, interval));
-            }
+            auto tp = it->time_point;
+            if (p_begin && (tp < *p_begin)) tp = *p_begin;
+            auto const next_it = it + 1;
+            auto const done = (next_it == e);
+            auto next_tp = (done ? (n > tp ? n: tp) : next_it->time_point);
+            if (p_end && (next_tp > *p_end)) next_tp = *p_end;
+            assert (next_tp >= tp);
+            assert (!p_begin || (tp >= *p_begin));
+            assert (!p_end || (next_tp <= *p_end));
+            auto const duration = next_tp - tp;
+            auto const seconds = chrono::duration_cast<Seconds>(duration);
+            Interval const interval(tp, seconds, done);
+            ret.push_back(Stint(activity, interval));
         }
     }
     return ret;    
@@ -212,7 +197,7 @@ string
 TimeLog::last_activity_to_match(string const& p_regex)
 {
     load();
-    regex const reg(p_regex, regex::extended | regex::optimize);
+    RegexActivityFilter const activity_filter(p_regex);
     auto const empty_activity_id = register_activity("");
     for (auto rit = m_entries.rbegin(); rit != m_entries.rend(); ++rit)  // reverse
     {
@@ -220,7 +205,7 @@ TimeLog::last_activity_to_match(string const& p_regex)
         if (id != empty_activity_id)
         {
             auto const& activity = id_to_activity(id);
-            if (regex_search(activity, reg))
+            if (activity_filter(activity))
             {
                 return activity;
             }

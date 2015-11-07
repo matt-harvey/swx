@@ -15,10 +15,12 @@
  */
 
 #include "current_command.hpp"
+#include "activity_filter.hpp"
 #include "command.hpp"
 #include "config.hpp"
 #include "help_line.hpp"
 #include "time_log.hpp"
+#include "true_activity_filter.hpp"
 #include <iostream>
 #include <ostream>
 #include <string>
@@ -69,10 +71,11 @@ CurrentCommand::do_process
 {
     (void)p_config; (void)p_ordinary_args; // silence compiler re. unused param
     TimePoint const n = now();
-    auto const stints = m_time_log.get_stints(nullptr, &n, &n);
+    TrueActivityFilter const activity_filter;
+    auto const stints = m_time_log.get_stints(activity_filter, &n, &n);
     if (!stints.empty()) p_ordinary_ostream << stints[0].activity();
     if (!m_suppress_newline) p_ordinary_ostream << endl;
     return ErrorMessages();
 }
 
-}  // namespace swx
+} // namespace swx

@@ -29,6 +29,12 @@
 namespace swx
 {
 
+// begin forward declarations
+
+class ActivityFilter;
+
+// end forward declarations
+
 /**
  * Represents a record of time spent on various activities, persisted to a
  * plain text file.
@@ -85,22 +91,16 @@ public:
     std::string amend_last(std::string const& p_activity);
 
     /**
-     * Pass non-null pointers to filter by activity name and/or date
-     * range, or pass null pointers to ignore a particular filter.
-     * Caller retains ownership of pointed-to memory.
-     *
-     * If \e p_use_regex is passed \e true, then, rather than retrieving only
-     * stints with <em>*p_activity</em> as their activity, the function will
-     * retrieve stints for which their activity matches <em>*p_activity</em>,
-     * treated as a POSIX extended regular expression.
+     * Provide \e p_activity_filter to filter by activity name.
+     * Provide non-null pointers to TimePoints to filter by date range,
+     * or null pointers to ignore one or both ends of the range.
      * 
      * The stints are ordered in ascending date order.
      */
     std::vector<Stint> get_stints
-    (   std::string const* p_sought_activity,
+    (   ActivityFilter const& p_activity_filter,
         TimePoint const* p_begin,
-        TimePoint const* p_end,
-        bool p_use_regex = false
+        TimePoint const* p_end
     );
 
     /**

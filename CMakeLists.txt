@@ -61,8 +61,9 @@ set(libraries pthread dl)
 
 set(
     common_sources
-    src/activity_stats.cpp
+    src/activity_filter.cpp
     src/activity_node.cpp
+    src/activity_stats.cpp
     src/activity_tree.cpp
     src/arithmetic.cpp
     src/atomic_writer.cpp
@@ -75,6 +76,7 @@ set(
     src/csv_utilities.cpp
     src/current_command.cpp
     src/edit_command.cpp
+    src/exact_activity_filter.cpp
     src/file_utilities.cpp
     src/help_command.cpp
     src/help_line.cpp
@@ -83,9 +85,11 @@ set(
     src/info.cpp
     src/interval.cpp
     src/list_report_writer.cpp
+    src/ordinary_activity_filter.cpp
     src/placeholder.cpp
     src/print_command.cpp
     src/recording_command.cpp
+    src/regex_activity_filter.cpp
     src/report_writer.cpp
     src/reporting_command.cpp
     src/resume_command.cpp
@@ -97,6 +101,7 @@ set(
     src/day_command.cpp
     src/time_point.cpp
     src/time_log.cpp
+    src/true_activity_filter.cpp
     src/version_command.cpp
 )
 add_library(swx_common ${common_sources})

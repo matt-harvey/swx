@@ -15,19 +15,24 @@
  */
 
 #include "reporting_command.hpp"
+#include "activity_filter.hpp"
 #include "command.hpp"
 #include "config.hpp"
 #include "csv_list_report_writer.hpp"
 #include "csv_summary_report_writer.hpp"
+#include "exact_activity_filter.hpp"
 #include "help_line.hpp"
 #include "human_list_report_writer.hpp"
 #include "human_summary_report_writer.hpp"
 #include "list_report_writer.hpp"
+#include "ordinary_activity_filter.hpp"
 #include "placeholder.hpp"
+#include "regex_activity_filter.hpp"
 #include "stream_utilities.hpp"
 #include "string_utilities.hpp"
 #include "summary_report_writer.hpp"
 #include "time_log.hpp"
+#include "true_activity_filter.hpp"
 #include <iostream>
 #include <memory>
 #include <ostream>
@@ -147,21 +152,29 @@ ReportingCommand::print_report
             << '-' << k_exclude_subactivities_flag << '.';
         return ErrorMessages{ oss.str() };
     }
-    if (!p_activity_components.empty())
+    unique_ptr<ActivityFilter> activity_filter;
+    if (p_activity_components.empty())
+    {
+        activity_filter.reset(new TrueActivityFilter);
+    }
+    else
     {
         auto const expanded = expand_placeholders(p_activity_components, m_time_log);
-        activity_ptr.reset(new string(squish(expanded.begin(), expanded.end())));
-        if (!m_exclude_subactivities && !m_use_regex)
+        auto const comparitor = squish(expanded.begin(), expanded.end());
+        if (m_use_regex)
         {
-            *activity_ptr = "^" + *activity_ptr + "($|[[:space:]].*)";
+            activity_filter.reset(new RegexActivityFilter(comparitor));
+        }
+        else if (m_exclude_subactivities)
+        {
+            activity_filter.reset(new ExactActivityFilter(comparitor));
+        }
+        else
+        {
+            activity_filter.reset(new OrdinaryActivityFilter(comparitor)); 
         }
     }
-    auto const stints = m_time_log.get_stints
-    (   activity_ptr.get(),
-        p_begin,
-        p_end,
-        (m_use_regex || !m_exclude_subactivities)
-    );
+    auto const stints = m_time_log.get_stints(*activity_filter, p_begin, p_end);
     ReportWriter::Options const options
     (   p_config.output_rounding_numerator(),
         p_config.output_rounding_denominator(),
