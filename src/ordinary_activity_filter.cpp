@@ -17,7 +17,6 @@
 #include "ordinary_activity_filter.hpp"
 #include <algorithm>
 #include <cassert>
-#include <iostream>  // DEBUG
 #include <string>
 
 using std::equal;

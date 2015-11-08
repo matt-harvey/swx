@@ -45,7 +45,7 @@ public:
 // static factory function
 public:
     /**
-     * Caller receives ownership the pointer.
+     * Caller receives of ownership the pointer.
      */
     static ActivityFilter* create(std::string const& p_comparitor, Type p_type);
 
