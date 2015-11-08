@@ -119,8 +119,9 @@ public:
 
     /**
      * @return the most recent activity to match \e p_regex, considered as a
-     * regular expression of POSIX extended variety; or return the
-     * empty string if none match.
+     * regular expression; or return the empty string if none match. (Modified
+     * ECMAScript regex grammar is used, consistent with the default grammar
+     * for C++ regular expressions.)
      */
     std::string last_activity_to_match(std::string const& p_regex);
 

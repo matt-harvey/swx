@@ -27,7 +27,8 @@ namespace swx
 /**
  * Represents an ActivityFilter that is satisfied by all and only those
  * activities the name of which matches the comparison string considered as
- * a POSIX extended regular expression.
+ * a regular expression. (Modified ECMAScript regex grammar is used, being
+ * the default grammar for C++ regular expressions.)
  */
 class RegexActivityFilter: public ActivityFilter
 {

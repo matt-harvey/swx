@@ -27,7 +27,7 @@ namespace swx
 {
 
 RegexActivityFilter::RegexActivityFilter(string const& p_string):
-    m_comparitor(p_string, regex::extended | regex::optimize)
+    m_comparitor(p_string, regex::optimize)
 {
 }
 

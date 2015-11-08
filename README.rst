@@ -118,14 +118,15 @@ recording), you record this cessation by simply entering::
     swx s
 
 If you pass the ``-r`` option to ``swx switch``, then the activity argument
-will be treated as a regular expression (of the POSIX extended variety), rather
-than an exact activity name. A switch will then be recorded to the most
-recently active activity the name of which matches that regular expression.
-This can save a fair bit of typing when switching back to a recently used
-activity. For example, suppose you are currently working on "emails
-customer-service", and the activity before that was "emails admin", and the one
-before that was "emails suppliers". Then you could switch back to "emails
-suppliers" simply by typing ``swx s -r sup``.
+will be treated as a regular expression, rather than an exact activity name.
+A switch will then be recorded to the most recently active activity the name
+of which matches that regular expression. This can save a fair bit of typing
+when switching back to a recently used activity. For example, suppose you are
+currently working on "emails customer-service", and the activity before that
+was "emails admin", and the one before that was "emails suppliers". Then you
+could switch back to "emails suppliers" simply by typing ``swx s -r sup``.
+(Note the regular expression grammar that is used is the modified ECMAScript
+grammar that is used by default by the C++ standard library.)
 
 If you pass the ``-a`` option to ``swx switch``, then instead of simply
 switching to the new activity "from now on", the time log will rather be
@@ -212,12 +213,11 @@ print only the 5 hours spent on emails and not the 4 hours spent on "emails
 customer".
 
 If you pass the ``-r`` option to a reporting command, then the activity string
-you enter will be treated as a regular expression (of the POSIX extended
-variety), rather than an exact activity name. Any activities will then be
-included in the report for which their activity name matches this regular
-expression. (Note this is ignored if used prior to the ``-x`` flag.)
-Continuing with example above ``swx print -r mail`` would again capture
-both "emails" and "emails customer".
+you enter will be treated as a regular expression, rather than an exact activity
+name. Any activities will then be included in the report for which their
+activity name matches this regular expression. (Note this is ignored if used
+prior to the ``-x`` flag.) Continuing with example above ``swx print -r mail``
+would again capture both "emails" and "emails customer".
 
 If you pass the ``-b`` option to a reporting command, then in addition to the
 other info, the earliest time at which each activity was conducted during the

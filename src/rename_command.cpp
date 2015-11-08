@@ -1,12 +1,12 @@
 /*
  * Copyright 2015 Matthew Harvey
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -82,7 +82,7 @@ RenameCommand::RenameCommand
     );
     ostringstream use_regex_message_stream;
     use_regex_message_stream
-        << "Treat ACTIVITY as a (POSIX extended) regular expression, and replace it with "
+        << "Treat ACTIVITY as a regular expression, and replace it with "
         << "NAME anywhere it matches any activity (ignored if followed by -"
         << k_exclude_subactivities_flag << ')';
     add_option
@@ -121,12 +121,12 @@ RenameCommand::do_process
             p_ordinary_ostream << "No matches found." << endl;
             break;
         case 1:
-            p_ordinary_ostream << "1 stint matched and renamed" << endl; 
+            p_ordinary_ostream << "1 stint matched and renamed" << endl;
             break;
         default:
             // TODO LOW PRIORITY Should probably provide at least an option to
             // print each individual renaming.
-            p_ordinary_ostream << count << " stints matched and renamed." << endl;     
+            p_ordinary_ostream << count << " stints matched and renamed." << endl;
             break;
         }
     }

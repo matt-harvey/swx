@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Matthew Harvey
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -72,7 +72,7 @@ SwitchCommand::SwitchCommand
     add_option
     (   'r',
         "Switch to the most recent activity to match ACTIVITY, considered as "
-            "a (POSIX extended) regular expression",
+            "a regular expression",
         [this]() { m_use_regex = true; }
     );
     add_option
@@ -160,7 +160,7 @@ SwitchCommand::do_process
             }
             else
             {
-                auto const last = time_log().amend_last(activity); 
+                auto const last = time_log().amend_last(activity);
                 cease_message = "Current stint erased.\nWas: " + last;
                 create_message = "Amended current stint\nWas: " + last + "\nNow: " + activity;
                 existing_message = create_message;
