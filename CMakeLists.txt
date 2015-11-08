@@ -115,8 +115,12 @@ set(
     test_sources
     test/arithmetic.cpp
     test/csv_utilities.cpp
+    test/exact_activity_filter.cpp
+    test/ordinary_activity_filter.cpp
+    test/regex_activity_filter.cpp
     test/string_utilities.cpp
     test/test.cpp
+    test/true_activity_filter.cpp
 )
 add_executable(
     test_driver EXCLUDE_FROM_ALL

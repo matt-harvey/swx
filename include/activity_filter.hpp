@@ -27,8 +27,6 @@ namespace swx
  * evaluated, where the string represents the name of an activity. Also
  * supports replacing the matched part of the evaluated string with a new
  * string.
- *
- * TODO HIGH PRIORITY Write tests for this and its subclasses.
  */
 class ActivityFilter
 {
