@@ -30,8 +30,9 @@ namespace swx
 
 /**
  * Supports atomic write operations to plain text files. Append one or
- * more strings, then call \e commit() to write those strings atomically to
- * \e p_filepath.
+ * more strings, then call \e commit() to write those strings atomically to \e
+ * p_filepath. Note existing content of target file is effectively cleared and
+ * overwritten with new content on commit.
  */
 class AtomicWriter
 {
@@ -39,10 +40,8 @@ class AtomicWriter
 public:
     /**
      * @param p_filepath path to file to write to.
-     * @param p_replace pass this true to replace existing file contents, or false
-     *   to append to existing file contents.
      */
-    explicit AtomicWriter(std::string const& p_filepath, bool p_replace = false);
+    explicit AtomicWriter(std::string const& p_filepath);
     AtomicWriter(AtomicWriter const& rhs) = delete;
     AtomicWriter(AtomicWriter&& rhs) = delete;
     AtomicWriter& operator=(AtomicWriter const& rhs) = delete;

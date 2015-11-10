@@ -18,6 +18,7 @@
 #include "activity_filter.hpp"
 #include "atomic_writer.hpp"
 #include "file_utilities.hpp"
+#include "interval.hpp"
 #include "regex_activity_filter.hpp"
 #include "stint.hpp"
 #include "stream_utilities.hpp"
@@ -43,9 +44,11 @@ using std::getline;
 using std::ifstream;
 using std::isspace;
 using std::ios;
+using std::make_pair;
 using std::move;
 using std::ofstream;
 using std::ostringstream;
+using std::pair;
 using std::remove;
 using std::runtime_error;
 using std::size_t;
@@ -91,7 +94,54 @@ namespace
         return;
     }
 
+    pair<string, TimePoint> parse_line
+    (   string const& p_entry_string,
+        size_t p_line_number,
+        string const& p_time_format,
+        unsigned int p_formatted_buf_len
+    )
+    {
+        auto const expected_stamp_length =
+            expected_time_stamp_length(p_time_format, p_formatted_buf_len);
+        if (p_entry_string.size() < expected_stamp_length)
+        {
+            ostringstream oss;
+            enable_exceptions(oss);
+            oss << "Error parsing the time log at line " << p_line_number << '.';
+            throw runtime_error(oss.str());
+        }
+        auto it = p_entry_string.begin() + expected_stamp_length;
+        assert (it > p_entry_string.begin());
+        string const time_stamp(p_entry_string.begin(), it);
+        auto const time_point = time_stamp_to_point(time_stamp, p_time_format);
+        auto const activity = trim(string(it, p_entry_string.end()));
+        return make_pair(activity, time_point);
+    }
+
 }  // end anonymous namespace
+
+struct TimeLog::Entry
+{
+    Entry(ActivityId p_activity_id, TimePoint const& p_time_point);
+    ActivityId activity_id;
+    TimePoint time_point;
+};
+
+class TimeLog::Transaction
+{
+public:
+    explicit Transaction(TimeLog& p_time_log);
+    Transaction(Transaction const&) = delete;
+    Transaction(Transaction&&) = delete;
+    Transaction& operator=(Transaction const&) = delete;
+    Transaction& operator=(Transaction&&) = delete;
+    ~Transaction();
+    void commit();
+private:
+    void rollback();
+    bool m_committed = false;
+    TimeLog& m_time_log; 
+};
 
 TimeLog::TimeLog
 (   string const& p_filepath,
@@ -104,7 +154,7 @@ TimeLog::TimeLog
     m_time_format(p_time_format)
 {
     assert (m_entries.empty());
-    assert (m_activities.empty());
+    assert (m_activity_registry.empty());
 }
 
 TimeLog::~TimeLog() = default;
@@ -112,72 +162,52 @@ TimeLog::~TimeLog() = default;
 void
 TimeLog::append_entry(string const& p_activity)
 {
-    AtomicWriter writer(m_filepath);
-    append_to_writer(writer, p_activity, now(), m_time_format, m_formatted_buf_len);
-    writer.commit();
-    mark_cache_as_stale();
+    Transaction transaction(*this);
+    load_entry(p_activity, now()); 
+    transaction.commit();
     return;
 }
 
 string
 TimeLog::amend_last(std::string const& p_activity)
 {
-    load();
-    if (m_entries.empty())
+    Transaction transaction(*this);
+    string last_activity;
+    if (!m_entries.empty())
     {
-        return string();
+        auto& entry = m_entries.back();
+        last_activity = activity_at(entry);
+        change_entry_activity(entry, p_activity);
+        // TODO Check if entry's is now same as previous entry. If so then mark the
+        // TimeLog as needing compression. Then we can deal with it within transaction
+        // commit.
     }
-    Entries::const_iterator it = m_entries.begin();
-    Entries::const_iterator e = m_entries.end();
-    assert (it != e);
-    --e;
-    auto const& last_activity = activity_at(*e);
-    if (p_activity != last_activity)
-    {
-        AtomicWriter writer(m_filepath, true);
-        for ( ; it != e; ++it)
-        {
-            write_entry(writer, *it);
-        }
-        if ((it == m_entries.begin()) || (activity_at(*--it) != p_activity))
-        {
-            assert (e != m_entries.end());
-            write_stint(writer, p_activity, e->time_point);
-        }
-        writer.commit();
-        mark_cache_as_stale();
-    }
+    transaction.commit();
     return last_activity;
 }
 
 vector<Stint>::size_type
 TimeLog::rename_activity(ActivityFilter const& p_activity_filter, string const& p_new)
 {
-    load();
+    Transaction transaction(*this);
     vector<Stint>::size_type count = 0;
-    AtomicWriter writer(m_filepath, true);
-    string last_activity;
-    for (auto const& entry: m_entries)
+    for (auto& entry: m_entries)
     {
         auto const& activity = activity_at(entry);
-        string new_activity;
         if (p_activity_filter.matches(activity))
         {
-            new_activity = p_activity_filter.replace(activity, p_new);
+            // To make this more efficient, we could cache the mapping from old
+            // activity id to new as we go. This doesn't seem worth the effort or
+            // complexity, though.
+            change_entry_activity(entry, p_activity_filter.replace(activity, p_new));
             ++count;
         }
-        else
-        {
-            new_activity = activity;
-        }
-        if (new_activity != last_activity)
-        {
-            write_stint(writer, new_activity, entry.time_point);
-        }
-        last_activity = new_activity;
     }
-    writer.commit();
-    mark_cache_as_stale();
+    // TODO What about consecutive references to the same activity? Should we deal with
+    // that here? Should probably have a single "compress" function that gets called
+    // on transaction commit if and only if a flag is set on TimeLog to say that
+    // it needs compressing.
+    transaction.commit();
     return count;
 }
 
@@ -221,7 +251,7 @@ TimeLog::last_activity_to_match(string const& p_regex)
 {
     load();
     RegexActivityFilter const activity_filter(p_regex);
-    auto const empty_activity_id = register_activity("");
+    auto const empty_activity_id = register_activity_reference("");
     for (auto rit = m_entries.rbegin(); rit != m_entries.rend(); ++rit)  // reverse
     {
         auto const id = rit->activity_id;
@@ -275,14 +305,14 @@ bool
 TimeLog::has_activity(string const& p_activity)
 {
     load();
-    return m_activities.find(p_activity) != m_activities.end();
+    return m_activity_registry.find(p_activity) != m_activity_registry.end();
 }
 
 void
 TimeLog::clear_cache()
 {
     m_entries.clear();
-    m_activities.clear();
+    m_activity_registry.clear();
     mark_cache_as_stale();
     return;
 }
@@ -308,7 +338,20 @@ TimeLog::load()
             while (infile.peek() != EOF)
             {
                 getline(infile, line);
-                load_entry(line, line_number);
+                pair<string, TimePoint> const parsed_line =
+                    parse_line(line, line_number, m_time_format, m_formatted_buf_len);
+                auto const& activity = parsed_line.first;
+                auto const& time_point = parsed_line.second;
+                if (!m_entries.empty() && (time_point < m_entries.back().time_point))
+                {
+                    ostringstream oss;
+                    enable_exceptions(oss);
+                    oss << "Time log entries out of order at line " << line_number << '.'; 
+                    throw runtime_error(oss.str());
+                }
+                // TODO What about consecutive entries with the same activity? Should
+                // we be dealing with that here?
+                load_entry(activity, time_point);
                 ++line_number;
             }
             if (!m_entries.empty() && (m_entries.back().time_point > now()))
@@ -324,82 +367,82 @@ TimeLog::load()
     return;
 }
 
-TimeLog::ActivityId
-TimeLog::register_activity(string const& p_activity)
+void
+TimeLog::save() const
 {
-    return &*(m_activities.insert(p_activity).first);
+    AtomicWriter writer(m_filepath);
+    for (auto const& entry: m_entries)
+    {
+        // TODO What about consecutive entries with the same activity? Should
+        // we be dealing with that here?
+        write_entry(writer, activity_at(entry), entry.time_point);
+    }
+    writer.commit();
+    return;
+}
+
+TimeLog::ActivityId
+TimeLog::register_activity_reference(string const& p_activity)
+{
+    auto const it = m_activity_registry.find(p_activity);
+    if (it == m_activity_registry.end())
+    {
+        return &*(m_activity_registry.emplace(p_activity, 1).first);
+    }
+    ++it->second;
+    return &*it;
+}
+
+void
+TimeLog::deregister_activity_reference(ActivityId p_activity_id)
+{
+    assert (p_activity_id->second > 0);
+    auto const new_reference_count = --p_activity_id->second; 
+    if (new_reference_count == 0)
+    {
+        // Pointer (p_activity_id) is stable, but iterator is not! We have
+        // to erase via the iterator or via key.
+        m_activity_registry.erase(p_activity_id->first);
+    }
+    return;
+}
+
+void
+TimeLog::change_entry_activity(Entry& p_entry, string const& p_new_activity)
+{
+    deregister_activity_reference(p_entry.activity_id); 
+    p_entry.activity_id = register_activity_reference(p_new_activity);
+    return;
 }
 
 string const&
-TimeLog::activity_at(Entry const& p_entry)
+TimeLog::activity_at(Entry const& p_entry) const
 {
     return id_to_activity(p_entry.activity_id);
 }
 
 void
-TimeLog::load_entry(string const& p_entry_string, size_t p_line_number)
+TimeLog::load_entry(string const& p_activity, TimePoint const& p_time_point)
 {
-    if (p_entry_string.size() < expected_time_stamp_length(m_time_format, m_formatted_buf_len))
-    {
-        ostringstream oss;
-        enable_exceptions(oss);
-        oss << "Error parsing the time log at line "
-            << p_line_number << '.';
-        throw runtime_error(oss.str());
-    }
-    auto it =
-        p_entry_string.begin() +
-        expected_time_stamp_length(m_time_format, m_formatted_buf_len);
-    assert (it > p_entry_string.begin());
-    string const time_stamp(p_entry_string.begin(), it);
-    auto const activity = trim(string(it, p_entry_string.end()));
-    auto const activity_id = register_activity(activity);
-    auto const time_point = time_stamp_to_point(time_stamp, m_time_format);
-    Entry entry(activity_id, time_point);
-    if (!m_entries.empty())
-    {
-        auto const last_time_point = m_entries.back().time_point;
-        if (entry.time_point < last_time_point)
-        {       
-            ostringstream oss;
-            enable_exceptions(oss);
-            oss << "Time log entries out of order at line "
-                << p_line_number << '.'; 
-            throw runtime_error(oss.str());
-        }
-    }
-    m_entries.push_back(entry);
-    return;
+    // TODO What about consecutive entries with the same activity?
+    // (Be careful... register_activity_reference has side-effects.)
+    m_entries.emplace_back(register_activity_reference(p_activity), p_time_point);
 }
 
 void
-TimeLog::write_entry(AtomicWriter& p_writer, Entry const& p_entry)
-{
-    write_stint(p_writer, activity_at(p_entry), p_entry.time_point);
-    return;
-}
-
-void
-TimeLog::write_stint
+TimeLog::write_entry
 (   AtomicWriter& p_writer,
     std::string const& p_activity,
     TimePoint const& p_time_point
-)
+) const
 {
-    append_to_writer
-    (   p_writer,
-        p_activity,
-        p_time_point,
-        m_time_format,
-        m_formatted_buf_len
-    );
+    append_to_writer(p_writer, p_activity, p_time_point, m_time_format, m_formatted_buf_len);
 }
 
 string const&
-TimeLog::id_to_activity(ActivityId p_activity_id)
+TimeLog::id_to_activity(ActivityId p_activity_id) const
 {
-    load();
-    return *p_activity_id;
+    return p_activity_id->first;
 }
 
 vector<TimeLog::Entry>::const_iterator
@@ -423,6 +466,32 @@ TimeLog::Entry::Entry(ActivityId p_activity_id, TimePoint const& p_time_point):
     activity_id(p_activity_id),
     time_point(p_time_point)
 {
+}
+
+TimeLog::Transaction::Transaction(TimeLog& p_time_log): m_time_log(p_time_log)
+{
+    m_time_log.load();
+}
+
+TimeLog::Transaction::~Transaction()
+{
+    if (!m_committed)
+    {
+        rollback();
+    }
+}   
+
+void
+TimeLog::Transaction::commit()
+{
+    m_time_log.save();
+    m_committed = true;
+}
+
+void
+TimeLog::Transaction::rollback()
+{
+    m_time_log.mark_cache_as_stale();
 }
 
 }  // namespace swx

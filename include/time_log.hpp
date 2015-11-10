@@ -17,13 +17,12 @@
 #ifndef GUARD_time_log_hpp_6591341885082117
 #define GUARD_time_log_hpp_6591341885082117
 
-#include "interval.hpp"
-#include "stint.hpp"
 #include "time_point.hpp"
 #include <cstddef>
 #include <string>
 #include <map>
-#include <unordered_set>
+#include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace swx
@@ -33,32 +32,28 @@ namespace swx
 
 class ActivityFilter;
 class AtomicWriter;
+class Stint;
 
 // end forward declarations
 
 /**
  * Represents a record of time spent on various activities, persisted to a
  * plain text file.
+ *
+ * TODO LOW PRIORITY This class has a lot of private members. Consider using PIMPL
+ * idiom to tidy up the header.
  */
 class TimeLog
 {
 // nested types
 private:
-
-    using ActivityId = std::string const*;
-    using Activities = std::unordered_set<std::string>;
-
-    /**
-     * Represents a single record in the log.
-     */
-    struct Entry
-    {
-        Entry(ActivityId p_activity_id, TimePoint const& p_time_point);
-        ActivityId activity_id;
-        TimePoint time_point;
-    };
-
+    class Transaction;
+    friend class Transaction;
+    struct Entry;     // a single entry in the log, registered in the cache
     using Entries = std::vector<Entry>;
+    using ReferenceCount = Entries::size_type;  // number of entries with a given activity
+    using ActivityId = std::pair<std::string const, ReferenceCount>*;
+    using ActivityRegistry = std::unordered_map<std::string, ReferenceCount>;
 
 // special member functions
 public:
@@ -162,23 +157,21 @@ private:
     void clear_cache();
     void mark_cache_as_stale();
     void load();
-    ActivityId register_activity(std::string const& p_activity);
-    std::string const& activity_at(Entry const& p_entry);
-    void load_entry(std::string const& p_entry_string, std::size_t p_line_number);
-    void write_entry(AtomicWriter& p_writer, Entry const& p_entry);
+    void save() const;
+    ActivityId register_activity_reference(std::string const& p_activity);
+    void deregister_activity_reference(ActivityId p_activity_id);
+    void change_entry_activity(Entry& p_entry, std::string const& p_new_activity);
+    std::string const& activity_at(Entry const& p_entry) const;
+    void load_entry(std::string const& p_activity, TimePoint const& p_time_point);
 
-    void write_stint
+    void write_entry
     (   AtomicWriter& p_writer,
         std::string const& p_activity,
         TimePoint const& p_time_point
-    );
-        
+    ) const;
 
-    std::string const& id_to_activity(ActivityId p_activity_id);
-
-    Entries::const_iterator find_entry_just_before
-    (   TimePoint const& p_time_point
-    );
+    std::string const& id_to_activity(ActivityId p_activity_id) const;
+    Entries::const_iterator find_entry_just_before(TimePoint const& p_time_point);
 
 // member variables
 private:
@@ -186,7 +179,7 @@ private:
     unsigned int m_formatted_buf_len;
     std::string m_filepath;
     Entries m_entries;
-    Activities m_activities;
+    ActivityRegistry m_activity_registry;
     std::string const m_time_format;
 
 };  // class TimeLog

@@ -32,10 +32,7 @@
 
 using std::cerr;
 using std::endl;
-using std::feof;
-using std::fopen;
 using std::fputs;
-using std::fread;
 using std::rename;
 using std::runtime_error;
 using std::size_t;
@@ -49,34 +46,7 @@ using std::vector;
 namespace swx
 {
 
-namespace
-{
-    class FileStreamGuard
-    {
-    public:
-        explicit FileStreamGuard(FILE* p_file_stream):
-            m_file_stream(p_file_stream)
-        {
-        }
-        ~FileStreamGuard()
-        {
-            if (m_file_stream)
-            {
-                if (fclose(m_file_stream) != 0)
-                {
-                    cerr << "Error closing file. Terminating application."
-                         << endl;
-                    terminate();
-                }
-            }
-        }
-    private:
-        FILE* m_file_stream;
-    };
-}
-
-AtomicWriter::AtomicWriter(string const& p_filepath, bool p_replace):
-    m_replace(p_replace),
+AtomicWriter::AtomicWriter(string const& p_filepath):
     m_tempfile(nullptr),
     m_orig_filepath(p_filepath)
 {
@@ -97,32 +67,6 @@ AtomicWriter::AtomicWriter(string const& p_filepath, bool p_replace):
     if (!m_tempfile)
     {
         throw runtime_error("Error opening stream to temp file.");
-    }
-    if (!m_replace && file_exists_at(m_orig_filepath))
-    {
-        // copy contents of original file to temp file
-        FILE* const infile = fopen(m_orig_filepath.c_str(), "r");
-        if (!infile)
-        {
-            throw runtime_error("Error opening file to read.");
-        }
-        FileStreamGuard infile_guard(infile);
-        size_t const buf_size = 4096;
-        char buf[buf_size];
-        while (!feof(infile))
-        {
-            size_t const sz = fread(buf, 1, buf_size, infile);
-            if (ferror(infile))
-            {
-                throw runtime_error("Error reading from file.");
-            }
-            assert ((sz == buf_size) || feof(infile));
-            fwrite(buf, 1, sz, m_tempfile);
-            if (ferror(m_tempfile))
-            {
-                throw runtime_error("Error writing to file.");
-            }
-        }
     }
     return;
 }

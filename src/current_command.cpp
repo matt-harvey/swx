@@ -19,7 +19,9 @@
 #include "command.hpp"
 #include "config.hpp"
 #include "help_line.hpp"
+#include "stint.hpp"
 #include "time_log.hpp"
+#include "time_point.hpp"
 #include "true_activity_filter.hpp"
 #include <iostream>
 #include <ostream>
