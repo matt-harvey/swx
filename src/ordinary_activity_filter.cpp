@@ -49,13 +49,9 @@ OrdinaryActivityFilter::do_replace
     string const& p_substitution
 ) const
 {
-    if (matches(p_old_str))
-    {
-        auto const comparitor_size = m_comparitor.size();
-        assert (m_comparitor.size() <= p_old_str.size());
-        return p_substitution + string(p_old_str.begin() + comparitor_size, p_old_str.end());
-    }
-    return p_old_str;
+    assert (matches(p_old_str));
+    assert (m_comparitor.size() <= p_old_str.size());
+    return p_substitution + string(p_old_str.begin() + m_comparitor.size(), p_old_str.end());
 }
 
 }  // namespace swx

@@ -44,6 +44,8 @@ public:
 private:
     virtual bool does_match(std::string const& p_str) const override;
 
+    // This is only to be called from the base class (ActivityFilter) when
+    // p_old_str is known to be matched.
     virtual std::string do_replace
     (   std::string const& p_old_str,
         std::string const& p_substitution

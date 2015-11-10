@@ -56,13 +56,14 @@ ActivityFilter::matches(string const& p_str) const
 string
 ActivityFilter::replace(string const& p_old_str, string const& p_substitution) const
 {
-    return do_replace(p_old_str, p_substitution);
+    return matches(p_old_str) ? do_replace(p_old_str, p_substitution) : p_old_str;
 }
 
 string
 ActivityFilter::do_replace(string const& p_old_str, string const& p_substitution) const
 {
-    return matches(p_old_str) ? p_substitution : p_old_str;
+    (void)p_old_str;  // silence compiler warning re. unused param.
+    return p_substitution;
 }
 
 }  // namespace swx
