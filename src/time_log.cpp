@@ -65,79 +65,8 @@ namespace chrono = std::chrono;
 namespace swx
 {
 
-namespace
-{
-    string::size_type expected_time_stamp_length
-    (   string const& p_time_format,
-        unsigned int p_formatted_buf_len
-    )
-    {
-        static string const time_format =
-            time_point_to_stamp(now(), p_time_format, p_formatted_buf_len);
-        return time_format.length();
-    }
-
-    // NOTE this will NOT mark the cache as stale, and will not commit to the writer.
-    void append_to_writer
-    (   AtomicWriter& p_writer,
-        string const& p_activity,
-        TimePoint const& p_time_point,
-        string const& p_time_format,
-        unsigned int p_formatted_buf_len
-    )
-    {
-        p_writer.append(time_point_to_stamp(p_time_point, p_time_format, p_formatted_buf_len));
-        if (!p_activity.empty())
-        {
-            p_writer.append(" ");
-            p_writer.append(p_activity);
-        }
-        p_writer.append("\n");
-        return;
-    }
-
-    pair<string, TimePoint> parse_line
-    (   string const& p_entry_string,
-        size_t p_line_number,
-        string const& p_time_format,
-        unsigned int p_formatted_buf_len
-    )
-    {
-        auto const expected_stamp_length =
-            expected_time_stamp_length(p_time_format, p_formatted_buf_len);
-        if (p_entry_string.size() < expected_stamp_length)
-        {
-            ostringstream oss;
-            enable_exceptions(oss);
-            oss << "Error parsing the time log at line " << p_line_number << '.';
-            throw runtime_error(oss.str());
-        }
-        auto it = p_entry_string.begin() + expected_stamp_length;
-        assert (it > p_entry_string.begin());
-        string const time_stamp(p_entry_string.begin(), it);
-        auto const time_point = time_stamp_to_point(time_stamp, p_time_format);
-        auto const activity = trim(string(it, p_entry_string.end()));
-        return make_pair(activity, time_point);
-    }
-
-}  // end anonymous namespace
-
 class TimeLog::Impl
 {
-// special member functions
-public:
-    Impl
-    (   std::string const& p_filepath,
-        std::string const& p_time_format,
-        unsigned int p_formatted_buf_len
-    );
-    Impl() = delete;
-    Impl(Impl const&) = delete;
-    Impl(Impl&&) = delete;
-    Impl& operator=(Impl const&) = delete;
-    Impl& operator=(Impl&&) = delete;
-    ~Impl();
-    
 // nested types
 private:
     class Transaction;
@@ -147,6 +76,20 @@ private:
     using ReferenceCount = Entries::size_type;  // number of entries with a given activity
     using ActivityId = pair<string const, ReferenceCount>*;
     using ActivityRegistry = unordered_map<string, ReferenceCount>;
+
+// special member functions
+public:
+    Impl
+    (   string const& p_filepath,
+        string const& p_time_format,
+        unsigned int p_formatted_buf_len
+    );
+    Impl() = delete;
+    Impl(Impl const&) = delete;
+    Impl(Impl&&) = delete;
+    Impl& operator=(Impl const&) = delete;
+    Impl& operator=(Impl&&) = delete;
+    ~Impl();
 
 // ordinary member functions
 public:
@@ -172,25 +115,31 @@ private:
     void mark_cache_as_stale();
     void load();
     void save() const;
-    ActivityId register_activity_reference(std::string const& p_activity);
+    ActivityId register_activity_reference(string const& p_activity);
     void deregister_activity_reference(ActivityId p_activity_id);
-    void change_entry_activity(Entry& p_entry, std::string const& p_new_activity);
-    std::string const& activity_at(Entry const& p_entry) const;
-    void load_entry(std::string const& p_activity, TimePoint const& p_time_point);
+    void change_entry_activity(Entry& p_entry, string const& p_new_activity);
+    string const& activity_at(Entry const& p_entry) const;
+    void load_entry(string const& p_activity, TimePoint const& p_time_point);
+
+    pair<string, TimePoint> parse_line
+    (   string const& p_entry_string,
+        size_t p_line_number
+    ) const;
 
     void write_entry
     (   AtomicWriter& p_writer,
-        std::string const& p_activity,
+        string const& p_activity,
         TimePoint const& p_time_point
     ) const;
 
-    std::string const& id_to_activity(ActivityId p_activity_id) const;
+    string const& id_to_activity(ActivityId p_activity_id) const;
     Entries::const_iterator find_entry_just_before(TimePoint const& p_time_point);
 
 // member variables
 private:
     bool m_is_loaded = false;
     unsigned int m_formatted_buf_len;
+    unsigned int m_expected_time_stamp_length;
     string m_filepath;
     Entries m_entries;
     ActivityRegistry m_activity_registry;
@@ -238,7 +187,7 @@ TimeLog::append_entry(string const& p_activity)
 }
 
 string
-TimeLog::amend_last(std::string const& p_activity)
+TimeLog::amend_last(string const& p_activity)
 {
     return m_impl->amend_last(p_activity);
 }
@@ -290,6 +239,9 @@ TimeLog::Impl::Impl
 ):
     m_is_loaded(false),
     m_formatted_buf_len(p_formatted_buf_len),
+    m_expected_time_stamp_length
+    (   time_point_to_stamp(now(), p_time_format, p_formatted_buf_len).length()
+    ),
     m_filepath(p_filepath),
     m_time_format(p_time_format)
 {
@@ -309,7 +261,7 @@ TimeLog::Impl::append_entry(string const& p_activity)
 }
 
 string
-TimeLog::Impl::amend_last(std::string const& p_activity)
+TimeLog::Impl::amend_last(string const& p_activity)
 {
     Transaction transaction(*this);
     string last_activity;
@@ -478,8 +430,7 @@ TimeLog::Impl::load()
             while (infile.peek() != EOF)
             {
                 getline(infile, line);
-                pair<string, TimePoint> const parsed_line =
-                    parse_line(line, line_number, m_time_format, m_formatted_buf_len);
+                pair<string, TimePoint> const parsed_line = parse_line(line, line_number);
                 auto const& activity = parsed_line.first;
                 auto const& time_point = parsed_line.second;
                 if (!m_entries.empty() && (time_point < m_entries.back().time_point))
@@ -569,14 +520,39 @@ TimeLog::Impl::load_entry(string const& p_activity, TimePoint const& p_time_poin
     m_entries.emplace_back(register_activity_reference(p_activity), p_time_point);
 }
 
+pair<string, TimePoint>
+TimeLog::Impl::parse_line(string const& p_entry_string, size_t p_line_number) const
+{
+    if (p_entry_string.size() < m_expected_time_stamp_length)
+    {
+        ostringstream oss;
+        enable_exceptions(oss);
+        oss << "Error parsing the time log at line " << p_line_number << '.';
+        throw runtime_error(oss.str());
+    }
+    auto it = p_entry_string.begin() + m_expected_time_stamp_length;
+    assert (it > p_entry_string.begin());
+    string const time_stamp(p_entry_string.begin(), it);
+    auto const time_point = time_stamp_to_point(time_stamp, m_time_format);
+    auto const activity = trim(string(it, p_entry_string.end()));
+    return make_pair(activity, time_point);
+}
+
 void
 TimeLog::Impl::write_entry
 (   AtomicWriter& p_writer,
-    std::string const& p_activity,
+    string const& p_activity,
     TimePoint const& p_time_point
 ) const
 {
-    append_to_writer(p_writer, p_activity, p_time_point, m_time_format, m_formatted_buf_len);
+    p_writer.append(time_point_to_stamp(p_time_point, m_time_format, m_formatted_buf_len));
+    if (!p_activity.empty())
+    {
+        p_writer.append(" ");
+        p_writer.append(p_activity);
+    }
+    p_writer.append("\n");
+    return;
 }
 
 string const&

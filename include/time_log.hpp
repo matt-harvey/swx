@@ -28,7 +28,6 @@ namespace swx
 // begin forward declarations
 
 class ActivityFilter;
-class AtomicWriter;
 class Stint;
 
 // end forward declarations
