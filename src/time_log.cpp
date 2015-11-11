@@ -119,7 +119,14 @@ private:
     void deregister_activity_reference(ActivityId p_activity_id);
     void change_entry_activity(Entry& p_entry, string const& p_new_activity);
     string const& activity_at(Entry const& p_entry) const;
-    void load_entry(string const& p_activity, TimePoint const& p_time_point);
+    void push_entry(string const& p_activity, TimePoint const& p_time_point);
+    void pop_entry();
+
+    bool put_entry
+    (   string const& p_activity,
+        TimePoint const& p_time_point,
+        Entries::size_type p_index
+    );
 
     pair<string, TimePoint> parse_line
     (   string const& p_entry_string,
@@ -137,7 +144,7 @@ private:
 
 // member variables
 private:
-    bool m_is_loaded = false;
+    bool m_loaded = false;
     unsigned int m_formatted_buf_len;
     unsigned int m_expected_time_stamp_length;
     string m_filepath;
@@ -237,7 +244,7 @@ TimeLog::Impl::Impl
     string const& p_time_format,
     unsigned int p_formatted_buf_len
 ):
-    m_is_loaded(false),
+    m_loaded(false),
     m_formatted_buf_len(p_formatted_buf_len),
     m_expected_time_stamp_length
     (   time_point_to_stamp(now(), p_time_format, p_formatted_buf_len).length()
@@ -255,7 +262,7 @@ void
 TimeLog::Impl::append_entry(string const& p_activity)
 {
     Transaction transaction(*this);
-    load_entry(p_activity, now()); 
+    push_entry(p_activity, now()); 
     transaction.commit();
     return;
 }
@@ -267,12 +274,10 @@ TimeLog::Impl::amend_last(string const& p_activity)
     string last_activity;
     if (!m_entries.empty())
     {
-        auto& entry = m_entries.back();
-        last_activity = activity_at(entry);
-        change_entry_activity(entry, p_activity);
-        // TODO Check if entry's is now same as previous entry. If so then mark the
-        // TimeLog as needing compression. Then we can deal with it within transaction
-        // commit.
+        auto const time_point = m_entries.back().time_point;
+        last_activity = activity_at(m_entries.back());
+        pop_entry();
+        push_entry(p_activity, time_point);
     }
     transaction.commit();
     return last_activity;
@@ -282,25 +287,31 @@ vector<Stint>::size_type
 TimeLog::Impl::rename_activity(ActivityFilter const& p_activity_filter, string const& p_new)
 {
     Transaction transaction(*this);
-    vector<Stint>::size_type count = 0;
-    for (auto& entry: m_entries)
+    Entries::size_type const num_entries = m_entries.size();
+    Entries::size_type num_amended = 0;
+    Entries::size_type num_written = 0;
+    for (Entries::size_type num_read = 0; num_read != num_entries; ++num_read)
     {
-        auto const& activity = activity_at(entry);
-        if (p_activity_filter.matches(activity))
+        auto const& old_entry = m_entries[num_read];
+        auto const& time_point = old_entry.time_point;
+        auto const& old_activity = activity_at(old_entry);
+        auto const new_activity = p_activity_filter.replace(old_activity, p_new);
+        if (new_activity != old_activity)
         {
-            // To make this more efficient, we could cache the mapping from old
-            // activity id to new as we go. This doesn't seem worth the effort or
-            // complexity, though.
-            change_entry_activity(entry, p_activity_filter.replace(activity, p_new));
-            ++count;
+            ++num_amended;
+        }
+        if (put_entry(new_activity, time_point, num_written))
+        {
+            ++num_written; 
         }
     }
-    // TODO What about consecutive references to the same activity? Should we deal with
-    // that here? Should probably have a single "compress" function that gets called
-    // on transaction commit if and only if a flag is set on TimeLog to say that
-    // it needs compressing.
+    assert (num_written <= m_entries.size());
+    while (m_entries.size() != num_written)
+    {
+        pop_entry();
+    }
     transaction.commit();
-    return count;
+    return num_amended;
 }
 
 vector<Stint>
@@ -412,13 +423,13 @@ TimeLog::Impl::clear_cache()
 void
 TimeLog::Impl::mark_cache_as_stale()
 {
-    m_is_loaded = false;
+    m_loaded = false;
 }
 
 void
 TimeLog::Impl::load()
 {
-    if (!m_is_loaded)
+    if (!m_loaded)
     {
         clear_cache();
         if (file_exists_at(m_filepath))
@@ -440,9 +451,7 @@ TimeLog::Impl::load()
                     oss << "Time log entries out of order at line " << line_number << '.'; 
                     throw runtime_error(oss.str());
                 }
-                // TODO What about consecutive entries with the same activity? Should
-                // we be dealing with that here?
-                load_entry(activity, time_point);
+                push_entry(activity, time_point);
                 ++line_number;
             }
             if (!m_entries.empty() && (m_entries.back().time_point > now()))
@@ -453,7 +462,7 @@ TimeLog::Impl::load()
                 );
             }
         }
-        m_is_loaded = true;
+        m_loaded = true;
     }
     return;
 }
@@ -464,8 +473,6 @@ TimeLog::Impl::save() const
     AtomicWriter writer(m_filepath);
     for (auto const& entry: m_entries)
     {
-        // TODO What about consecutive entries with the same activity? Should
-        // we be dealing with that here?
         write_entry(writer, activity_at(entry), entry.time_point);
     }
     writer.commit();
@@ -513,11 +520,46 @@ TimeLog::Impl::activity_at(Entry const& p_entry) const
 }
 
 void
-TimeLog::Impl::load_entry(string const& p_activity, TimePoint const& p_time_point)
+TimeLog::Impl::push_entry(string const& p_activity, TimePoint const& p_time_point)
 {
-    // TODO What about consecutive entries with the same activity?
-    // (Be careful... register_activity_reference has side-effects.)
-    m_entries.emplace_back(register_activity_reference(p_activity), p_time_point);
+    auto const next_activity_id = register_activity_reference(p_activity);
+    if (!m_entries.empty() && (next_activity_id == m_entries.back().activity_id))
+    {
+        // avoid consecutive entries with the same activity
+        deregister_activity_reference(next_activity_id);
+    }
+    else
+    {
+        m_entries.emplace_back(next_activity_id, p_time_point);
+    }
+}
+
+bool
+TimeLog::Impl::put_entry
+(   string const& p_activity,
+    TimePoint const& p_time_point,
+    Entries::size_type p_index
+)
+{
+    auto const old_activity_id = m_entries[p_index].activity_id;
+    auto const new_activity_id = register_activity_reference(p_activity);
+    
+    // prevent consecutive identical activities
+    if ((p_index != 0) && (m_entries[p_index - 1].activity_id == new_activity_id))
+    {
+        deregister_activity_reference(new_activity_id);
+        return false;
+    }
+    deregister_activity_reference(old_activity_id);
+    m_entries[p_index] = Entry(new_activity_id, p_time_point);
+    return true;
+}
+
+void
+TimeLog::Impl::pop_entry()
+{
+    deregister_activity_reference(m_entries.back().activity_id);
+    m_entries.pop_back();
 }
 
 pair<string, TimePoint>

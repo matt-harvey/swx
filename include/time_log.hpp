@@ -73,7 +73,8 @@ public:
      * are no entries in the log, this does nothing. The change will be immediately
      * persisted to file.
      *
-     * @return the previous activity, or an empty string if inactive.
+     * @return the previous activity, or an empty string if inactive (including if
+     *   there are no entries in the log).
      */
     std::string amend_last(std::string const& p_activity);
 
