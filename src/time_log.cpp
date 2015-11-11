@@ -37,6 +37,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -56,6 +57,7 @@ using std::string;
 using std::stringstream;
 using std::tm;
 using std::upper_bound;
+using std::unordered_map;
 using std::vector;
 
 namespace chrono = std::chrono;
@@ -120,17 +122,92 @@ namespace
 
 }  // end anonymous namespace
 
-struct TimeLog::Entry
+class TimeLog::Impl
+{
+// special member functions
+public:
+    Impl
+    (   std::string const& p_filepath,
+        std::string const& p_time_format,
+        unsigned int p_formatted_buf_len
+    );
+    Impl() = delete;
+    Impl(Impl const&) = delete;
+    Impl(Impl&&) = delete;
+    Impl& operator=(Impl const&) = delete;
+    Impl& operator=(Impl&&) = delete;
+    ~Impl();
+    
+// nested types
+private:
+    class Transaction;
+    friend class Transaction;
+    struct Entry;     // a single entry in the log, registered in the cache
+    using Entries = vector<Entry>;
+    using ReferenceCount = Entries::size_type;  // number of entries with a given activity
+    using ActivityId = pair<string const, ReferenceCount>*;
+    using ActivityRegistry = unordered_map<string, ReferenceCount>;
+
+// ordinary member functions
+public:
+    void append_entry(string const& p_activity);
+    string amend_last(string const& p_activity);
+    vector<Stint>::size_type rename_activity
+    (   ActivityFilter const& p_activity_filter,
+        string const& p_new
+    );
+    vector<Stint> get_stints
+    (   ActivityFilter const& p_activity_filter,
+        TimePoint const* p_begin,
+        TimePoint const* p_end
+    );
+    string last_activity_to_match(string const& p_regex);
+    vector<string> last_activities(size_t p_num);
+    bool is_active_at(TimePoint const& p_time_point);
+    bool is_active();
+    bool has_activity(string const& p_activity);
+
+private:
+    void clear_cache();
+    void mark_cache_as_stale();
+    void load();
+    void save() const;
+    ActivityId register_activity_reference(std::string const& p_activity);
+    void deregister_activity_reference(ActivityId p_activity_id);
+    void change_entry_activity(Entry& p_entry, std::string const& p_new_activity);
+    std::string const& activity_at(Entry const& p_entry) const;
+    void load_entry(std::string const& p_activity, TimePoint const& p_time_point);
+
+    void write_entry
+    (   AtomicWriter& p_writer,
+        std::string const& p_activity,
+        TimePoint const& p_time_point
+    ) const;
+
+    std::string const& id_to_activity(ActivityId p_activity_id) const;
+    Entries::const_iterator find_entry_just_before(TimePoint const& p_time_point);
+
+// member variables
+private:
+    bool m_is_loaded = false;
+    unsigned int m_formatted_buf_len;
+    string m_filepath;
+    Entries m_entries;
+    ActivityRegistry m_activity_registry;
+    string const m_time_format;
+};
+
+struct TimeLog::Impl::Entry
 {
     Entry(ActivityId p_activity_id, TimePoint const& p_time_point);
     ActivityId activity_id;
     TimePoint time_point;
 };
 
-class TimeLog::Transaction
+class TimeLog::Impl::Transaction
 {
 public:
-    explicit Transaction(TimeLog& p_time_log);
+    explicit Transaction(TimeLog::Impl& p_time_log);
     Transaction(Transaction const&) = delete;
     Transaction(Transaction&&) = delete;
     Transaction& operator=(Transaction const&) = delete;
@@ -140,10 +217,73 @@ public:
 private:
     void rollback();
     bool m_committed = false;
-    TimeLog& m_time_log; 
+    TimeLog::Impl& m_time_log_impl;
 };
 
 TimeLog::TimeLog
+(   string const& p_filepath,
+    string const& p_time_format,
+    unsigned int p_formatted_buf_len
+):
+    m_impl(new Impl(p_filepath, p_time_format, p_formatted_buf_len))
+{
+}
+
+TimeLog::~TimeLog() = default;
+
+void
+TimeLog::append_entry(string const& p_activity)
+{
+    return m_impl->append_entry(p_activity);
+}
+
+string
+TimeLog::amend_last(std::string const& p_activity)
+{
+    return m_impl->amend_last(p_activity);
+}
+
+vector<Stint>::size_type
+TimeLog::rename_activity(ActivityFilter const& p_activity_filter, string const& p_new)
+{
+    return m_impl->rename_activity(p_activity_filter, p_new);
+}
+
+vector<Stint>
+TimeLog::get_stints
+(   ActivityFilter const& p_activity_filter,
+    TimePoint const* p_begin,
+    TimePoint const* p_end
+)
+{
+    return m_impl->get_stints(p_activity_filter, p_begin, p_end);
+}
+
+string
+TimeLog::last_activity_to_match(string const& p_regex)
+{
+    return m_impl->last_activity_to_match(p_regex);
+}
+
+vector<string>
+TimeLog::last_activities(size_t p_num)
+{
+    return m_impl->last_activities(p_num);
+}
+
+bool
+TimeLog::is_active()
+{
+    return m_impl->is_active();
+}
+
+bool
+TimeLog::has_activity(string const& p_activity)
+{
+    return m_impl->has_activity(p_activity);
+}
+
+TimeLog::Impl::Impl
 (   string const& p_filepath,
     string const& p_time_format,
     unsigned int p_formatted_buf_len
@@ -157,10 +297,10 @@ TimeLog::TimeLog
     assert (m_activity_registry.empty());
 }
 
-TimeLog::~TimeLog() = default;
+TimeLog::Impl::~Impl() = default;
 
 void
-TimeLog::append_entry(string const& p_activity)
+TimeLog::Impl::append_entry(string const& p_activity)
 {
     Transaction transaction(*this);
     load_entry(p_activity, now()); 
@@ -169,7 +309,7 @@ TimeLog::append_entry(string const& p_activity)
 }
 
 string
-TimeLog::amend_last(std::string const& p_activity)
+TimeLog::Impl::amend_last(std::string const& p_activity)
 {
     Transaction transaction(*this);
     string last_activity;
@@ -187,7 +327,7 @@ TimeLog::amend_last(std::string const& p_activity)
 }
 
 vector<Stint>::size_type
-TimeLog::rename_activity(ActivityFilter const& p_activity_filter, string const& p_new)
+TimeLog::Impl::rename_activity(ActivityFilter const& p_activity_filter, string const& p_new)
 {
     Transaction transaction(*this);
     vector<Stint>::size_type count = 0;
@@ -212,7 +352,7 @@ TimeLog::rename_activity(ActivityFilter const& p_activity_filter, string const& 
 }
 
 vector<Stint>
-TimeLog::get_stints
+TimeLog::Impl::get_stints
 (   ActivityFilter const& p_activity_filter,
     TimePoint const* p_begin,
     TimePoint const* p_end
@@ -247,7 +387,7 @@ TimeLog::get_stints
 }
 
 string
-TimeLog::last_activity_to_match(string const& p_regex)
+TimeLog::Impl::last_activity_to_match(string const& p_regex)
 {
     load();
     RegexActivityFilter const activity_filter(p_regex);
@@ -268,7 +408,7 @@ TimeLog::last_activity_to_match(string const& p_regex)
 }
 
 vector<string>
-TimeLog::last_activities(size_t p_num)
+TimeLog::Impl::last_activities(size_t p_num)
 {
     load();
     vector<string> ret;
@@ -295,21 +435,21 @@ TimeLog::last_activities(size_t p_num)
 }
 
 bool
-TimeLog::is_active()
+TimeLog::Impl::is_active()
 {
     load();
     return !(m_entries.empty() || activity_at(m_entries.back()).empty());
 }
 
 bool
-TimeLog::has_activity(string const& p_activity)
+TimeLog::Impl::has_activity(string const& p_activity)
 {
     load();
     return m_activity_registry.find(p_activity) != m_activity_registry.end();
 }
 
 void
-TimeLog::clear_cache()
+TimeLog::Impl::clear_cache()
 {
     m_entries.clear();
     m_activity_registry.clear();
@@ -318,13 +458,13 @@ TimeLog::clear_cache()
 }
 
 void
-TimeLog::mark_cache_as_stale()
+TimeLog::Impl::mark_cache_as_stale()
 {
     m_is_loaded = false;
 }
 
 void
-TimeLog::load()
+TimeLog::Impl::load()
 {
     if (!m_is_loaded)
     {
@@ -368,7 +508,7 @@ TimeLog::load()
 }
 
 void
-TimeLog::save() const
+TimeLog::Impl::save() const
 {
     AtomicWriter writer(m_filepath);
     for (auto const& entry: m_entries)
@@ -381,8 +521,8 @@ TimeLog::save() const
     return;
 }
 
-TimeLog::ActivityId
-TimeLog::register_activity_reference(string const& p_activity)
+TimeLog::Impl::ActivityId
+TimeLog::Impl::register_activity_reference(string const& p_activity)
 {
     auto const it = m_activity_registry.find(p_activity);
     if (it == m_activity_registry.end())
@@ -394,7 +534,7 @@ TimeLog::register_activity_reference(string const& p_activity)
 }
 
 void
-TimeLog::deregister_activity_reference(ActivityId p_activity_id)
+TimeLog::Impl::deregister_activity_reference(ActivityId p_activity_id)
 {
     assert (p_activity_id->second > 0);
     auto const new_reference_count = --p_activity_id->second; 
@@ -408,7 +548,7 @@ TimeLog::deregister_activity_reference(ActivityId p_activity_id)
 }
 
 void
-TimeLog::change_entry_activity(Entry& p_entry, string const& p_new_activity)
+TimeLog::Impl::change_entry_activity(Entry& p_entry, string const& p_new_activity)
 {
     deregister_activity_reference(p_entry.activity_id); 
     p_entry.activity_id = register_activity_reference(p_new_activity);
@@ -416,13 +556,13 @@ TimeLog::change_entry_activity(Entry& p_entry, string const& p_new_activity)
 }
 
 string const&
-TimeLog::activity_at(Entry const& p_entry) const
+TimeLog::Impl::activity_at(Entry const& p_entry) const
 {
     return id_to_activity(p_entry.activity_id);
 }
 
 void
-TimeLog::load_entry(string const& p_activity, TimePoint const& p_time_point)
+TimeLog::Impl::load_entry(string const& p_activity, TimePoint const& p_time_point)
 {
     // TODO What about consecutive entries with the same activity?
     // (Be careful... register_activity_reference has side-effects.)
@@ -430,7 +570,7 @@ TimeLog::load_entry(string const& p_activity, TimePoint const& p_time_point)
 }
 
 void
-TimeLog::write_entry
+TimeLog::Impl::write_entry
 (   AtomicWriter& p_writer,
     std::string const& p_activity,
     TimePoint const& p_time_point
@@ -440,13 +580,13 @@ TimeLog::write_entry
 }
 
 string const&
-TimeLog::id_to_activity(ActivityId p_activity_id) const
+TimeLog::Impl::id_to_activity(ActivityId p_activity_id) const
 {
     return p_activity_id->first;
 }
 
-vector<TimeLog::Entry>::const_iterator
-TimeLog::find_entry_just_before(TimePoint const& p_time_point)
+vector<TimeLog::Impl::Entry>::const_iterator
+TimeLog::Impl::find_entry_just_before(TimePoint const& p_time_point)
 {
     load();
     auto const comp = [](Entry const& lhs, Entry const& rhs)
@@ -462,18 +602,19 @@ TimeLog::find_entry_just_before(TimePoint const& p_time_point)
     return it;
 }
 
-TimeLog::Entry::Entry(ActivityId p_activity_id, TimePoint const& p_time_point):
+TimeLog::Impl::Entry::Entry(ActivityId p_activity_id, TimePoint const& p_time_point):
     activity_id(p_activity_id),
     time_point(p_time_point)
 {
 }
 
-TimeLog::Transaction::Transaction(TimeLog& p_time_log): m_time_log(p_time_log)
+TimeLog::Impl::Transaction::Transaction(TimeLog::Impl& p_time_log_impl):
+    m_time_log_impl(p_time_log_impl)
 {
-    m_time_log.load();
+    m_time_log_impl.load();
 }
 
-TimeLog::Transaction::~Transaction()
+TimeLog::Impl::Transaction::~Transaction()
 {
     if (!m_committed)
     {
@@ -482,16 +623,16 @@ TimeLog::Transaction::~Transaction()
 }   
 
 void
-TimeLog::Transaction::commit()
+TimeLog::Impl::Transaction::commit()
 {
-    m_time_log.save();
+    m_time_log_impl.save();
     m_committed = true;
 }
 
 void
-TimeLog::Transaction::rollback()
+TimeLog::Impl::Transaction::rollback()
 {
-    m_time_log.mark_cache_as_stale();
+    m_time_log_impl.mark_cache_as_stale();
 }
 
 }  // namespace swx
