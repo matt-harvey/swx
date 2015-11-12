@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Matthew Harvey
+ * Copyright 2014, 2015 Matthew Harvey
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,6 +65,9 @@ namespace chrono = std::chrono;
 namespace swx
 {
 
+/**
+ * Provides implementation for TimeLog.
+ */
 class TimeLog::Impl
 {
 // nested types
@@ -93,6 +96,9 @@ public:
 
 // ordinary member functions
 public:
+
+    // These implement the corresponding public functions of TimeLog.
+
     void append_entry(string const& p_activity);
     string amend_last(string const& p_activity);
     vector<Stint>::size_type rename_activity
@@ -111,28 +117,46 @@ public:
     bool has_activity(string const& p_activity);
 
 private:
+
+    // Implementation details.
+
+    // Overall management of in-memory data structures.
     void clear_cache();
     void mark_cache_as_stale();
     void load();
     void save() const;
+
+    // Record that an entry refers to an activity, or that it has ceased
+    // to do so. The activity register contains a reference count for each
+    // activity and calling these functions causes this to be updated and
+    // for an activity to be deleted from the register when it is no
+    // longer referred to.
     ActivityId register_activity_reference(string const& p_activity);
     void deregister_activity_reference(ActivityId p_activity_id);
+
     void change_entry_activity(Entry& p_entry, string const& p_new_activity);
     string const& activity_at(Entry const& p_entry) const;
+
     void push_entry(string const& p_activity, TimePoint const& p_time_point);
     void pop_entry();
 
+    // Place a new entry at a specific index in m_entries, but only if it
+    // would not result in consecutive identical activities. Return true
+    // if and only if entry placed.
     bool put_entry
     (   string const& p_activity,
         TimePoint const& p_time_point,
         Entries::size_type p_index
     );
 
+    // Parse a line provided from the log file, returning a pair of
+    // activity name and TimePoint.
     pair<string, TimePoint> parse_line
     (   string const& p_entry_string,
         size_t p_line_number
     ) const;
 
+    // Append an entry to the log file.
     void write_entry
     (   AtomicWriter& p_writer,
         string const& p_activity,
@@ -153,6 +177,8 @@ private:
     string const m_time_format;
 };
 
+// Represents an entry in the in-memory cache of the time log, corresonding
+// to a line in the log file.
 struct TimeLog::Impl::Entry
 {
     Entry(ActivityId p_activity_id, TimePoint const& p_time_point);
@@ -160,6 +186,7 @@ struct TimeLog::Impl::Entry
     TimePoint time_point;
 };
 
+// Provides RAII mechanism for managing changes to time log as a transaction.
 class TimeLog::Impl::Transaction
 {
 public:
@@ -175,6 +202,8 @@ private:
     bool m_committed = false;
     TimeLog::Impl& m_time_log_impl;
 };
+
+// Implementation of public TimeLog class. Implementation defer to Impl.
 
 TimeLog::TimeLog
 (   string const& p_filepath,
@@ -239,6 +268,8 @@ TimeLog::has_activity(string const& p_activity)
     return m_impl->has_activity(p_activity);
 }
 
+// Implementation of TimeLog::Impl
+
 TimeLog::Impl::Impl
 (   string const& p_filepath,
     string const& p_time_format,
@@ -286,6 +317,9 @@ TimeLog::Impl::amend_last(string const& p_activity)
 vector<Stint>::size_type
 TimeLog::Impl::rename_activity(ActivityFilter const& p_activity_filter, string const& p_new)
 {
+    // There is far from the most efficient implementation, but it is fairly straightforward.
+    // Note we do it this way using put_entry() to avoid consecutive entries with the same
+    // activity.
     Transaction transaction(*this);
     Entries::size_type const num_entries = m_entries.size();
     Entries::size_type num_amended = 0;
@@ -321,7 +355,7 @@ TimeLog::Impl::get_stints
     TimePoint const* p_end
 )
 {
-    load();    
+    load();
     vector<Stint> ret;
     auto const e = m_entries.end();
     auto it = (p_begin ? find_entry_just_before(*p_begin) : m_entries.begin());
@@ -346,7 +380,7 @@ TimeLog::Impl::get_stints
             ret.push_back(Stint(activity, interval));
         }
     }
-    return ret;    
+    return ret;
 }
 
 string
@@ -543,7 +577,7 @@ TimeLog::Impl::put_entry
 {
     auto const old_activity_id = m_entries[p_index].activity_id;
     auto const new_activity_id = register_activity_reference(p_activity);
-    
+
     // prevent consecutive identical activities
     if ((p_index != 0) && (m_entries[p_index - 1].activity_id == new_activity_id))
     {
@@ -620,11 +654,15 @@ TimeLog::Impl::find_entry_just_before(TimePoint const& p_time_point)
     return it;
 }
 
+// Implementation of TimeLog::Impl::Entry
+
 TimeLog::Impl::Entry::Entry(ActivityId p_activity_id, TimePoint const& p_time_point):
     activity_id(p_activity_id),
     time_point(p_time_point)
 {
 }
+
+// Implementation of TimeLog::Impl::Transaction
 
 TimeLog::Impl::Transaction::Transaction(TimeLog::Impl& p_time_log_impl):
     m_time_log_impl(p_time_log_impl)
@@ -638,7 +676,7 @@ TimeLog::Impl::Transaction::~Transaction()
     {
         rollback();
     }
-}   
+}
 
 void
 TimeLog::Impl::Transaction::commit()
