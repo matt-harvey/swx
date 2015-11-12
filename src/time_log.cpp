@@ -134,7 +134,6 @@ private:
     ActivityId register_activity_reference(string const& p_activity);
     void deregister_activity_reference(ActivityId p_activity_id);
 
-    void change_entry_activity(Entry& p_entry, string const& p_new_activity);
     string const& activity_at(Entry const& p_entry) const;
 
     void push_entry(string const& p_activity, TimePoint const& p_time_point);
@@ -536,14 +535,6 @@ TimeLog::Impl::deregister_activity_reference(ActivityId p_activity_id)
         // to erase via the iterator or via key.
         m_activity_registry.erase(p_activity_id->first);
     }
-    return;
-}
-
-void
-TimeLog::Impl::change_entry_activity(Entry& p_entry, string const& p_new_activity)
-{
-    deregister_activity_reference(p_entry.activity_id); 
-    p_entry.activity_id = register_activity_reference(p_new_activity);
     return;
 }
 
