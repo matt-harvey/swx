@@ -43,19 +43,14 @@
 
 using std::getline;
 using std::ifstream;
-using std::isspace;
-using std::ios;
 using std::make_pair;
 using std::move;
 using std::ofstream;
 using std::ostringstream;
 using std::pair;
-using std::remove;
 using std::runtime_error;
 using std::size_t;
 using std::string;
-using std::stringstream;
-using std::tm;
 using std::upper_bound;
 using std::unordered_map;
 using std::vector;
@@ -164,6 +159,19 @@ private:
 
     string const& id_to_activity(ActivityId p_activity_id) const;
     Entries::const_iterator find_entry_just_before(TimePoint const& p_time_point);
+
+    // check validity of internal data structures
+    void assert_valid() const
+    {
+#       ifndef NDEBUG
+            do_assert_valid();
+#       endif
+        return;
+    }
+
+#   ifndef NDEBUG
+        void do_assert_valid() const;
+#   endif
 
 // member variables
 private:
@@ -284,6 +292,7 @@ TimeLog::Impl::Impl
 {
     assert (m_entries.empty());
     assert (m_activity_registry.empty());
+    assert_valid();
 }
 
 TimeLog::Impl::~Impl() = default;
@@ -462,6 +471,7 @@ TimeLog::Impl::mark_cache_as_stale()
 void
 TimeLog::Impl::load()
 {
+    assert_valid();
     if (!m_loaded)
     {
         clear_cache();
@@ -497,18 +507,22 @@ TimeLog::Impl::load()
         }
         m_loaded = true;
     }
+    assert_valid();
     return;
 }
 
 void
 TimeLog::Impl::save() const
 {
+    assert_valid();
     AtomicWriter writer(m_filepath);
     for (auto const& entry: m_entries)
     {
         write_entry(writer, activity_at(entry), entry.time_point);
     }
+    assert_valid();
     writer.commit();
+    assert_valid();
     return;
 }
 
@@ -644,6 +658,43 @@ TimeLog::Impl::find_entry_just_before(TimePoint const& p_time_point)
     }
     return it;
 }
+
+#ifndef NDEBUG
+    void
+    TimeLog::Impl::do_assert_valid() const
+    {
+        Entries::size_type ref_counts_total = 0;
+        for (auto const& registry_entry: m_activity_registry)
+        {
+            // Elements are deleted from the activity registry when their
+            // reference count reaches 0.
+            auto const reference_count = registry_entry.second;
+            ref_counts_total += reference_count;
+            assert (reference_count > 0);
+        }
+        // The number of entries is equal to the sum of the reference counts
+        // of the activities.
+        assert (ref_counts_total == m_entries.size());
+
+        // The refernence counts are correct for each entry.
+        unordered_map<string, Entries::size_type> counts;
+        for (auto const& entry: m_entries)
+        {
+            auto const& activity = activity_at(entry);
+            ++counts[activity];
+        }
+        for (auto const& count_entry: counts)
+        {
+            auto const& activity = count_entry.first;
+            auto const check_count = count_entry.second;
+            auto const registry_iter = m_activity_registry.find(activity);
+            assert (registry_iter != m_activity_registry.end());
+            auto const registry_count = registry_iter->second;
+            assert (registry_count == check_count);
+        }
+        return;
+    }
+#endif
 
 // Implementation of TimeLog::Impl::Entry
 
