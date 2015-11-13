@@ -56,7 +56,7 @@ DayCommand::DayCommand
     )
 {
     add_option
-    (   'a',
+    (   vector<string>{"a", "ago"},
         HelpLine("Instead of today's activities, print the activities of N days ago", "<N>"),
         nullptr,
         &m_days_ago_str

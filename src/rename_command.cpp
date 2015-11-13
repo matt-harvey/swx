@@ -76,7 +76,7 @@ RenameCommand::RenameCommand
         << "leaving unchanged any occurrences as an ancestor of other activities (ignored "
         << "if followed by -" << k_use_regex_flag << ')';
     add_option
-    (   k_exclude_subactivities_flag,
+    (   vector<string>{string(1, k_exclude_subactivities_flag), "exact"},
         exclude_subactivities_message_stream.str(),
         [this]() { m_activity_filter_type = ActivityFilter::Type::exact; }
     );
@@ -86,7 +86,7 @@ RenameCommand::RenameCommand
         << "NAME anywhere it matches any activity (ignored if followed by -"
         << k_exclude_subactivities_flag << ')';
     add_option
-    (   k_use_regex_flag,
+    (   vector<string>{string(1, k_use_regex_flag), "regex"},
         use_regex_message_stream.str(),
         [this]() { m_activity_filter_type = ActivityFilter::Type::regex; }
     );

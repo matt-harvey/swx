@@ -48,14 +48,14 @@ ConfigCommand::ConfigCommand
     )
 {
     add_option
-    (   'e',
+    (   vector<string>{"e", "edit"},
         "Instead of printing configuration settings, open the configuration "
             "file using the text editor determined by the \"editor\" "
             "configuration setting",
         [this]() { m_editing_option = true; }
     );
     add_option
-    (   'f',
+    (   vector<string>{"f", "filepath"},
         "Instead of printing configuration settings, print the location of the "
             "configuration file",
         [this]() { m_filepath_option = true; }

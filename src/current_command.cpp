@@ -56,7 +56,7 @@ CurrentCommand::CurrentCommand
     m_time_log(p_time_log)
 {
     add_option
-    (   's',
+    (   vector<string>{"s", "stop"},
         "Do not terminate output with a newline",
         [this]() { m_suppress_newline = true; }
     );

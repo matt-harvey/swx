@@ -51,7 +51,7 @@ EditCommand::EditCommand
     )
 {
     add_option
-    (   'c',
+    (   vector<string>{"c", "config"},
         "Instead of opening the activity log, open the configuration file",
         [this]() { m_open_config_file = true; }
     );

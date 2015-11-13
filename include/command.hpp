@@ -22,7 +22,6 @@
 #include "help_line.hpp"
 #include <functional>
 #include <map>
-#include <memory>
 #include <ostream>
 #include <set>
 #include <string>
@@ -64,13 +63,14 @@ public:
 
 // ordinary member functions
 private:
-    void add_option(char p_character, Option const& p_option);
+    void add_option(Option const& p_option);
 
 protected:
     
     /**
-     * @param p_character the character passed to the command line to activate
-     * the option.
+     * @param p_aliases the strings passed to the command line to activate
+     * the option. Can be short form (a single character string) or long form
+     * (a multiple character string).
      *
      * @param p_help_line HelpLine describing the usage of the option
      *
@@ -82,7 +82,7 @@ protected:
      * <em>*p_arg_target</em>
      */
     void add_option
-    (   char p_character,
+    (   std::vector<std::string> const& p_aliases,
         HelpLine const& p_help_line,
         std::function<void()> const& p_callback,
         std::string* p_arg_target = nullptr
@@ -122,7 +122,8 @@ private:
     std::string const m_usage_summary;
     std::vector<std::string> const m_aliases;
     std::vector<HelpLine> const m_help_lines;
-    std::map<char, Option> m_options;
+    std::vector<Option> m_options;
+    std::map<std::string, std::vector<Option>::size_type> m_options_map;
 
 };  // class Command
 

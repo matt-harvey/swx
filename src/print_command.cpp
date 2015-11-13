@@ -54,13 +54,13 @@ PrintCommand::PrintCommand
     )
 {
     add_option
-    (   'f',
+    (   vector<string>{"f", "from"},
         HelpLine("Only count time spent on activities since TIMESTAMP", "<TIMESTAMP>"),
         nullptr,
         &m_since_str
     );
     add_option
-    (   't',
+    (   vector<string>{"t", "to"},
         HelpLine("Only count time spent on activities until TIMESTAMP", "<TIMESTAMP>"),
         nullptr,
         &m_until_str

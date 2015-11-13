@@ -64,19 +64,19 @@ SwitchCommand::SwitchCommand
     )
 {
     add_option
-    (   'c',
+    (   vector<string>{"c", "create"},
         "Create a new activity named ACTIVITY, and start accruing time to it; "
             "raise an error if an activity with this name already exists",
         [this]() { m_create_activity = true; }
     );
     add_option
-    (   'r',
+    (   vector<string>{"r", "regex"},
         "Switch to the most recent activity to match ACTIVITY, considered as "
             "a regular expression",
         [this]() { m_use_regex = true; }
     );
     add_option
-    (   'a',
+    (   vector<string>{"a", "amend"},
         "Instead of switching, retroactively amend the activity of the current "
             "stint to ACTIVITY. If ACTIVITY is not provided, this will cause the "
             "current stint to be erased (i.e. amended to become a period of "

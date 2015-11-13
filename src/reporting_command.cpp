@@ -64,7 +64,7 @@ ReportingCommand::ReportingCommand
         << "Output only the exact ACTIVITY given; do not include its subactivities "
         << "(ignored if used prior to -" << k_use_regex_flag << ')';
     add_option
-    (   k_exclude_subactivities_flag,
+    (   vector<string>{string(1, k_exclude_subactivities_flag), "exact"},
         exclude_subactivities_message_stream.str(),
         [this]() { m_activity_filter_type = ActivityFilter::Type::exact; }
     );
@@ -75,20 +75,20 @@ ReportingCommand::ReportingCommand
         << "all activities that match it (ignored if used prior to -"
         << k_exclude_subactivities_flag << ')';
     add_option
-    (   k_use_regex_flag,
+    (   vector<string>{string(1, k_use_regex_flag), "regex"},
         use_regex_message_stream.str(),
         [this]() { m_activity_filter_type = ActivityFilter::Type::regex; }
     );
 
     add_option
-    (   'l',
+    (   vector<string>{"l", "list"},
         "Instead of printing a summary, print a date-ordered list of individual "
             "activity stints during the relevant period",
         [this]() { m_report_flags |= ReportWriter::Flags::show_stints; }
     );
 
     add_option
-    (   'b',
+    (   vector<string>{"b", "beginning"},
         "In addition to any other information, output the earliest time at "
             "which each activity was conducted during the relevant period (ignored "
             "in list mode)",
@@ -96,7 +96,7 @@ ReportingCommand::ReportingCommand
     );
 
     add_option
-    (   'e',
+    (   vector<string>{"e", "ending"},
         "Output in a column to the right of any other info, the latest time at "
             "which each activity was conducted during the relevant period (ignored "
             "in list mode)",
@@ -104,20 +104,20 @@ ReportingCommand::ReportingCommand
     );
 
     add_option
-    (   'c',
+    (   vector<string>{"c", "csv"},
         "Output in CSV format",
         [this]() { m_report_flags |= ReportWriter::Flags::csv; }
     );
 
     add_option
-    (   'v',
+    (   vector<string>{"v", "verbose"},
         "Instead of printing the summary in \"tree\" form, print the full name of "\
             "each activity (ignored in list mode or succinct mode)",
         [this]() { m_report_flags |= ReportWriter::Flags::verbose; }
     );
 
     add_option
-    (   's',
+    (   vector<string>{"s", "succinct"},
         "Succinct output: show grand total only (ignored in list mode)",
         [this]() { m_report_flags |= ReportWriter::Flags::succinct; }
     );
