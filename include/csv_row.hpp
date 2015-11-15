@@ -69,32 +69,6 @@ CsvRow::operator<<(T const& p_contents)
     return *this << oss.str();
 }
 
-template <>
-inline
-CsvRow&
-CsvRow::operator<<(std::string const& p_contents)
-{
-    if (m_started) m_contents << ',';
-    if (p_contents.find_first_of(",\"\n\r") == std::string::npos)
-    {
-        // no need to quote
-        m_contents << p_contents;
-    }
-    else
-    {
-        // need to quote and escape
-        m_contents << '"';
-        for (auto const c: p_contents)
-        {
-            m_contents << c;
-            if (c == '"') m_contents << c;
-        }
-        m_contents << '"';
-    }
-    m_started = true;
-    return *this;
-}
-
 }  // namespace swx
 
 #endif  // GUARD_csv_row_hpp_40090279206675605

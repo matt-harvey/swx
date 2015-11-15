@@ -37,10 +37,35 @@ CsvRow::str() const
     return m_contents.str();
 }
 
+template <>
+CsvRow&
+CsvRow::operator<<(string const& p_contents)
+{
+    if (m_started) m_contents << ',';
+    if (p_contents.find_first_of(",\"\n\r") == string::npos)
+    {
+        // no need to quote
+        m_contents << p_contents;
+    }
+    else
+    {
+        // need to quote and escape
+        m_contents << '"';
+        for (auto const c: p_contents)
+        {
+            m_contents << c;
+            if (c == '"') m_contents << c;
+        }
+        m_contents << '"';
+    }
+    m_started = true;
+    return *this;
+}
+
 ostream&
 operator<<(ostream& p_os, CsvRow const& p_csv_row)
 {
-    return p_os << p_csv_row.str() << std::endl;
+    return p_os << p_csv_row.str() << endl;
 }
 
 }  // namespace swx
