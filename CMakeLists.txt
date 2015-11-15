@@ -72,8 +72,8 @@ set(
     src/config.cpp
     src/config_command.cpp
     src/csv_list_report_writer.cpp
+    src/csv_row.cpp
     src/csv_summary_report_writer.cpp
-    src/csv_utilities.cpp
     src/current_command.cpp
     src/edit_command.cpp
     src/exact_activity_filter.cpp
@@ -114,7 +114,7 @@ target_link_libraries (${executable_stem} swx_common ${libraries})
 set(
     test_sources
     test/arithmetic.cpp
-    test/csv_utilities.cpp
+    test/csv_row.cpp
     test/exact_activity_filter.cpp
     test/ordinary_activity_filter.cpp
     test/regex_activity_filter.cpp

@@ -15,7 +15,7 @@
  */
 
 #include "csv_list_report_writer.hpp"
-#include "csv_utilities.hpp"
+#include "csv_row.hpp"
 #include "stint.hpp"
 #include "stream_flag_guard.hpp"
 #include "time_point.hpp"
@@ -45,16 +45,15 @@ CsvListReportWriter::do_process_stint(ostream& p_os, Stint const& p_stint)
 {
     if (!p_stint.activity().empty())
     {
-        auto const interval = p_stint.interval();
         StreamFlagGuard guard(p_os);
         p_os << setprecision(output_precision());
-        output_csv_row
-        (   p_os,
-            time_point_to_stamp(interval.beginning(), time_format(), formatted_buf_len()),
-            time_point_to_stamp(interval.ending(), time_format(), formatted_buf_len()),
-            round_hours(interval),
-            p_stint.activity()
-        );
+        auto const interval = p_stint.interval();
+        CsvRow row;
+        row << time_point_to_stamp(interval.beginning(), time_format(), formatted_buf_len())
+            << time_point_to_stamp(interval.ending(), time_format(), formatted_buf_len())
+            << round_hours(interval)
+            << p_stint.activity();
+        p_os << row;
     }
 }
 

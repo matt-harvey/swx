@@ -16,7 +16,7 @@
 
 #include "csv_summary_report_writer.hpp"
 #include "activity_stats.hpp"
-#include "csv_utilities.hpp"
+#include "csv_row.hpp"
 #include "stint.hpp"
 #include "summary_report_writer.hpp"
 #include "time_point.hpp"
@@ -50,86 +50,37 @@ CsvSummaryReportWriter::do_write_summary
     map<string, ActivityStats> const& p_activity_stats_map
 )
 {
-    auto const include_beginning = has_flag(Flags::include_beginning);
-    auto const include_ending = has_flag(Flags::include_ending);
-    auto const succinct = has_flag(Flags::succinct);
-    if (succinct)
+    auto const add_time_info = [this](CsvRow& row, ActivityStats const& info)
+    {
+        row << seconds_to_rounded_hours(info.seconds);
+        if (has_flag(Flags::include_beginning))
+        {
+            row << time_point_to_stamp(info.beginning, time_format(), formatted_buf_len());
+        }
+        if (has_flag(Flags::include_ending))
+        {
+            row << time_point_to_stamp(info.ending, time_format(), formatted_buf_len());
+        }
+    };
+
+    if (has_flag(Flags::succinct))
     {
         ActivityStats total_info;
         for (auto const& pair: p_activity_stats_map) total_info += pair.second;
-        if (include_beginning && include_ending)
-        {
-            output_csv_row
-            (   p_os,
-                seconds_to_rounded_hours(total_info.seconds),
-                time_point_to_stamp(total_info.beginning, time_format(), formatted_buf_len()),
-                time_point_to_stamp(total_info.ending, time_format(), formatted_buf_len())
-            );
-        }
-        else if (include_beginning)
-        {
-            output_csv_row
-            (   p_os,
-                seconds_to_rounded_hours(total_info.seconds),
-                time_point_to_stamp(total_info.beginning, time_format(), formatted_buf_len())
-            );
-        }
-        else if (include_ending)
-        {
-            output_csv_row
-            (   p_os,
-                seconds_to_rounded_hours(total_info.seconds),
-                time_point_to_stamp(total_info.ending, time_format(), formatted_buf_len())
-            );
-        }
-        else
-        {
-            output_csv_row
-            (   p_os,
-                seconds_to_rounded_hours(total_info.seconds)
-            );
-        }
-        return;
+        CsvRow row;
+        add_time_info(row, total_info);
+        p_os << row;
     }
-    for (auto const& pair: p_activity_stats_map)
+    else
     {
-        auto const& activity = pair.first;
-        auto const& info = pair.second;
-        if (include_beginning && include_ending)
+        for (auto const& pair: p_activity_stats_map)
         {
-            output_csv_row
-            (   p_os,
-                activity,
-                seconds_to_rounded_hours(info.seconds),
-                time_point_to_stamp(info.beginning, time_format(), formatted_buf_len()),
-                time_point_to_stamp(info.ending, time_format(), formatted_buf_len())
-            );
-        }
-        else if (include_beginning)
-        {
-            output_csv_row
-            (   p_os,
-                activity,
-                seconds_to_rounded_hours(info.seconds),
-                time_point_to_stamp(info.beginning, time_format(), formatted_buf_len())
-            );
-        }
-        else if (include_ending)
-        {
-            output_csv_row
-            (   p_os,
-                activity,
-                seconds_to_rounded_hours(info.seconds),
-                time_point_to_stamp(info.ending, time_format(), formatted_buf_len())
-            );
-        }
-        else
-        {
-            output_csv_row
-            (   p_os,
-                activity,
-                seconds_to_rounded_hours(info.seconds)
-            );
+            auto const& activity = pair.first;
+            auto const& info = pair.second;
+            CsvRow row;
+            row << activity;
+            add_time_info(row, info);
+            p_os << row;
         }
     }
 }

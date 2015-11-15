@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, 2015 Matthew Harvey
+ * Copyright 2015 Matthew Harvey
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,36 +14,33 @@
  * limitations under the License.
  */
 
-#include "csv_utilities.hpp"
-#include <cstring>
+#include "csv_row.hpp"
+#include <iostream>
 #include <ostream>
+#include <string>
 
 using std::ostream;
+using std::endl;
 using std::string;
 
 namespace swx
 {
- 
-template <>
-void
-output_csv_cell(ostream& p_os, string const& p_str)
+
+CsvRow::CsvRow()
 {
-    if (p_str.find_first_of(",\"\n\r") == string::npos)
-    {
-        // no need to quote
-        p_os << p_str;
-    }
-    else
-    {
-        // need to quote and escape
-        p_os << '"';
-        for (auto const c: p_str)
-        {
-            p_os << c;
-            if (c == '"') p_os << c;
-        }
-        p_os << '"';
-    }
+    enable_exceptions(m_contents);
+}
+
+string
+CsvRow::str() const
+{
+    return m_contents.str();
+}
+
+ostream&
+operator<<(ostream& p_os, CsvRow const& p_csv_row)
+{
+    return p_os << p_csv_row.str() << std::endl;
 }
 
 }  // namespace swx
