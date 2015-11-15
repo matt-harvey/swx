@@ -104,7 +104,7 @@ ReportingCommand::ReportingCommand
     );
 
     add_option
-    (   vector<string>{"c", "csv"},
+    (   vector<string>{"csv"},
         "Output in CSV format",
         [this]() { m_report_flags |= ReportWriter::Flags::csv; }
     );

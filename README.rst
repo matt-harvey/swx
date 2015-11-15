@@ -234,7 +234,7 @@ the ``-e`` command is always printed to the right of that from the ``-b``
 command, regardless of the order in which the ``-b`` and ``-e`` options are
 provided.
 
-If you pass the ``-c`` option to a reporting command, then the results will
+If you pass the ``--csv`` option to a reporting command, then the results will
 be output in CSV format.
 
 If you pass the ``-s`` option, then the results will be output in "succinct"

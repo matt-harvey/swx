@@ -55,7 +55,7 @@ ConfigCommand::ConfigCommand
         [this]() { m_editing_option = true; }
     );
     add_option
-    (   vector<string>{"f", "filepath"},
+    (   vector<string>{"filepath"},
         "Instead of printing configuration settings, print the location of the "
             "configuration file",
         [this]() { m_filepath_option = true; }
