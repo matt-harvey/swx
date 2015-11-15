@@ -35,9 +35,6 @@ class Stint;
 /**
  * Represents a record of time spent on various activities, persisted to a
  * plain text file.
- *
- * TODO LOW PRIORITY This class has a lot of private members. Consider using PIMPL
- * idiom to tidy up the header.
  */
 class TimeLog
 {
