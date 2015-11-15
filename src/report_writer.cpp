@@ -136,7 +136,6 @@ void
 ReportWriter::do_preprocess_stints(ostream& p_os, vector<Stint> const& p_stints)
 {
     (void)p_os; (void)p_stints;  // silence compiler re. unused params.
-    return;
 }
 
 void
@@ -146,7 +145,6 @@ ReportWriter::do_postprocess_stints
 )
 {
     (void)p_os; (void)p_stints;  // silence compiler re. unused params.
-    return;
 }
 
 ReportWriter::Options::Options

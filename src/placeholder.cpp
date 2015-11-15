@@ -137,7 +137,6 @@ write_placeholder_help(ostream& p_os, string::size_type p_margin, string::size_t
         }
         p_os << wrap(help, p_margin + 4, p_width);
     }
-    return;
 }
 
 }  // namespace swx

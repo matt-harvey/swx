@@ -51,7 +51,6 @@ output_csv_cell(std::ostream& p_os, T const& p_contents)
     enable_exceptions(oss);
     oss << p_contents;
     output_csv_cell(p_os, oss.str());
-    return;
 }
 
 template <typename Head>
@@ -60,7 +59,6 @@ output_csv_row(std::ostream& p_os, Head const& p_head)
 {
     output_csv_cell(p_os, p_head);
     p_os << std::endl;
-    return;
 }
 
 template <typename Head, typename ... Rest>
@@ -70,7 +68,6 @@ output_csv_row(std::ostream& p_os, Head const& p_head, Rest const& ... p_rest)
     output_csv_cell(p_os, p_head);
     p_os << ',';
     output_csv_row(p_os, p_rest ...);
-    return;
 }
 
 }  // namespace swx

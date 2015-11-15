@@ -71,7 +71,6 @@ HumanListReportWriter::do_process_stint(ostream& p_os, Stint const& p_stint)
         guard.reset();
         p_os << p_stint.activity() << endl;
     }
-    return;
 }
 
 }  // namespace swx

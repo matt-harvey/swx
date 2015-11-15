@@ -44,7 +44,6 @@ output_csv_cell(ostream& p_os, string const& p_str)
         }
         p_os << '"';
     }
-    return;
 }
 
 }  // namespace swx

@@ -61,7 +61,6 @@ SummaryReportWriter::do_preprocess_stints
 {
     (void)p_os; (void)p_stints;  // silence compiler warnings re. unused params.
     assert (m_activity_stats_map.empty());
-    return;
 }
 
 void
@@ -84,7 +83,6 @@ SummaryReportWriter::do_process_stint(std::ostream& p_os, Stint const& p_stint)
             it->second += info;
         }
     }
-    return;
 }
 
 void
@@ -96,7 +94,6 @@ SummaryReportWriter::do_postprocess_stints
     (void)p_stints;  // silence compiler warning re. unused param.
     do_write_summary(p_os, m_activity_stats_map);
     m_activity_stats_map.clear();  // hygienic even if unnecessary
-    return;
 }
 
 bool

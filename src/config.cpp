@@ -234,7 +234,6 @@ Config::set_option_value(string const& p_key, string const& p_value)
         throw runtime_error(errmsg);
     }
     it->second.value = p_value;
-    return;
 }
 
 void
@@ -244,7 +243,6 @@ Config::unchecked_set_option
 )
 {
     m_map[p_key] = p_option_data;
-    return;
 }
 
 string
@@ -335,8 +333,6 @@ Config::set_defaults()
             "Path to file in which time log is recorded."
         )
     );
-
-    return;
 }
 
 void
@@ -372,7 +368,6 @@ Config::initialize_config_file()
         writer.append_line(comment_out(entry.first + k_separator + data.value));
     }
     writer.commit();
-    return;
 }
 
 }  // namespace swx

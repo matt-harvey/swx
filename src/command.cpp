@@ -124,7 +124,6 @@ Command::add_option(Option const& p_option)
         m_options_map.emplace(alias, m_options.size());
     }
     m_options.push_back(p_option);
-    return;
 }
 
 void

@@ -32,7 +32,6 @@ void
 enable_exceptions(std::basic_ios<charT, traits>& p_stream)
 {
     p_stream.exceptions(std::ios_base::badbit | std::ios_base::failbit);
-    return;
 }
 
 }  // namespace swx

@@ -166,7 +166,6 @@ private:
 #       ifndef NDEBUG
             do_assert_valid();
 #       endif
-        return;
     }
 
 #   ifndef NDEBUG
@@ -303,7 +302,6 @@ TimeLog::Impl::append_entry(string const& p_activity)
     Transaction transaction(*this);
     push_entry(p_activity, now()); 
     transaction.commit();
-    return;
 }
 
 string
@@ -459,7 +457,6 @@ TimeLog::Impl::clear_cache()
     m_entries.clear();
     m_activity_registry.clear();
     mark_cache_as_stale();
-    return;
 }
 
 void
@@ -508,7 +505,6 @@ TimeLog::Impl::load()
         m_loaded = true;
     }
     assert_valid();
-    return;
 }
 
 void
@@ -523,7 +519,6 @@ TimeLog::Impl::save() const
     assert_valid();
     writer.commit();
     assert_valid();
-    return;
 }
 
 TimeLog::Impl::ActivityId
@@ -549,7 +544,6 @@ TimeLog::Impl::deregister_activity_reference(ActivityId p_activity_id)
         // to erase via the iterator or via key.
         m_activity_registry.erase(p_activity_id->first);
     }
-    return;
 }
 
 string const&
@@ -633,7 +627,6 @@ TimeLog::Impl::write_entry
         p_writer.append(p_activity);
     }
     p_writer.append("\n");
-    return;
 }
 
 string const&
@@ -692,7 +685,6 @@ TimeLog::Impl::find_entry_just_before(TimePoint const& p_time_point)
             auto const registry_count = registry_iter->second;
             assert (registry_count == check_count);
         }
-        return;
     }
 #endif
 

@@ -278,7 +278,6 @@ CommandManager::register_command_word
         throw std::runtime_error(oss.str());
     }
     m_command_map[p_word] = p_cp;
-    return;
 }
 
 }  // namespace swx

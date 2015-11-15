@@ -73,7 +73,6 @@ HumanSummaryReportWriter::do_write_summary
     if (has_flag(Flags::succinct)) write_succinct_summary(p_os, p_activity_stats_map);
     else if (has_flag(Flags::verbose)) write_flat_summary(p_os, p_activity_stats_map);
     else write_tree_summary(p_os, p_activity_stats_map);
-    return;
 }
 
 void
@@ -107,8 +106,6 @@ HumanSummaryReportWriter::print_label_and_rounded_hours
              << time_point_to_stamp(*p_ending, time_format(), formatted_buf_len());
     }
     p_os << endl;
-
-    return;
 }
 
 void
@@ -126,7 +123,6 @@ HumanSummaryReportWriter::write_succinct_summary
         (has_flag(Flags::include_beginning) ?  &(total_info.beginning) : nullptr),
         (has_flag(Flags::include_ending) ? &(total_info.ending) : nullptr)
     );
-    return;
 }
 
 void
@@ -168,7 +164,6 @@ HumanSummaryReportWriter::write_flat_summary
         (include_ending ? &(total_info.ending) : nullptr),
         left_col_width
     );
-    return;
 }
 
 void
@@ -211,10 +206,8 @@ HumanSummaryReportWriter::write_tree_summary
             p_ostream << "[ " << s << " ]";
         }
         p_ostream << ' ' << p_node_label << endl;
-        return;
     };
     tree.print(p_os, print_node);
-    return;
 }
 
 }  // namespace swx

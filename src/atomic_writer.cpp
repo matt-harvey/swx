@@ -68,7 +68,6 @@ AtomicWriter::AtomicWriter(string const& p_filepath):
     {
         throw runtime_error("Error opening stream to temp file.");
     }
-    return;
 }
 
 AtomicWriter::~AtomicWriter()
@@ -102,7 +101,6 @@ AtomicWriter::append(string const& p_str)
     {
         throw runtime_error("Error appending to file.");
     }
-    return;
 }
 
 void
@@ -110,14 +108,12 @@ AtomicWriter::append_line(string const& p_str)
 {
     append(p_str);
     append("\n");
-    return;
 }
 
 void
 AtomicWriter::append_line()
 {
     append("\n");
-    return;
 }
 
 void
@@ -127,7 +123,6 @@ AtomicWriter::commit()
     {
         throw runtime_error("Error renaming temp file.");
     }
-    return;
 }
 
 }  // namespace swx

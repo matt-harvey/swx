@@ -117,14 +117,12 @@ ActivityTree::print
         auto const label = trim(label_carried_forward + child.marginal_name());
         print(p_os, child, label, p_depth, p_print_node);
     }
-    return;
 }
 
 void
 ActivityTree::print(ostream& p_os, PrintNode const& p_print_node) const
 {
     print(p_os, m_root, "", 0, p_print_node);
-    return;
 }
 
 ActivityTree::ActivityData::ActivityData

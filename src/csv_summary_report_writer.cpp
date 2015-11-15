@@ -132,7 +132,6 @@ CsvSummaryReportWriter::do_write_summary
             );
         }
     }
-    return;
 }
 
 }  // namespace swx

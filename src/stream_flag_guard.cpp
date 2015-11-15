@@ -38,7 +38,6 @@ void
 StreamFlagGuard::reset()
 {
     m_os.flags(m_original_flags);        
-    return;
 }
 
 }  // namespace swx

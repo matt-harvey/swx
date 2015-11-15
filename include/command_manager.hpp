@@ -136,7 +136,6 @@ CommandManager::create_command(CommandGroup& p_command_group, Args&& ... p_args)
         register_command_word(alias, command);
     }
     p_command_group.commands.push_back(command);
-    return;
 }
 
 }  // namespace swx
