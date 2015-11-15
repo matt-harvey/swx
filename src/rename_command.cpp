@@ -45,8 +45,8 @@ namespace swx
 
 namespace
 {
-    auto const k_exclude_subactivities_flag = 'x';
-    auto const k_use_regex_flag = 'r';
+    auto const k_exclude_subactivities_alias = "x";
+    auto const k_use_regex_alias = "r";
 
 }  // end anonymous namespace
 
@@ -74,9 +74,9 @@ RenameCommand::RenameCommand
     exclude_subactivities_message_stream
         << "Only rename ACTIVITY where it occurs as an activity in its own right, "
         << "leaving unchanged any occurrences as an ancestor of other activities (ignored "
-        << "if followed by -" << k_use_regex_flag << ')';
+        << "if followed by -" << k_use_regex_alias << ')';
     add_option
-    (   vector<string>{string(1, k_exclude_subactivities_flag), "exact"},
+    (   vector<string>{k_exclude_subactivities_alias, "exact"},
         exclude_subactivities_message_stream.str(),
         [this]() { m_activity_filter_type = ActivityFilter::Type::exact; }
     );
@@ -84,9 +84,9 @@ RenameCommand::RenameCommand
     use_regex_message_stream
         << "Treat ACTIVITY as a regular expression, and replace it with "
         << "NAME anywhere it matches any activity (ignored if followed by -"
-        << k_exclude_subactivities_flag << ')';
+        << k_exclude_subactivities_alias << ')';
     add_option
-    (   vector<string>{string(1, k_use_regex_flag), "regex"},
+    (   vector<string>{k_use_regex_alias, "regex"},
         use_regex_message_stream.str(),
         [this]() { m_activity_filter_type = ActivityFilter::Type::regex; }
     );

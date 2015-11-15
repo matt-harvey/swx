@@ -60,8 +60,8 @@ namespace swx
 namespace
 {
     
-    char const k_option_prefix = '-';
-    char const k_double_dash_option_char = '-';
+    auto const k_option_prefix = '-';
+    auto const k_double_dash_option_alias = "-";
 
 }  // end anonymous namespace
 
@@ -102,15 +102,14 @@ Command::add_option(Option const& p_option)
     if (m_accept_ordinary_args && m_options.empty())
     {
         assert (m_options_map.find("-") == m_options_map.end());
-        string const double_dash_alias(1, k_double_dash_option_char);
         auto const double_dash_option = Option
-        (   vector<string>{double_dash_alias},
+        (   vector<string>{k_double_dash_option_alias},
             "Treat any dash-prefixed arguments after this option as "
                 "ordinary arguments, rather than options",
             []() { ; /* do nothing */ },
             nullptr
         );
-        m_options_map.emplace(double_dash_alias, m_options.size());
+        m_options_map.emplace(k_double_dash_option_alias, m_options.size());
         m_options.push_back(double_dash_option);
     }
     for (auto const& alias: p_option.aliases)
@@ -149,10 +148,10 @@ Command::process
 {
     // TODO MEDIUM PRIORITY This is a mess. Break it down into smaller functions
     // and tidy it up.
-
+    
     vector<string> ordinary_args;
     auto const recognize_double_dash =
-        (m_options_map.find(string(1, k_double_dash_option_char)) != m_options_map.end());
+        (m_options_map.find(k_double_dash_option_alias) != m_options_map.end());
     if (m_accept_ordinary_args && !recognize_double_dash)
     {
         ordinary_args = p_args;
@@ -161,7 +160,7 @@ Command::process
     {
         ostringstream oss;
         enable_exceptions(oss);
-        oss << k_option_prefix << k_double_dash_option_char;
+        oss << k_option_prefix << k_double_dash_option_alias;
         string const double_dash = oss.str();
         auto const args_end = p_args.end();
 
@@ -184,23 +183,20 @@ Command::process
                     // arg is a long option
                     assert (arg.end() >= arg.begin() + 2);
                     assert (string(arg.begin(), arg.begin() + 2) == "--");
-                    auto const raw_option_alias = string(arg.begin() + 2, arg.end());
-                    auto const eq_it = find
-                    (   raw_option_alias.begin(),
-                        raw_option_alias.end(),
-                        '='
-                    );
+                    auto const arg_body = string(arg.begin() + 2, arg.end());
+                    auto const eq_it = find(arg_body.begin(), arg_body.end(), '=');
                     string option_alias;
                     string option_argument;
                     bool option_argument_found = false;
-                    if (eq_it == raw_option_alias.end())
+                    if (eq_it == arg_body.end())
                     {
-                        option_alias = raw_option_alias;
+                        option_alias = arg_body;
                     }
                     else
                     {
-                        option_alias = string(raw_option_alias.begin(), eq_it);
-                        option_argument = string(eq_it + 1, raw_option_alias.end());
+                        // arg takes the form "--option=value"
+                        option_alias = string(arg_body.begin(), eq_it);
+                        option_argument = string(eq_it + 1, arg_body.end());
                         option_argument_found = true;
                     }
                     auto const opt_it = m_options_map.find(option_alias);
@@ -218,10 +214,8 @@ Command::process
                         return EXIT_FAILURE;
                     }
                     auto const& opt = m_options[opt_it->second];
-                    auto const callback = opt.callback;
-                    if (callback != nullptr) callback();
-                    auto* const arg_target = opt.arg_target;
-                    if (arg_target == nullptr)
+                    if (opt.callback != nullptr) opt.callback();
+                    if (opt.arg_target == nullptr)
                     {
                         if (option_argument_found)
                         {
@@ -232,10 +226,10 @@ Command::process
                         }
                         continue;  // option does not take an argument
                     }
-                    assert (arg_target != nullptr);
+                    assert (opt.arg_target != nullptr);
                     if (option_argument_found)
                     {
-                        *arg_target = option_argument;
+                        *opt.arg_target = option_argument;
                     }
                     else
                     {
@@ -249,7 +243,7 @@ Command::process
                         }
                         else
                         {
-                            *arg_target = *it;
+                            *opt.arg_target = *it;
                         }
                     }
                 }
@@ -272,10 +266,8 @@ Command::process
                         }
                         assert (opt_it != m_options_map.end());
                         auto const& opt = m_options[opt_it->second];
-                        auto const callback = opt.callback;
-                        if (callback != nullptr) callback();
-                        auto* const arg_target = opt.arg_target;
-                        if (arg_target == nullptr)
+                        if (opt.callback != nullptr) opt.callback();
+                        if (opt.arg_target == nullptr)
                         {
                             continue;  // option does not take an argument
                         }
@@ -290,8 +282,8 @@ Command::process
                                             << "Aborted." << endl;
                             return EXIT_FAILURE;
                         }
-                        if (joined_arg_present) *arg_target = string(chit + 1, arg_end);
-                        else *arg_target = *(++it);
+                        if (joined_arg_present) *opt.arg_target = string(chit + 1, arg_end);
+                        else *opt.arg_target = *(++it);
                         break;  // we've finished with this option-cluster
                     }
                 }
