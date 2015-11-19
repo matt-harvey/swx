@@ -46,7 +46,7 @@ namespace swx
 {
 
 ActivityTree::ActivityTree(map<string, ActivityStats> const& p_stats):
-    m_root(ActivityNode(""))
+    m_root(ActivityNode())
 {
     // Calculate the greatest number of components of any activity
     vector<string>::size_type depth = 0;
@@ -56,13 +56,13 @@ ActivityTree::ActivityTree(map<string, ActivityStats> const& p_stats):
     // them into the inheritance map.
     for (auto const& pair: p_stats)
     {
-        m_map.insert(make_pair(ActivityNode(pair.first, depth), ActivityData(pair.second)));
+        m_map.emplace(ActivityNode(pair.first, depth), ActivityData(pair.second));
     }
 
     // Go through each generation, starting with the leaves, and building the parent
     // generation of each. But first, cover the case where there are no nodes. Even
     // then, we want a root node.
-    if (m_map.empty()) m_map.insert(make_pair(m_root, ActivityData()));
+    if (m_map.empty()) m_map.emplace(m_root, ActivityData());
     auto current_generation = m_map;
     assert (!current_generation.empty());
     while (current_generation.begin()->first != m_root)
@@ -76,8 +76,7 @@ ActivityTree::ActivityTree(map<string, ActivityStats> const& p_stats):
             auto const parent_iter = parent_generation.find(parent_node);
             if (parent_iter == parent_generation.end())
             {
-                ActivityData const data(stats, {node});
-                parent_generation.insert(make_pair(parent_node, data));
+                parent_generation.emplace(move(parent_node), ActivityData(stats, {node}));
             }
             else
             {
@@ -86,6 +85,9 @@ ActivityTree::ActivityTree(map<string, ActivityStats> const& p_stats):
             }
         }
         m_map.insert(parent_generation.begin(), parent_generation.end());
+        // We don't need the just-visited current generation any more. All its nodes are
+        // now stored as children within the parent generation. So what was the parent
+        // generation becomes the new current generation.
         current_generation = move(parent_generation);
         assert (!current_generation.empty());
     }

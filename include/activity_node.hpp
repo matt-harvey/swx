@@ -35,7 +35,7 @@ class ActivityNode
 // special member functions
 public:
 
-    explicit ActivityNode(std::string const& p_activity);
+    explicit ActivityNode(std::string const& p_activity = std::string());
 
     /**
      * Initializes the node using \e p_activity then resizes it to
