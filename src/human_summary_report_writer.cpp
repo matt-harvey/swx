@@ -32,17 +32,14 @@
 #include <ostream>
 #include <stdexcept>
 #include <string>
-#include <utility>
 #include <vector>
 
 using std::endl;
 using std::fixed;
 using std::left;
-using std::make_pair;
 using std::map;
 using std::ostream;
 using std::ostringstream;
-using std::pair;
 using std::right;
 using std::runtime_error;
 using std::setprecision;

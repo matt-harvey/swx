@@ -27,17 +27,14 @@
 #include <ostream>
 #include <set>
 #include <string>
-#include <utility>
 #include <vector>
 
 using std::endl;
 using std::function;
-using std::make_pair;
 using std::map;
 using std::max;
 using std::move;
 using std::ostream;
-using std::pair;
 using std::set;
 using std::string;
 using std::vector;

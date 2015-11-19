@@ -26,10 +26,8 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <utility>
 #include <vector>
 
-using std::make_pair;
 using std::map;
 using std::ostringstream;
 using std::ostream;
@@ -72,16 +70,8 @@ SummaryReportWriter::do_process_stint(std::ostream& p_os, Stint const& p_stint)
     auto const& activity = p_stint.activity();
     if (!activity.empty())
     {
-        auto const it = m_activity_stats_map.find(activity);
-        ActivityStats const info(seconds, interval.beginning(), interval.ending());
-        if (it == m_activity_stats_map.end())
-        {
-            m_activity_stats_map.insert(make_pair(activity, info));
-        }
-        else
-        {
-            it->second += info;
-        }
+        m_activity_stats_map[activity] +=
+            ActivityStats(seconds, interval.beginning(), interval.ending());
     }
 }
 

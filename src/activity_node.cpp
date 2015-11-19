@@ -21,14 +21,11 @@
 #include <map>
 #include <numeric>
 #include <string>
-#include <utility>
 
 using std::accumulate;
-using std::make_pair;
 using std::map;
 using std::max;
 using std::min;
-using std::pair;
 using std::string;
 using std::vector;
 

@@ -35,19 +35,15 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <utility>
 #include <vector>
 
 using std::endl;
 using std::find;
 using std::function;
 using std::left;
-using std::make_pair;
 using std::ostream;
 using std::ostringstream;
-using std::make_pair;
 using std::numeric_limits;
-using std::pair;
 using std::runtime_error;
 using std::set;
 using std::setw;
