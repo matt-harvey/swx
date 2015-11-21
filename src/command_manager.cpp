@@ -79,27 +79,25 @@ CommandManager::CommandManager(TimeLog& p_time_log)
     using V = vector<string>;
 
     CommandGroup rec("Recording commands");
-    CommandGroup rep("Reporting commands");
-    CommandGroup edit("Editing commands");
-    CommandGroup misc("Miscellaneous commands");
-
     create_command<SwitchCommand>(rec, "switch", V{"s"}, p_time_log);
     create_command<ResumeCommand>(rec, "resume", V{}, p_time_log);
+    m_command_groups.push_back(move(rec));
 
+    CommandGroup rep("Reporting commands");
     create_command<PrintCommand>(rep, "print", V{"p"}, p_time_log);
     create_command<DayCommand>(rep, "day", V{"d"}, p_time_log);
+    m_command_groups.push_back(move(rep));
 
+    CommandGroup edit("Editing commands");
     create_command<RenameCommand>(edit, "rename", V{}, p_time_log);
     create_command<EditCommand>(edit, "edit", V{"e"});
+    m_command_groups.push_back(move(edit));
 
+    CommandGroup misc("Miscellaneous commands");
     create_command<CurrentCommand>(misc, "current", V{"c"}, p_time_log);
     create_command<ConfigCommand>(misc, "config", V{});
     create_command<HelpCommand>(misc, k_help_command_string, V{"--help", "-h"}, *this);
     create_command<VersionCommand>(misc, "version", V{"--version"});
-
-    m_command_groups.push_back(move(rec));
-    m_command_groups.push_back(move(rep));
-    m_command_groups.push_back(move(edit));
     m_command_groups.push_back(move(misc));
 
 #   ifndef NDEBUG
