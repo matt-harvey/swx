@@ -17,18 +17,22 @@
 #ifndef GUARD_command_hpp_08439188501070807
 #define GUARD_command_hpp_08439188501070807
 
-#include "config.hpp"
 #include "exit_code.hpp"
-#include "help_line.hpp"
 #include <functional>
-#include <map>
+#include <memory>
 #include <ostream>
-#include <set>
 #include <string>
 #include <vector>
 
 namespace swx
 {
+
+// begin forward declarations
+
+class Config;
+class HelpLine;
+
+// end forward declarations
 
 /**
  * Represents a command that processes arguments received from
@@ -43,7 +47,7 @@ class Command
 protected:
     using ErrorMessages = std::vector<std::string>;
 private:
-    struct Option;
+    struct Impl;
 
 // special member functions
 protected:
@@ -60,10 +64,6 @@ public:
     Command& operator=(Command const& rhs) = delete;
     Command& operator=(Command&& rhs) = delete;
     virtual ~Command();
-
-// ordinary member functions
-private:
-    void add_option(Option const& p_option);
 
 protected:
     
@@ -112,18 +112,15 @@ private:
     /**
      * If you use placeholders in a derived class, override this to
      * return \e true, so that the help string is modified accordingly.
+     * TODO This would be better as an instance variable that is initialized
+     * in the protected constructor. That could then be passed on to the Impl
+     * class.
      */
     virtual bool does_support_placeholders() const;
 
 // member variables
 private:
-    bool m_accept_ordinary_args;
-    std::string const m_command_word;
-    std::string const m_usage_summary;
-    std::vector<std::string> const m_aliases;
-    std::vector<HelpLine> const m_help_lines;
-    std::vector<Option> m_options;
-    std::map<std::string, std::vector<Option>::size_type> m_options_map;
+    std::unique_ptr<Impl> m_impl;
 
 };  // class Command
 

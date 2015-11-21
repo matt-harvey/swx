@@ -30,11 +30,12 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <map>
 #include <ostream>
-#include <set>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 using std::endl;
@@ -43,9 +44,11 @@ using std::function;
 using std::left;
 using std::ostream;
 using std::ostringstream;
+using std::make_pair;
+using std::map;
+using std::pair;
 using std::numeric_limits;
 using std::runtime_error;
-using std::set;
 using std::setw;
 using std::string;
 using std::vector;
@@ -59,9 +62,52 @@ namespace
     auto const k_option_prefix = '-';
     auto const k_double_dash_option_alias = "-";
 
+    struct ParsedArgs
+    {
+        vector<string> ordinary_args;
+        vector<string> error_messages;
+    };
+
 }  // end anonymous namespace
 
-struct Command::Option
+class Command::Impl
+{
+private:
+    struct Option;
+
+public:
+    Impl
+    (   string const& p_command_word,
+        vector<string> const& p_aliases,
+        string const& p_usage_summary,
+        vector<HelpLine> const& p_help_lines,
+        bool p_accept_ordinary_args
+    );
+
+public:
+    void add_option
+    (   vector<string> const& p_aliases,
+        HelpLine const& p_help_line,
+        function<void()> const& p_callback,
+        string* p_arg_target = nullptr
+    );
+    ParsedArgs parse_args(vector<string> const& p_args);
+    string usage_summary() const;
+    string usage_descriptor(bool support_placeholders) const;
+    string const& command_word() const;
+    vector<string> const& aliases() const;
+
+private:
+    bool m_accept_ordinary_args;
+    string const m_command_word;
+    string const m_usage_summary;
+    vector<string> const m_aliases;
+    vector<HelpLine> const m_help_lines;
+    vector<Option> m_options;
+    map<string, vector<Option>::size_type> m_options_map;
+};
+
+struct Command::Impl::Option
 {
     Option
     (   vector<string> const& p_aliases,
@@ -75,7 +121,102 @@ struct Command::Option
     vector<string> aliases;
 };
 
+
 Command::Command
+(   string const& p_command_word,
+    vector<string> const& p_aliases,
+    string const& p_usage_summary,
+    vector<HelpLine> const& p_help_lines,
+    bool p_accept_ordinary_args
+):
+    m_impl
+    (   new Command::Impl
+        (   p_command_word,
+            p_aliases,
+            p_usage_summary,
+            p_help_lines,
+            p_accept_ordinary_args
+        )
+    )
+{
+}
+
+Command::~Command() = default;
+
+void
+Command::add_option
+(   vector<string> const& p_aliases,
+    HelpLine const& p_help_line,
+    function<void()> const& p_callback,
+    string* p_arg_target
+)
+{
+    m_impl->add_option(p_aliases, p_help_line, p_callback, p_arg_target);
+}
+
+ExitCode
+Command::process
+(   Config const& p_config,
+    vector<string> const& p_args,
+    ostream& p_ordinary_ostream,
+    ostream& p_error_ostream
+)
+{
+    auto result = m_impl->parse_args(p_args);
+    if (!result.error_messages.empty()) goto process_errors;
+    result.error_messages = do_process(p_config, result.ordinary_args, p_ordinary_ostream);
+    if (!result.error_messages.empty()) goto process_errors;
+    return EXIT_SUCCESS;
+
+    process_errors:
+        for (auto const& message: result.error_messages) p_error_ostream << message << endl;
+        return EXIT_FAILURE;
+}
+
+string
+Command::usage_summary() const
+{
+    return m_impl->usage_summary();
+}
+
+string
+Command::usage_descriptor() const
+{
+    return m_impl->usage_descriptor(does_support_placeholders());
+}
+
+string const&
+Command::command_word() const
+{
+    return m_impl->command_word();
+}
+
+vector<string> const&
+Command::aliases() const
+{
+    return m_impl->aliases();
+}
+
+bool
+Command::does_support_placeholders() const
+{
+    return false;
+}
+
+Command::Impl::Option::Option
+(   vector<string> const& p_aliases,
+    HelpLine const& p_help_line,
+    function<void()> const& p_callback,
+    string* p_arg_target
+):
+    help_line(p_help_line),
+    callback(p_callback),
+    arg_target(p_arg_target),
+    aliases(p_aliases)
+{
+}
+
+Command::Impl::Impl
 (   string const& p_command_word,
     vector<string> const& p_aliases,
     string const& p_usage_summary,
@@ -90,25 +231,27 @@ Command::Command
 {
 }
 
-Command::~Command() = default;
-
 void
-Command::add_option(Option const& p_option)
+Command::Impl::add_option
+(   vector<string> const& p_aliases,
+    HelpLine const& p_help_line,
+    function<void()> const& p_callback,
+    string* p_arg_target
+)
 {
     if (m_accept_ordinary_args && m_options.empty())
     {
         assert (m_options_map.find("-") == m_options_map.end());
-        auto const double_dash_option = Option
+        m_options_map.emplace(k_double_dash_option_alias, m_options.size());
+        m_options.emplace_back
         (   vector<string>{k_double_dash_option_alias},
             "Treat any dash-prefixed arguments after this option as "
                 "ordinary arguments, rather than options",
             []() { ; /* do nothing */ },
             nullptr
         );
-        m_options_map.emplace(k_double_dash_option_alias, m_options.size());
-        m_options.push_back(double_dash_option);
     }
-    for (auto const& alias: p_option.aliases)
+    for (auto const& alias: p_aliases)
     {
         if (m_options_map.find(alias) != m_options_map.end())
         {
@@ -119,37 +262,21 @@ Command::add_option(Option const& p_option)
         }
         m_options_map.emplace(alias, m_options.size());
     }
-    m_options.push_back(p_option);
+    m_options.emplace_back(p_aliases, p_help_line, p_callback, p_arg_target);
 }
 
-void
-Command::add_option
-(   vector<string> const& p_aliases,
-    HelpLine const& p_help_line,
-    function<void()> const& p_callback,
-    string* p_arg_target
-)
-{
-    add_option(Option(p_aliases, p_help_line, p_callback, p_arg_target));
-}
-
-ExitCode
-Command::process
-(   Config const& p_config,
-    vector<string> const& p_args,
-    ostream& p_ordinary_ostream,
-    ostream& p_error_ostream
-)
+ParsedArgs
+Command::Impl::parse_args(vector<string> const& p_args)
 {
     // TODO MEDIUM PRIORITY This is a mess. Break it down into smaller functions
     // and tidy it up.
-    
-    vector<string> ordinary_args;
+    ParsedArgs result;
+
     auto const recognize_double_dash =
         (m_options_map.find(k_double_dash_option_alias) != m_options_map.end());
     if (m_accept_ordinary_args && !recognize_double_dash)
     {
-        ordinary_args = p_args;
+        result.ordinary_args = p_args;
     }
     else
     {
@@ -168,7 +295,7 @@ Command::process
             {
                 // double-dash ends the options, so treat remaining arguments as
                 // ordinary arguments, not options
-                copy(it + 1, p_args.end(), back_inserter(ordinary_args));
+                copy(it + 1, p_args.end(), back_inserter(result.ordinary_args));
                 break;
             }
             else if (!arg.empty() && (arg[0] == k_option_prefix))
@@ -197,16 +324,18 @@ Command::process
                     auto const opt_it = m_options_map.find(option_alias);
                     if (opt_it == m_options_map.end())
                     {
-                        p_error_ostream << "Unrecognized option: " << option_alias
-                                        << "\nAborted." << endl;
-                        return EXIT_FAILURE;
+                        result.error_messages.push_back
+                        (   "Unrecognized option: " + option_alias + "\nAborted."
+                        );
+                        return result;
                     }
-                    if (option_alias.size() == 1)
+                    if (option_alias.size() == 2)
                     {
-                        p_error_ostream << "Short option \"" << option_alias
-                                        << "\" must be passed with a single dash ('-').\n"
-                                        << "Aborted." << endl;
-                        return EXIT_FAILURE;
+                        result.error_messages.push_back
+                        (   "Short option \"" + option_alias
+                            + "\" must be passed with a single dash ('-').\nAborted."
+                        );
+                        return result;
                     }
                     auto const& opt = m_options[opt_it->second];
                     if (opt.callback != nullptr) opt.callback();
@@ -214,10 +343,11 @@ Command::process
                     {
                         if (option_argument_found)
                         {
-                            p_error_ostream << "Option \"" << option_alias
-                                            << "\" does not take an argument.\n"\
-                                            << "Aborted." << endl;
-                            return EXIT_FAILURE;
+                            result.error_messages.push_back
+                            (   "Option \"" + option_alias
+                                + "\" does not take an argument.\nAborted."
+                            );
+                            return result;
                         }
                         continue;  // option does not take an argument
                     }
@@ -231,10 +361,11 @@ Command::process
                         ++it;
                         if (it == args_end)
                         {
-                            p_error_ostream << "Option \"" << option_alias
-                                            << "\" requires argument.\n"
-                                            << "Aborted." << endl;
-                            return EXIT_FAILURE;
+                            result.error_messages.push_back
+                            (   "Option \"" + option_alias
+                                + "\" requires argument.\nAborted."
+                            );
+                            return result;
                         }
                         else
                         {
@@ -255,9 +386,10 @@ Command::process
                         auto const opt_it = m_options_map.find(string(1, c));
                         if (opt_it == m_options_map.end())
                         {
-                            p_error_ostream << "Unrecognized option: " << c << "\nAborted."
-                                            << endl;
-                            return EXIT_FAILURE;
+                            result.error_messages.push_back
+                            (   "Unrecognized option: " + string(1, c) +"\nAborted."
+                            );
+                            return result;
                         }
                         assert (opt_it != m_options_map.end());
                         auto const& opt = m_options[opt_it->second];
@@ -273,9 +405,10 @@ Command::process
                         auto const separated_arg_present = (it + 1 != args_end); // e.g. "-a 9"
                         if (!joined_arg_present && !separated_arg_present)
                         {
-                            p_error_ostream << "Option \"" << c << "\" requires argument.\n"
-                                            << "Aborted." << endl;
-                            return EXIT_FAILURE;
+                            result.error_messages.push_back
+                            (   "Option \"" + string(1, c) + "\" requires argument.\nAborted."
+                            );
+                            return result;
                         }
                         if (joined_arg_present) *opt.arg_target = string(chit + 1, arg_end);
                         else *opt.arg_target = *(++it);
@@ -287,26 +420,24 @@ Command::process
             {
                 if (!m_accept_ordinary_args)
                 {
-                    p_error_ostream << "Too many arguments.\nAborted" << endl;
-                    return EXIT_FAILURE;
+                    result.error_messages.push_back("Too many arguments.\nAborted");
+                    return result;
                 }
-                ordinary_args.push_back(*it);
+                result.ordinary_args.push_back(*it);
             }
         }
     }
-    auto const error_messages = do_process(p_config, ordinary_args, p_ordinary_ostream);
-    for (auto const& message: error_messages) p_error_ostream << message << endl;
-    return error_messages.empty() ? EXIT_SUCCESS : EXIT_FAILURE;
+    return result;
 }
 
 string
-Command::usage_summary() const
+Command::Impl::usage_summary() const
 {
     return m_usage_summary;
-}
+};
 
 string
-Command::usage_descriptor() const
+Command::Impl::usage_descriptor(bool p_support_placeholders) const
 {
     using ColWidth = string::size_type;
     ColWidth command_word_length = m_command_word.length();
@@ -371,7 +502,7 @@ Command::usage_descriptor() const
             oss << ": " << wrap(help_line.usage_descriptor(), left_col_width + 4);
         }
     }
-    if (does_support_placeholders())
+    if (p_support_placeholders)
     {
         oss << "\n\nPlaceholders:\n";
         write_placeholder_help(oss, left_col_width);
@@ -381,34 +512,15 @@ Command::usage_descriptor() const
 }
 
 string const&
-Command::command_word() const
+Command::Impl::command_word() const
 {
     return m_command_word;
 }
 
 vector<string> const&
-Command::aliases() const
+Command::Impl::aliases() const
 {
     return m_aliases;
-}
-
-bool
-Command::does_support_placeholders() const
-{
-    return false;
-}
-
-Command::Option::Option
-(   vector<string> const& p_aliases,
-    HelpLine const& p_help_line,
-    function<void()> const& p_callback,
-    string* p_arg_target
-):
-    help_line(p_help_line),
-    callback(p_callback),
-    arg_target(p_arg_target),
-    aliases(p_aliases)
-{
 }
 
 }  // namespace swx
