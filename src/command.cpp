@@ -329,7 +329,7 @@ Command::Impl::parse_args(vector<string> const& p_args)
                         );
                         return result;
                     }
-                    if (option_alias.size() == 2)
+                    if (option_alias.size() == 1)
                     {
                         result.error_messages.push_back
                         (   "Short option \"" + option_alias
