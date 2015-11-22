@@ -16,9 +16,11 @@
 
 #include "switch_command.hpp"
 #include "command.hpp"
+#include "config.hpp"
 #include "help_line.hpp"
 #include "placeholder.hpp"
 #include "recording_command.hpp"
+#include "result.hpp"
 #include "stream_utilities.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
@@ -83,6 +85,16 @@ SwitchCommand::SwitchCommand
             "inactivity).",
         [this]() { m_amend = true; }
     );
+    add_option
+    (   vector<string>{"at"},
+        HelpLine
+        (   "Start accruing time to ACTIVITY (or cessation of activity, as the "
+                "case may be) at the time indicated by TIMESTAMP",
+            "<TIMESTAMP>"
+        ),
+        [this]() { m_time_stamp_provided = true; },
+        &m_time_stamp
+    );
 }
 
 SwitchCommand::~SwitchCommand() = default;
@@ -97,6 +109,8 @@ SwitchCommand::do_process
     (void)p_config;  // silence compiler re. unused param.
 
     ErrorMessages error_messages;
+
+    auto const last_two_activities = time_log().last_activities(2);
 
     // interpret arguments
     vector<string> const args = expand_placeholders(p_ordinary_args, time_log());
@@ -126,22 +140,21 @@ SwitchCommand::do_process
     bool const activity_exists = time_log().has_activity(activity);
 
     // prevent pointless switch
-    if (activity.empty())
+    if (!m_time_stamp_provided)  // but assume not pointless if timestamp provided
     {
-        if (!log_active)
+        if (activity.empty())
         {
-            return {"Already inactive."};
-        }
-    }
-    else
-    {
-        if (log_active)
-        {
-            vector<string> const vec = time_log().last_activities(1);
-            assert (!vec.empty());
-            if (vec[0] == activity)
+            if (!log_active)
             {
-                return {"Already active: " + activity};
+                return {"Already inactive."};
+            }
+        }
+        else if (log_active)
+        {
+            assert (!last_two_activities.empty());
+            if (last_two_activities.front() == activity)
+            {
+                return {"\"" + activity + "\" is already the current activity."};
             }
         }
     }
@@ -151,32 +164,103 @@ SwitchCommand::do_process
     {
         string cease_message, create_message, existing_message;
         // we can switch or amend
-        if (m_amend)
+        TimePoint tp;
+        if (m_time_stamp_provided)
         {
-            if (time_log().last_activities(1).empty())
+            auto const tp_result = time_point(m_time_stamp, p_config.time_format());
+            if (tp_result.errors().empty())
             {
-                cease_message = create_message = existing_message =
-                    "There are no recorded stints to amend.";
+                tp = tp_result.get();
             }
             else
             {
-                auto const last = time_log().amend_last(activity);
-                cease_message = "Current stint erased.\nWas: " + last;
-                create_message = "Amended current stint\nWas: " + last + "\nNow: " + activity;
-                existing_message = create_message;
+                return tp_result.errors();
             }
         }
         else
         {
-            time_log().append_entry(activity);
-            cease_message = "Activity ceased.";
-            create_message = "Created and switched to new activity: "  + activity;
-            existing_message = "Switched to: " + activity;
+            tp = (m_amend ? time_log().last_entry_time() : now());
         }
-        if (activity.empty()) p_ordinary_ostream << cease_message;
-        else if (m_create_activity) p_ordinary_ostream << create_message;
-        else p_ordinary_ostream << existing_message;
-        p_ordinary_ostream << endl;
+        auto const confirmed_stamp = time_point_to_stamp
+        (   tp,
+            p_config.time_format(),
+            p_config.formatted_buf_len()
+        );
+        if (m_amend)
+        {
+            auto const penultimate_entry_time = time_log().last_entry_time(1);
+            if (tp < penultimate_entry_time)
+            {
+                return ErrorMessages
+                {   "Timestamp must not be earlier than date of previous entry."
+                };
+            }
+            if (last_two_activities.empty())
+            {
+                return ErrorMessages{"There are no recorded stints to amend."};
+            }
+            if (last_two_activities.size() >= 2)
+            {
+                auto const penultimate_activity = last_two_activities[1];
+                if ((activity == penultimate_activity) && m_time_stamp_provided)
+                {
+                    return ErrorMessages
+                    {   "Proposed amendment would cause the last stint to merge "
+                            "with the one before it.\nTimestamp amendment would "
+                            "therefore has had no effect.\nAborted."
+                    };
+                }
+            }
+            auto const last_entry_time = time_log().last_entry_time(0);
+            auto const last_activity = time_log().amend_last(activity, tp);
+            if (activity != last_activity)
+            {
+                auto const desc = [](string const& p_activity)
+                {
+                    return p_activity.empty() ? "inactive" : ("\"" + p_activity + "\"");
+                };
+                p_ordinary_ostream << "Current stint's activity amended from "
+                                   << desc(last_activity) << " to "
+                                   << desc(activity) << "." << endl;
+            }
+            if (m_time_stamp_provided)
+            {
+                auto const last_time_stamp = time_point_to_stamp
+                (   last_entry_time,
+                    p_config.time_format(),
+                    p_config.formatted_buf_len()
+                );
+                p_ordinary_ostream << "Start time of current stint amended from "
+                                   << last_time_stamp << " to "
+                                   << confirmed_stamp << "." << endl;
+            }
+        }
+        else
+        {
+            assert (!m_amend);
+            if (tp < time_log().last_entry_time())
+            {
+                return ErrorMessages
+                {   "Timestamp must not be earlier than date of last entry."
+                };
+            }
+            time_log().append_entry(activity, tp);
+            if (activity.empty())
+            {
+                p_ordinary_ostream << "Activity ceased at " << confirmed_stamp;
+            }
+            else if (m_create_activity)
+            {
+                p_ordinary_ostream << "Created and switched to \"" << activity
+                                   << "\" at " << confirmed_stamp;
+            }
+            else
+            {
+                p_ordinary_ostream << "Switched to \"" << activity
+                                   << "\" at " << confirmed_stamp;
+            }
+            p_ordinary_ostream << '.' << endl;
+        }
     }
     else
     {
@@ -188,21 +272,22 @@ SwitchCommand::do_process
         if (m_create_activity)
         {
             assert (activity_exists);
-            oss << "Activity already exists: " << activity;
+            oss << "Activity \"" << activity << "\" already exists.";
         }
         else
         {
             assert (!activity_exists);
-            oss << "Non-existent activity: " << activity
-                << "\nUse -c option to create and switch to a new activity.";
+            oss << "There is no activity named \"" << activity << "\".\n"
+                << "Use -c option to create and switch to a new activity.";
         }
 
         // report time log state
         if (log_active)
         {
             assert (!time_log().last_activities(1).empty());
-            oss << "\nCurrent activity remains: "
-                << time_log().last_activities(1).front();
+            oss << "\nCurrent activity remains \""
+                << time_log().last_activities(1).front()
+                << "\".";
         }
         else
         {

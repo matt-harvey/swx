@@ -112,9 +112,10 @@ private:
     /**
      * If you use placeholders in a derived class, override this to
      * return \e true, so that the help string is modified accordingly.
-     * TODO This would be better as an instance variable that is initialized
-     * in the protected constructor. That could then be passed on to the Impl
-     * class.
+     *
+     * TODO MEDIUM PRIORITY This would be better as an instance variable that is
+     * initialized in the protected constructor. That could then be passed on to
+     * the Impl class.
      */
     virtual bool does_support_placeholders() const;
 

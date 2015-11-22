@@ -94,8 +94,8 @@ public:
 
     // These implement the corresponding public functions of TimeLog.
 
-    void append_entry(string const& p_activity);
-    string amend_last(string const& p_activity);
+    void append_entry(string const& p_activity, TimePoint const& p_time_point);
+    string amend_last(string const& p_activity, TimePoint const& p_time_point);
     vector<Stint>::size_type rename_activity
     (   ActivityFilter const& p_activity_filter,
         string const& p_new
@@ -107,6 +107,7 @@ public:
     );
     string last_activity_to_match(string const& p_regex);
     vector<string> last_activities(size_t p_num);
+    TimePoint last_entry_time(size_t p_ago);
     bool is_active_at(TimePoint const& p_time_point);
     bool is_active();
     bool has_activity(string const& p_activity);
@@ -125,9 +126,11 @@ private:
     // to do so. The activity register contains a reference count for each
     // activity and calling these functions causes this to be updated and
     // for an activity to be deleted from the register when it is no
-    // longer referred to. These functions are implementation details
-    // for push_entry, pop_entry and put_entry, and should not be called
-    // from elsewhere.
+    // longer referred to.
+    //
+    // NOTE register_activity_reference and deregister_activity_reference
+    // are implementation details for push_entry, pop_entry and put_entry,
+    // and should not be called from elsewhere.
     ActivityId register_activity_reference(string const& p_activity);
     void deregister_activity_reference(ActivityId p_activity_id);
 
@@ -225,15 +228,15 @@ TimeLog::TimeLog
 TimeLog::~TimeLog() = default;
 
 void
-TimeLog::append_entry(string const& p_activity)
+TimeLog::append_entry(string const& p_activity, TimePoint const& p_time_point)
 {
-    return m_impl->append_entry(p_activity);
+    return m_impl->append_entry(p_activity, p_time_point);
 }
 
 string
-TimeLog::amend_last(string const& p_activity)
+TimeLog::amend_last(string const& p_activity, TimePoint const& p_time_point)
 {
-    return m_impl->amend_last(p_activity);
+    return m_impl->amend_last(p_activity, p_time_point);
 }
 
 vector<Stint>::size_type
@@ -262,6 +265,12 @@ vector<string>
 TimeLog::last_activities(size_t p_num)
 {
     return m_impl->last_activities(p_num);
+}
+
+TimePoint
+TimeLog::last_entry_time(size_t p_ago)
+{
+    return m_impl->last_entry_time(p_ago);
 }
 
 bool
@@ -299,24 +308,31 @@ TimeLog::Impl::Impl
 TimeLog::Impl::~Impl() = default;
 
 void
-TimeLog::Impl::append_entry(string const& p_activity)
+TimeLog::Impl::append_entry(string const& p_activity, TimePoint const& p_time_point)
 {
     Transaction transaction(*this);
-    push_entry(p_activity, now()); 
+    if (p_time_point > now())
+    {
+        throw runtime_error("Entry must not be future-dated.");
+    }
+    push_entry(p_activity, p_time_point);
     transaction.commit();
 }
 
 string
-TimeLog::Impl::amend_last(string const& p_activity)
+TimeLog::Impl::amend_last(string const& p_activity, TimePoint const& p_time_point)
 {
     Transaction transaction(*this);
+    if (p_time_point > now())
+    {
+        throw runtime_error("Entry must not be future-dated.");
+    }
     string last_activity;
     if (!m_entries.empty())
     {
-        auto const time_point = m_entries.back().time_point;
         last_activity = activity_at(m_entries.back());
         pop_entry();
-        push_entry(p_activity, time_point);
+        push_entry(p_activity, p_time_point);
     }
     transaction.commit();
     return last_activity;
@@ -432,6 +448,20 @@ TimeLog::Impl::last_activities(size_t p_num)
     assert (ret.size() <= p_num);
     assert (ret.size() <= m_entries.size());
     return ret;
+}
+
+TimePoint
+TimeLog::Impl::last_entry_time(size_t p_ago)
+{
+    load();
+    if (p_ago >= m_entries.size())
+    {
+        return TimePoint::min();
+    }
+    assert (m_entries.size() >= 1);
+    auto const index = m_entries.size() - 1 - p_ago;
+    assert (index < m_entries.size());
+    return m_entries[index].time_point;
 }
 
 bool
@@ -666,7 +696,7 @@ TimeLog::Impl::find_entry_just_before(TimePoint const& p_time_point)
         // of the activities.
         assert (ref_counts_total == m_entries.size());
 
-        // The refernence counts are correct for each entry.
+        // The reference counts are correct for each entry.
         unordered_map<string, Entries::size_type> counts;
         for (auto const& entry: m_entries)
         {

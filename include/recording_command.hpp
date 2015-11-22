@@ -19,8 +19,11 @@
 
 #include "command.hpp"
 #include "help_line.hpp"
+#include "result_fwd.hpp"
 #include "time_log.hpp"
+#include "time_point.hpp"
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace swx
@@ -46,7 +49,12 @@ public:
 
 // ordinary member functions
 protected:
+    Result<TimePoint> time_point
+    (   std::string const& p_time_stamp,
+        std::string const& p_time_format
+    );
     TimeLog& time_log();
+    std::string time_stamp(TimePoint const& p_time_point) const;
 
 // member variables
 private:

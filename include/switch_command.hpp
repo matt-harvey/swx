@@ -62,6 +62,8 @@ private:
     bool m_amend = false;
     bool m_create_activity = false;
     bool m_use_regex = false;
+    bool m_time_stamp_provided = false;
+    std::string m_time_stamp;
 
 };  // class SwitchCommand
 

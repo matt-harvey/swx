@@ -17,10 +17,14 @@
 #include "recording_command.hpp"
 #include "command.hpp"
 #include "help_line.hpp"
+#include "result.hpp"
 #include "time_log.hpp"
+#include "time_point.hpp"
+#include <stdexcept>
 #include <string>
 #include <vector>
 
+using std::runtime_error;
 using std::string;
 using std::vector;
 
@@ -47,6 +51,29 @@ RecordingCommand::RecordingCommand
 }
 
 RecordingCommand::~RecordingCommand() = default;
+
+Result<TimePoint>
+RecordingCommand::time_point
+(   std::string const& p_time_stamp,
+    std::string const& p_time_format
+)
+{
+    using ResultT = Result<TimePoint>;
+    try
+    {
+        auto const tp = time_stamp_to_point(p_time_stamp, p_time_format);
+        if (tp > now())
+        {
+            return ResultT::make_invalid("Timestamp must not be future-dated.");
+        }
+        return ResultT::make_valid(time_stamp_to_point(p_time_stamp, p_time_format));
+
+    }
+    catch (runtime_error&)
+    {
+        return ResultT::make_invalid("Could not parse timestamp: " + p_time_stamp);
+    }
+}
 
 TimeLog&
 RecordingCommand::time_log()

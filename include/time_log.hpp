@@ -61,19 +61,28 @@ public:
 
     /**
      * Push a new record onto the log. The new record will be immediately
-     * persisted to file, with a date of "now".
+     * persisted to file.
+     *
+     * It is the caller's reponsibility that this will not leave the log with 
+     * entries that are out of time order.
+     *
+     * @exception std::runtime_error if p_time_point is future dated.
      */
-    void append_entry(std::string const& p_activity);
+    void append_entry(std::string const& p_activity, TimePoint const& p_time_point);
 
     /**
-     * Amend the activity of the last entry in the log to \e p_activity. If there
-     * are no entries in the log, this does nothing. The change will be immediately
-     * persisted to file.
+     * Amend the activity of the last entry in the log to \e p_activity, with
+     * TimePoint \e p_time_point. If there are no entries in the log, this does
+     * nothing. The change will be immediately persisted to file.
+     *
+     * It is the caller's reponsibility that this will not leave the log with 
+     * entries that are out of time order.
      *
      * @return the previous activity, or an empty string if inactive (including if
      *   there are no entries in the log).
+     * @exception std::runtime_error if p_time_point is future dated.
      */
-    std::string amend_last(std::string const& p_activity);
+    std::string amend_last(std::string const& p_activity, TimePoint const& p_time_point);
 
     /**
      * Apply <em>p_activity_filter.replace(activity, p_new)</em> to every
@@ -122,6 +131,15 @@ public:
      * then an empty vector will be returned.
      */
     std::vector<std::string> last_activities(std::size_t p_num);
+
+    /**
+     * @p_ago if passed non-zero, return the TimePoint of the entry \e p_ago
+     *   entries before the last.
+     * @return the TimePoint of the most recent entry in the log, or, if the log
+     *   does not have a large enough number of entries to accommodate \e p_ago,
+     *   the earliest possible TimePoint.
+     */
+    TimePoint last_entry_time(std::size_t p_ago = 0);
 
     /**
      * @returns \e true if and only if there is an activity recorded in the log

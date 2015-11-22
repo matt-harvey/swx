@@ -145,10 +145,14 @@ of "email".
 If ``-a`` is used without an argument, then it will effectively erase the
 current activity stint, so that it becomes, in effect, a stint of inactivity.
 
-After switching to an activity, ``swx`` always displays a message confirming the
-full name of the activity switched to—or confirming that activity has ceased,
-as the case may be.
-
+If the ``--at`` option is used with a timestamp, then instead of being recorded
+as happening "now", the switch will be recorded as if it happened at the
+corresponding time. The time provided may not be in the future though, and may
+not be earlier than start time of the current activity stint. If used with the
+``-a`` option, the ``--at`` option will cause the start time of the current
+activity stint to be amended, in which case the provided time may not be
+earlier than the start time of the previous stint.
+ 
 Note activity names are case-sensitive.
 
 The "resume" command
@@ -165,8 +169,10 @@ the activity that was active just before the current one. This is useful for
 when you are working on one activity, are briefly interrupted by another
 activity, and then want to resume work on the original activity.
 
-After resuming an activity, ``swx`` always displays a message confirming the
-full name of the activity resumed.
+Like ``swx switch``, ``swx resume`` accepts the ``--at`` option, if you
+wish to specify the resumption as occurring at a particular time other
+than "now". The specified time must not be in the future, and must not
+be earlier than the start time of the current activity stint.
 
 Reporting commands
 ------------------

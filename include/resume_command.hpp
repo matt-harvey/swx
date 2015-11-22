@@ -55,6 +55,11 @@ private:
         std::ostream& p_ordinary_ostream
     ) override;
 
+// member variables
+private:
+    bool m_time_stamp_provided = false;
+    std::string m_time_stamp;
+
 };  // class ResumeCommand
 
 }  // namespace swx

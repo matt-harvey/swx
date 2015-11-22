@@ -20,6 +20,7 @@
 #include "help_line.hpp"
 #include "placeholder.hpp"
 #include "recording_command.hpp"
+#include "result.hpp"
 #include "string_utilities.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
@@ -57,6 +58,15 @@ ResumeCommand::ResumeCommand
         p_time_log
     )
 {
+    add_option
+    (   vector<string>{"at"},
+        HelpLine
+        (   "Start accruing time to activity at the time indicated by TIMESTAMP",
+            "<TIMESTAMP>"
+        ),
+        [this]() { m_time_stamp_provided = true; },
+        &m_time_stamp
+    );
 }
 
 ResumeCommand::~ResumeCommand() = default;
@@ -73,6 +83,33 @@ ResumeCommand::do_process
     ErrorMessages ret;
     bool const is_active = time_log().is_active();
     auto const last_activities = time_log().last_activities(2);
+
+    TimePoint tp;
+    if (m_time_stamp_provided)
+    {
+        auto const tp_result = time_point(m_time_stamp, p_config.time_format());
+        if (tp_result.errors().empty())
+        {
+            tp = tp_result.get();
+            if (tp < time_log().last_entry_time())
+            {
+                return ErrorMessages
+                {   "Timestamp must not be earlier than date of last entry."
+                };
+            }
+        }
+        else
+        {
+            return tp_result.errors();
+        }
+    }
+    else
+    {
+        tp = now();
+    }
+    auto const confirmed_stamp = 
+        time_point_to_stamp(tp, p_config.time_format(), p_config.formatted_buf_len());
+
     if (last_activities.empty())
     {
         ret.push_back("No activity has yet been recorded.");
@@ -80,8 +117,9 @@ ResumeCommand::do_process
     else if (!is_active)
     {
         auto const activity = last_activities[0];
-        time_log().append_entry(activity);
-        p_ordinary_ostream << "Resumed: " << activity << endl;
+        time_log().append_entry(activity, tp);
+        p_ordinary_ostream << "Resumed \"" << activity << "\" at "
+                           << confirmed_stamp << '.' << endl;
     }
     else if (last_activities.size() == 1)
     {
@@ -93,8 +131,9 @@ ResumeCommand::do_process
         assert (is_active);
         assert (last_activities.size() == 2);
         auto const activity = last_activities[1];
-        time_log().append_entry(activity);
-        p_ordinary_ostream << "Resumed: " << activity << endl;
+        time_log().append_entry(activity, tp);
+        p_ordinary_ostream << "Resumed \"" << activity << "\" at "
+                           << confirmed_stamp << '.' << endl;
     }
     return ret;
 }
