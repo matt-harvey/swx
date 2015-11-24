@@ -125,7 +125,9 @@ private:
     // to do so. The activity register contains a reference count for each
     // activity and calling these functions causes this to be updated and
     // for an activity to be deleted from the register when it is no
-    // longer referred to.
+    // longer referred to. These functions are implementation details
+    // for push_entry, pop_entry and put_entry, and should not be called
+    // from elsewhere.
     ActivityId register_activity_reference(string const& p_activity);
     void deregister_activity_reference(ActivityId p_activity_id);
 
@@ -394,17 +396,12 @@ TimeLog::Impl::last_activity_to_match(string const& p_regex)
 {
     load();
     RegexActivityFilter const activity_filter(p_regex);
-    auto const empty_activity_id = register_activity_reference("");
     for (auto rit = m_entries.rbegin(); rit != m_entries.rend(); ++rit)  // reverse
     {
-        auto const id = rit->activity_id;
-        if (id != empty_activity_id)
+        auto const& activity = id_to_activity(rit->activity_id);
+        if (!activity.empty() && activity_filter.matches(activity))
         {
-            auto const& activity = id_to_activity(id);
-            if (activity_filter.matches(activity))
-            {
-                return activity;
-            }
+            return activity;
         }
     }
     return string();
