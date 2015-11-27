@@ -61,6 +61,7 @@ public:
     unsigned int output_rounding_denominator() const;
     unsigned int output_precision() const;
     unsigned int output_width() const;
+    std::string short_time_format() const;
     std::string time_format() const;
     unsigned int formatted_buf_len() const;
     std::string editor() const;

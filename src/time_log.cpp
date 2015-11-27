@@ -635,7 +635,7 @@ TimeLog::Impl::parse_line(string const& p_entry_string, size_t p_line_number) co
     auto it = p_entry_string.begin() + m_expected_time_stamp_length;
     assert (it > p_entry_string.begin());
     string const time_stamp(p_entry_string.begin(), it);
-    auto const time_point = time_stamp_to_point(time_stamp, m_time_format);
+    auto const time_point = long_time_stamp_to_point(time_stamp, m_time_format);
     auto const activity = trim(string(it, p_entry_string.end()));
     return make_pair(move(activity), move(time_point));
 }

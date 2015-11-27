@@ -51,7 +51,8 @@ public:
 protected:
     Result<TimePoint> time_point
     (   std::string const& p_time_stamp,
-        std::string const& p_time_format
+        std::string const& p_time_format,
+        std::string const& p_short_time_format
     );
     TimeLog& time_log();
     std::string time_stamp(TimePoint const& p_time_point) const;

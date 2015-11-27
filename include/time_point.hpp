@@ -51,9 +51,35 @@ std::tm time_point_to_tm(TimePoint const& p_time_point);
 
 TimePoint tm_to_time_point(std::tm const& p_tm);
 
-TimePoint time_stamp_to_point
+/**
+ * Converts a timestamp that includes date information into a TimePoint.
+ *
+ * @exception std::runtime_error if \e p_time_stamp cannot be parsed using
+ *   \e p_format
+ */
+TimePoint long_time_stamp_to_point
 (   std::string const& p_time_stamp,
     std::string const& p_format
+);
+
+/**
+ * Converts a timestamp into a TimePoint. The function first attempts
+ * to use \e p_long_format, and if it cannot parse timestamp using
+ * \e p_long_format, it attempts to use \e p_short_format.
+ *
+ * @param p_long_format a format string for a timestamp including date
+ *   information
+ * @param p_short_format a format string for a timestamp that does not
+ *   include date information
+ * @param p_time_stamp the timestamp to be parsed
+ *
+ * @exception std::runtime_error if \e p_time_stamp cannot be parsed using
+ *   either format string
+ */
+TimePoint time_stamp_to_point
+(   std::string const& p_time_stamp,
+    std::string const& p_long_format,
+    std::string const& p_short_format
 );
 
 std::string time_point_to_stamp

@@ -152,6 +152,12 @@ Config::output_width() const
 }
 
 string
+Config::short_time_format() const
+{
+    return get_option_value<string>("short_format_string");
+}
+
+string
 Config::time_format() const
 {
     return get_option_value<string>("format_string");
@@ -311,6 +317,18 @@ Config::set_defaults()
             "Should be set to a value that is at least one greater than the "
             "length of the longest string expected to be printed as a result "
             "of formatting a time point using format_string."
+        )
+    );
+    unchecked_set_option
+    (   "short_format_string",
+        OptionData
+        (   "%H:%M",
+            "Determines the format used for parsing \"short\" timestamps, i.e. "
+            "those lacking date information and containing just a time. This "
+            "option is set independently of the \"format_string\" option, and "
+            "does not effect the latter; nor does it effect the format used "
+            "for storing timestamps in the log, or for printing reports, as "
+            "these always include date information."
         )
     );
     char const* env_editor = getenv("EDITOR");  // non-portable

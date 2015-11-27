@@ -87,7 +87,11 @@ ResumeCommand::do_process
     TimePoint tp;
     if (m_time_stamp_provided)
     {
-        auto const tp_result = time_point(m_time_stamp, p_config.time_format());
+        auto const tp_result = time_point
+        (   m_time_stamp,
+            p_config.time_format(),
+            p_config.short_time_format()
+        );
         if (tp_result.errors().empty())
         {
             tp = tp_result.get();

@@ -37,6 +37,17 @@ using std::unique_ptr;
 namespace swx
 {
 
+namespace
+{
+    tm zeroed_tm()
+    {
+        tm tm;
+        memset(&tm, 0, sizeof(tm));
+        tm.tm_isdst = -1;
+        return tm;
+    }
+}
+
 TimePoint
 now()
 {
@@ -63,7 +74,7 @@ day_end(TimePoint const& p_time_point, int p_days_diff)
     return tm_to_time_point(time_tm);
 }
 
-std::tm
+tm
 time_point_to_tm(TimePoint const& p_time_point)
 {
     time_t const time_time_t = chrono::system_clock::to_time_t(p_time_point);
@@ -80,19 +91,47 @@ tm_to_time_point(tm const& p_tm)
 }
 
 TimePoint
-time_stamp_to_point(string const& p_time_stamp, string const& p_format)
+long_time_stamp_to_point(string const& p_time_stamp, string const& p_format)
 {
-    // don't make this static - caused odd bug with strptime (?)
+    // note using a static for format string can cause odd bug with strptime (?)
     char const* format = p_format.c_str();
-    tm tm;
-    memset(&tm, 0, sizeof(tm));
-    tm.tm_isdst = -1;
+    auto tm = zeroed_tm();
     
     // non-portable
     if (strptime(p_time_stamp.c_str(), format, &tm) == nullptr)
     {
         string const errmsg = "Could not parse timestamp: " + p_time_stamp;
         throw runtime_error(errmsg);
+    }
+
+    return chrono::system_clock::from_time_t(mktime(&tm));
+}
+
+TimePoint
+time_stamp_to_point
+(   string const& p_time_stamp,
+    string const& p_long_format,
+    string const& p_short_format
+)
+{
+    // note using a static for format string can cause odd bug with strptime (?)
+    char const* long_format = p_long_format.c_str();
+    auto tm = zeroed_tm();
+
+    // non-portable
+
+    // try long format first
+    if (strptime(p_time_stamp.c_str(), long_format, &tm) == nullptr)
+    {
+        // try short format instead
+        char const* short_format = p_short_format.c_str();
+        tm = time_point_to_tm(day_begin(now()));
+
+        if (strptime(p_time_stamp.c_str(), short_format, &tm) == nullptr)
+        {
+            string const errmsg = "Could not parse timestamp: " + p_time_stamp;
+            throw runtime_error(errmsg);
+        }
     }
 
     return chrono::system_clock::from_time_t(mktime(&tm));

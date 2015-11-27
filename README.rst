@@ -151,7 +151,12 @@ corresponding time. The time provided may not be in the future though, and may
 not be earlier than the start time of the current activity stint. If used with
 the ``-a`` option, the ``--at`` option will cause the start time of the current
 activity stint to be amended, in which case the provided time may not be
-earlier than the start time of the previous stint.
+earlier than the start time of the previous stint. The timestamp can be
+either in short or long form. By default, these are the 24-hour time
+format (e.g. "14:23") and ISO date-time format (e.g. "2015-02-28T14:23"),
+respectively. These formats can be configured, however (see `Configuration`_).
+When the short form is used, it is assumed to refer to the corresponding
+time on the current day, i.e. the day the command is run.
  
 Note activity names are case-sensitive.
 
@@ -377,7 +382,11 @@ Note that if you change the timestamp format, then this will change the format
 of timestamps as read from and written to the data file, *without*
 retroactively reformatting the timestamps that are already stored. This will
 result in parsing errors, unless you are prepared to reformat manually all your
-already-entered timestamps to the new format.
+already-entered timestamps to the new format. Both a short and a long timestamp
+format are recognized. The long format is used for storing entries in the time
+log and when printing reports. When passing timestamps as options to commands,
+either format may be used. The short format is used for specifying a time
+without date information.
 
 Help and other commands
 -----------------------

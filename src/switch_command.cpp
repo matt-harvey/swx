@@ -140,22 +140,21 @@ SwitchCommand::do_process
     bool const activity_exists = time_log().has_activity(activity);
 
     // prevent pointless switch
-    if (!m_time_stamp_provided)  // but assume not pointless if timestamp provided
+    if (!m_time_stamp_provided && activity.empty())
     {
-        if (activity.empty())
+        if (!log_active)
         {
-            if (!log_active)
-            {
-                return {"Already inactive."};
-            }
+            return {"Already inactive."};
         }
-        else if (log_active)
+    }
+    else if (log_active)
+    {
+        assert (!last_two_activities.empty());
+        auto const amending_time_stamp = (m_amend && m_time_stamp_provided);
+        auto const activity_not_changing = (activity == last_two_activities.front());
+        if (!amending_time_stamp && activity_not_changing)
         {
-            assert (!last_two_activities.empty());
-            if (last_two_activities.front() == activity)
-            {
-                return {"\"" + activity + "\" is already the current activity."};
-            }
+            return {"\"" + activity + "\" is already the current activity."};
         }
     }
 
@@ -167,7 +166,11 @@ SwitchCommand::do_process
         TimePoint tp;
         if (m_time_stamp_provided)
         {
-            auto const tp_result = time_point(m_time_stamp, p_config.time_format());
+            auto const tp_result = time_point
+            (   m_time_stamp,
+                p_config.time_format(),
+                p_config.short_time_format()
+            );
             if (tp_result.errors().empty())
             {
                 tp = tp_result.get();

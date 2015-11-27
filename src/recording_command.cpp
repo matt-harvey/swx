@@ -55,19 +55,20 @@ RecordingCommand::~RecordingCommand() = default;
 Result<TimePoint>
 RecordingCommand::time_point
 (   std::string const& p_time_stamp,
-    std::string const& p_time_format
+    std::string const& p_time_format,
+    std::string const& p_short_time_format
 )
 {
     using ResultT = Result<TimePoint>;
     try
     {
-        auto const tp = time_stamp_to_point(p_time_stamp, p_time_format);
+        TimePoint const tp =
+            time_stamp_to_point(p_time_stamp, p_time_format, p_short_time_format);
         if (tp > now())
         {
             return ResultT::make_invalid("Timestamp must not be future-dated.");
         }
-        return ResultT::make_valid(time_stamp_to_point(p_time_stamp, p_time_format));
-
+        return ResultT::make_valid(tp);
     }
     catch (runtime_error&)
     {
