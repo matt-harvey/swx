@@ -146,10 +146,10 @@ If ``-a`` is used without an argument, then it will effectively erase the
 current activity stint, so that it becomes, in effect, a stint of inactivity.
 
 If the ``--at`` option is used with a timestamp, then instead of being recorded
-as happening "now", the switch will be recorded as if it happened at the
+as happening "now", the switch will be recorded as if it had happened at the
 corresponding time. The time provided may not be in the future though, and may
-not be earlier than start time of the current activity stint. If used with the
-``-a`` option, the ``--at`` option will cause the start time of the current
+not be earlier than the start time of the current activity stint. If used with
+the ``-a`` option, the ``--at`` option will cause the start time of the current
 activity stint to be amended, in which case the provided time may not be
 earlier than the start time of the previous stint.
  
