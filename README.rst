@@ -14,6 +14,8 @@ Start work on a new activity: ``swx s -c <activity>``
 
 Switch to an existing activity: ``swx s <activity>``
 
+Record a switch to an existing activity at a particular time: ``swx s <activity> --at <hh:mm>``
+
 Stop working on any activity: ``swx s``
 
 Resume work on the most recent activity: ``swx resume``
@@ -29,13 +31,11 @@ Switch to a "sibling activity" of the current activity: ``swx s __ <sibling-acti
 
 Print a summary of today's activities in tree form: ``swx d``
 
-Print today's activities in "verbose" form: ``swx d -v``
+Print a time-ordered list of today's individual activity stints: ``swx d -l``
 
 Print yesterday's activities: ``swx d -a1``
 
 Print activities of two days ago: ``swx d -a2``
-
-Print a time-ordered list of today's individual activity stints: ``swx d -l``
 
 Print a summary of the entire activity log: ``swx p``
 
@@ -46,8 +46,6 @@ Print a summary of activitites between two times: ``swx p -f <YYYY-MM-DDThh:mm> 
 Print just the name of the current activity ``swx c``
 
 Print a summary of a given activity and its sub-activities: ``swx p <activity>``
-
-Print a summary of a given activity, excluding its sub-activities ``swx p -x <activity>``
 
 Print a summary of activities matching a regular expression: ``swx p -r <regex>``
 
