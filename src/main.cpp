@@ -23,12 +23,14 @@
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
 using std::cerr;
 using std::cout;
 using std::endl;
+using std::runtime_error;
 using std::string;
 using std::vector;
 using swx::enable_exceptions;
@@ -48,8 +50,8 @@ int main(int argc, char** argv)
         enable_exceptions(cout);
         if (argc < 2)
         {
-            cerr << "Command not provided." << endl;
-            cerr << CommandManager::directions_to_get_help() << endl;
+            cerr << "Command not provided.\n"
+                 << CommandManager::directions_to_get_help() << endl;
             return EXIT_FAILURE;
         }
         assert (argc >= 2);
@@ -64,7 +66,7 @@ int main(int argc, char** argv)
         CommandManager manager(time_log);
         return manager.process_command(config, argv[1], args);
     }
-    catch (std::runtime_error& e)
+    catch (runtime_error& e)
     {
         cerr << "Error: " << e.what() << endl;
         return EXIT_FAILURE;
