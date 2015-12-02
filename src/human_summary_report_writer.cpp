@@ -64,7 +64,7 @@ HumanSummaryReportWriter::~HumanSummaryReportWriter() = default;
 void
 HumanSummaryReportWriter::do_write_summary
 (   ostream& p_os,
-    map<std::string, ActivityStats> const& p_activity_stats_map
+    map<string, ActivityStats> const& p_activity_stats_map
 )
 {
     if (has_flag(Flags::succinct)) write_succinct_summary(p_os, p_activity_stats_map);
@@ -108,7 +108,7 @@ HumanSummaryReportWriter::print_label_and_rounded_hours
 void
 HumanSummaryReportWriter::write_succinct_summary
 (   ostream& p_os,
-    map<std::string, ActivityStats> const& p_activity_stats_map
+    map<string, ActivityStats> const& p_activity_stats_map
 )
 {
     ActivityStats total_info;
@@ -125,7 +125,7 @@ HumanSummaryReportWriter::write_succinct_summary
 void
 HumanSummaryReportWriter::write_flat_summary
 (   ostream& p_os,
-    map<std::string, ActivityStats> const& p_activity_stats_map
+    map<string, ActivityStats> const& p_activity_stats_map
 )
 {
     string::size_type left_col_width = 0;
@@ -166,7 +166,7 @@ HumanSummaryReportWriter::write_flat_summary
 void
 HumanSummaryReportWriter::write_tree_summary
 (   ostream& p_os,
-    map<std::string, ActivityStats> const& p_activity_stats_map
+    map<string, ActivityStats> const& p_activity_stats_map
 )
 {
     if (p_activity_stats_map.empty())

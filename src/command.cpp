@@ -87,7 +87,7 @@ public:
         function<void()> const& p_callback,
         string* p_arg_target = nullptr
     );
-    Result<std::vector<std::string>> parse_args(vector<string> const& p_args);
+    Result<vector<string>> parse_args(vector<string> const& p_args);
     string usage_summary() const;
     string usage_descriptor(bool support_placeholders) const;
     string const& command_word() const;

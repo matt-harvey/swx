@@ -22,10 +22,7 @@ using std::string;
 namespace swx
 {
 
-HelpLine::HelpLine
-(   std::string const& p_usage_descriptor,
-    std::string const& p_args_descriptor
-):
+HelpLine::HelpLine(string const& p_usage_descriptor, string const& p_args_descriptor):
     m_usage_descriptor(p_usage_descriptor),
     m_args_descriptor(p_args_descriptor)
 {

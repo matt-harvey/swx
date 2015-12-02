@@ -68,7 +68,7 @@ DayCommand::~DayCommand() = default;
 Command::ErrorMessages
 DayCommand::do_process
 (   Config const& p_config,
-    std::vector<std::string> const& p_ordinary_args,
+    vector<string> const& p_ordinary_args,
     ostream& p_ordinary_ostream
 )
 {

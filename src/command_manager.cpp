@@ -273,7 +273,7 @@ CommandManager::register_command_word
         oss << "Command word \""
             << p_word
             << "\" has already been registered.";
-        throw std::runtime_error(oss.str());
+        throw runtime_error(oss.str());
     }
     m_command_map[p_word] = p_cp;
 }

@@ -54,9 +54,9 @@ RecordingCommand::~RecordingCommand() = default;
 
 Result<TimePoint>
 RecordingCommand::time_point
-(   std::string const& p_time_stamp,
-    std::string const& p_time_format,
-    std::string const& p_short_time_format
+(   string const& p_time_stamp,
+    string const& p_time_format,
+    string const& p_short_time_format
 )
 {
     using ResultT = Result<TimePoint>;

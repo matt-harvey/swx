@@ -62,7 +62,7 @@ SummaryReportWriter::do_preprocess_stints
 }
 
 void
-SummaryReportWriter::do_process_stint(std::ostream& p_os, Stint const& p_stint)
+SummaryReportWriter::do_process_stint(ostream& p_os, Stint const& p_stint)
 {
     (void)p_os;  // silence compiler warning re. unused param.
     auto const interval = p_stint.interval();

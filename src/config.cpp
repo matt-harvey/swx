@@ -252,7 +252,7 @@ Config::unchecked_set_option
 }
 
 string
-Config::get_raw_option_value(std::string const& p_key) const
+Config::get_raw_option_value(string const& p_key) const
 {
     auto const it = m_map.find(p_key);
     if (it == m_map.end())
