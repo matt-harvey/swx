@@ -18,6 +18,7 @@
 #define GUARD_rename_command_hpp_21287423428747534
 
 #include "activity_filter.hpp"
+#include "config_fwd.hpp"
 #include "recording_command.hpp"
 #include "time_log.hpp"
 #include <ostream>
@@ -26,12 +27,6 @@
 
 namespace swx
 {
-
-// begin forward declarations
-
-class Config;
-
-// end forward declarations
 
 class RenameCommand: public RecordingCommand
 {

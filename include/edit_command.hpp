@@ -18,18 +18,13 @@
 #define GUARD_edit_command_hpp_5450043350202052
 
 #include "command.hpp"
+#include "config_fwd.hpp"
 #include <ostream>
 #include <string>
 #include <vector>
 
 namespace swx
 {
-
-// begin forward declarations
-
-class Config;
-
-// end forward declarations
 
 class EditCommand: public Command
 {

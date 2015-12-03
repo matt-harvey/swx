@@ -17,6 +17,7 @@
 #ifndef GUARD_print_command_23685825347754091
 #define GUARD_print_command_23685825347754091
 
+#include "config_fwd.hpp"
 #include "reporting_command.hpp"
 #include "time_log.hpp"
 #include <string>
@@ -24,13 +25,6 @@
 
 namespace swx
 {
-
-// begin forward declarations
-
-class Config;
-
-// end forward declarations
-
 
 class PrintCommand: public ReportingCommand
 {

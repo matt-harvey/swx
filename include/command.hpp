@@ -18,6 +18,7 @@
 #define GUARD_command_hpp_08439188501070807
 
 #include "exit_code.hpp"
+#include "config_fwd.hpp"
 #include <functional>
 #include <memory>
 #include <ostream>
@@ -29,7 +30,6 @@ namespace swx
 
 // begin forward declarations
 
-class Config;
 class HelpLine;
 
 // end forward declarations

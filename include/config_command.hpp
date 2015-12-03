@@ -18,18 +18,13 @@
 #define GUARD_config_command_hpp_496390462618503
 
 #include "command.hpp"
+#include "config_fwd.hpp"
 #include <ostream>
 #include <string>
 #include <vector>
 
 namespace swx
 {
-
-// begin forward declarations
-
-class Config;
-
-// end forward declarations
 
 class ConfigCommand: public Command
 {

@@ -18,6 +18,7 @@
 #define GUARD_current_command_hpp_9615427562787863
 
 #include "command.hpp"
+#include "config_fwd.hpp"
 #include "help_line.hpp"
 #include "time_log.hpp"
 #include <ostream>
@@ -26,12 +27,6 @@
 
 namespace swx
 {
-
-// begin forward declarations
-
-class Config;
-
-// end forward declarations
 
 class CurrentCommand: public Command
 {

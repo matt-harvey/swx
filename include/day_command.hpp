@@ -17,6 +17,7 @@
 #ifndef GUARD_day_command_hpp_01995176124384243
 #define GUARD_day_command_hpp_01995176124384243
 
+#include "config_fwd.hpp"
 #include "reporting_command.hpp"
 #include "time_log.hpp"
 #include <string>
@@ -24,12 +25,6 @@
 
 namespace swx
 {
-
-// begin forward declarations
-
-class Config;
-
-// end forward declarations
 
 class DayCommand: public ReportingCommand
 {

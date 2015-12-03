@@ -18,6 +18,7 @@
 #define GUARD_help_command_hpp_8550137443724153
 
 #include "command.hpp"
+#include "config_fwd.hpp"
 #include <string>
 #include <vector>
 
@@ -27,7 +28,6 @@ namespace swx
 // begin forward declarations
 
 class CommandManager;
-class Config;
 
 // end forward declarations
 

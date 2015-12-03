@@ -17,6 +17,7 @@
 #ifndef GUARD_switch_command_hpp_9219790538409627
 #define GUARD_switch_command_hpp_9219790538409627
 
+#include "config_fwd.hpp"
 #include "recording_command.hpp"
 #include "time_log.hpp"
 #include <ostream>
@@ -25,12 +26,6 @@
 
 namespace swx
 {
-
-// begin forward declarations
-
-class Config;
-
-// end forward declarations
 
 class SwitchCommand: public RecordingCommand
 {

@@ -19,6 +19,7 @@
 
 #include "activity_filter.hpp"
 #include "command.hpp"
+#include "config_fwd.hpp"
 #include "help_line.hpp"
 #include "summary_report_writer.hpp"
 #include "time_log.hpp"
@@ -29,12 +30,6 @@
 
 namespace swx
 {
-
-// begin forward declarations
-
-class Config;
-
-// end forward declarations
 
 class ReportingCommand: public Command
 {

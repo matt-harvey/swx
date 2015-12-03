@@ -18,18 +18,13 @@
 #define GUARD_version_command_hpp_12242928944641225
 
 #include "command.hpp"
+#include "config_fwd.hpp"
 #include <ostream>
 #include <string>
 #include <vector>
 
 namespace swx
 {
-
-// begin forward declarations
-
-class Config;
-
-// end forward declarations
 
 class VersionCommand: public Command
 {
