@@ -92,7 +92,7 @@ namespace
 
 }  // end anonymous namespace
 
-vector<string>
+string
 expand_placeholders(vector<string> const& p_components, TimeLog& p_time_log)
 {
     vector<string> vec;
@@ -104,7 +104,7 @@ expand_placeholders(vector<string> const& p_components, TimeLog& p_time_log)
             if (!component.empty()) vec.push_back(component);
         }
     }
-    return vec;
+    return squish(vec.begin(), vec.end());
 }
 
 void

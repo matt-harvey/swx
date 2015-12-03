@@ -32,9 +32,11 @@ class TimeLog;
 
 /**
  * Takes \e p_components, expands any that are placeholders, in the
- * context of \e p_time_log, and returns the expanded sequence of strings.
+ * context of \e p_time_log, and returns the resulting activity name,
+ * with any additional whitespace removed (other than a single space
+ * between each activity component).
  */
-std::vector<std::string> expand_placeholders
+std::string expand_placeholders
 (   std::vector<std::string> const& p_components,
     TimeLog& p_time_log
 );

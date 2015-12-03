@@ -22,7 +22,6 @@
 #include "list_report_writer.hpp"
 #include "placeholder.hpp"
 #include "stream_utilities.hpp"
-#include "string_utilities.hpp"
 #include "summary_report_writer.hpp"
 #include "time_log.hpp"
 #include <iostream>
@@ -142,8 +141,7 @@ ReportingCommand::print_report
     }
     else
     {
-        auto const expanded = expand_placeholders(p_activity_components, m_time_log);
-        comparitor = squish(expanded.begin(), expanded.end());
+        comparitor = expand_placeholders(p_activity_components, m_time_log);
     }
 
     unique_ptr<ActivityFilter>

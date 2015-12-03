@@ -105,9 +105,9 @@ RenameCommand::do_process
     ErrorMessages error_messages;
     if (p_ordinary_args.size() == 2)
     {
-        auto const process_arg = [p_ordinary_args](TimeLog& log, size_t i) {
-            auto const expanded = expand_placeholders(split(p_ordinary_args[i]), log);
-            return squish(expanded.begin(), expanded.end());
+        auto const process_arg = [p_ordinary_args](TimeLog& log, size_t i)
+        {
+            return expand_placeholders(split(p_ordinary_args[i]), log);
         };
         auto const comparitor = process_arg(time_log(), 0);
         auto const new_name = process_arg(time_log(), 1);

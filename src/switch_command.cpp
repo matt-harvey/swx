@@ -22,7 +22,6 @@
 #include "recording_command.hpp"
 #include "result.hpp"
 #include "stream_utilities.hpp"
-#include "string_utilities.hpp"
 #include "time_log.hpp"
 #include "time_point.hpp"
 #include <cassert>
@@ -112,11 +111,8 @@ SwitchCommand::do_process
 
     auto const last_two_activities = time_log().last_activities(2);
 
-    // interpret arguments
-    vector<string> const args = expand_placeholders(p_ordinary_args, time_log());
-
     // find the activity that we want to switch to
-    string const activity_input(squish(args.begin(), args.end()));
+    auto const activity_input = expand_placeholders(p_ordinary_args, time_log());
     string activity;
     if (m_use_regex)
     {
