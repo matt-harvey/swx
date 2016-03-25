@@ -17,19 +17,14 @@
 #ifndef GUARD_report_writer_hpp_6461996848910114
 #define GUARD_report_writer_hpp_6461996848910114
 
+#include "interval_fwd.hpp"
+#include "stint.hpp"
 #include <ostream>
 #include <string>
 #include <vector>
-#include "stint.hpp"
 
 namespace swx
 {
-
-// begin forward declarations
-
-class Interval;
-
-// end forward declarations
 
 class ReportWriter
 {

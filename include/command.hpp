@@ -19,6 +19,7 @@
 
 #include "exit_code.hpp"
 #include "config_fwd.hpp"
+#include "help_line_fwd.hpp"
 #include <functional>
 #include <memory>
 #include <ostream>
@@ -27,12 +28,6 @@
 
 namespace swx
 {
-
-// begin forward declarations
-
-class HelpLine;
-
-// end forward declarations
 
 /**
  * Represents a command that processes arguments received from

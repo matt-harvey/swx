@@ -18,6 +18,7 @@
 #define GUARD_activity_tree_hpp_4902535711835388
 
 #include "activity_node.hpp"
+#include "activity_stats_fwd.hpp"
 #include <functional>
 #include <map>
 #include <set>
@@ -26,12 +27,6 @@
 
 namespace swx
 {
-
-// begin forward declarations
-
-struct ActivityStats;
-
-// end forward declarations
 
 class ActivityTree
 {

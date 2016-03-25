@@ -19,6 +19,7 @@
 
 #include "summary_report_writer.hpp"
 #include "activity_stats.hpp"
+#include "stint_fwd.hpp"
 #include "time_point.hpp"
 #include <map>
 #include <ostream>
@@ -27,12 +28,6 @@
 
 namespace swx
 {
-
-// begin forward declarations
-
-class Stint;
-
-// end forward declarations
 
 class HumanSummaryReportWriter: public SummaryReportWriter
 {

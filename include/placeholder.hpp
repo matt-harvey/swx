@@ -17,18 +17,13 @@
 #ifndef GUARD_placeholder_hpp_31044386248590605
 #define GUARD_placeholder_hpp_31044386248590605
 
+#include "time_log_fwd.hpp"
 #include <ostream>
 #include <string>
 #include <vector>
 
 namespace swx
 {
-
-// begin forward declarations
-
-class TimeLog;
-
-// end forward declarations
 
 /**
  * Takes \e p_components, expands any that are placeholders, in the

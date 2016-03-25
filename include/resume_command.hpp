@@ -31,7 +31,7 @@ class ResumeCommand: public RecordingCommand
 {
 // special member functions
 public:
-    explicit ResumeCommand
+    ResumeCommand
     (   std::string const& p_command_word,
         std::vector<std::string> const& p_aliases,
         TimeLog& p_time_log

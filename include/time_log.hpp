@@ -17,6 +17,8 @@
 #ifndef GUARD_time_log_hpp_6591341885082117
 #define GUARD_time_log_hpp_6591341885082117
 
+#include "activity_filter_fwd.hpp"
+#include "stint_fwd.hpp"
 #include "time_point.hpp"
 #include <string>
 #include <memory>
@@ -24,13 +26,6 @@
 
 namespace swx
 {
-
-// begin forward declarations
-
-class ActivityFilter;
-class Stint;
-
-// end forward declarations
 
 /**
  * Represents a record of time spent on various activities, persisted to a

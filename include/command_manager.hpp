@@ -21,6 +21,7 @@
 #include "config.hpp"
 #include "exit_code.hpp"
 #include "stream_flag_guard.hpp"
+#include "time_log_fwd.hpp"
 #include <memory>
 #include <ostream>
 #include <string>
@@ -31,12 +32,6 @@
 
 namespace swx
 {
-
-// begin forward declarations
-
-class TimeLog;
-
-// end forward declarations
 
 /**
  * Manages the various commands provided by the application.

@@ -18,18 +18,13 @@
 #define GUARD_human_list_report_writer_hpp_40288006812468175
 
 #include "list_report_writer.hpp"
+#include "stint_fwd.hpp"
 #include <ostream>
 #include <string>
 #include <vector>
 
 namespace swx
 {
-
-// begin forward declarations
-
-class Stint;
-
-// end forward declarations
 
 class HumanListReportWriter: public ListReportWriter
 {

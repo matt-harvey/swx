@@ -19,17 +19,12 @@
 
 #include "command.hpp"
 #include "config_fwd.hpp"
+#include "command_manager_fwd.hpp"
 #include <string>
 #include <vector>
 
 namespace swx
 {
-
-// begin forward declarations
-
-class CommandManager;
-
-// end forward declarations
 
 class HelpCommand: public Command
 {

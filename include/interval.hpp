@@ -35,7 +35,7 @@ class Interval
 // special member functions
 public:
 
-    explicit Interval
+    Interval
     (   TimePoint const& p_beginning,
         Seconds const& p_duration,
         bool p_is_live = false
