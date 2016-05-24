@@ -67,7 +67,10 @@ public:
     /**
      * If \e p_old_str satisfies this filter, perform a replacement according
      * to the rule for this filter, replacing the matched text with \e p_substitution
-     * and returning the result as a new string.
+     * and returning the result as a new string. If matched, then the returned result
+     * will always also have any leading and trailing whitespace trimmed, and will
+     * have any internal consecutive whitespace sequences converted to a single space
+     * character.
      */
     std::string replace
     (   std::string const& p_old_str,

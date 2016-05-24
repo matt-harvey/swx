@@ -46,10 +46,13 @@ BOOST_AUTO_TEST_CASE(regex_activity_filter_replace)
 {
     BOOST_CHECK_EQUAL(RegexActivityFilter("hello").replace("hello", "yes"), "yes");
     BOOST_CHECK_EQUAL(RegexActivityFilter(" hello").replace("hello", "yes"), "hello");
+    BOOST_CHECK_EQUAL(RegexActivityFilter("hello").replace("hello there", ""), "there");
+    BOOST_CHECK_EQUAL(RegexActivityFilter("b c").replace("a b c d", ""), "a d");
     BOOST_CHECK_EQUAL(RegexActivityFilter("hey").replace("hey there", "yes"), "yes there");
     BOOST_CHECK_EQUAL(RegexActivityFilter("hey there").replace("there", "yes"), "there");
     BOOST_CHECK_EQUAL(RegexActivityFilter("hey|there").replace("there", "yes"), "yes");
     BOOST_CHECK_EQUAL(RegexActivityFilter("^a b").replace("a b c", "y"), "y c");
+    BOOST_CHECK_EQUAL(RegexActivityFilter("w.+").replace("whatever", "yes"), "yes");
     BOOST_CHECK_EQUAL(RegexActivityFilter("w.+").replace("whatever", "yes"), "yes");
 }
 

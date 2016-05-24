@@ -37,6 +37,8 @@ BOOST_AUTO_TEST_CASE(true_activity_filter_replace)
     BOOST_CHECK_EQUAL(TrueActivityFilter().replace("", "yes"), "yes");
     BOOST_CHECK_EQUAL(TrueActivityFilter().replace("ksdlkjf", ""), "");
     BOOST_CHECK_EQUAL(TrueActivityFilter().replace("lasdf", ""), "");
+    BOOST_CHECK_EQUAL(TrueActivityFilter().replace("lasdf", " yes "), "yes");
+    BOOST_CHECK_EQUAL(TrueActivityFilter().replace("lasdf", " yes    well"), "yes well");
 }
 
 }  // namespace test

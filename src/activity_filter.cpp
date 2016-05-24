@@ -18,6 +18,7 @@
 #include "exact_activity_filter.hpp"
 #include "ordinary_activity_filter.hpp"
 #include "regex_activity_filter.hpp"
+#include "string_utilities.hpp"
 #include "true_activity_filter.hpp"
 #include <cassert>
 #include <string>
@@ -56,7 +57,11 @@ ActivityFilter::matches(string const& p_str) const
 string
 ActivityFilter::replace(string const& p_old_str, string const& p_substitution) const
 {
-    return matches(p_old_str) ? do_replace(p_old_str, p_substitution) : p_old_str;
+    return (
+        matches(p_old_str) ?
+        squash(do_replace(p_old_str, p_substitution)) :
+        p_old_str
+    );
 }
 
 string

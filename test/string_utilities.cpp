@@ -37,6 +37,7 @@ BOOST_AUTO_TEST_CASE(trim)
     BOOST_CHECK_EQUAL(trim("hello there"), "hello there");
     BOOST_CHECK_EQUAL(trim(" hello there"), "hello there");
     BOOST_CHECK_EQUAL(trim("hello there "), "hello there");
+    BOOST_CHECK_EQUAL(trim("  hello  there "), "hello  there");
     BOOST_CHECK_EQUAL(trim(" hello ."), "hello .");
     BOOST_CHECK_EQUAL(trim("9hello "), "9hello");
     BOOST_CHECK_EQUAL(trim("\n\n\nhello "), "hello");
@@ -53,6 +54,20 @@ BOOST_AUTO_TEST_CASE(squish)
     (   squish(begin(strings), end(strings)),
         "hello  there everyone what's happening?"
     );
+}
+
+BOOST_AUTO_TEST_CASE(squash)
+{
+    using swx::squash;
+
+    auto const str0 = " hello  there\neveryone,  \t  what's happening? ";
+    BOOST_CHECK_EQUAL(squash(str0), "hello there everyone, what's happening?");
+    
+    auto const str1 = "hello there";
+    BOOST_CHECK_EQUAL(squash(str1), "hello there");
+
+    auto const str2 = " hello ";
+    BOOST_CHECK_EQUAL(squash(str2), "hello");
 }
 
 BOOST_AUTO_TEST_CASE(split)

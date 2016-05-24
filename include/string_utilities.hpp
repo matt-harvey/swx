@@ -44,6 +44,15 @@ template <typename StringIter>
 std::string squish(StringIter p_beg, StringIter const& p_end);
 
 /**
+ * @param p_string
+ *
+ * @returns a string produced by trimming the whitespace from the beginning and
+ * end of \e p_string, and replacing each internal consecutive sequence of whitespace
+ * characters in \e p_string with a single space character.
+ */
+std::string squash(std::string const& p_string);
+
+/**
  * @param p_str string to split
  *
  * @param p_delimiter

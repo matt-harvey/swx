@@ -41,6 +41,7 @@ BOOST_AUTO_TEST_CASE(exact_activity_filter_replace)
     BOOST_CHECK_EQUAL(ExactActivityFilter("hey there").replace("there", "yes"), "there");
     BOOST_CHECK_EQUAL(ExactActivityFilter("").replace("", "yes"), "yes");
     BOOST_CHECK_EQUAL(ExactActivityFilter("yes").replace("", "yes"), "");
+    BOOST_CHECK_EQUAL(ExactActivityFilter("yes hello").replace("yes hello", " yes "), "yes");
 }
 
 }  // namespace test

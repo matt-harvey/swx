@@ -48,7 +48,8 @@ BOOST_AUTO_TEST_CASE(ordinary_activity_filter_replace)
     BOOST_CHECK_EQUAL(OrdinaryActivityFilter("xyz").replace("x b c", "y"), "x b c");
     BOOST_CHECK_EQUAL(OrdinaryActivityFilter("").replace("", "yes"), "yes");
     BOOST_CHECK_EQUAL(OrdinaryActivityFilter("yes").replace("", "yes"), "");
-    BOOST_CHECK_EQUAL(OrdinaryActivityFilter("").replace("yes", ""), "yes");
+    BOOST_CHECK_EQUAL(OrdinaryActivityFilter("hello").replace("hello yes", ""), "yes");
+    BOOST_CHECK_EQUAL(OrdinaryActivityFilter("a b").replace("a b c  d", " "), "c d");
 }
 
 }  // namespace test
