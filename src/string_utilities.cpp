@@ -41,13 +41,15 @@ namespace swx
 string
 trim(string const& p_string)
 {
-    return regex_replace(p_string, regex("^\\s+|\\s+$"), string());
+    static regex const r("^\\s+|\\s+$", regex::optimize);
+    return regex_replace(p_string, r, "");
 }
 
 string
 squash(string const& p_string)
 {
-    return trim(regex_replace(p_string, regex("\\s+"), " "));
+    static regex const r("\\s+", regex::optimize);
+    return trim(regex_replace(p_string, r, " "));
 }
 
 vector<string>
