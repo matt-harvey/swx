@@ -1,6 +1,6 @@
 /*
  * Copyright 2014, 2015 Matthew Harvey
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,7 @@
 #include "stream_utilities.hpp"
 #include <algorithm>
 #include <cassert>
+#include <cctype>
 #include <cstdio>
 #include <iterator>
 #include <regex>
@@ -27,6 +28,7 @@
 
 using std::copy;
 using std::getline;
+using std::isspace;
 using std::ostream_iterator;
 using std::ostringstream;
 using std::regex;
@@ -41,8 +43,25 @@ namespace swx
 string
 trim(string const& p_string)
 {
-    static regex const r("^\\s+|\\s+$", regex::optimize);
-    return regex_replace(p_string, r, "");
+    if (p_string.empty())
+    {
+        return p_string;
+    }
+    string::const_iterator it = p_string.begin();
+    while (isspace(*it)) ++it;
+    string::const_iterator rit = p_string.end();
+    if (it == rit)
+    {
+        return string();
+    }
+    --rit;
+    while (isspace(*rit))
+    {
+        assert (it != rit);
+        --rit;
+    }
+    ++rit;
+    return string(it, rit);
 }
 
 string

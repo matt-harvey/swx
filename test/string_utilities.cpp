@@ -1,6 +1,6 @@
 /*
  * Copyright 2015 Matthew Harvey
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,6 +34,9 @@ BOOST_AUTO_TEST_CASE(trim)
 {
     using swx::trim;
 
+    BOOST_CHECK_EQUAL(trim(" "), "");
+    BOOST_CHECK_EQUAL(trim(""), "");
+    BOOST_CHECK_EQUAL(trim("  \n  "), "");
     BOOST_CHECK_EQUAL(trim("hello there"), "hello there");
     BOOST_CHECK_EQUAL(trim(" hello there"), "hello there");
     BOOST_CHECK_EQUAL(trim("hello there "), "hello there");
@@ -62,7 +65,7 @@ BOOST_AUTO_TEST_CASE(squash)
 
     auto const str0 = " hello  there\neveryone,  \t  what's happening? ";
     BOOST_CHECK_EQUAL(squash(str0), "hello there everyone, what's happening?");
-    
+
     auto const str1 = "hello there";
     BOOST_CHECK_EQUAL(squash(str1), "hello there");
 
@@ -73,7 +76,7 @@ BOOST_AUTO_TEST_CASE(squash)
 BOOST_AUTO_TEST_CASE(split)
 {
     using swx::split;
-    
+
     string const str0("hello  there, everyone,, what's happening?,,");
     vector<string> const vec0{"hello  there", " everyone", "", " what's happening?", "", ""};
     BOOST_CHECK(split(str0, ',') == vec0);
