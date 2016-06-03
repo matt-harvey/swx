@@ -95,7 +95,6 @@ wrap
     string::size_type p_width
 )
 {
-    // TODO LOW PRIORITY This could probably be tidied up a bit.
     auto const separator = string("\n") + string(p_margin, ' ');
     ostringstream oss;
     enable_exceptions(oss);

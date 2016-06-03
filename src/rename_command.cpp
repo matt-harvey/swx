@@ -124,8 +124,6 @@ RenameCommand::do_process
             p_ordinary_ostream << "1 stint matched and renamed" << endl;
             break;
         default:
-            // TODO LOW PRIORITY Should probably provide at least an option to
-            // print each individual renaming.
             p_ordinary_ostream << count << " stints matched and renamed." << endl;
             break;
         }
