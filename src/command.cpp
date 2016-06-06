@@ -62,7 +62,8 @@ namespace
 {
     
     auto const k_option_prefix = '-';
-    auto const k_double_dash_option_alias = "-";
+    string const k_double_dash_option_alias = "-";
+    string const k_double_dash = "--";
 
 }  // end anonymous namespace
 
@@ -87,6 +88,7 @@ public:
         function<void()> const& p_callback,
         string* p_arg_target = nullptr
     );
+    bool has_options() const;
     Result<vector<string>> parse_args(vector<string> const& p_args);
     string usage_summary() const;
     string usage_descriptor(bool support_placeholders) const;
@@ -262,6 +264,12 @@ Command::Impl::add_option
     m_options.emplace_back(p_aliases, p_help_line, p_callback, p_arg_target);
 }
 
+bool
+Command::Impl::has_options() const
+{
+    return m_options_map.find(k_double_dash_option_alias) != m_options_map.end();
+}
+
 Result<vector<string>>
 Command::Impl::parse_args(vector<string> const& p_args)
 {
@@ -269,17 +277,11 @@ Command::Impl::parse_args(vector<string> const& p_args)
     // and tidy it up.
     using ResultT = Result<vector<string>>;
 
-    auto const recognize_double_dash =
-        (m_options_map.find(k_double_dash_option_alias) != m_options_map.end());
-    if (m_accept_ordinary_args && !recognize_double_dash)
+    if (m_accept_ordinary_args && !has_options())
     {
         return ResultT::make_valid(p_args);
     }
     vector<string> ordinary_args;
-    ostringstream oss;
-    enable_exceptions(oss);
-    oss << k_option_prefix << k_double_dash_option_alias;
-    string const double_dash = oss.str();
     auto const args_end = p_args.end();
 
     // examine each argument in turn
@@ -287,133 +289,129 @@ Command::Impl::parse_args(vector<string> const& p_args)
     {
         auto const& arg = *it;
 
-        if (recognize_double_dash && (arg == double_dash))
+        if (has_options() && arg == k_double_dash)
         {
             // double-dash ends the options, so treat remaining arguments as
             // ordinary arguments, not options
             copy(it + 1, p_args.end(), back_inserter(ordinary_args));
-            return ResultT::make_valid(ordinary_args);
         }
-        if (!arg.empty() && (arg[0] == k_option_prefix))
+        else if (arg.size() > 2 && arg[0] == k_option_prefix && arg[1] == k_option_prefix)
         {
-            if (arg.size() > 2 && arg[1] == k_option_prefix)
+            // arg is a long option
+            assert (arg.end() >= arg.begin() + 2);
+            assert (string(arg.begin(), arg.begin() + 2) == "--");
+            auto const arg_body = string(arg.begin() + 2, arg.end());
+            auto const eq_it = find(arg_body.begin(), arg_body.end(), '=');
+            string option_alias;
+            string option_argument;
+            bool option_argument_found = false;
+            if (eq_it == arg_body.end())
             {
-                // arg is a long option
-                assert (arg.end() >= arg.begin() + 2);
-                assert (string(arg.begin(), arg.begin() + 2) == "--");
-                auto const arg_body = string(arg.begin() + 2, arg.end());
-                auto const eq_it = find(arg_body.begin(), arg_body.end(), '=');
-                string option_alias;
-                string option_argument;
-                bool option_argument_found = false;
-                if (eq_it == arg_body.end())
+                option_alias = arg_body;
+            }
+            else
+            {
+                // arg takes the form "--option=value"
+                option_alias = string(arg_body.begin(), eq_it);
+                option_argument = string(eq_it + 1, arg_body.end());
+                option_argument_found = true;
+            }
+            auto const opt_it = m_options_map.find(option_alias);
+            if (opt_it == m_options_map.end())
+            {
+                return ResultT::make_invalid
+                (   "Unrecognized option: " + option_alias + "\nAborted."
+                );
+            }
+            if (option_alias.size() == 1)
+            {
+                return ResultT::make_invalid
+                (   "Short option \"" + option_alias +
+                        "\" must be passed with a single dash ('-').\nAborted."
+                );
+            }
+            auto const& opt = m_options[opt_it->second];
+            if (opt.callback != nullptr) opt.callback();
+            if (opt.arg_target == nullptr)
+            {
+                if (option_argument_found)
                 {
-                    option_alias = arg_body;
+                    return ResultT::make_invalid
+                    (   "Option \"" + option_alias +
+                            "\" does not take an argument.\nAborted."
+                    );
+                }
+                continue;  // option does not take an argument
+            }
+            assert (opt.arg_target != nullptr);
+            if (option_argument_found)
+            {
+                *opt.arg_target = option_argument;
+            }
+            else
+            {
+                ++it;
+                if (it == args_end)
+                {
+                    return ResultT::make_invalid
+                    (   "Option \"" + option_alias +
+                            "\" requires argument.\nAborted."
+                    );
                 }
                 else
                 {
-                    // arg takes the form "--option=value"
-                    option_alias = string(arg_body.begin(), eq_it);
-                    option_argument = string(eq_it + 1, arg_body.end());
-                    option_argument_found = true;
+                    *opt.arg_target = *it;
                 }
-                auto const opt_it = m_options_map.find(option_alias);
+            }
+        }
+        else if (!arg.empty() && arg[0] == k_option_prefix)
+        {
+            // arg is a short option (e.g. "-a"), or a cluster of short options
+            // (e.g. "-abc")
+            auto const arg_end = arg.end();
+
+            // look at each character in arg in turn
+            for (auto chit = arg.begin() + 1; chit != arg_end; ++chit)
+            {
+                auto const c = *chit;
+                auto const opt_it = m_options_map.find(string(1, c));
                 if (opt_it == m_options_map.end())
                 {
                     return ResultT::make_invalid
-                    (   "Unrecognized option: " + option_alias + "\nAborted."
+                    (   "Unrecognized option: " + string(1, c) +"\nAborted."
                     );
                 }
-                if (option_alias.size() == 1)
-                {
-                    return ResultT::make_invalid
-                    (   "Short option \"" + option_alias +
-                            "\" must be passed with a single dash ('-').\nAborted."
-                    );
-                }
+                assert (opt_it != m_options_map.end());
                 auto const& opt = m_options[opt_it->second];
                 if (opt.callback != nullptr) opt.callback();
                 if (opt.arg_target == nullptr)
                 {
-                    if (option_argument_found)
-                    {
-                        return ResultT::make_invalid
-                        (   "Option \"" + option_alias +
-                                "\" does not take an argument.\nAborted."
-                        );
-                    }
                     continue;  // option does not take an argument
                 }
-                assert (opt.arg_target != nullptr);
-                if (option_argument_found)
+                // option takes an argument
+                assert (chit + 1 <= arg_end);
+                assert (it + 1 <= args_end);
+                auto const joined_arg_present = (chit + 1 != arg_end);   // e.g. "-a9"
+                auto const separated_arg_present = (it + 1 != args_end); // e.g. "-a 9"
+                if (!joined_arg_present && !separated_arg_present)
                 {
-                    *opt.arg_target = option_argument;
+                    return ResultT::make_invalid
+                    (   "Option \"" + string(1, c) + "\" requires argument.\nAborted."
+                    );
                 }
-                else
-                {
-                    ++it;
-                    if (it == args_end)
-                    {
-                        return ResultT::make_invalid
-                        (   "Option \"" + option_alias +
-                                "\" requires argument.\nAborted."
-                        );
-                    }
-                    else
-                    {
-                        *opt.arg_target = *it;
-                    }
-                }
-            }
-            else
-            {
-                // arg is a short option (e.g. "-a"), or a cluster of short options
-                // (e.g. "-abc")
-                auto const arg_end = arg.end();
-
-                // look at each character in arg in turn
-                for (auto chit = arg.begin() + 1; chit != arg_end; ++chit)
-                {
-                    auto const c = *chit;
-                    auto const opt_it = m_options_map.find(string(1, c));
-                    if (opt_it == m_options_map.end())
-                    {
-                        return ResultT::make_invalid
-                        (   "Unrecognized option: " + string(1, c) +"\nAborted."
-                        );
-                    }
-                    assert (opt_it != m_options_map.end());
-                    auto const& opt = m_options[opt_it->second];
-                    if (opt.callback != nullptr) opt.callback();
-                    if (opt.arg_target == nullptr)
-                    {
-                        continue;  // option does not take an argument
-                    }
-                    // option takes an argument
-                    assert (chit + 1 <= arg_end);
-                    assert (it + 1 <= args_end);
-                    auto const joined_arg_present = (chit + 1 != arg_end);   // e.g. "-a9"
-                    auto const separated_arg_present = (it + 1 != args_end); // e.g. "-a 9"
-                    if (!joined_arg_present && !separated_arg_present)
-                    {
-                        return ResultT::make_invalid
-                        (   "Option \"" + string(1, c) + "\" requires argument.\nAborted."
-                        );
-                    }
-                    if (joined_arg_present) *opt.arg_target = string(chit + 1, arg_end);
-                    else *opt.arg_target = *(++it);
-                    break;  // we've finished with this option-cluster
-                }
+                if (joined_arg_present) *opt.arg_target = string(chit + 1, arg_end);
+                else *opt.arg_target = *(++it);
+                break;  // we've finished with this option-cluster
             }
         }
         else
         {
-            if (!m_accept_ordinary_args)
-            {
-                return ResultT::make_invalid("Too many arguments.\nAborted");
-            }
             ordinary_args.push_back(*it);
         }
+    }
+    if (!ordinary_args.empty() && !m_accept_ordinary_args)
+    {
+        return ResultT::make_invalid("Too many arguments.\nAborted");
     }
     return ResultT::make_valid(ordinary_args);
 }
