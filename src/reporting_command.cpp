@@ -35,6 +35,7 @@ using std::endl;
 using std::ostream;
 using std::ostringstream;
 using std::string;
+using std::stringstream;
 using std::unique_ptr;
 using std::vector;
 
@@ -103,6 +104,17 @@ ReportingCommand::ReportingCommand
     );
 
     add_option
+    (   vector<string>{"depth"},
+        HelpLine
+        (   "Output activity tree only to depth N (ignored in list, succinct and verbose "
+                "mode); or if passed 0, print to any depth (the default)",
+            "<N>"
+        ),
+        nullptr,
+        &m_depth_str
+    );
+
+    add_option
     (   vector<string>{"csv"},
         "Output in CSV format",
         [this]() { m_report_flags |= ReportWriter::Flags::csv; }
@@ -148,13 +160,24 @@ ReportingCommand::print_report
         filter(ActivityFilter::create(comparitor, m_activity_filter_type));
     auto const stints = m_time_log.get_stints(*filter, p_begin, p_end);
 
+    unsigned int depth = 0;
+    stringstream ss(m_depth_str);
+    ss >> depth;
+    if (!ss)
+    {
+        return ErrorMessages
+        {   "Could not parse \"" + m_depth_str + "\" as numeric argument."
+        };
+    }
+
     ReportWriter::Options const options
     (   p_config.output_rounding_numerator(),
         p_config.output_rounding_denominator(),
         p_config.output_precision(),
         p_config.output_width(),
         p_config.formatted_buf_len(),
-        p_config.time_format()
+        p_config.time_format(),
+        depth
     );
 
     unique_ptr<ReportWriter>

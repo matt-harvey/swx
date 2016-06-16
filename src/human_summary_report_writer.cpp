@@ -182,27 +182,31 @@ HumanSummaryReportWriter::write_tree_summary
         ActivityStats const& p_stats
     )
     {
-        StreamFlagGuard guard(p_ostream);
-        p_ostream << string(p_node_depth * (output_width() + 4), ' ')
-                  << "[ "
-                  << fixed << setprecision(output_precision())
-                  << right << setw(output_width())
-                  << seconds_to_rounded_hours(p_stats.seconds)
-                  << " ]";
-        guard.reset();
-        if (has_flag(Flags::include_beginning))
+        auto const depth_limit = depth();
+        if (depth_limit == 0 || p_node_depth < depth_limit)
         {
-            auto const& b = p_stats.beginning;
-            auto const s = time_point_to_stamp(b, time_format(), formatted_buf_len());
-            p_ostream << "[ " << s << " ]";
+            StreamFlagGuard guard(p_ostream);
+            p_ostream << string(p_node_depth * (output_width() + 4), ' ')
+                      << "[ "
+                      << fixed << setprecision(output_precision())
+                      << right << setw(output_width())
+                      << seconds_to_rounded_hours(p_stats.seconds)
+                      << " ]";
+            guard.reset();
+            if (has_flag(Flags::include_beginning))
+            {
+                auto const& b = p_stats.beginning;
+                auto const s = time_point_to_stamp(b, time_format(), formatted_buf_len());
+                p_ostream << "[ " << s << " ]";
+            }
+            if (has_flag(Flags::include_ending))
+            {
+                auto const& e = p_stats.ending;
+                auto const s = time_point_to_stamp(e, time_format(), formatted_buf_len());
+                p_ostream << "[ " << s << " ]";
+            }
+            p_ostream << ' ' << p_node_label << endl;
         }
-        if (has_flag(Flags::include_ending))
-        {
-            auto const& e = p_stats.ending;
-            auto const s = time_point_to_stamp(e, time_format(), formatted_buf_len());
-            p_ostream << "[ " << s << " ]";
-        }
-        p_ostream << ' ' << p_node_label << endl;
     };
     tree.print(p_os, print_node);
 }

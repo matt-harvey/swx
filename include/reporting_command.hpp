@@ -82,6 +82,7 @@ private:
 private:
     ReportWriter::Flags::Type m_report_flags = ReportWriter::Flags::none;
     ActivityFilter::Type m_activity_filter_type = ActivityFilter::Type::ordinary;
+    std::string m_depth_str = "0";
     TimeLog& m_time_log;
 
 };  // class ReportingCommand

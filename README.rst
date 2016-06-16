@@ -236,12 +236,16 @@ when outputting in "list" mode.)
 If you pass the ``-e`` option, then in addition to, and to the right of,
 any other info, the latest time at which each activity was conducted during
 the period in question will be printed next to each activity. (This does not
-apply when ouputting in "list" mode.)
+apply when outputting in "list" mode.)
 
 Note that if ``-b`` and ``-e`` options are both provided, the output from
 the ``-e`` command is always printed to the right of that from the ``-b``
 command, regardless of the order in which the ``-b`` and ``-e`` options are
 provided.
+
+If you provide a non-zero positive integer to the ``--depth`` option, then
+the activity tree will be printed only to this depth. (This does not apply in
+"list", "summary" or "verbose" mode.)
 
 If you pass the ``--csv`` option to a reporting command, then the results will
 be output in CSV format.

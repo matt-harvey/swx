@@ -33,7 +33,12 @@ public:
     struct Options
     {
         /* Holds various options for use by ReportWriter.
-         * Options have the same meaning as for Config class.
+         * Options have the same meaning as for Config class, except
+         * for p_depth, which is not in Config class, and which refers
+         * to the depth to which nodes will be printed when in tree
+         * format.
+         *
+         * @todo MEDIUM PRIORITY It feels wrong that p_depth is not in Config.
          *
          * @todo MEDIUM PRIORITY Do we really need this when we already have
          * Config?
@@ -44,7 +49,8 @@ public:
             unsigned int p_output_precision,
             unsigned int p_output_width,
             unsigned int p_formatted_buf_len,
-            std::string const& p_time_format
+            std::string const& p_time_format,
+            unsigned int p_depth
         );
         unsigned int const output_rounding_numerator;
         unsigned int const output_rounding_denominator;
@@ -52,6 +58,7 @@ public:
         unsigned int const output_width;
         unsigned int const formatted_buf_len;
         std::string const time_format;
+        unsigned int const depth;
     };
 
     /**
@@ -104,6 +111,7 @@ protected:
     unsigned int output_rounding_denominator() const;
     std::string const& time_format() const;
     unsigned int formatted_buf_len() const;
+    unsigned int depth() const;
 
     /**
      * Converts a number of seconds to a double representing a number
