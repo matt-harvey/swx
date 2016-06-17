@@ -123,7 +123,7 @@ ReportingCommand::ReportingCommand
     add_option
     (   vector<string>{"v", "verbose"},
         "Instead of printing the summary in \"tree\" form, print the full name of "\
-            "each activity (ignored in list mode or succinct mode)",
+            "each activity (ignored in list mode and succinct mode)",
         [this]() { m_report_flags |= ReportWriter::Flags::verbose; }
     );
 

@@ -245,7 +245,7 @@ provided.
 
 If you provide a non-zero positive integer to the ``--depth`` option, then
 the activity tree will be printed only to this depth. (This does not apply in
-"list", "summary" or "verbose" mode.)
+"list", "succinct" or "verbose" mode.)
 
 If you pass the ``--csv`` option to a reporting command, then the results will
 be output in CSV format.
