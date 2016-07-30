@@ -341,13 +341,10 @@ Config::set_defaults()
         )
     );
 
-    // non-portable
-    auto user_name = getlogin();
-    string const stem = (user_name? user_name: "time_log");
     unchecked_set_option
     (   "path_to_log",
         OptionData
-        (   Info::home_dir() + "/" + stem + ".swx",
+        (   Info::home_dir() + "/.swx",  // non-portable
             "Path to file in which time log is recorded."
         )
     );

@@ -381,7 +381,7 @@ Manually editing the time log
 -----------------------------
 
 ``swx`` stores a log of your activities in a plain text file, which by default
-is located in your home directory, and is named ``<YOUR-USER-NAME>.swx``.
+is located in your home directory, and is named ``.swx``.
 You are free to edit this file if you want to change the times or activity names
 recorded. The command ``swx edit``, or ``swx e``, will cause the log to be
 opened in your default text editor.
@@ -450,8 +450,8 @@ file called ``.swxrc``, in your home directory. Also, the first time you run
 ``swx switch`` (or ``swx s``), it will create a data file, in which your
 activity log will be stored. Unless you have specified otherwise in your
 configuration file, this data file will be stored in your home directory, and
-will be named ``<YOUR-USER-NAME>.swx``. You may or may not want to remove this
-file if you uninstall ``swx``.
+will be named ``.swx``. You may or may not want to remove this file if you
+uninstall ``swx``.
 
 Miscellaneous
 =============
