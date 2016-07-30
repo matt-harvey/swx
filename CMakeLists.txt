@@ -1,5 +1,5 @@
 ###
-# Copyright 2014 Matthew Harvey
+# Copyright 2014-2016 Matthew Harvey
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,9 +26,9 @@ set(application_name "swx")
 set(executable_name "swx")
 set(file_extension ".swx")
 project(${application_name})
-set(version_major 0)
-set(version_minor 11)
-set(version_patch 1)
+set(version_major 1)
+set(version_minor 0)
+set(version_patch 0)
 
 
 # Definitions and flags to be passed to the compiler
@@ -39,7 +39,7 @@ add_definitions(
     -DSWX_VERSION_MAJOR=${version_major}
     -DSWX_VERSION_MINOR=${version_minor}
     -DSWX_VERSION_PATCH=${version_patch}
-    # -DSWX_RELEASE  # uncomment for release version
+    -DSWX_RELEASE  # uncomment for release version
 )
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
