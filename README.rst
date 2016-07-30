@@ -16,6 +16,10 @@ Installing with Homebrew
 
 If you're using the Homebrew package manager, installation is simple::
 
+  brew install matt-harvey/tap/swx
+
+Alternatively, you can do::
+
   brew tap matt-harvey/tap
   brew install swx
 
