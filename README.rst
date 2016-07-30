@@ -4,13 +4,46 @@ Overview
 ``swx`` is a command line application for keeping track of the amount of
 time you spend on different activities.
 
+Installation
+============
+
+You should be able to install and run ``swx`` on any Unix-like operation system (Linux, OSX, BSD)
+that has a reasonably conformant C++ compiler that can build C++11. ``swx`` is not compatible
+with Windows.
+
+Installing with Homebrew
+------------------------
+
+If you're using the Homebrew package manager, installation is simple::
+
+  brew tap matt-harvey/tap
+  brew install swx
+
+Installing manually
+-------------------
+
+If you want to build and install ``swx`` manually from source, first ensure you have `CMake
+<http://www.cmake.org/>`_ installed, and that your system has a C++ compiler that supports C++11.
+(If you are using GCC, you will need at least version 4.9.) In addition, if you want to run the
+tests, you need the Boost unit test framework, available from http://www.boost.org.
+
+Download and unzip the ``swx`` source code, ``cd`` into the project root, and configure the build::
+
+  cmake -D CMAKE_BUILD_TYPE=Release .
+
+Then to build and install, run ``make install``. (Depending on your system, you may need to
+prefix this with ``sudo``.)
+
+If you want to build without installing, just run ``make``; or to build and run the test suite, run
+``make run_tests``.
+
 Usage
 =====
 
 Quick summary
 -------------
 
-Start work on a new activity: ``swx switch -c <activity>``, or ``swx s -c <activity>`` 
+Start work on a new activity: ``swx switch -c <activity>``, or ``swx s -c <activity>``
 
 Switch to an existing activity: ``swx s <activity>``
 
@@ -53,7 +86,7 @@ Open the time log for editing: ``swx edit``, or ``swx e``
 
 Get configuration info: ``swx config``
 
-Open the configuration file for editing: ``swx config -e``  
+Open the configuration file for editing: ``swx config -e``
 
 Get general help: ``swx help``
 
@@ -155,7 +188,7 @@ format (e.g. "14:23") and ISO date-time format (e.g. "2015-02-28T14:23"),
 respectively. These formats can be configured, however (see `Configuration`_).
 When the short form is used, it is assumed to refer to the corresponding
 time on the current day, i.e. the day the command is run.
- 
+
 Note activity names are case-sensitive.
 
 The "resume" command
@@ -401,53 +434,15 @@ see a summary of usage for a particular command.
 
 Enter ``swx version`` to see version information.
 
-Building and installing
-=======================
-
-``swx`` is written in standard C++, and uses some C++11 features. It is designed
-to be built and run on Unix-like systems only (Linux, OSX, BSD), and will not
-work on Windows. To build it, you will need:
-
-- A reasonably conformant C++ compiler and standard library implementation (note
-  if you are using GCC, you will need at least version 4.9)
-
-- CMake (http://www.cmake.org) (commonly available via package managers such
-  as Homebrew)
- 
-In addition, if you want to build and run the test suite, you will need the Boost
-unit test framework (version 1.53.0 or greater), which is available at
-http://www.boost.org. This is also commonly available via package managers such as
-Homebrew.
-
-Having obtained these dependencies, download and unzip the ``swx`` source code,
-and ``cd`` into the project root.
-
-To configure an optimized build, enter::
-
-   cmake -D CMAKE_BUILD_TYPE=Release .
-
-(Note the dot at the end.) (For other build options, see the CMake documentation.)
-Then to build and install, enter::
-
-    make install
-
-You may need to run this as root (e.g. by prefixing the above command with
-``sudo``), depending on your system and the installation directory.
-
-To build the application without installing it, enter::
-
-    make
-
-To build and run the test suite, enter::
-
-    make run_tests
-
 Uninstalling
 ============
 
-When you run ``make install``, a file named ``install_manifest.txt`` will be
-created in the source directory. This file contains a list of all files
-installed by ``make install``. To uninstall ``swx``, you need manually to
+If you installed ``swx`` using Homebrew, you can uninstall it by running
+``brew uninstall swx``.
+
+If you built and installed ``swx`` manually from source, then a file named
+``install_manifest.txt`` would have been created in the source directory
+when you ran ``make install``. To uninstall ``swx``, you manually need to
 remove each of the files in this list (of which there may well be only one).
 
 In addition, the first time you run ``swx``, it will create a configuration
