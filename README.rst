@@ -7,7 +7,7 @@ time you spend on different activities.
 Installation
 ============
 
-You should be able to install and run ``swx`` on any Unix-like operation system (Linux, OSX, BSD)
+You should be able to install and run ``swx`` on any Unix-like operating system (Linux, OSX, BSD)
 that has a reasonably conformant C++ compiler that can build C++11. ``swx`` is not compatible
 with Windows.
 
