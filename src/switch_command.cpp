@@ -110,6 +110,8 @@ SwitchCommand::do_process
     ErrorMessages error_messages;
 
     auto const last_two_activities = time_log().last_activities(2);
+    bool const log_active = time_log().is_active();
+    auto const current_activity = (log_active ? last_two_activities.front() : string());
 
     // find the activity that we want to switch to
     auto const activity_input = expand_placeholders(p_ordinary_args, time_log());
@@ -131,26 +133,20 @@ SwitchCommand::do_process
         activity = activity_input;
     }
 
-    // capture state of time log
-    bool const log_active = time_log().is_active();
     bool const activity_exists = time_log().has_activity(activity);
 
     // prevent pointless switch
-    if (!m_time_stamp_provided && activity.empty())
+    // anonymous namespace
     {
-        if (!log_active)
+        auto const activity_changing = (activity != current_activity);
+        auto const timestamp_changing = (m_amend && m_time_stamp_provided);
+        if (!activity_changing && !timestamp_changing)
         {
-            return {"Already inactive."};
-        }
-    }
-    else if (log_active)
-    {
-        assert (!last_two_activities.empty());
-        auto const amending_time_stamp = (m_amend && m_time_stamp_provided);
-        auto const activity_not_changing = (activity == last_two_activities.front());
-        if (!amending_time_stamp && activity_not_changing)
-        {
-            return {"\"" + activity + "\" is already the current activity."};
+            return ErrorMessages
+            {   log_active ?
+                "\"" + activity + "\" is already the current activity." :
+                "Already inactive."
+            };
         }
     }
 
@@ -206,7 +202,7 @@ SwitchCommand::do_process
                     return ErrorMessages
                     {   "Proposed amendment would cause the last stint to merge "
                             "with the one before it.\nTimestamp amendment would "
-                            "therefore has had no effect.\nAborted."
+                            "therefore have no effect.\nAborted."
                     };
                 }
             }
@@ -283,10 +279,8 @@ SwitchCommand::do_process
         // report time log state
         if (log_active)
         {
-            assert (!time_log().last_activities(1).empty());
-            oss << "\nCurrent activity remains \""
-                << time_log().last_activities(1).front()
-                << "\".";
+            assert (!current_activity.empty());
+            oss << "\nCurrent activity remains \"" << current_activity << "\".";
         }
         else
         {
