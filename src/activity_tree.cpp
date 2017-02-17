@@ -18,19 +18,14 @@
 #include "activity_stats.hpp"
 #include "activity_node.hpp"
 #include "arithmetic.hpp"
-#include "stream_flag_guard.hpp"
 #include "string_utilities.hpp"
 #include <cassert>
-#include <functional>
-#include <iostream>
 #include <map>
 #include <ostream>
 #include <set>
 #include <string>
 #include <vector>
 
-using std::endl;
-using std::function;
 using std::map;
 using std::max;
 using std::move;

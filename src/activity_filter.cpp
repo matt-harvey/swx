@@ -42,7 +42,7 @@ ActivityFilter::create(string const& p_comparitor, Type p_type)
     case Type::always_true:
         return new TrueActivityFilter;
     default:
-        assert (false);  // we whould never reach here
+        assert (false);  // we should never reach here
     }
 }
 

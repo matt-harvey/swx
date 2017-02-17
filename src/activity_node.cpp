@@ -19,10 +19,8 @@
 #include <algorithm>
 #include <cassert>
 #include <map>
-#include <numeric>
 #include <string>
 
-using std::accumulate;
 using std::map;
 using std::max;
 using std::min;
