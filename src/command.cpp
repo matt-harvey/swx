@@ -1,6 +1,6 @@
 /*
  * Copyright 2014, 2015 Matthew Harvey
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -60,7 +60,6 @@ namespace swx
 
 namespace
 {
-    
     auto const k_option_prefix = '-';
     string const k_double_dash_option_alias = "-";
     string const k_double_dash = "--";

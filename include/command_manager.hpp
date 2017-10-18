@@ -21,7 +21,7 @@
 #include "config.hpp"
 #include "exit_code.hpp"
 #include "stream_flag_guard.hpp"
-#include "time_log_fwd.hpp"
+#include "time_log.hpp"
 #include <memory>
 #include <ostream>
 #include <string>
@@ -57,7 +57,7 @@ private:
 
 // special member functions
 public:
-    CommandManager(TimeLog& p_time_log);
+    explicit CommandManager(std::string const& p_config_path);
     CommandManager(CommandManager const& rhs) = delete;
     CommandManager(CommandManager&& rhs) = delete;
     CommandManager& operator=(CommandManager const& rhs) = delete;
@@ -71,8 +71,7 @@ private:
 public:
 
     ExitCode process_command
-    (   Config const& p_config,
-        std::string const& p_command,
+    (   std::string const& p_command,
         std::vector<std::string> const& p_args
     ) const;
 
@@ -112,6 +111,8 @@ private:
 
 // member variables
 private:
+    Config m_config;
+    TimeLog m_time_log;
     CommandMap m_command_map;
     std::vector<CommandGroup> m_command_groups;
 

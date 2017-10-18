@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Matthew Harvey
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -74,27 +74,29 @@ namespace
 
 }  // end anonymous namespace
 
-CommandManager::CommandManager(TimeLog& p_time_log)
+CommandManager::CommandManager(string const& p_config_path):
+    m_config(p_config_path),
+    m_time_log(m_config.path_to_log(), m_config.time_format(), m_config.formatted_buf_len())
 {
     using V = vector<string>;
 
     CommandGroup rec("Recording commands");
-    create_command<SwitchCommand>(rec, "switch", V{"s"}, p_time_log);
-    create_command<ResumeCommand>(rec, "resume", V{}, p_time_log);
+    create_command<SwitchCommand>(rec, "switch", V{"s"}, m_time_log);
+    create_command<ResumeCommand>(rec, "resume", V{}, m_time_log);
     m_command_groups.push_back(move(rec));
 
     CommandGroup rep("Reporting commands");
-    create_command<PrintCommand>(rep, "print", V{"p"}, p_time_log);
-    create_command<DayCommand>(rep, "day", V{"d"}, p_time_log);
+    create_command<PrintCommand>(rep, "print", V{"p"}, m_time_log);
+    create_command<DayCommand>(rep, "day", V{"d"}, m_time_log);
     m_command_groups.push_back(move(rep));
 
     CommandGroup edit("Editing commands");
-    create_command<RenameCommand>(edit, "rename", V{}, p_time_log);
+    create_command<RenameCommand>(edit, "rename", V{}, m_time_log);
     create_command<EditCommand>(edit, "edit", V{"e"});
     m_command_groups.push_back(move(edit));
 
     CommandGroup misc("Miscellaneous commands");
-    create_command<CurrentCommand>(misc, "current", V{"c"}, p_time_log);
+    create_command<CurrentCommand>(misc, "current", V{"c"}, m_time_log);
     create_command<ConfigCommand>(misc, "config", V{});
     create_command<HelpCommand>(misc, k_help_command_string, V{"--help", "-h"}, *this);
     create_command<VersionCommand>(misc, "version", V{"--version"});
@@ -111,11 +113,7 @@ CommandManager::CommandManager(TimeLog& p_time_log)
 CommandManager::~CommandManager() = default;
 
 ExitCode
-CommandManager::process_command
-(   Config const& p_config,
-    string const& p_command,
-    vector<string> const& p_args
-) const
+CommandManager::process_command(string const& p_command, vector<string> const& p_args) const
 {
     auto const it = m_command_map.find(p_command);
     if (it == m_command_map.end())
@@ -127,7 +125,7 @@ CommandManager::process_command
         assert (it->second);
         auto const command_ptr = it->second;
         auto const ret = command_ptr->process
-        (   p_config,
+        (   m_config,
             p_args,
             ordinary_ostream(),
             error_ostream()
@@ -251,7 +249,7 @@ CommandManager::process_unrecognized_command(string const& p_command) const
 ostream&
 CommandManager::ordinary_ostream() const
 {
-    return cout;    
+    return cout;
 }
 
 ostream&
