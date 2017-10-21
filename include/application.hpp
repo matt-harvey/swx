@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Matthew Harvey
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,17 +34,14 @@ namespace swx
 {
 
 /**
- * Manages the various commands provided by the application.
- *
- * Processes command line arguments, by passing them to the appropriate
- * Command instance.
+ * Provides an entry point for the application. To run the application, instantiate
+ * an instance of this class and then pass it a command and arguments for it to process. It will
+ * then pass these to the appropriate Command instance for processing.
  */
-class Application
-{
+class Application {
 // nested types
-private:
-    using CommandMap = std::map<std::string, std::shared_ptr<Command>>;
-    using Commands = std::vector<std::shared_ptr<Command>>;
+private: using CommandMap = std::map<std::string, std::shared_ptr<Command>>; using Commands =
+std::vector<std::shared_ptr<Command>>;
 
     struct CommandGroup
     {
@@ -57,7 +54,12 @@ private:
 
 // special member functions
 public:
+
+    /**
+     * @param p_config_path path to configuration file.
+     */
     explicit Application(std::string const& p_config_path);
+
     Application(Application const& rhs) = delete;
     Application(Application&& rhs) = delete;
     Application& operator=(Application const& rhs) = delete;
@@ -70,6 +72,9 @@ private:
 
 public:
 
+    /**
+     * Arranges for processing of a particular command with its arguments.
+     */
     ExitCode process_command
     (   std::string const& p_command,
         std::vector<std::string> const& p_args

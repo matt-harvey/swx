@@ -128,7 +128,7 @@ public:
     std::vector<std::string> last_activities(std::size_t p_num);
 
     /**
-     * @p_ago if passed non-zero, return the TimePoint of the entry \e p_ago
+     * @param p_ago if passed non-zero, return the TimePoint of the entry \e p_ago
      *   entries before the last.
      * @return the TimePoint of the most recent entry in the log, or, if the log
      *   does not have a large enough number of entries to accommodate \e p_ago,
