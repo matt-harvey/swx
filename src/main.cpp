@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-#include "command_manager.hpp"
+#include "application.hpp"
 #include "info.hpp"
 #include "stream_utilities.hpp"
-#include "time_point.hpp"
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
@@ -33,7 +32,7 @@ using std::string;
 using std::vector;
 using swx::enable_exceptions;
 using swx::Info;
-using swx::CommandManager;
+using swx::Application;
 
 int main(int argc, char** argv)
 {
@@ -43,13 +42,13 @@ int main(int argc, char** argv)
         if (argc < 2)
         {
             cerr << "Command not provided.\n"
-                 << CommandManager::directions_to_get_help() << endl;
+                 << Application::directions_to_get_help() << endl;
             return EXIT_FAILURE;
         }
         assert (argc >= 2);
         vector<string> const args(argv + 2, argv + argc);
         auto const config_path = Info::home_dir() + "/.swxrc";  // non-portable
-        CommandManager const manager(config_path);
+        Application const manager(config_path);
         return manager.process_command(argv[1], args);
     }
     catch (runtime_error& e)

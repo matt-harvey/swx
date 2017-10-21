@@ -65,10 +65,10 @@ set(
     src/activity_node.cpp
     src/activity_stats.cpp
     src/activity_tree.cpp
+    src/application.cpp
     src/arithmetic.cpp
     src/atomic_writer.cpp
     src/command.cpp
-    src/command_manager.cpp
     src/config.cpp
     src/config_command.cpp
     src/csv_list_report_writer.cpp

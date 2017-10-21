@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "command_manager.hpp"
+#include "application.hpp"
 #include "command.hpp"
 #include "config.hpp"
 #include "config_command.hpp"
@@ -74,7 +74,7 @@ namespace
 
 }  // end anonymous namespace
 
-CommandManager::CommandManager(string const& p_config_path):
+Application::Application(string const& p_config_path):
     m_config(p_config_path),
     m_time_log(m_config.path_to_log(), m_config.time_format(), m_config.formatted_buf_len())
 {
@@ -110,10 +110,10 @@ CommandManager::CommandManager(string const& p_config_path):
 #   endif
 }
 
-CommandManager::~CommandManager() = default;
+Application::~Application() = default;
 
 ExitCode
-CommandManager::process_command(string const& p_command, vector<string> const& p_args) const
+Application::process_command(string const& p_command, vector<string> const& p_args) const
 {
     auto const it = m_command_map.find(p_command);
     if (it == m_command_map.end())
@@ -139,7 +139,7 @@ CommandManager::process_command(string const& p_command, vector<string> const& p
 }
 
 string
-CommandManager::help_information(string const& p_command) const
+Application::help_information(string const& p_command) const
 {
     auto const it = m_command_map.find(p_command);
     if (it == m_command_map.end())
@@ -152,7 +152,7 @@ CommandManager::help_information(string const& p_command) const
 }
 
 string
-CommandManager::help_information() const
+Application::help_information() const
 {
     ostringstream oss;
     enable_exceptions(oss);
@@ -201,7 +201,7 @@ CommandManager::help_information() const
 }
 
 string
-CommandManager::directions_to_get_help()
+Application::directions_to_get_help()
 {
     ostringstream oss;
     enable_exceptions(oss);
@@ -214,7 +214,7 @@ CommandManager::directions_to_get_help()
 }
 
 string
-CommandManager::directions_to_get_help(string const& p_command)
+Application::directions_to_get_help(string const& p_command)
 {
     ostringstream oss;
     enable_exceptions(oss);
@@ -229,7 +229,7 @@ CommandManager::directions_to_get_help(string const& p_command)
 }
 
 string
-CommandManager::error_message_for_unrecognized_command
+Application::error_message_for_unrecognized_command
 (   string const& p_command
 )
 {
@@ -237,7 +237,7 @@ CommandManager::error_message_for_unrecognized_command
 }
 
 ExitCode
-CommandManager::process_unrecognized_command(string const& p_command) const
+Application::process_unrecognized_command(string const& p_command) const
 {
     error_ostream() << error_message_for_unrecognized_command(p_command)
                     << endl
@@ -247,19 +247,19 @@ CommandManager::process_unrecognized_command(string const& p_command) const
 }
 
 ostream&
-CommandManager::ordinary_ostream() const
+Application::ordinary_ostream() const
 {
     return cout;
 }
 
 ostream&
-CommandManager::error_ostream() const
+Application::error_ostream() const
 {
     return cerr;
 }
 
 void
-CommandManager::register_command_word
+Application::register_command_word
 (   string const& p_word,
     shared_ptr<Command> const& p_cp
 )

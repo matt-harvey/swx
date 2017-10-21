@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-#ifndef GUARD_command_manager_fwd_hpp_7726111946499958
-#define GUARD_command_manager_fwd_hpp_7726111946499958
+#ifndef GUARD_application_fwd_hpp_7726111946499958
+#define GUARD_application_fwd_hpp_7726111946499958
 
 namespace swx
 {
 
-class CommandManager;
+class Application;
 
 }  // namespace swx
 
-#endif  // GUARD_command_manager_fwd_hpp_7726111946499958
+#endif  // GUARD_application_fwd_hpp_7726111946499958

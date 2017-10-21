@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Matthew Harvey
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,9 +15,9 @@
  */
 
 #include "help_command.hpp"
+#include "application.hpp"
 #include "help_line.hpp"
 #include "command.hpp"
-#include "command_manager.hpp"
 #include "config.hpp"
 #include "info.hpp"
 #include "stream_utilities.hpp"
@@ -41,7 +41,7 @@ namespace swx
 HelpCommand::HelpCommand
 (   string const& p_command_word,
     vector<string> const& p_aliases,
-    CommandManager const& p_command_manager
+    Application const& p_application
 ):
     Command
     (   p_command_word,
@@ -52,7 +52,7 @@ HelpCommand::HelpCommand
             HelpLine("Print usage information for COMMAND", "<COMMAND>")
         }
     ),
-    m_command_manager(p_command_manager)
+    m_application(p_application)
 {
 }
 
@@ -69,19 +69,19 @@ HelpCommand::do_process
     ErrorMessages ret;
     if (p_ordinary_args.empty())
     {
-        p_ordinary_ostream << m_command_manager.help_information();    
+        p_ordinary_ostream << m_application.help_information();
     }
     else if (p_ordinary_args.size() == 1)
     {
         try
         {
-            p_ordinary_ostream << m_command_manager.help_information(p_ordinary_args[0])
-                               << endl;            
+            p_ordinary_ostream << m_application.help_information(p_ordinary_args[0])
+                               << endl;
         }
         catch (runtime_error&)
         {
             ret.push_back
-            (   CommandManager::error_message_for_unrecognized_command(p_ordinary_args[0])
+            (   Application::error_message_for_unrecognized_command(p_ordinary_args[0])
             );
         }
     }
@@ -90,7 +90,7 @@ HelpCommand::do_process
         assert (p_ordinary_args.size() > 1);
         ret.push_back("Too many arguments passed to this command.");
     }
-    return ret;    
+    return ret;
 }
 
 }  // namespace swx

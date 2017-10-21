@@ -17,9 +17,9 @@
 #ifndef GUARD_help_command_hpp_8550137443724153
 #define GUARD_help_command_hpp_8550137443724153
 
+#include "application_fwd.hpp"
 #include "command.hpp"
 #include "config_fwd.hpp"
-#include "command_manager_fwd.hpp"
 #include <string>
 #include <vector>
 
@@ -33,7 +33,7 @@ public:
     HelpCommand
     (   std::string const& p_command_word,
         std::vector<std::string> const& p_aliases,
-        CommandManager const& p_command_manager
+        Application const& p_application
     );
 
     HelpCommand(HelpCommand const& rhs) = delete;
@@ -52,7 +52,7 @@ private:
 
 // member variables
 private:
-    CommandManager const& m_command_manager;
+    Application const& m_application;
 
 };  // class HelpCommand
 

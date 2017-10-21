@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef GUARD_command_manager_hpp_6901861572126794
-#define GUARD_command_manager_hpp_6901861572126794
+#ifndef GUARD_application_hpp_6901861572126794
+#define GUARD_application_hpp_6901861572126794
 
 #include "command.hpp"
 #include "config.hpp"
@@ -39,7 +39,7 @@ namespace swx
  * Processes command line arguments, by passing them to the appropriate
  * Command instance.
  */
-class CommandManager
+class Application
 {
 // nested types
 private:
@@ -57,12 +57,12 @@ private:
 
 // special member functions
 public:
-    explicit CommandManager(std::string const& p_config_path);
-    CommandManager(CommandManager const& rhs) = delete;
-    CommandManager(CommandManager&& rhs) = delete;
-    CommandManager& operator=(CommandManager const& rhs) = delete;
-    CommandManager& operator=(CommandManager&& rhs) = delete;
-    ~CommandManager();
+    explicit Application(std::string const& p_config_path);
+    Application(Application const& rhs) = delete;
+    Application(Application&& rhs) = delete;
+    Application& operator=(Application const& rhs) = delete;
+    Application& operator=(Application&& rhs) = delete;
+    ~Application();
 
 // ordinary and static member functions
 private:
@@ -116,14 +116,14 @@ private:
     CommandMap m_command_map;
     std::vector<CommandGroup> m_command_groups;
 
-};  // class CommandManager
+};  // class Application
 
 
 // member template implementations
 
 template <typename CommandT, typename ... Args>
 void
-CommandManager::create_command(CommandGroup& p_command_group, Args&& ... p_args)
+Application::create_command(CommandGroup& p_command_group, Args&& ... p_args)
 {
     auto command = std::make_shared<CommandT>(std::forward<Args>(p_args) ...);
     register_command_word(command->command_word(), command);
@@ -136,4 +136,4 @@ CommandManager::create_command(CommandGroup& p_command_group, Args&& ... p_args)
 
 }  // namespace swx
 
-#endif  // GUARD_command_manager_hpp_6901861572126794
+#endif  // GUARD_application_hpp_6901861572126794
