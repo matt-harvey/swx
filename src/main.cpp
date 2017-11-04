@@ -48,8 +48,8 @@ int main(int argc, char** argv)
         assert (argc >= 2);
         vector<string> const args(argv + 2, argv + argc);
         auto const config_path = Info::home_dir() + "/.swxrc";  // non-portable
-        Application const manager(config_path);
-        return manager.process_command(argv[1], args);
+        Application const application(config_path);
+        return application.process_command(argv[1], args);
     }
     catch (runtime_error& e)
     {
