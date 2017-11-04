@@ -15,6 +15,7 @@
  */
 
 #include "application.hpp"
+#include "config.hpp"
 #include "info.hpp"
 #include "stream_utilities.hpp"
 #include <cassert>
@@ -22,17 +23,20 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 using std::cerr;
 using std::cout;
 using std::endl;
+using std::move;
 using std::runtime_error;
 using std::string;
 using std::vector;
-using swx::enable_exceptions;
-using swx::Info;
 using swx::Application;
+using swx::enable_exceptions;
+using swx::Config;
+using swx::Info;
 
 int main(int argc, char** argv)
 {
@@ -48,7 +52,8 @@ int main(int argc, char** argv)
         assert (argc >= 2);
         vector<string> const args(argv + 2, argv + argc);
         auto const config_path = Info::home_dir() + "/.swxrc";  // non-portable
-        Application const application(config_path);
+        Config const config(config_path);
+        Application const application(move(config));
         return application.process_command(argv[1], args);
     }
     catch (runtime_error& e)

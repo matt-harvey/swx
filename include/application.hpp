@@ -54,12 +54,7 @@ std::vector<std::shared_ptr<Command>>;
 
 // special member functions
 public:
-
-    /**
-     * @param p_config_path path to configuration file.
-     */
-    explicit Application(std::string const& p_config_path);
-
+    explicit Application(Config const& p_config);
     Application(Application const& rhs) = delete;
     Application(Application&& rhs) = delete;
     Application& operator=(Application const& rhs) = delete;

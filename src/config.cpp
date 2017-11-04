@@ -228,6 +228,10 @@ Config::Config(string const& p_filepath): m_filepath(p_filepath)
     }
 }
 
+Config::Config(Config const& rhs) = default;
+Config::Config(Config&& rhs) = default;
+Config& Config::operator=(Config const& rhs) = default;
+Config& Config::operator=(Config&& rhs) = default;
 Config::~Config() = default;
 
 void

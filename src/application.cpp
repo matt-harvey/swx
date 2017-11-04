@@ -74,9 +74,9 @@ namespace
 
 }  // end anonymous namespace
 
-Application::Application(string const& p_config_path):
-    m_config(p_config_path),
-    m_time_log(m_config.path_to_log(), m_config.time_format(), m_config.formatted_buf_len())
+Application::Application(Config const& p_config):
+    m_config(p_config),
+    m_time_log(p_config.path_to_log(), p_config.time_format(), p_config.formatted_buf_len())
 {
     using V = vector<string>;
 

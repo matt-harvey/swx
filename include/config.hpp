@@ -48,10 +48,10 @@ private:
 // special member functions
 public:
     explicit Config(std::string const& p_filepath);
-    Config(Config const& rhs) = delete;
-    Config(Config&& rhs) = delete;
-    Config& operator=(Config const& rhs) = delete;
-    Config& operator=(Config&& rhs) = delete;
+    Config(Config const& rhs);
+    Config(Config&& rhs);
+    Config& operator=(Config const& rhs);
+    Config& operator=(Config&& rhs);
     ~Config();
 
 // ordinary member functions
