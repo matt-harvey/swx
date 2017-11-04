@@ -74,7 +74,13 @@ namespace
 
 }  // end anonymous namespace
 
-Application::Application(Config const& p_config):
+Application::Application
+(   Config const& p_config,
+    ostream& p_ordinary_ostream,
+    ostream& p_error_ostream
+):
+    m_ordinary_ostream(p_ordinary_ostream),
+    m_error_ostream(p_error_ostream),
     m_config(p_config),
     m_time_log(p_config.path_to_log(), p_config.time_format(), p_config.formatted_buf_len())
 {
@@ -249,13 +255,13 @@ Application::process_unrecognized_command(string const& p_command) const
 ostream&
 Application::ordinary_ostream() const
 {
-    return cout;
+    return m_ordinary_ostream;
 }
 
 ostream&
 Application::error_ostream() const
 {
-    return cerr;
+    return m_error_ostream;
 }
 
 void

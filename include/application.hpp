@@ -22,6 +22,7 @@
 #include "exit_code.hpp"
 #include "stream_flag_guard.hpp"
 #include "time_log.hpp"
+#include <iostream>
 #include <memory>
 #include <ostream>
 #include <string>
@@ -54,7 +55,11 @@ std::vector<std::shared_ptr<Command>>;
 
 // special member functions
 public:
-    explicit Application(Config const& p_config);
+    explicit Application
+    (   Config const& p_config,
+        std::ostream& p_ordinary_ostream = std::cout,
+        std::ostream& p_error_ostream = std::cerr
+    );
     Application(Application const& rhs) = delete;
     Application(Application&& rhs) = delete;
     Application& operator=(Application const& rhs) = delete;
@@ -111,6 +116,8 @@ private:
 
 // member variables
 private:
+    std::ostream& m_ordinary_ostream;
+    std::ostream& m_error_ostream;
     Config m_config;
     TimeLog m_time_log;
     CommandMap m_command_map;
