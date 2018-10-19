@@ -7,39 +7,25 @@ time you spend on different activities.
 Installation
 ============
 
-You should be able to install and run ``swx`` on any Unix-like operating system (Linux, OSX, BSD)
-that has a reasonably conformant C++ compiler that can build C++11. ``swx`` is not compatible
-with Windows.
+Mac / OSX
+---------
 
-Installing with Homebrew
-------------------------
+You can install it using Homebrew: ``brew install matt-harvey/tap/swx``
 
-If you're using the Homebrew package manager, installation is simple::
+Linux / BSD
+-----------
 
-  brew install matt-harvey/tap/swx
+On these systems you'll need to install ``swx`` from source. First ensure
+`CMake <http://www.cmake.org/>`_ is installed (available from most Linux package managers).
+Then download and unzip the ``swx`` source code from GitHub. ``cd`` into the
+project root, and configure the build: ``cmake -D CMAKE_BUILD_TYPE=Release .``.
+Then run ``make install`` to build and install. You may need to prefix this with
+``sudo``, depending to your system.
 
-Alternatively, you can do::
+Windows
+-------
 
-  brew tap matt-harvey/tap
-  brew install swx
-
-Installing manually
--------------------
-
-If you want to build and install ``swx`` manually from source, first ensure you have `CMake
-<http://www.cmake.org/>`_ installed, and that your system has a C++ compiler that supports C++11.
-(If you are using GCC, you will need at least version 4.9.) In addition, if you want to run the
-tests, you need the Boost unit test framework, available from http://www.boost.org.
-
-Download and unzip the ``swx`` source code, ``cd`` into the project root, and configure the build::
-
-  cmake -D CMAKE_BUILD_TYPE=Release .
-
-Then to build and install, run ``make install``. (Depending on your system, you may need to
-prefix this with ``sudo``.)
-
-If you want to build without installing, just run ``make``; or to build and run the test suite, run
-``make run_tests``.
+``swx`` does not support Windows.
 
 Usage
 =====
@@ -442,6 +428,20 @@ The name "swx" stands for "stopwatch extended", reflecting that the application
 works essentially like a stopwatch which has been extended with various additional
 functionality.
 
+Contributing
+============
+
+Pull requests are welcome.
+
+If you're developing ``swx``, you'll want to run the automated tests. For this
+you'll need the Boost unit testing framework, available from http://www.boost.org.
+
+To run tests, run ``make run_tests``.
+
+To build ``swx`` without installing it, just run ``make``. See the
+`CMake <http://www.cmake.org/>`_ documentation for more options on configuring
+the build.
+
 Contact
 =======
 
@@ -452,7 +452,7 @@ software@matthewharvey.net
 Legal
 =====
 
-Copyright 2014, 2015 Matthew Harvey
+Copyright 2014, 2015, 2018 Matthew Harvey
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
