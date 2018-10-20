@@ -43,6 +43,7 @@ ActivityFilter::create(string const& p_comparitor, Type p_type)
         return new TrueActivityFilter;
     default:
         assert (false);  // we should never reach here
+        return nullptr;  // appease compiler warning
     }
 }
 
