@@ -272,8 +272,6 @@ Command::Impl::has_options() const
 Result<vector<string>>
 Command::Impl::parse_args(vector<string> const& p_args)
 {
-    // TODO MEDIUM PRIORITY This is a mess. Break it down into smaller functions
-    // and tidy it up.
     using ResultT = Result<vector<string>>;
 
     if (m_accept_ordinary_args && !has_options())
