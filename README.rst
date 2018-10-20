@@ -13,13 +13,13 @@ Installation
 Mac / OSX
 ---------
 
-You can install it using Homebrew: ``brew install matt-harvey/tap/swx``
+You can install it using `Homebrew <https://brew.sh>`_: ``brew install matt-harvey/tap/swx``
 
 Linux / BSD
 -----------
 
 On these systems you'll need to install ``swx`` from source. First ensure
-`CMake <http://www.cmake.org/>`_ is installed (available from most Linux package managers).
+`CMake <https://www.cmake.org/>`_ is installed (available from most Linux package managers).
 Then download and unzip the ``swx`` source code from GitHub. ``cd`` into the
 project root, and configure the build: ``cmake -D CMAKE_BUILD_TYPE=Release .``.
 Then run ``make install`` to build and install. You may need to prefix this with
