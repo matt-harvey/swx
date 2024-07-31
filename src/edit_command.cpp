@@ -19,13 +19,14 @@
 #include "config.hpp"
 #include "help_line.hpp"
 #include <cstdlib>
-#include <iostream>
 #include <ostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
 using std::endl;
 using std::ostream;
+using std::runtime_error;
 using std::string;
 using std::system;
 using std::vector;
@@ -59,6 +60,7 @@ EditCommand::EditCommand
 
 EditCommand::~EditCommand() = default;
 
+/** @throws std::runtime_error if there's an error opening the text editor */
 Command::ErrorMessages
 EditCommand::do_process
 (   Config const& p_config,
@@ -72,9 +74,15 @@ EditCommand::do_process
         p_config.filepath():
         p_config.path_to_log()
     );
-    string const editor_invokation = p_config.editor() + " " + filepath;
-    system(editor_invokation.c_str());
-    return ErrorMessages();
+    string const editor_invocation = p_config.editor() + " " + filepath;
+    auto const editor_result = system(editor_invocation.c_str());
+    if (editor_result != EXIT_SUCCESS) {
+        throw runtime_error(
+            "Could not open text editor with command '" + editor_invocation + "'. " +
+            "Check your 'editor' setting in " + p_config.filepath() + "."
+        );
+    }
+    return {};
 }
 
 }  // namespace swx

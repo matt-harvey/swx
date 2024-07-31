@@ -19,13 +19,14 @@
 #include "config.hpp"
 #include "help_line.hpp"
 #include <cstdlib>
-#include <iostream>
 #include <ostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
 using std::endl;
 using std::ostream;
+using std::runtime_error;
 using std::string;
 using std::system;
 using std::vector;
@@ -64,6 +65,7 @@ ConfigCommand::ConfigCommand
 
 ConfigCommand::~ConfigCommand() = default;
 
+/** @throws std::runtime_error if there's an error opening the text editor */
 Command::ErrorMessages
 ConfigCommand::do_process
 (   Config const& p_config,
@@ -74,8 +76,14 @@ ConfigCommand::do_process
     (void)p_ordinary_args;  // silence compiler warning re. unused param.
     if (m_editing_option)
     {
-        string const editor_invokation = p_config.editor() + " " + p_config.filepath();
-        system(editor_invokation.c_str());
+        string const editor_invocation = p_config.editor() + " " + p_config.filepath();
+        auto const editor_result = system(editor_invocation.c_str());
+        if (editor_result != EXIT_SUCCESS) {
+            throw runtime_error(
+                "Could not open text editor with command '" + editor_invocation + "'. " +
+                "Check your 'editor' setting in " + p_config.filepath() + "."
+            );
+        }
     }
     else if (m_filepath_option)
     {
@@ -85,7 +93,7 @@ ConfigCommand::do_process
     {
         p_ordinary_ostream << p_config.summary();
     }
-    return ErrorMessages();
+    return {};
 }
 
 }  // namespace swx
